@@ -116,3 +116,23 @@ let package = Package(
     )
   ]
 )
+
+#if canImport(PackageConfig)
+  import PackageConfig
+
+  let config = PackageConfiguration([
+    "komondor": [
+      "pre-push": "swift test --enable-code-coverage --enable-test-discovery",
+      "pre-commit": [
+        "swift test --enable-code-coverage --enable-test-discovery --generate-linuxmain",
+        "swift run swiftformat .",
+        "swift run swiftlint autocorrect",
+        "swift run sourcedocs generate build --spm-module MistKit -c -r",
+        // "swift run swiftpmls mine",
+        "git add .",
+        "swift run swiftformat --lint .",
+        "swift run swiftlint"
+      ]
+    ]
+  ]).write()
+#endif
