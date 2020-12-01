@@ -127,8 +127,7 @@ let package = Package(
         "swift test --enable-code-coverage --enable-test-discovery --generate-linuxmain",
         "swift run swiftformat .",
         "swift run swiftlint autocorrect",
-        "swift run sourcedocs generate build --spm-module MistKit -c -r",
-        // "swift run swiftpmls mine",
+        "swift run sourcedocs generate build -cra",
         "git add .",
         "swift run swiftformat --lint .",
         "swift run swiftlint"
