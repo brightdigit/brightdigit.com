@@ -1,5 +1,15 @@
 # Reference Documentation
 
+## Structs
+
+-   [BrightDigitSiteCommand](structs/BrightDigitSiteCommand.md)
+-   [BrightDigitSiteCommand.ImportCommand](structs/BrightDigitSiteCommand.ImportCommand.md)
+-   [BrightDigitSiteCommand.PublishCommand](structs/BrightDigitSiteCommand.PublishCommand.md)
+
+## Enums
+
+-   [SiteImportType](enums/SiteImportType.md)
+
 ## Extensions
 
 -   [Node](extensions/Node.md)

@@ -1,7 +1,9 @@
+import ArgumentParser
 import Foundation
 import Plot
 import Publish
 import ShellOut
+import XMLCoder
 
 // This type acts as the configuration for your website.
 struct BrightDigit: Website {
@@ -47,14 +49,49 @@ extension PublishingStep {
   }
 }
 
-try BrightDigit().publish(using: [
-  .optional(.copyResources()),
-  .addMarkdownFiles(),
-  .sortItems(by: \.date, order: .descending),
+public struct BrightDigitSiteCommand: ParsableCommand {
+  public init() {}
 
-  .generateHTML(withTheme: .company, indentation: .spaces(2)),
-  .generateSiteMap(),
+  public static var configuration = CommandConfiguration(
+    abstract: "Command for maintaining the BrightDigit site.",
+    subcommands: [PublishCommand.self],
+    defaultSubcommand: PublishCommand.self
+  )
+}
 
-  .tailwindCSS,
-  .generateRSSFeed(including: [.articles, .tutorials])
-])
+public extension BrightDigitSiteCommand {
+  struct PublishCommand: ParsableCommand {
+    public init() {}
+
+    public func run() throws {
+      try BrightDigit().publish(using: [
+        .optional(.copyResources()),
+        .addMarkdownFiles(),
+        .sortItems(by: \.date, order: .descending),
+
+        .generateHTML(withTheme: .company, indentation: .spaces(2)),
+        .generateSiteMap(),
+
+        .tailwindCSS,
+        .generateRSSFeed(including: [.articles, .tutorials])
+      ])
+    }
+  }
+}
+
+public enum SiteImportType: String, ExpressibleByArgument {
+  case wordpress
+}
+
+public extension BrightDigitSiteCommand {
+  struct ImportCommand: ParsableCommand {
+    @Option
+    public var type: SiteImportType = .wordpress
+
+    public init() {}
+
+    public func run() throws {}
+  }
+}
+
+BrightDigitSiteCommand.main()
