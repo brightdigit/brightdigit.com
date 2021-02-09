@@ -1,9 +1,16 @@
 import ArgumentParser
 import Foundation
+import Kanna
 import Plot
 import Publish
 import ShellOut
-import XMLCoder
+
+extension Sequence {
+  // @inlinable public init<S>(uniqueKeysWithValues keysAndValues: S) where S : Sequence, S.Element == (Key, Value)
+  func uniqueKeys<Key: Hashable, Value>() -> [Key: Value] where Element == (Key, Value) {
+    return Dictionary(uniqueKeysWithValues: self)
+  }
+}
 
 // This type acts as the configuration for your website.
 struct BrightDigit: Website {
@@ -54,13 +61,14 @@ public struct BrightDigitSiteCommand: ParsableCommand {
 
   public static var configuration = CommandConfiguration(
     abstract: "Command for maintaining the BrightDigit site.",
-    subcommands: [PublishCommand.self],
+    subcommands: [PublishCommand.self, ImportCommand.self],
     defaultSubcommand: PublishCommand.self
   )
 }
 
 public extension BrightDigitSiteCommand {
   struct PublishCommand: ParsableCommand {
+    public static var configuration = CommandConfiguration(commandName: "publish")
     public init() {}
 
     public func run() throws {
@@ -85,12 +93,52 @@ public enum SiteImportType: String, ExpressibleByArgument {
 
 public extension BrightDigitSiteCommand {
   struct ImportCommand: ParsableCommand {
+    public static var configuration = CommandConfiguration(commandName: "import")
     @Option
     public var type: SiteImportType = .wordpress
 
+    @Argument
+    public var directory: String
+
     public init() {}
 
-    public func run() throws {}
+    public func run() throws {
+      let directoryURL = URL(fileURLWithPath: directory)
+
+      guard let enumerator = FileManager.default.enumerator(at: directoryURL, includingPropertiesForKeys: nil) else {
+        return
+      }
+
+      let namesAndDocs: [(String, Kanna.XMLDocument)] = enumerator
+        .compactMap { $0 as? URL }
+        .compactMap { url in
+          let ext = url.pathExtension.lowercased()
+          let name = url.deletingPathExtension().lastPathComponent
+
+          guard ext == "xml" else {
+            return nil
+          }
+
+          let doc: Kanna.XMLDocument
+          do {
+            doc = try XML(url: url, encoding: .utf8)
+          } catch {
+            print(error)
+            return nil
+          }
+
+          return (name, doc)
+        }
+
+      let dictionary = namesAndDocs.uniqueKeys()
+
+      for (name, doc) in dictionary {
+        let postTypes = doc.css("item").compactMap {
+          $0.at_xpath("wp:post_type", namespaces: ["wp": "http://wordpress.org/export/1.2/"])?.content
+        }
+        print(Set(postTypes))
+      }
+    }
   }
 }
 

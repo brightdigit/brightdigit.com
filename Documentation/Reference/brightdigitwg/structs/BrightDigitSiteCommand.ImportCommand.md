@@ -13,6 +13,12 @@ struct ImportCommand: ParsableCommand
 public var type: SiteImportType = .wordpress
 ```
 
+### `directory`
+
+```swift
+public var directory: String
+```
+
 ## Methods
 ### `init()`
 
