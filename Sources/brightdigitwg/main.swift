@@ -5,10 +5,72 @@ import Plot
 import Publish
 import ShellOut
 
+extension Optional {
+  func flatMap<OtherValueType>(and other: OtherValueType?) -> (Wrapped, OtherValueType)? {
+    flatMap { value in
+      other.map {
+        (value, $0)
+      }
+    }
+  }
+}
+
+public struct WordpressPost {
+  public init(title: String, meta: [String: String], body: String, date: Date) {
+    self.title = title
+    self.meta = meta
+    self.body = body
+    self.date = date
+  }
+
+  public static let dateFormatter: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "E, d MMM yyyy HH:mm:ss Z"
+    return formatter
+  }()
+
+  public let title: String
+  public let meta: [String: String]
+  public let body: String
+  public let date: Date
+}
+
+public extension WordpressPost {
+  init?(element: Kanna.XMLElement) {
+    guard let title = element.at_css("title")?.content else {
+      return nil
+    }
+    guard let pubDateString = element.at_css("pubDate")?.content else {
+      return nil
+    }
+    guard let pubDate = Self.dateFormatter.date(from: pubDateString) else {
+      return nil
+    }
+    guard let contentElement = element.at_xpath("content:encoded", namespaces: ["content": "http://purl.org/rss/1.0/modules/content/"]) else {
+      return nil
+    }
+    guard let body = contentElement.text else {
+      return nil
+    }
+    let metaElems = element.css("wp:postmeta", namespaces: ["wp": "http://wordpress.org/export/1.2/"])
+    let meta = metaElems.compactMap { (element) -> (String, String)? in
+      let key = element.at_css("wp:meta_key", namespaces: ["wp": "http://wordpress.org/export/1.2/"])?.content
+      let value = element.at_css("wp:meta_value", namespaces: ["wp": "http://wordpress.org/export/1.2/"])?.content
+      return key.flatMap(and: value)
+    }.uniqueByKey()
+
+    self.init(title: title, meta: meta, body: body, date: pubDate)
+  }
+}
+
 extension Sequence {
   // @inlinable public init<S>(uniqueKeysWithValues keysAndValues: S) where S : Sequence, S.Element == (Key, Value)
-  func uniqueKeys<Key: Hashable, Value>() -> [Key: Value] where Element == (Key, Value) {
+  func uniqueByKey<Key: Hashable, Value>() -> [Key: Value] where Element == (Key, Value) {
     return Dictionary(uniqueKeysWithValues: self)
+  }
+
+  func groupByKey<Key: Hashable, Value>() -> [Key: [Value]] where Element == (Key, Value) {
+    return Dictionary(grouping: self, by: { $0.0 }).mapValues { $0.map(\.1) }
   }
 }
 
@@ -130,13 +192,30 @@ public extension BrightDigitSiteCommand {
           return (name, doc)
         }
 
-      let dictionary = namesAndDocs.uniqueKeys()
+      let dictionary = namesAndDocs.uniqueByKey()
+
+      var allPosts = [String: [WordpressPost]]()
 
       for (name, doc) in dictionary {
-        let postTypes = doc.css("item").compactMap {
-          $0.at_xpath("wp:post_type", namespaces: ["wp": "http://wordpress.org/export/1.2/"])?.content
-        }
-        print(Set(postTypes))
+        let elementsByType: [String: [Kanna.XMLElement]] = doc.css("item").compactMap { element in
+          /*
+           public var title: String
+           public var description: String
+           public var body: Body
+           public var date: Date
+           public var lastModified: Date
+           public var imagePath: Path?
+           public var audio: Audio?
+           public var video: Video?
+           tags
+           */
+          element.at_xpath("wp:post_type", namespaces: ["wp": "http://wordpress.org/export/1.2/"]).flatMap(\.content).map {
+            ($0, element)
+          }
+        }.groupByKey()
+
+        let posts = elementsByType["post"]?.compactMap(WordpressPost.init(element:))
+        allPosts[name] = posts
       }
     }
   }
