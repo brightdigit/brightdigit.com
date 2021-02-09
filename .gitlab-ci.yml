@@ -1,8 +1,6 @@
-variables:
-  GIT_SUBMODULE_STRATEGY: recursive
-
 stages:
   - build
+  - deploy
 
 build focal 5_3:
   stage: build
@@ -29,3 +27,12 @@ build macos:
     - swift test --enable-test-discovery --enable-code-coverage
     - xcrun llvm-cov export -format="lcov" .build/debug/BrightDigitPackageTests.xctest/Contents/MacOS/BrightDigitPackageTests -instr-profile .build/debug/codecov/default.profdata > info.lcov
     - bash <(curl https://codecov.io/bash) -F gitlab -F macOS -F swift5_3
+
+deploy:
+  stage: deploy
+  environment:
+    name: production
+    url: https://beta.brightdigit.com
+  script:
+    - swift run
+    - npx netlify-cli deploy --site $NETLIFY_SITE_ID --auth $NETLIFY_AUTH_TOKEN --prod
