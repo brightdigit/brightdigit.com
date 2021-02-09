@@ -47,7 +47,7 @@ extension Plugin {
 
 extension PublishingStep {
   static var tailwindCSS: Self {
-    return .step(named: "Create CSS From TailwindCSS") { context in
+    .step(named: "Create CSS From TailwindCSS") { context in
       let folder = try context.folder(at: "Styling")
       let cssFile = try context.createOutputFile(at: "css/styles.css")
 
