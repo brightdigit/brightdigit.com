@@ -30,6 +30,7 @@ build macos:
 
 deploy:
   stage: deploy
+  image: brightdigit/publish-xml
   environment:
     name: production
     url: https://beta.brightdigit.com
