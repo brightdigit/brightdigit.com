@@ -1,9 +1,19 @@
 import ArgumentParser
 import Foundation
 import Kanna
+import MarkdownGenerator
 import Plot
 import Publish
 import ShellOut
+
+// func markdown(from element: Kanna.XMLElement) throws -> MarkdownConvertible {
+//  switch element.tagName {
+//  case "img":
+//  case "strong":
+//  case "ol":
+// "ul", "pre", "code", "p", "h5", "dl", "em", "img", "strong", "span", "ol", "h3", "blockquote", "figure", "script", "ins", "h2", "div", "hr", "iframe", "a", "h1", "h4"
+//  }
+// }
 
 extension Optional {
   func flatMap<OtherValueType>(and other: OtherValueType?) -> (Wrapped, OtherValueType)? {
@@ -215,8 +225,25 @@ public extension BrightDigitSiteCommand {
         }.groupByKey()
 
         let posts = elementsByType["post"]?.compactMap(WordpressPost.init(element:))
+
         allPosts[name] = posts
       }
+
+      var tags = Set<String>()
+
+      allPosts.map { args in
+        args.value.map { post in
+          do {
+            let html = try Kanna.HTML(html: post.body, encoding: .utf8)
+            html.body?.xpath("/*").map { element in
+              tags.formUnion([element.tagName].compactMap { $0 })
+            }
+          } catch {
+            print(error)
+          }
+        }
+      }
+      print(tags)
     }
   }
 }
