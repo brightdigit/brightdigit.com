@@ -5,15 +5,79 @@ import MarkdownGenerator
 import Plot
 import Publish
 import ShellOut
+import Yams
 
-// func markdown(from element: Kanna.XMLElement) throws -> MarkdownConvertible {
-//  switch element.tagName {
-//  case "img":
-//  case "strong":
-//  case "ol":
-// "ul", "pre", "code", "p", "h5", "dl", "em", "img", "strong", "span", "ol", "h3", "blockquote", "figure", "script", "ins", "h2", "div", "hr", "iframe", "a", "h1", "h4"
-//  }
-// }
+// swiftlint:disable:next cyclomatic_complexity
+func markdown(from element: Kanna.XMLElement) throws -> MarkdownConvertible? {
+  switch (element.tagName, element.text) {
+  case let ("h4", .some(text)):
+    return MarkdownHeader(title: text, level: .h3, style: .atx)
+  case ("hr", _):
+    return "\n---\n"
+  case ("em", _):
+
+    return try ["_"] + element.xpath("/*").compactMap(markdown(from:)) + ["_"]
+  case ("img", _):
+
+    let altText = element.at_xpath("@alt")?.content ?? ""
+    return element.at_xpath("@src")?.content.map {
+      MarkdownImage(url: $0, altText: altText)
+    }
+  case ("script", _):
+    return nil
+  case let ("h5", .some(text)):
+    return MarkdownHeader(title: text, level: .h5, style: .atx)
+  case ("ul", _):
+    return try MarkdownList(items: element.xpath("/li").compactMap(markdown(from:)), style: .unordered)
+  case ("pre", _):
+    return try element.xpath("/code").map(markdown(from:))
+  case ("figure", _):
+    print(element.tagName, element.content)
+    return nil
+  case let ("h2", .some(text)):
+    return MarkdownHeader(title: text, level: .h2, style: .atx)
+  case ("ol", _):
+    return try MarkdownList(items: element.xpath("/li").compactMap(markdown(from:)), style: .ordered)
+
+  case let ("a", .some(text)):
+    guard let href = element.at_xpath("@href")?.content else {
+      return text
+    }
+
+    return "[" + text + "](" + href + ")"
+  case ("dl", _):
+    return try MarkdownList(items: element.xpath("/li").compactMap(markdown(from:)), style: .unordered)
+
+  case let ("strong", .some(text)):
+
+    return "**" + text + "**"
+  case let ("code", .some(text)):
+    return MarkdownCodeBlock(code: text, style: .backticks(language: "swift"))
+  case let ("div", .some(text)):
+    return "\n" + text + "\n"
+  case ("ins", _):
+    print(element.tagName, element.text)
+    return nil
+  case let ("p", .some(text)):
+    return "\n" + text + "\n"
+  case let ("h1", .some(text)):
+    return MarkdownHeader(title: text, level: .h1, style: .atx)
+  case let ("blockquote", .some(text)):
+
+    return MarkdownBlockquotes(content: text)
+  case ("iframe", _):
+    return nil
+  case let ("span", .some(text)):
+    return "\n" + text + "\n"
+  case let ("h3", .some(text)):
+    return MarkdownHeader(title: text, level: .h3, style: .atx)
+  case let ("li", .some(text)):
+    return text
+  default:
+    print(element.tagName)
+    return nil
+  }
+}
 
 extension Optional {
   func flatMap<OtherValueType>(and other: OtherValueType?) -> (Wrapped, OtherValueType)? {
@@ -25,12 +89,43 @@ extension Optional {
   }
 }
 
+public struct Specs: Codable {
+  public init(date: Date, description: String?, tags: [String]) {
+    self.date = date
+    self.description = description
+    self.tags = tags
+  }
+
+  let date: Date
+  let description: String?
+  let tags: [String]
+}
+
+public extension Specs {
+  init(fromPost post: WordpressPost) {
+    self.init(date: post.date, description: post.meta["_yoast_wpseo_metadesc"], tags: post.tags)
+  }
+}
+
+public struct MarkdownItem {
+  internal init(specs: Specs, markdown: MarkdownConvertible) {
+    self.specs = specs
+    self.markdown = markdown
+  }
+
+  let specs: Specs
+  let markdown: MarkdownConvertible
+}
+
 public struct WordpressPost {
-  public init(title: String, meta: [String: String], body: String, date: Date) {
+  internal init(name: String, title: String, meta: [String: String], body: String, date: Date, tags: [String]?, categories: [String]?) {
+    self.name = name
     self.title = title
     self.meta = meta
     self.body = body
     self.date = date
+    self.tags = tags ?? .init()
+    self.categories = categories ?? .init()
   }
 
   public static let dateFormatter: DateFormatter = {
@@ -39,14 +134,33 @@ public struct WordpressPost {
     return formatter
   }()
 
+  public let name: String
   public let title: String
   public let meta: [String: String]
   public let body: String
   public let date: Date
+  public let tags: [String]
+  public let categories: [String]
 }
 
 public extension WordpressPost {
   init?(element: Kanna.XMLElement) {
+    let tacs = element.xpath("/category").compactMap { (element) -> (String, String)? in
+      guard let domain = element.at_xpath("@domain")?.content else {
+        return nil
+      }
+
+      guard let text = element.content else {
+        return nil
+      }
+
+      guard text != "Uncategorized" else {
+        return nil
+      }
+
+      return (domain, text)
+    }.groupByKey()
+
     guard let title = element.at_css("title")?.content else {
       return nil
     }
@@ -62,6 +176,10 @@ public extension WordpressPost {
     guard let body = contentElement.text else {
       return nil
     }
+    guard let name = element.at_xpath("wp:post_name", namespaces: ["wp": "http://wordpress.org/export/1.2/"])?.text else {
+      print(title)
+      return nil
+    }
     let metaElems = element.css("wp:postmeta", namespaces: ["wp": "http://wordpress.org/export/1.2/"])
     let meta = metaElems.compactMap { (element) -> (String, String)? in
       let key = element.at_css("wp:meta_key", namespaces: ["wp": "http://wordpress.org/export/1.2/"])?.content
@@ -69,7 +187,7 @@ public extension WordpressPost {
       return key.flatMap(and: value)
     }.uniqueByKey()
 
-    self.init(title: title, meta: meta, body: body, date: pubDate)
+    self.init(name: name, title: title, meta: meta, body: body, date: pubDate, tags: tacs["post_tag"], categories: tacs["category"])
   }
 }
 
@@ -207,22 +325,25 @@ public extension BrightDigitSiteCommand {
       var allPosts = [String: [WordpressPost]]()
 
       for (name, doc) in dictionary {
-        let elementsByType: [String: [Kanna.XMLElement]] = doc.css("item").compactMap { element in
-          /*
-           public var title: String
-           public var description: String
-           public var body: Body
-           public var date: Date
-           public var lastModified: Date
-           public var imagePath: Path?
-           public var audio: Audio?
-           public var video: Video?
-           tags
-           */
-          element.at_xpath("wp:post_type", namespaces: ["wp": "http://wordpress.org/export/1.2/"]).flatMap(\.content).map {
-            ($0, element)
-          }
-        }.groupByKey()
+        let elementsByType: [String: [Kanna.XMLElement]] =
+          doc.xpath("/rss/channel/item").compactMap { element in
+            // print(element.tagName)
+            /*
+             public var title: String
+             public var description: String
+             public var body: Body
+             public var date: Date
+             public var lastModified: Date
+             public var imagePath: Path?
+             public var audio: Audio?
+             public var video: Video?
+             tags
+             */
+
+            element.at_xpath("wp:post_type", namespaces: ["wp": "http://wordpress.org/export/1.2/"]).flatMap(\.content).map {
+              ($0, element)
+            }
+          }.groupByKey()
 
         let posts = elementsByType["post"]?.compactMap(WordpressPost.init(element:))
 
@@ -231,19 +352,34 @@ public extension BrightDigitSiteCommand {
 
       var tags = Set<String>()
 
+      let contentPath = Path("/Users/leo/Documents/Projects/brightdigit.com/Content")
       allPosts.map { args in
+        let sectionPath = contentPath.appendingComponent(args.key)
         args.value.map { post in
+          let section = args.key
           do {
             let html = try Kanna.HTML(html: post.body, encoding: .utf8)
             html.body?.xpath("/*").map { element in
               tags.formUnion([element.tagName].compactMap { $0 })
             }
+            let markdowns = try [MarkdownHeader(title: post.title)] + (html.body?.xpath("/*").compactMap(markdown(from:)) ?? []) ?? []
+            let specs = Specs(fromPost: post)
+            let encoder = YAMLEncoder()
+
+            let frontMatter = try encoder.encode(specs)
+
+            let markdownText = markdowns.markdown
+            let file = sectionPath.appendingComponent(post.name + ".md")
+            let text = ["---", frontMatter, "---", markdownText].joined(separator: "\n")
+
+            // swiftlint:disable:next force_try
+            try! text.write(toFile: file.absoluteString, atomically: true, encoding: .utf8)
           } catch {
             print(error)
           }
         }
       }
-      print(tags)
+      // print(tags)
     }
   }
 }

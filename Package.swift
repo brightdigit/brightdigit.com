@@ -19,6 +19,7 @@ let package = Package(
     // Dependencies declare other packages that this package depends on.
     // .package(url: /* package url */, from: "1.0.0"),
     .package(name: "Publish", url: "https://github.com/johnsundell/publish.git", from: "0.6.0"),
+    .package(url: "https://github.com/jpsim/Yams.git", from: "4.0.4"),
     .package(url: "https://github.com/lukaskubanek/LoremSwiftum.git", from: "2.2.1"),
     .package(url: "https://github.com/tid-kijyun/Kanna.git", from: "5.2.2"),
     .package(url: "https://github.com/apple/swift-argument-parser", from: "0.3.0"),
@@ -34,7 +35,7 @@ let package = Package(
     // Targets can depend on other targets in this package, and on products in packages this package depends on.
     .target(
       name: "brightdigitwg",
-      dependencies: ["Publish", "LoremSwiftum", "Kanna", "MarkdownGenerator",
+      dependencies: ["Publish", "LoremSwiftum", "Kanna", "MarkdownGenerator", "Yams",
                      .product(name: "ArgumentParser", package: "swift-argument-parser")]
     ),
     .testTarget(

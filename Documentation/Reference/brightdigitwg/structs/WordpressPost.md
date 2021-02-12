@@ -7,6 +7,12 @@ public struct WordpressPost
 ```
 
 ## Properties
+### `name`
+
+```swift
+public let name: String
+```
+
 ### `title`
 
 ```swift
@@ -31,9 +37,14 @@ public let body: String
 public let date: Date
 ```
 
-## Methods
-### `init(title:meta:body:date:)`
+### `tags`
 
 ```swift
-public init(title: String, meta: [String: String], body: String, date: Date)
+public let tags: [String]
+```
+
+### `categories`
+
+```swift
+public let categories: [String]
 ```

@@ -1,0 +1,9 @@
+---
+date: 2018-08-25T19:59:21Z
+tags: []
+
+---
+# Introducing the Empower Apps Show
+
+
+Today we are launching a new podcast for businesses in the Apple space: The Empower Apps Show. The podcast will talk about what is new in technology, business, and the world of Apple.

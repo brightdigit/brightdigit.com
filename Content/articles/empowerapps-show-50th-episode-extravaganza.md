@@ -1,0 +1,9 @@
+---
+date: 2020-06-08T16:25:20Z
+tags: []
+
+---
+# EmpowerApps.Show - 50th Episode Extravaganza
+
+
+In the 50th episode, Leo covers what he's been working on and interested in, answers a question from the audience, talks the audience favorite big topics, and then talks about the future of the podcast.
