@@ -1,5 +1,5 @@
 ---
-date: 2018-11-07T12:55:15Z
+date: 2018-11-07 07:55
 tags: []
 
 ---
@@ -16,7 +16,30 @@ Asset catalogs are collections of specialized files (such as graphics files) as 
 ## Image Sets
 
 ```swift
-{   "images" : [     {       "idiom" : "universal",       "filename" : "apple-watch@1x.png",       "scale" : "1x"     },     {       "idiom" : "universal",       "filename" : "apple-watch@2x.png",       "scale" : "2x"     },     {       "idiom" : "universal",       "filename" : "apple-watch@3x.png",       "scale" : "3x"     }   ],   "info" : {     "version" : 1,     "author" : "xcode"   } } 
+{
+  "images" : [
+    {
+      "idiom" : "universal",
+      "filename" : "apple-watch@1x.png",
+      "scale" : "1x"
+    },
+    {
+      "idiom" : "universal",
+      "filename" : "apple-watch@2x.png",
+      "scale" : "2x"
+    },
+    {
+      "idiom" : "universal",
+      "filename" : "apple-watch@3x.png",
+      "scale" : "3x"
+    }
+  ],
+  "info" : {
+    "version" : 1,
+    "author" : "xcode"
+  }
+}
+
 ```
 
 -   filename - the file name for the particular image
@@ -62,7 +85,16 @@ Asset catalogs are collections of specialized files (such as graphics files) as 
 ## App Icons
 
 ```swift
-... {   "size" : "24x24",   "idiom" : "watch",   "scale" : "2x",   "role" : "notificationCenter",   "subtype" : "38mm" }, ... 
+...
+{
+  "size" : "24x24",
+  "idiom" : "watch",
+  "scale" : "2x",
+  "role" : "notificationCenter",
+  "subtype" : "38mm"
+},
+...
+
 ```
 
 -   size the size of the image file in points, this designates whether the image

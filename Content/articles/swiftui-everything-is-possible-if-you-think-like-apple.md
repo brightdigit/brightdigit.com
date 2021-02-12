@@ -1,5 +1,5 @@
 ---
-date: 2020-02-04T15:00:00Z
+date: 2020-02-04 10:00
 tags:
 - apple-development
 - swift

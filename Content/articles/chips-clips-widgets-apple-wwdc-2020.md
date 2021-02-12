@@ -1,5 +1,5 @@
 ---
-date: 2020-08-21T13:24:00Z
+date: 2020-08-21 09:24
 tags:
 - iOS 14
 - macOS Big Sur

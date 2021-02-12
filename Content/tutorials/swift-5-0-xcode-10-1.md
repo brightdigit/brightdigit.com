@@ -1,5 +1,5 @@
 ---
-date: 2018-12-19T13:05:59Z
+date: 2018-12-19 08:05
 tags: []
 
 ---
@@ -71,33 +71,53 @@ If you wish to use the New Build System, you'll need to edit a .xcspec file in
 1.  Find the section with SupportedLanguage
 
 ```swift
-        SupportedLanguageVersions = (  
-            3.0,             
+        SupportedLanguageVersions = (
+ 
+            3.0,
+            
             4.0,
-             4.2      
-        );         
-        LanguageVersionDisplayNames = {             
-            3.0 = "Swift 3";             
-            4.0 = "Swift 4";             
+
+            4.2      
+        );
+        
+        LanguageVersionDisplayNames = {
+            
+            3.0 = "Swift 3";
+            
+            4.0 = "Swift 4";
+            
             4.2 = "Swift 4.2";       
-        }; 
+        };
+
 ```
 
 1.  Add 5.0 as a SupportedLanguageVersions and add a label for it under LanguageVersionDisplayNames (such as "5.0-dev")
 
 ```swift
-        SupportedLanguageVersions = (  
-            3.0,             
+        SupportedLanguageVersions = (
+ 
+            3.0,
+            
             4.0,
-             4.2,
-             5.0         
-        );         
-        LanguageVersionDisplayNames = {             
-            3.0 = "Swift 3";             
-            4.0 = "Swift 4";             
-            4.2 = "Swift 4.2";             
-            5.0 = "Swift 5.0-dev";         
-        }; 
+
+            4.2,
+
+            5.0
+        
+        );
+        
+        LanguageVersionDisplayNames = {
+            
+            3.0 = "Swift 3";
+            
+            4.0 = "Swift 4";
+            
+            4.2 = "Swift 4.2";
+            
+            5.0 = "Swift 5.0-dev";
+        
+        };
+
 ```
 
 

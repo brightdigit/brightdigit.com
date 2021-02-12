@@ -1,5 +1,5 @@
 ---
-date: 2020-04-13T14:30:00Z
+date: 2020-04-13 10:30
 tags:
 - Apple Hardware
 - Apple Watch

@@ -1,5 +1,5 @@
 ---
-date: 2019-02-20T14:23:34Z
+date: 2019-02-20 09:23
 tags:
 - '#LansingMarketingHackers'
 

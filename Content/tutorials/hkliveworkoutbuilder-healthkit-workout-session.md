@@ -1,5 +1,5 @@
 ---
-date: 2018-06-18T11:23:18Z
+date: 2018-06-18 07:23
 tags:
 - Smart Intensity
 

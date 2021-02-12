@@ -1,5 +1,5 @@
 ---
-date: 2020-03-31T10:37:00Z
+date: 2020-03-31 06:37
 tags:
 - apple-development
 - iOS development

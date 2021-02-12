@@ -1,5 +1,5 @@
 ---
-date: 2019-12-16T13:00:00Z
+date: 2019-12-16 08:00
 tags:
 - Apple Hardware
 - Apple Special Event

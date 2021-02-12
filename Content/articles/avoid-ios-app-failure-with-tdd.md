@@ -1,5 +1,5 @@
 ---
-date: 2020-01-06T17:57:00Z
+date: 2020-01-06 12:57
 tags:
 - tdd
 - test driven development

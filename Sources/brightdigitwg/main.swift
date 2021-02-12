@@ -91,12 +91,15 @@ extension Optional {
 
 public struct Specs: Codable {
   public init(date: Date, description: String?, tags: [String]) {
-    self.date = date
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
+    dateFormatter.timeZone = .current
+    self.date = dateFormatter.string(from: date)
     self.description = description
     self.tags = tags
   }
 
-  let date: Date
+  let date: String
   let description: String?
   let tags: [String]
 }
