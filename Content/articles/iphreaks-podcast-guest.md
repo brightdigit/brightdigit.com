@@ -1,7 +1,5 @@
 ---
 date: 2018-06-21 06:09
-tags: []
-
 ---
 # MicroConf and building an app for the Apple Watch on iPhreaks
 

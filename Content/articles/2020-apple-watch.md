@@ -1,11 +1,6 @@
 ---
 date: 2020-04-13 10:30
-tags:
-- Apple Hardware
-- Apple Watch
-- apple-development
-- swiftui
-
+tags: Apple Hardware, Apple Watch, apple-development, swiftui
 ---
 # Why 2020 will be amazing for the Apple Watch
 

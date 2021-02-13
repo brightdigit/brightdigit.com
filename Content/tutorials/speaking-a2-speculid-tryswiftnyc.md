@@ -1,7 +1,5 @@
 ---
 date: 2018-10-01 14:53
-tags: []
-
 ---
 # Speaking at A2 Cocoaheads on Speculid and Try!Swift
 

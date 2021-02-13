@@ -1,7 +1,5 @@
 ---
 date: 2018-09-06 14:46
-tags: []
-
 ---
 # Swift Thoughts on try!Swift NYC 2018
 

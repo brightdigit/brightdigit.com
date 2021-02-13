@@ -1,7 +1,5 @@
 ---
 date: 2019-11-19 08:35
-tags: []
-
 ---
 # EmpowerApps.Show - Hiring an iOS Developer with John Knox
 

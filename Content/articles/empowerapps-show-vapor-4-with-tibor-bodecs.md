@@ -1,7 +1,5 @@
 ---
 date: 2020-05-26 00:07
-tags: []
-
 ---
 # EmpowerApps.Show - Vapor 4 with Tibor Bödecs
 

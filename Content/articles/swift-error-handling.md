@@ -1,9 +1,6 @@
 ---
 date: 2020-12-08 08:47
-tags:
-- swift
-- swiftui
-
+tags: swift, swiftui
 ---
 # You Need A Plan For Swift Error Handling
 

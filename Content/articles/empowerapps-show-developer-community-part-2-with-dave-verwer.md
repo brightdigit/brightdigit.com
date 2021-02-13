@@ -1,7 +1,5 @@
 ---
 date: 2020-04-30 16:17
-tags: []
-
 ---
 # EmpowerApps.Show - Developer Community (Part 2) with Dave Verwer
 

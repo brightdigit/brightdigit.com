@@ -1,7 +1,5 @@
 ---
 date: 2019-07-17 08:47
-tags: []
-
 ---
 # EmpowerApps.Show - Cross Platform Comparison with Rob Kerr
 

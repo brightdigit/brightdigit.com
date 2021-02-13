@@ -1,7 +1,5 @@
 ---
 date: 2019-07-30 16:19
-tags: []
-
 ---
 # Choosing the Best Backend for your iOS App
 
@@ -213,7 +211,3 @@ Whatever you choose, remember, if you need to pivot, do it early. Don't do it wh
 
 
 Want even MORE info? Check out the entire conversation here and subscribe to our newsletter to stay informed.
-
-
-
-

@@ -1,7 +1,5 @@
 ---
 date: 2018-10-11 07:26
-tags: []
-
 ---
 # What Does The New Apple Watch Mean 4 Your Business?
 
@@ -85,7 +83,3 @@ For a wide-ranging discussion, check out the Empower Apps podcast episode on the
 
 
 If you need help bringing a watch app to market, get in touch with BrightDigit. We'll point you in the right direction.
-
-
-
-

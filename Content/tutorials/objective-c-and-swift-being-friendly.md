@@ -1,7 +1,5 @@
 ---
 date: 2018-11-14 10:23
-tags: []
-
 ---
 # Objective-C and Swift - Being Friendly
 

@@ -1,7 +1,5 @@
 ---
 date: 2019-12-18 00:10
-tags: []
-
 ---
 # EmpowerApps.Show - Future Proofing Your Apps with Gui Rambo
 

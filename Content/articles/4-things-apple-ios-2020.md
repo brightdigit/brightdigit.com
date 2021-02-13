@@ -1,11 +1,6 @@
 ---
 date: 2019-12-16 08:00
-tags:
-- Apple Hardware
-- Apple Special Event
-- Product Development
-- swiftui
-
+tags: Apple Hardware, Apple Special Event, Product Development, swiftui
 ---
 # 4 Things To Keep Your Eye on for Apple in 2020
 

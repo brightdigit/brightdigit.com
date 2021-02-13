@@ -1,7 +1,5 @@
 ---
 date: 2019-02-25 08:10
-tags: []
-
 ---
 # EmpowerApps.Show - iPad Apps for Businesses and Pros
 

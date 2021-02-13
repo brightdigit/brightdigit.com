@@ -1,7 +1,5 @@
 ---
 date: 2019-07-08 15:00
-tags: []
-
 ---
 # Podcasting – Getting Started – Whys and Hows
 

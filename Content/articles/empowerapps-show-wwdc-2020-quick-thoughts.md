@@ -1,7 +1,5 @@
 ---
 date: 2020-06-23 08:25
-tags: []
-
 ---
 # EmpowerApps.Show - WWDC 2020 - Quick Thoughts
 

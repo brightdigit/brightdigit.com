@@ -1,7 +1,5 @@
 ---
 date: 2018-11-07 07:55
-tags: []
-
 ---
 # Asset Catalogs, Image Sets, and App Icons
 

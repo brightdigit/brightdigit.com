@@ -1,8 +1,6 @@
 ---
 date: 2018-06-11 05:34
-tags:
-- Smart Intensity
-
+tags: Smart Intensity
 ---
 # HealthKit – Apple Watch – Data and Authorization
 

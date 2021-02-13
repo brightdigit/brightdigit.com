@@ -1,7 +1,5 @@
 ---
 date: 2018-09-06 12:00
-tags: []
-
 ---
 # Apple September Event - iPhone and Apple Watch
 

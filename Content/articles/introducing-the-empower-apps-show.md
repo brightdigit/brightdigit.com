@@ -1,7 +1,5 @@
 ---
 date: 2018-08-25 15:59
-tags: []
-
 ---
 # Introducing the Empower Apps Show
 

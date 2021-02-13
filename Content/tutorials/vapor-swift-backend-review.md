@@ -1,7 +1,5 @@
 ---
 date: 2019-03-19 07:44
-tags: []
-
 ---
 # Vapor - Swift Choice For the Back End
 

@@ -1,9 +1,6 @@
 ---
 date: 2020-03-02 10:00
-tags:
-- continuous-integration
-- swift-package
-
+tags: continuous-integration, swift-package
 ---
 # Swift Package Continuous Integration Guide
 

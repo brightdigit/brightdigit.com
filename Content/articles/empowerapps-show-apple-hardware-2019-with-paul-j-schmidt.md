@@ -1,7 +1,5 @@
 ---
 date: 2019-12-05 00:21
-tags: []
-
 ---
 # EmpowerApps.Show - Apple Hardware 2019 with Paul J Schmidt
 

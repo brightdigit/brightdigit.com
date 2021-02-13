@@ -1,7 +1,5 @@
 ---
 date: 2020-05-04 16:18
-tags: []
-
 ---
 # EmpowerApps.Show - Practical Combine with Donny Wals
 

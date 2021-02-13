@@ -1,7 +1,5 @@
 ---
 date: 2018-12-19 08:05
-tags: []
-
 ---
 # Swift 5.0 and XCode 10.1 - Using a Custom Toolchain
 

@@ -1,7 +1,5 @@
 ---
 date: 2019-01-08 10:39
-tags: []
-
 ---
 # EmpowerApps.Show - Project Estimation
 

@@ -1,7 +1,5 @@
 ---
 date: 2019-08-19 06:28
-tags: []
-
 ---
 # How to Set a Realistic Project Budget for Your iOS App
 

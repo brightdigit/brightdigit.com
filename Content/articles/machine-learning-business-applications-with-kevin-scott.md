@@ -1,7 +1,5 @@
 ---
 date: 2018-09-20 13:29
-tags: []
-
 ---
 # Machine Learning Business Applications with Kevin Scott
 

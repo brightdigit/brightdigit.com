@@ -1,7 +1,5 @@
 ---
 date: 2019-12-02 13:10
-tags: []
-
 ---
 # EmpowerApps.Show - Media Outreach with Jeff Gamet
 

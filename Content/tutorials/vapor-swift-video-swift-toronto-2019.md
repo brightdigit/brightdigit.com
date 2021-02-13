@@ -1,8 +1,6 @@
 ---
 date: 2019-09-16 10:10
-tags:
-- vapor
-
+tags: vapor
 ---
 # Get Started Developing Server Side Swift with Vapor
 

@@ -1,7 +1,5 @@
 ---
 date: 2019-06-03 01:08
-tags: []
-
 ---
 # EmpowerApps.Show - Apple and Video with Paul J Schmidt
 

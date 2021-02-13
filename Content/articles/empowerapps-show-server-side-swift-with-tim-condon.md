@@ -1,8 +1,6 @@
 ---
 date: 2020-01-31 14:00
-tags:
-- swiftui
-
+tags: swiftui
 ---
 # EmpowerApps.Show - Server-Side Swift with Tim Condon
 

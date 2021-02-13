@@ -1,7 +1,5 @@
 ---
 date: 2018-10-29 12:22
-tags: []
-
 ---
 # App Icon Templates - Building Graphics For Xcode
 

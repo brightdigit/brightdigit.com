@@ -1,7 +1,5 @@
 ---
 date: 2020-03-16 00:00
-tags: []
-
 ---
 # EmpowerApps.Show - Handling Errors Correctly with Jeff Kelley
 

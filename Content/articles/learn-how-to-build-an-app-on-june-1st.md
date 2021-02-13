@@ -1,7 +1,5 @@
 ---
 date: 2019-05-15 08:24
-tags: []
-
 ---
 # Learn How To Build An App on June 1st
 

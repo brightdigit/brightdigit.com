@@ -1,7 +1,5 @@
 ---
 date: 2018-08-27 07:42
-tags: []
-
 ---
 # 5 Things to Know About macOS Mojave for Developers
 

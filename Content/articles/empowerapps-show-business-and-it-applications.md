@@ -1,7 +1,5 @@
 ---
 date: 2019-03-11 11:34
-tags: []
-
 ---
 # EmpowerApps.Show - Business and IT Applications
 

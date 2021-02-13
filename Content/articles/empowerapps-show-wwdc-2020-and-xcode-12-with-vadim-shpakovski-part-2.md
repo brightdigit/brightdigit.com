@@ -1,7 +1,5 @@
 ---
 date: 2020-07-10 11:11
-tags: []
-
 ---
 # EmpowerApps.Show - WWDC 2020 and Xcode 12 with Vadim Shpakovski - Part 2
 

@@ -1,7 +1,5 @@
 ---
 date: 2020-02-18 12:04
-tags: []
-
 ---
 # EmpowerApps.Show - Machine Learning with Kevin Scott
 

@@ -1,8 +1,6 @@
 ---
 date: 2020-01-08 14:59
-tags:
-- swiftui
-
+tags: swiftui
 ---
 # EmpowerApps.Show - 2020 Developer Wish List with Alex Bush
 

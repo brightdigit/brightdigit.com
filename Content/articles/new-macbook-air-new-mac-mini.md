@@ -1,7 +1,5 @@
 ---
 date: 2018-09-15 16:02
-tags: []
-
 ---
 # Hopes and Dreams for a new MacBook Air and new Mac Mini
 

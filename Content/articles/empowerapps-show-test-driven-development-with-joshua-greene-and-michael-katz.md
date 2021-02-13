@@ -1,7 +1,5 @@
 ---
 date: 2019-06-20 15:00
-tags: []
-
 ---
 # EmpowerApps.Show - Test-Driven Development with Joshua Greene and Michael Katz
 

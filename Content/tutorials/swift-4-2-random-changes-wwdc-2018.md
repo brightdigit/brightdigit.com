@@ -1,7 +1,5 @@
 ---
 date: 2018-06-04 22:07
-tags: []
-
 ---
 # WWDC 2018 - Swift 4.2 and  "Random" Changes
 

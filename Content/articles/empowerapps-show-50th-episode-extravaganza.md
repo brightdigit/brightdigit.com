@@ -1,7 +1,5 @@
 ---
 date: 2020-06-08 12:25
-tags: []
-
 ---
 # EmpowerApps.Show - 50th Episode Extravaganza
 

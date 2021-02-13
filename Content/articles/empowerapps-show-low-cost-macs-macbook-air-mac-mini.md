@@ -1,7 +1,5 @@
 ---
 date: 2018-09-10 14:28
-tags: []
-
 ---
 # EmpowerApps.Show - Low-Cost Macs - MacBook Air & Mac Mini
 

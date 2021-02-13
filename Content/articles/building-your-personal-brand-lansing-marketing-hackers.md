@@ -1,8 +1,6 @@
 ---
 date: 2019-02-20 09:23
-tags:
-- '#LansingMarketingHackers'
-
+tags: '#LansingMarketingHackers'
 ---
 # Building Your Personal Brand - Lansing Marketing Hackers
 

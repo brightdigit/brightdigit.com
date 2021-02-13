@@ -1,7 +1,5 @@
 ---
 date: 2018-08-09 03:17
-tags: []
-
 ---
 # Businesses and WWDC 2018 - Top 4 Changes to Know
 

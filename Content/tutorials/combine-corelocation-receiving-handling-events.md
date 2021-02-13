@@ -1,10 +1,6 @@
 ---
 date: 2020-08-24 00:31
-tags:
-- combine
-- functional programming
-- GCD
-
+tags: combine, functional programming, GCD
 ---
 # Combine & CoreLocation, Part 2 - Receiving & Handling Events
 

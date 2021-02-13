@@ -1,7 +1,5 @@
 ---
 date: 2019-09-27 08:13
-tags: []
-
 ---
 # EmpowerApps.Show - September 2019 Event
 

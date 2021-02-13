@@ -1,8 +1,6 @@
 ---
 date: 2018-02-16 05:00
-tags:
-- apple-development
-
+tags: apple-development
 ---
 # macOS Development for iOS Developers
 

@@ -1,7 +1,5 @@
 ---
 date: 2019-10-15 14:48
-tags: []
-
 ---
 # EmpowerApps.Show - Continuous Integration with Kyle Newsome
 

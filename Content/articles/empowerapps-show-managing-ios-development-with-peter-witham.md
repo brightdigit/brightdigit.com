@@ -1,7 +1,5 @@
 ---
 date: 2019-12-09 00:13
-tags: []
-
 ---
 # EmpowerApps.Show - Managing iOS Development with Peter Witham
 

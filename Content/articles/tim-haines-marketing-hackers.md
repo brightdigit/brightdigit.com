@@ -1,7 +1,5 @@
 ---
 date: 2018-09-04 09:25
-tags: []
-
 ---
 # Interview with Tim Haines - October Lansing Marketing Hackers
 

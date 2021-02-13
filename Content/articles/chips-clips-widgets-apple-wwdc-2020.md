@@ -1,11 +1,6 @@
 ---
 date: 2020-08-21 09:24
-tags:
-- iOS 14
-- macOS Big Sur
-- swiftui
-- WWDC 2020
-
+tags: iOS 14, macOS Big Sur, swiftui, WWDC 2020
 ---
 # Chips, Clips & Widgets – Big changes from Virtual WWDC 2020
 
@@ -126,4 +121,4 @@ WWDC is almost always an exciting event, and this year was no exception, despite
 ## Is your app ready for these changes?
 
 
-All of these announcements from WWDC 2020 mean things are changing for how we develop or update apps for the Apple ecosystem. If you're ready to explore what it will take to make your app idea a reality or to update your existing app for this year, contact me to learn how I can help you and get you a free estimate. 
+All of these announcements from WWDC 2020 mean things are changing for how we develop or update apps for the Apple ecosystem. If you're ready to explore what it will take to make your app idea a reality or to update your existing app for this year, contact me to learn how I can help you and get you a free estimate.

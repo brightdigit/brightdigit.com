@@ -1,7 +1,5 @@
 ---
 date: 2019-10-07 12:12
-tags: []
-
 ---
 # EmpowerApps.Show - Modularizing in Xcode with Abbey Jackson
 

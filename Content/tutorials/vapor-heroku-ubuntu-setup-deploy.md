@@ -1,7 +1,5 @@
 ---
 date: 2019-03-19 07:51
-tags: []
-
 ---
 # Vapor - Deep Dive Guide into Setup and Deployment for Heroku and Ubuntu
 

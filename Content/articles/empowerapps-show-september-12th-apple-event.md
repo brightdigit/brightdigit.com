@@ -1,7 +1,5 @@
 ---
 date: 2018-09-04 14:10
-tags: []
-
 ---
 # EmpowerApps.Show - September 12th Apple Event
 

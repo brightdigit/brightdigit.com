@@ -1,7 +1,5 @@
 ---
 date: 2020-02-03 12:21
-tags: []
-
 ---
 # EmpowerApps.Show – Upgrading Your Skills in 2020 with Paul Hudson
 

@@ -1,7 +1,5 @@
 ---
 date: 2018-12-10 13:49
-tags: []
-
 ---
 # Freelancing - How to Prepare and Get Started
 

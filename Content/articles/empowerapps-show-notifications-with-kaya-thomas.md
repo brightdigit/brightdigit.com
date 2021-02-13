@@ -1,7 +1,5 @@
 ---
 date: 2020-03-23 00:05
-tags: []
-
 ---
 # EmpowerApps.Show - Notifications with Kaya Thomas
 

@@ -1,10 +1,6 @@
 ---
 date: 2020-01-06 12:57
-tags:
-- tdd
-- test driven development
-- unit testing
-
+tags: tdd, test driven development, unit testing
 ---
 # How to avoid iOS app failure with Test-Driven Development
 

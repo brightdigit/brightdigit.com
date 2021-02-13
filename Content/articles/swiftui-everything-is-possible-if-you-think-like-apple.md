@@ -1,11 +1,6 @@
 ---
 date: 2020-02-04 10:00
-tags:
-- apple-development
-- swift
-- swiftui
-- UI
-
+tags: apple-development, swift, swiftui, UI
 ---
 # SwiftUI: Everything is possible if you think like Apple
 

@@ -1,8 +1,6 @@
 ---
 date: 2018-05-25 04:05
-tags:
-- Smart Intensity
-
+tags: Smart Intensity
 ---
 # HealthKit - Getting Started - HKObjectType and Authorization
 

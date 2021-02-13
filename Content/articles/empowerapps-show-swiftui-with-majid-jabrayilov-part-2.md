@@ -1,8 +1,6 @@
 ---
 date: 2020-07-20 00:13
-tags:
-- swiftui
-
+tags: swiftui
 ---
 # EmpowerApps.Show - SwiftUI with Majid Jabrayilov - Part 2
 

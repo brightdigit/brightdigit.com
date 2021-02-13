@@ -1,7 +1,5 @@
 ---
 date: 2019-02-18 06:30
-tags: []
-
 ---
 # EmpowerApps.Show - Cloud and Backend Services For Apps
 

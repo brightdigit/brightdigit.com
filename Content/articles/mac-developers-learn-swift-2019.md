@@ -1,7 +1,5 @@
 ---
 date: 2019-06-18 15:48
-tags: []
-
 ---
 # What Mac should a Swift developer buy?
 
@@ -44,4 +42,4 @@ Additionally, buying used is certainly worthwhile. However, make sure that it is
 
 
 
-Finding the right Mac for developers is important, so hopefully you find this helpful in your journey towards becoming an accomplished Swift and iOS developer. 
+Finding the right Mac for developers is important, so hopefully you find this helpful in your journey towards becoming an accomplished Swift and iOS developer.

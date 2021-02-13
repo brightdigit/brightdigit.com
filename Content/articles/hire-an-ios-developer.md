@@ -1,11 +1,6 @@
 ---
 date: 2019-11-25 00:56
-tags:
-- hiring
-- human resources
-- iOS development
-- swiftui
-
+tags: hiring, human resources, iOS development, swiftui
 ---
 # What you need to know before hiring an iOS developer
 

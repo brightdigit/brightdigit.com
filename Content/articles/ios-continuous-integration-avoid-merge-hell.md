@@ -1,7 +1,5 @@
 ---
 date: 2020-03-02 10:00
-tags: []
-
 ---
 # iOS Continuous Integration: How To Avoid Merge Hell
 
@@ -186,10 +184,3 @@ Learn more about iOS development, management, and optimizing your process.
 
 
 Subscribe to the email list to get the latest tips on patterns and practices in iOS and Swift development.
-
-
-
-
-
-
-

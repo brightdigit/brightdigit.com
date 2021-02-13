@@ -1,8 +1,6 @@
 ---
 date: 2020-09-21 04:49
-tags:
-- swiftui
-
+tags: swiftui
 ---
 # EmpowerApps.Show - Apple Watch 2020 with Steve Lipton
 

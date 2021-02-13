@@ -1,7 +1,5 @@
 ---
 date: 2020-08-03 00:16
-tags: []
-
 ---
 # EmpowerApps.Show - Big Bad Bluetooth with Leah Vogel
 

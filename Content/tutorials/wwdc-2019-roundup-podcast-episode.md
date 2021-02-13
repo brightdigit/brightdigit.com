@@ -1,7 +1,5 @@
 ---
 date: 2019-09-11 11:42
-tags: []
-
 ---
 # WWDC 2019 Roundup - Podcast Episode
 

@@ -1,7 +1,5 @@
 ---
 date: 2020-02-26 10:32
-tags: []
-
 ---
 # EmpowerApps.Show - Accessibility with Kim Arnett
 

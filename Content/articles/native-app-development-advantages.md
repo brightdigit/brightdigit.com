@@ -1,11 +1,6 @@
 ---
 date: 2019-10-18 09:59
-tags:
-- Coding
-- Native iOS development
-- Programming
-- Software
-
+tags: Coding, Native iOS development, Programming, Software
 ---
 # Native App Development and Its Advantages
 

@@ -1,7 +1,5 @@
 ---
 date: 2016-10-12 14:25
-tags: []
-
 ---
 # Building Icons in Xcode - Introducing Speculid
 

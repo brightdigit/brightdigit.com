@@ -1,7 +1,5 @@
 ---
 date: 2020-01-03 15:16
-tags: []
-
 ---
 # EmpowerApps.Show - Training Your Team with Steve Lipton
 

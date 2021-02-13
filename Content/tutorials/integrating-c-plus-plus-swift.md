@@ -1,7 +1,5 @@
 ---
 date: 2019-01-16 10:00
-tags: []
-
 ---
 # Integrating ​​​C++ Libraries with Swift - How Speculid Is Built
 

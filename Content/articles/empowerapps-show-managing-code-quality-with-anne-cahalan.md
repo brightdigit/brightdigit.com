@@ -1,7 +1,5 @@
 ---
 date: 2020-03-05 00:06
-tags: []
-
 ---
 # EmpowerApps.Show - Managing Code Quality with Anne Cahalan
 

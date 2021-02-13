@@ -1,7 +1,5 @@
 ---
 date: 2020-06-19 00:01
-tags: []
-
 ---
 # EmpowerApps.Show - Haikus of Code with Erica Sadun - Part 2
 

@@ -1,7 +1,5 @@
 ---
 date: 2019-11-27 00:00
-tags: []
-
 ---
 # EmpowerApps.Show - App Store Optimization with Ariel Michaeli
 

@@ -1,7 +1,5 @@
 ---
 date: 2020-04-06 10:01
-tags: []
-
 ---
 # EmpowerApps.Show - WWDC Spectacular (Part 1) with Peter Witham
 

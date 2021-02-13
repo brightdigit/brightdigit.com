@@ -1,7 +1,5 @@
 ---
 date: 2019-02-07 11:24
-tags: []
-
 ---
 # EmpowerApps.Show – Apple 2019
 

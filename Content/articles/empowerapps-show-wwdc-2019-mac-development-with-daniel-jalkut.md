@@ -1,7 +1,5 @@
 ---
 date: 2019-08-26 10:40
-tags: []
-
 ---
 # EmpowerApps.Show - WWDC 2019 - Mac Development with Daniel Jalkut
 

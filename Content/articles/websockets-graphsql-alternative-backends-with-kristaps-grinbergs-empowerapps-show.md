@@ -1,7 +1,5 @@
 ---
 date: 2020-05-22 00:07
-tags: []
-
 ---
 # EmpowerApps.Show - Alternative Backends with Kristaps Grinbergs
 

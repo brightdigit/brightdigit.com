@@ -1,7 +1,5 @@
 ---
 date: 2018-09-28 08:20
-tags: []
-
 ---
 # EmpowerApps.Show - Apple Watch Series 4
 

@@ -1,7 +1,5 @@
 ---
 date: 2017-06-09 16:38
-tags: []
-
 ---
 # ScriptingBridge with Swift - Communicating with Apps using AppleScript and Swift
 

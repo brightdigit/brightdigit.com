@@ -1,7 +1,5 @@
 ---
 date: 2019-05-29 09:04
-tags: []
-
 ---
 # Lansing Marketing Hackers -  Getting Started Podcasting
 

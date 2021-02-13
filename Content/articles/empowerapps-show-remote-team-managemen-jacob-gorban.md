@@ -1,7 +1,5 @@
 ---
 date: 2020-10-05 07:09
-tags: []
-
 ---
 # EmpowerApps.Show - A Very Remote Year with Jacob Gorban
 

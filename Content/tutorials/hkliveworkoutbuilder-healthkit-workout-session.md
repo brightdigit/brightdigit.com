@@ -1,8 +1,6 @@
 ---
 date: 2018-06-18 07:23
-tags:
-- Smart Intensity
-
+tags: Smart Intensity
 ---
 # HealthKit Workout Session with HKLiveWorkoutBuilder
 

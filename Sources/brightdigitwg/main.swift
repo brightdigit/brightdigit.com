@@ -96,12 +96,12 @@ public struct Specs: Codable {
     dateFormatter.timeZone = .current
     self.date = dateFormatter.string(from: date)
     self.description = description
-    self.tags = tags
+    self.tags = tags.isEmpty ? nil : tags.joined(separator: ", ")
   }
 
   let date: String
   let description: String?
-  let tags: [String]
+  let tags: String?
 }
 
 public extension Specs {
@@ -369,9 +369,9 @@ public extension BrightDigitSiteCommand {
             let specs = Specs(fromPost: post)
             let encoder = YAMLEncoder()
 
-            let frontMatter = try encoder.encode(specs)
+            let frontMatter = try encoder.encode(specs).trimmingCharacters(in: .whitespacesAndNewlines)
 
-            let markdownText = markdowns.markdown
+            let markdownText = markdowns.markdown.trimmingCharacters(in: .whitespacesAndNewlines)
             let file = sectionPath.appendingComponent(post.name + ".md")
             let text = ["---", frontMatter, "---", markdownText].joined(separator: "\n")
 

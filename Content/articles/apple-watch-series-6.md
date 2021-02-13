@@ -1,8 +1,6 @@
 ---
 date: 2020-10-06 16:26
-tags:
-- swiftui
-
+tags: swiftui
 ---
 # Apple Watch Series 6 unlocks exciting future for developers
 

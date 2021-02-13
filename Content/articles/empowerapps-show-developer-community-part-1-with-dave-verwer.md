@@ -1,7 +1,5 @@
 ---
 date: 2020-04-20 09:05
-tags: []
-
 ---
 # Developer Community (Part 1) with Dave Verwer
 

@@ -1,7 +1,5 @@
 ---
 date: 2018-01-04 14:14
-tags: []
-
 ---
 # Understanding Optionals in Swift
 

@@ -1,8 +1,6 @@
 ---
 date: 2019-09-17 14:45
-tags:
-- apple-watch
-
+tags: apple-watch
 ---
 # Independent Watch App and HealthKit
 

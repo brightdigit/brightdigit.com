@@ -1,7 +1,5 @@
 ---
 date: 2020-09-01 19:50
-tags: []
-
 ---
 # EmpowerApps.Show - Machine Learning and Core ML with Jameson Toole
 

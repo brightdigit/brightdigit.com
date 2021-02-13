@@ -1,9 +1,6 @@
 ---
 date: 2019-08-15 11:07
-tags:
-- empowerapps.show
-- swiftui
-
+tags: empowerapps.show, swiftui
 ---
 # EmpowerApps.Show - WWDC 2019 - Swift UI with Jason Anderson
 

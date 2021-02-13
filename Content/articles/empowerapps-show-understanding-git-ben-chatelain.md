@@ -1,7 +1,5 @@
 ---
 date: 2020-10-12 10:31
-tags: []
-
 ---
 # EmpowerApps.Show - Understanding Git with Ben Chatelain
 

@@ -1,7 +1,5 @@
 ---
 date: 2019-05-27 08:15
-tags: []
-
 ---
 # EmpowerApps.Show - iOS Developer Interviews with Alex Bush
 

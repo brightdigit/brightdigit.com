@@ -282,6 +282,7 @@ struct CompanyHTMLFactory: HTMLFactory {
           .article(
             .div(
               .class("content"),
+
               .contentBody(item.body)
             ),
             .span("Tagged with: ")

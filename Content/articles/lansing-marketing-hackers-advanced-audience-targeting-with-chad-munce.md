@@ -1,7 +1,5 @@
 ---
 date: 2019-10-01 11:39
-tags: []
-
 ---
 # Lansing Marketing Hackers - Advanced Audience Targeting with Chad Munce
 

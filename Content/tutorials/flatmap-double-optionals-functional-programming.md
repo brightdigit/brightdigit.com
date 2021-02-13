@@ -1,9 +1,6 @@
 ---
 date: 2020-04-07 14:20
-tags:
-- functional programming
-- optionals
-
+tags: functional programming, optionals
 ---
 # flatMap, Double Optionals, and Functional Programming
 

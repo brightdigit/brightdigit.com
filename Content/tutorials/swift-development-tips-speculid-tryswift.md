@@ -1,7 +1,5 @@
 ---
 date: 2018-11-19 09:30
-tags: []
-
 ---
 # Swift Development Tips - Speculid & Try!Swift NYC 2018
 

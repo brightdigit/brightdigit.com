@@ -1,7 +1,5 @@
 ---
 date: 2019-08-06 00:00
-tags: []
-
 ---
 # EmpowerApps.Show - WWDC 2019 - Apple Watch with Gary Sabo
 

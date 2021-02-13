@@ -1,9 +1,6 @@
 ---
 date: 2020-11-17 09:36
-tags:
-- iOS
-- swiftui
-
+tags: iOS, swiftui
 ---
 # What makes a good iOS team manager?
 

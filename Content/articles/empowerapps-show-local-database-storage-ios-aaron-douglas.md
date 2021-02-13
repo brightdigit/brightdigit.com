@@ -1,7 +1,5 @@
 ---
 date: 2020-09-14 19:57
-tags: []
-
 ---
 # EmpowerApps.Show - Local Database Storage on iOS with Aaron Douglas
 

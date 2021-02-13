@@ -1,11 +1,6 @@
 ---
 date: 2019-09-25 10:00
-tags:
-- combine
-- GCD
-- promises
-- swiftui
-
+tags: combine, GCD, promises, swiftui
 ---
 # Asynchronous Multi-Threaded Parallel World of Swift
 
@@ -940,7 +935,3 @@ Hopefully this article gives you more guidance on how to better manage multiple 
 
 
 If you have any questions, reply to me on Twitter @leogdion and if you want to learn more fill out the form below:
-
-
-
-

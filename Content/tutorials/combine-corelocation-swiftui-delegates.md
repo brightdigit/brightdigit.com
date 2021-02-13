@@ -1,10 +1,6 @@
 ---
 date: 2020-09-01 07:38
-tags:
-- combine
-- functional programming
-- GCD
-
+tags: combine, functional programming, GCD
 ---
 # Combine & CoreLocation, Part 3 - Integrations with flatMap
 

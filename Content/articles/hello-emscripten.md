@@ -1,7 +1,5 @@
 ---
 date: 2014-04-01 14:22
-tags: []
-
 ---
 # Hello Emscripten!
 

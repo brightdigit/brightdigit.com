@@ -1,12 +1,7 @@
 ---
 date: 2020-03-31 06:37
-tags:
-- apple-development
-- iOS development
-- ios software architecture
-- software design
-- swiftui
-
+tags: apple-development, iOS development, ios software architecture, software design,
+  swiftui
 ---
 # What You Should Know About iOS Software Architecture
 

@@ -1,7 +1,5 @@
 ---
 date: 2020-06-13 18:01
-tags: []
-
 ---
 # Swift on ARM - Supporting ARM in Swift Package CI
 
