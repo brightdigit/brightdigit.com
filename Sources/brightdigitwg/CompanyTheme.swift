@@ -261,7 +261,7 @@ struct CompanyHTMLFactory: HTMLFactory {
     )
   }
 
-  func makeItemHTML(for item: Item<BrightDigit>, context: PublishingContext<BrightDigit>) throws -> HTML {
+  func makeItemHTML(for item: Item<BrightDigit>, context _: PublishingContext<BrightDigit>) throws -> HTML {
     HTML(
       .head(
         .meta(
@@ -279,14 +279,14 @@ struct CompanyHTMLFactory: HTMLFactory {
       .body(
         .headerNav(),
         .main(
-                            .article(
-                                .div(
-                                    .class("content"),
-                                    .contentBody(item.body)
-                                ),
-                                .span("Tagged with: ")
-                                //.tagList(for: item, on: context.site)
-                            )
+          .article(
+            .div(
+              .class("content"),
+              .contentBody(item.body)
+            ),
+            .span("Tagged with: ")
+            // .tagList(for: item, on: context.site)
+          )
         ),
         .footer(
           .div(
