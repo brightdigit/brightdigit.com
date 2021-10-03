@@ -126,13 +126,13 @@ let package = Package(
     "komondor": [
       "pre-push": [
         "swift test --enable-code-coverage --enable-test-discovery",
-        "swift run swift-test-codecov .build/debug/codecov/MistKit.json -v \(requiredCoverage)"
+        "swift run swift-test-codecov .build/debug/codecov/MistKit.json --minimum \(requiredCoverage)"
       ],
       "pre-commit": [
         "swift test --enable-code-coverage --enable-test-discovery --generate-linuxmain",
         "swift run swiftformat .",
         "swift run swiftlint autocorrect",
-        "swift run sourcedocs generate build -cra",
+//        "swift run sourcedocs generate build -cra",
         "git add .",
         "swift run swiftformat --lint .",
         "swift run swiftlint"
