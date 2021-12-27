@@ -31,7 +31,7 @@ build macos:
 deploy:
   only:
     - main
-    - feature/*
+    - /^feature\/*/
   stage: deploy
   image: brightdigit/publish-xml
   #environment:
