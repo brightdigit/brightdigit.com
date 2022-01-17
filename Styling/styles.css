@@ -754,14 +754,46 @@ body {
       }
       
     }
-    header > .hero > .featured {
-      @apply bg-bellow-200 mb-4 sm:mt-4 lg:max-w-sm;
-      & > header {
-        & > h3 {
-          @apply font-light text-xs mb-4 border-b-2 border-bellow-500;
+    header > .hero:only-child {
+      @apply sm:flex;
+    }
+    header > .hero {
+      & > .featured {
+        
+        @apply bg-bellow-200 mb-4 sm:mt-4 lg:max-w-sm;
+        & > header {
+          & > h3 {
+            @apply font-light text-xs mb-4 border-b-2 border-bellow-500;
+          }
+          & > img {
+            @apply object-cover md:max-h-60 lg:max-h-full;
+          }
         }
-        & > img {
-          @apply object-cover md:max-h-60 lg:max-h-full;
+        &:only-child {
+          @apply sm:flex sm:w-full lg:max-w-full;
+          & > header {
+            @apply sm:w-full sm:mr-4  lg:w-1/2;
+            & > img {
+              @apply sm:rounded-lg h-full object-cover;
+            }
+          }
+          h2 {
+            @apply mb-4 lg:text-xl xl:text-2xl;
+          }
+          & > footer {
+            @apply sm:hidden;
+          }
+          & > main {
+            @apply sm:flex-col sm:flex sm:mb-0;
+            & > main {
+              @apply sm:flex lg:text-base lg:font-thin xl:text-lg xl:leading-relaxed xl:tracking-wide mb-4 flex-grow;  
+            }
+            & > footer {
+              & > a:first-child {
+                @apply hidden;
+              }
+            }
+          }
         }
       }
     }
