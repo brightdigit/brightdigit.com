@@ -680,9 +680,9 @@ body#products {
 
 body {
   & > main.section {
-    @apply m-6;
+    @apply my-6;
     & > header {
-      @apply mb-8 border-b-2 border-bellow-500;
+      @apply mb-8 mx-6 border-b-2 border-bellow-500;
       & > section {
         h1 {
           @apply text-6xl leading-normal font-bold;
@@ -692,8 +692,8 @@ body {
         }
       }
       
-      & > .cta{
-        @apply flex mb-8;
+      & > .hero{
+        @apply flex flex-col sm:grid sm:grid-cols-2 sm:gap-4 mb-8 lg:flex-row;
         & > form {
           @apply w-full flex flex-col mt-4 pt-2  sm:flex-1;
           button {
@@ -723,25 +723,45 @@ body {
         }
       }
     }
-    & > .featured, & > section > ol > li {
-      @apply p-8 mb-8 bg-gray-100 rounded-lg  shadow-lg;
+    header > .hero > .featured, & > section > ol > li {
+      @apply p-8 mb-8 sm:mb-0 bg-gray-100 rounded-lg shadow-lg;
+     
       & > header {
+        @apply sm:flex flex-col;
         h2 {
-          @apply my-4 text-base font-normal;
+          @apply my-4 sm:mt-2 text-base font-normal font-bold;
         }
       }
       & > main {
-        @apply my-4 text-sm;
+        @apply my-4 sm:mt-0 text-sm;
       }
       & > footer {
         @apply text-xs;
       }
     }
-    & > .featured {
-      @apply bg-bellow-200;
+    & > section {
+      @apply mx-6;
+      & > ol {
+        @apply sm:grid sm:grid-cols-2 sm:gap-4 lg:grid-cols-3;  
+        & > li {
+          & > header {
+            
+            & > img {
+              @apply sm:flex sm:h-48 lg:h-60 object-cover;
+            }
+          }
+        }
+      }
+      
+    }
+    header > .hero > .featured {
+      @apply bg-bellow-200 mb-4 sm:mt-4 lg:max-w-sm;
       & > header {
         & > h3 {
           @apply font-light text-xs mb-4 border-b-2 border-bellow-500;
+        }
+        & > img {
+          @apply object-cover md:max-h-60 lg:max-h-full;
         }
       }
     }
