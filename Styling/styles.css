@@ -60,6 +60,9 @@ body > main > .hero  {
 
 body > main > .hero > main {
   @apply sm:flex sm:flex-row-reverse items-center;
+  h1 {
+    @apply text-6xl font-black leading-tight tracking-tight;
+  }
 }
 
 body > main > .hero > main a {
