@@ -393,9 +393,9 @@ body#services {
   & > main {
     @apply xl:container xl:mx-auto;
     & > header {
-      @apply m-6 pb-4 font-light text-lg tracking-tight leading-relaxed;    
+      @apply m-6 pb-4 text-2xl leading-relaxed;    
       h1 {
-        @apply text-5xl leading-tight font-bold tracking-tighter mt-4;
+        @apply text-6xl leading-tight font-bold tracking-tight mt-4;
       }
     }
     & > section {
@@ -441,6 +441,12 @@ body#services {
         }
         & > footer {
           @apply flex w-full mt-4 justify-items-stretch items-stretch sm:hidden;
+          a.button {
+            @apply _button w-full text-center;
+          }
+        }
+        & > footer {
+          @apply flex w-full mt-4 justify-items-stretch items-stretch;
           a.button {
             @apply _button w-full text-center;
           }
