@@ -21,7 +21,6 @@ body > header > nav {
   @apply flex items-center;
 }
 
-
 body > header > nav > ol{
   @apply flex;
 }
@@ -349,18 +348,22 @@ body#articles {
 }
 
 body#services {
-  h1 {
-    @apply text-2xl mb-4;
-  }
+
   h2{ 
     @apply text-lg font-normal mb-4;
   }
   & > main {
     @apply xl:container xl:mx-auto;
+    & > header {
+      @apply m-6 pb-4 text-2xl leading-relaxed;    
+      h1 {
+        @apply text-6xl leading-tight font-bold tracking-tight mt-4;
+      }
+    }
     & > section {
       @apply m-6 pb-4;    
       &.service {
-        @apply sm:flex sm:items-stretch md:items-center lg:border-2 lg:border-gray-50 lg:shadow-xl lg:rounded-lg lg:p-12;
+        @apply sm:flex sm:items-stretch md:items-center lg:border-2 border-b-2 border-gray-50 lg:shadow-xl lg:rounded-lg lg:p-12;
         & >  header {
           @apply mr-4 lg:mr-8 sm:mb-0 sm:w-5/12 justify-self-center flex-grow-0 flex-shrink sm:flex;
           img {
@@ -371,6 +374,12 @@ body#services {
           @apply flex-1;
           p {
             @apply lg:text-base;
+          }
+        }
+        & > footer {
+          @apply flex w-full mt-4 justify-items-stretch items-stretch;
+          a.button {
+            @apply _button w-full text-center;
           }
         }
       } 
