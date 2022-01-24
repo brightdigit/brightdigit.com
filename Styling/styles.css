@@ -96,6 +96,24 @@ body > main {
   }
 }
 
+body > main > .hero  {
+  @apply mx-6 xl:text-lg 2xl:text-xl;
+}
+
+body > main > .hero > main {
+  @apply sm:flex sm:flex-row-reverse items-center;
+  h1 {
+    @apply text-6xl font-black leading-tight tracking-tight;
+  }
+}
+
+body > main > .hero > main a {
+  @apply block;
+}
+
+body > main > .hero img{
+  @apply my-4 sm:w-1/2 sm:my-0;
+}
 
 
 
