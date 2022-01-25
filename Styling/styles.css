@@ -553,41 +553,12 @@ body#about-us {
    & > header {
      @apply m-6;
      & > h1 {
-       @apply text-5xl font-bold md:text-6xl lg:text-8xl;
+       @apply text-5xl font-bold;
      }
    }
-   
-    & > section {
-      @apply m-6 sm:my-12 flex flex-col md:flex md:flex-row sm:grid grid-cols-2 gap-4 place-items-stretch md:justify-items-stretch  md:items-stretch;
-      &:nth-of-type(even) {
-        @apply md:flex-row-reverse;
-      }
-      & > header {
-        @apply w-full flex-shrink  justify-center md:flex flex-1 lg:w-1/3;
-        img {
-        @apply sm:h-full object-cover place-self-stretch rounded-lg w-full h-full md:flex md:h-full;  
-        }
-      }
-      & > main {
-        @apply mt-4 sm:mt-0 place-self-center flex-1 lg:w-auto md:w-1/2 md:h-full flex-grow;
-
-        & > main {
-          @apply mt-2 font-thin lg:text-xl flex flex-col;
-          &:only-child {
-            @apply mt-0 text-xl lg:text-2xl;
-          }
-          p {
-            @apply my-2;
-          }
-          a.button {
-            @apply _button my-2 w-full text-center;
-          }
-          hr {
-            @apply my-2;
-          }
-        }
-      }
-    }
+   & > section {
+     @apply m-6;
+   }
  }
 }
 
