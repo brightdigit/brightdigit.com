@@ -23,6 +23,15 @@ public struct BrightDigitSite: Website {
     var youtubeID: String?
     var audioDuration: TimeInterval?
     var videoDuration: TimeInterval?
+    var isOpenSource: Bool?
+    var logo: String?
+    var product: String?
+    var github: String?
+    var style: ProductItem.ScreenshotStyle?
+    var screenshots: [String]?
+    var pressCoverage : [ProductItem.PressCoverage]?
+    var platforms: [String]?
+    var technologies: [String]?
   }
 
   // Update these properties to configure your website:

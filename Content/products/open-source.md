@@ -1,13 +1,11 @@
 ---
-issueNo: 1
-campaignID: 5610c42826
-featuredImage: https://gallery.mailchimp.com/cb3bba007ed171091f55c47f0/images/aef0b614-f83b-48e0-bacf-bccad5d32bcb.jpeg
-longArchiveURL: https://us12.campaign-archive.com/?u=cb3bba007ed171091f55c47f0&id=5610c42826
-newsletterTitle: BrightDigit Newsletter - January 2019
-title: 'BrightDigit Newsletter #1 - January 2019'
-date: 2019-01-05 12:08
-description: Happy New Year! We have a podcast episode on project estimation coming
-  out Tuesday and there's a lot going on with Apple and China.
+title: Spotify
+logo: /media/images/products/sample/logo.jpeg
+platforms: [iPhone,iPad,Apple Watch,Web,Mac]
+links:
+  product: https://google.com
+  github: https://github.com
+technologies: [iPhone,iPad,Apple Watch,Web,Mac]
 ---
 <li class="open-source">
         <section>

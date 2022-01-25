@@ -10,6 +10,7 @@ public extension BrightDigitSiteCommand {
       try BrightDigitSite().publish(using: [
         .optional(.copyResources()),
         .installPlugin(.splash(withClassPrefix: "")),
+        .installPlugin(.yamlAdapter())
         .addMarkdownFiles(),
         .sortItems(by: \.date, order: .descending),
 
