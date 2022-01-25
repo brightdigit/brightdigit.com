@@ -97,25 +97,31 @@ body > main {
 }
 
 body > main > .hero  {
-  @apply mx-6 xl:text-lg 2xl:text-xl;
+  @apply mx-6 xl:text-lg 2xl:text-xl mb-12;
 }
 
 body > main > .hero > main {
-  @apply sm:flex sm:flex-row-reverse items-center;
+  @apply flex flex-col items-center;
+  
   h1 {
-    @apply text-6xl font-black leading-tight tracking-tight;
+    @apply text-5xl font-black leading-normal tracking-tight  self-start w-1/2 flex;
+  }
+  & > footer {
+    @apply flex w-full;
+    & > a {
+      @apply _button w-full text-center;
+    }
   }
 }
 
-body > main > .hero > main a {
-  @apply block;
-}
 
 body > main > .hero img{
   @apply my-4 sm:w-1/2 sm:my-0;
 }
 
-
+body > main > .hero .text{
+  @apply my-4 sm:my-0 flex flex-col justify-between font-thin w-full;
+}
 
 body > main h2 {
   @apply font-black text-xl;
