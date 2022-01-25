@@ -9,15 +9,15 @@ enum Pages {
     "services": ServicesBuilder(),
     "contact-us": ContactBuilder(),
     "products": ProductsBuilder(),
-    "about-us": AboutBuilder()
+    "about-us": AboutBuilder(),
+    "products": ProductsBuilder()
   ]
 
   fileprivate static let sectionFactories: [String: SectionContentFactory] = [
     "newsletters": NewsletterItem.content,
     "articles": ArticleItem.content,
     "episodes": PodcastItem.content,
-    "tutorials": TutorialItem.content,
-    "products": ProductItem.content
+    "tutorials": TutorialItem.content
   ]
 
   static func page(forIndex index: Index, withContext context: PublishingContext<BrightDigitSite>) -> PageContent {
