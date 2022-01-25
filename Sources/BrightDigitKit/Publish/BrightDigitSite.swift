@@ -10,13 +10,12 @@ public struct BrightDigitSite: Website {
     case episodes
     case tutorials
     case newsletters
-    case products
   }
 
   public struct ItemMetadata: WebsiteItemMetadata {
     // Add any site-specific metadata that you want to use here.
     var featuredImage: String?
-    var date: Date?
+    var date: Date
     var longArchiveURL: String?
     var featured: Bool?
     var issueNo: Int?
