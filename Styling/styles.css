@@ -549,56 +549,17 @@ body#services {
 }
 
 body#about-us {
-  section#leo {
-    @apply p-6;
-    & > main {
-      @apply md:max-w-screen-sm lg:max-w-screen-md mx-auto;
-      & > header {
-        & > .salutation {
-          @apply font-light text-sm md:text-base md:mb-8;
-        }
-        & > main {
-          @apply flex flex-row my-4 items-center justify-center;
-          & > .profile-photo {
-            & > img {
-              @apply rounded-full object-scale-down h-32 mr-4 md:mr-8 lg:h-48 lg:mr-12 xl:mr-16;
-              max-width: 12em;
-            }
-          }
-          & > .info {
-            & > .name {
-              @apply text-lg font-bold sm:text-xl md:text-3xl lg:text-5xl xl:text-8xl;
-            }
-            & > .position {
-              @apply text-sm md:text-base font-light xl:text-xl;
-            }
-            & > .social {
-              @apply flex lg:flex-col lg:m-0 -m-2 md:text-xl lg:text-3xl mt-0 xl:text-5xl;
-              & > li {
-                & > a {
-                  @apply p-2 lg:px-0 xl:py-4 flex items-center;
-                  span {
-                    @apply font-light ml-0.5 lg:ml-2 xl:ml-4;
-                    font-size: 0.6em;                
-                  }
-                  span.name {
-                    @apply hidden;
-                  }
-
-                }
-              }
-            }
-          }
-        }
-      }
-      & > main {
-        @apply -my-2 lg:my-0;
-        & > p {
-          @apply py-2 text-sm tracking-tight md:tracking-normal sm:text-base lg:text-xl font-light lg:py-4;
-        }
-      }
-    }
-  }
+  & > main  {
+   & > header {
+     @apply m-6;
+     & > h1 {
+       @apply text-5xl font-bold;
+     }
+   }
+   & > section {
+     @apply m-6;
+   }
+ }
 }
 
 body#products {
