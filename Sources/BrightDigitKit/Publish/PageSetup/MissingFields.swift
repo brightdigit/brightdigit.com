@@ -5,6 +5,7 @@ enum MissingFields {
     case featuredImageURL
     case issueNo
     case archiveURL
+    case publishedDate
 
     static let typeName: String = "Newsletter"
     var fieldName: String {
@@ -16,6 +17,7 @@ enum MissingFields {
     case featuredImageURL
     case episodeNo
     case audioDuration
+    case publishedDate
     static let typeName: String = "PodcastEpisode"
     var fieldName: String {
       rawValue
@@ -24,6 +26,7 @@ enum MissingFields {
 
   enum ArticleField: String, MissingField {
     case featuredImageURL
+    case publishedDate
     static let typeName: String = "Article"
     var fieldName: String {
       rawValue
@@ -32,6 +35,7 @@ enum MissingFields {
 
   enum TutorialField: String, MissingField {
     case featuredImageURL
+    case publishedDate
     static let typeName: String = "Tutorial"
     var fieldName: String {
       rawValue

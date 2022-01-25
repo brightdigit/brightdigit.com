@@ -5,22 +5,6 @@ import Publish
 struct ProductItem: SectionItem {
   let description: String
   let title: String
-  let publishedDate: Date
-  let isFeatured: Bool
-
-  var featuredItemContent: [Node<HTML.BodyContext>] {
-    [
-      .header(
-        // .img(.src(featuredImageURL)),
-        .a(
-          .h2(.text(title))
-        )
-      ),
-      .main(
-        .text(description)
-      )
-    ]
-  }
 
   var itemContent: [Node<HTML.BodyContext>] {
     [
@@ -37,7 +21,7 @@ struct ProductItem: SectionItem {
       ),
       .footer(
         .a(
-          .text(PiHTMLFactory.itemFormatter.string(from: publishedDate))
+          .text("test")
         )
       )
     ]
@@ -51,7 +35,5 @@ struct ProductItem: SectionItem {
 
     title = item.title
     description = item.description
-    publishedDate = item.metadata.date
-    self.isFeatured = isFeatured
   }
 }
