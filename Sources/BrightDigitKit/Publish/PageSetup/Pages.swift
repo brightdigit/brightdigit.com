@@ -8,9 +8,7 @@ enum Pages {
   fileprivate static let pageBuilders: [String: AnyPageMainBuilder] = [
     "services": ServicesBuilder(),
     "contact-us": ContactBuilder(),
-    "products": ProductsBuilder(),
-    "about-us": AboutBuilder(),
-    "products": ProductsBuilder()
+    "products": ProductBuilder()
   ]
 
   fileprivate static let sectionFactories: [String: SectionContentFactory] = [
