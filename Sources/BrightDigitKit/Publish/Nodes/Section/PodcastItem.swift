@@ -241,10 +241,14 @@ struct PodcastItem: SectionItem {
       throw PiError.missingField(MissingFields.PodcastField.transistorID, item)
     }
 
+    guard let publishedDate = item.metadata.date else {
+      throw PiError.missingField(MissingFields.PodcastField.publishedDate, item)
+    }
+
     title = item.title
     description = item.description
     self.featuredImageURL = featuredImageURL
-    publishedDate = item.metadata.date
+    self.publishedDate = publishedDate
     self.episodeNo = episodeNo
     self.audioDuration = audioDuration
     videoDuration = item.metadata.videoDuration

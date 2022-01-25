@@ -89,10 +89,14 @@ struct NewsletterItem: SectionItem {
       throw PiError.missingField(MissingFields.NewsletterField.issueNo, item)
     }
 
+    guard let publishedDate = item.metadata.date else {
+      throw PiError.missingField(MissingFields.NewsletterField.publishedDate, item)
+    }
+
     title = item.title
     description = item.description
     self.featuredImageURL = featuredImageURL
-    publishedDate = item.metadata.date
+    self.publishedDate = publishedDate
     self.issueNo = issueNo
     self.archiveURL = archiveURL
     self.isFeatured = isFeatured
