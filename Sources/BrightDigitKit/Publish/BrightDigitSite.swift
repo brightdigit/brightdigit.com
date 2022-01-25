@@ -10,28 +10,18 @@ public struct BrightDigitSite: Website {
     case episodes
     case tutorials
     case newsletters
-    case products
   }
 
   public struct ItemMetadata: WebsiteItemMetadata {
     // Add any site-specific metadata that you want to use here.
     var featuredImage: String?
-    var date: Date?
+    var date: Date
     var longArchiveURL: String?
     var featured: Bool?
     var issueNo: Int?
     var youtubeID: String?
     var audioDuration: TimeInterval?
     var videoDuration: TimeInterval?
-    var isOpenSource: Bool?
-    var logo: String?
-    var product: String?
-    var github: String?
-    var style: ProductItem.ScreenshotStyle?
-    var screenshots: [String]?
-    var pressCoverage : [ProductItem.PressCoverage]?
-    var platforms: [String]?
-    var technologies: [String]?
   }
 
   // Update these properties to configure your website:

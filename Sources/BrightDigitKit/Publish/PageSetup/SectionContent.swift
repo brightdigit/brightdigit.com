@@ -16,12 +16,10 @@ struct SectionContent<SectionBuilderType: SectionBuilderProtocol>: PageContent {
   var main: [Node<HTML.BodyContext>] {
     [
       .class("section"),
-      .unwrap(builder.featuredItemContent) { featuredItemContent in
-        .section(
-          .class("featured"),
-          .forEach(featuredItemContent) { $0 }
-        )
-      },
+      .section(
+        .class("featured"),
+        .forEach(builder.featuredItem.featuredItemContent) { $0 }
+      ),
       .section(
         .ol(
           .forEach(builder.children) { .li(

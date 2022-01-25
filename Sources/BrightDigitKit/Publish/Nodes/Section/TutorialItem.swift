@@ -2,7 +2,7 @@ import Foundation
 import Plot
 import Publish
 
-struct TutorialItem: PostItem {
+struct TutorialItem: SectionItem {
   let slug: String
   let description: String
   let featuredImageURL: URL
@@ -53,14 +53,11 @@ struct TutorialItem: PostItem {
       throw PiError.missingField(MissingFields.TutorialField.featuredImageURL, item)
     }
 
-    guard let publishedDate = item.metadata.date else {
-      throw PiError.missingField(MissingFields.TutorialField.publishedDate, item)
-    }
     slug = item.path.string
     title = item.title
     description = item.description
     self.featuredImageURL = featuredImageURL
-    self.publishedDate = publishedDate
+    publishedDate = item.metadata.date
     self.isFeatured = isFeatured
   }
 }

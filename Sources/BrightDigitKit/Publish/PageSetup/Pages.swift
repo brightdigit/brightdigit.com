@@ -14,8 +14,7 @@ enum Pages {
     "newsletters": NewsletterItem.content,
     "articles": ArticleItem.content,
     "episodes": PodcastItem.content,
-    "tutorials": TutorialItem.content,
-    "products": ProductItem.content
+    "tutorials": TutorialItem.content
   ]
 
   static func page(forIndex index: Index, withContext context: PublishingContext<BrightDigitSite>) -> PageContent {

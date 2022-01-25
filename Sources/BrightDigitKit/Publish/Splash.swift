@@ -3,21 +3,6 @@ import Publish
 import Splash
 
 public extension Plugin {
-    static func yamlAdapter() -> Self {
-        Plugin(name: "YAML Adapter") { context in
-          context.markdownParser.addModifier(<#T##modifier: Modifier##Modifier#>)
-        }
-    }
-}
-
-public extension Modifier {
-    static func brightdigit() -> Self {
-
-      Modifier(target: .links
-    }
-}
-
-public extension Plugin {
   static func splash(withClassPrefix classPrefix: String) -> Self {
     Plugin(name: "Splash") { context in
       context.markdownParser.addModifier(
