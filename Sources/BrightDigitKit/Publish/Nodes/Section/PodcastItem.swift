@@ -1,7 +1,7 @@
 import Foundation
 import Plot
 import Publish
-struct PodcastItem: SectionItem {
+struct PodcastItem: PostItem {
   let description: String
   let episodeNo: Int
   let title: String
@@ -68,10 +68,14 @@ struct PodcastItem: SectionItem {
       throw PiError.missingField(MissingFields.PodcastField.audioDuration, item)
     }
 
+    guard let publishedDate = item.metadata.date else {
+      throw PiError.missingField(MissingFields.NewsletterField.publishedDate, item)
+    }
+
     title = item.title
     description = item.description
     self.featuredImageURL = featuredImageURL
-    publishedDate = item.metadata.date
+    self.publishedDate = publishedDate
     self.episodeNo = episodeNo
     self.audioDuration = audioDuration
     videoDuration = item.metadata.videoDuration
