@@ -12,7 +12,7 @@ extension Product.PressCoverage {
            .element(named: "figcaption", nodes: [
              .span(
                .class("name"),
-               .text("9To5Mac")
+               .text(pressCoverage.source)
              ),
              .element(named: "cite", text: PiHTMLFactory.itemFormatter.string(from: pressCoverage.date))
            ])
