@@ -5,7 +5,6 @@ extension Product {
     .init(
       title: "MistKit",
       description: """
-
       ## Swift Package for Service-Side & Command-Line Access to the Apple CloudKit framework
 
       Use MistKit for
