@@ -36,12 +36,16 @@ struct Product {
     case healthkit
     case heroku
     case postgreSQL
+    case swiftUI
+    case cloudkit
 
     static var mappedValues = [
       "Vapor",
       "HealthKit",
       "Heroku",
-      "PostgreSQL"
+      "PostgreSQL",
+      "SwiftUI",
+      "CloudKit"
     ]
   }
 
