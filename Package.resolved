@@ -65,6 +65,15 @@
         }
       },
       {
+        "package": "Options",
+        "repositoryURL": "https://github.com/BrightDigit/Options.git",
+        "state": {
+          "branch": null,
+          "revision": "ac181ab407ef0bc2860ea696498fc454e7626002",
+          "version": "0.2.0"
+        }
+      },
+      {
         "package": "PackageConfig",
         "repositoryURL": "https://github.com/shibapm/PackageConfig.git",
         "state": {
