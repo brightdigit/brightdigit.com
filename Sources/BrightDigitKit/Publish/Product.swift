@@ -67,7 +67,11 @@ struct Product {
   }
 
   static let all: [Product] = [
-    .heartwitch
+    .heartwitch,
+    .gbeat,
+    .speculid,
+    .orchardnest,
+    .mistkit
   ]
 
   // swiftlint:disable force_try
