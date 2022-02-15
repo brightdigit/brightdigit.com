@@ -17,6 +17,6 @@ extension Product {
       * And more!
       """, screenshots: [
         .at(path: "MistKitDemo.gif")
-      ], platforms: [.web], technologies: [.vapor, .cloudkit], productURL: "https://heartwitch.app/"
+      ], platforms: [.web], technologies: [.vapor, .cloudkit], productURL: "http://mistkit.in", githubRepoName: "MistKit"
     )
 }

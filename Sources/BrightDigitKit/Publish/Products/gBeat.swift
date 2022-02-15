@@ -13,5 +13,5 @@ extension Product {
       .at(path: "watch/class-start.png"),
       .at(path: "watch/join-class.png"),
       .at(path: "web/classes.png")
-    ], platforms: [.watchOS, .web], technologies: [.vapor, .healthkit, .heroku, .postgreSQL], productURL: "https://heartwitch.app/")
+    ], platforms: [.watchOS, .web], technologies: [.vapor, .healthkit, .heroku, .postgreSQL], productURL: "https://gbeat.com")
 }
