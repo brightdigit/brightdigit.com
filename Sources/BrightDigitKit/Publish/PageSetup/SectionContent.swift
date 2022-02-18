@@ -21,7 +21,17 @@ struct SectionContent<SectionBuilderType: SectionBuilderProtocol>: PageContent {
     [
       .class("section"),
 
-      headerNode,
+      newsLetterHeaderNode,
+
+      .header(
+        .section(
+          .class("hero"),
+          .section(
+            .class("featured"),
+            .forEach(builder.featuredItem.featuredItemContent) { $0 }
+          )
+        )
+      ),
 
       .section(
         .ol(
@@ -33,23 +43,16 @@ struct SectionContent<SectionBuilderType: SectionBuilderProtocol>: PageContent {
     ]
   }
 
-  var headerNode: Node<HTML.BodyContext> {
+  var newsLetterHeaderNode: Node<HTML.BodyContext> {
     if builder.section.id == .newsletters {
       return .header(
         .section(
-          .h1("NEWSLETTER!!")
+          .h1("Don't Let Your App", .em("Fall Behind")),
+          .p("\(Strings.Newsletter.featuredParagraph)")
         )
       )
     } else {
-      return .header(
-        .section(
-          .class("hero"),
-          .section(
-            .class("featured"),
-            .forEach(builder.featuredItem.featuredItemContent) { $0 }
-          )
-        )
-      )
+      return .p("") // an extra blank paragraph, if this isn't a newsletter
     }
   }
 }
