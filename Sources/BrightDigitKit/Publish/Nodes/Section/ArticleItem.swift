@@ -14,13 +14,22 @@ struct ArticleItem: SectionItem {
   var featuredItemContent: [Node<HTML.BodyContext>] {
     [
       .header(
-        .img(.src(featuredImageURL)),
+        .img(.src(featuredImageURL))
+      ),
+      .header(
         .a(
           .h2(.text(title))
         )
       ),
       .main(
         .text(description)
+      ),
+      .footer(
+        " published on ",
+        .span(
+          .class("published-date"),
+          .text(PiHTMLFactory.itemFormatter.string(from: publishedDate))
+        )
       )
     ]
   }
