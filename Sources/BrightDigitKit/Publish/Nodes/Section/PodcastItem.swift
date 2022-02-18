@@ -11,6 +11,7 @@ struct PodcastItem: SectionItem {
   let videoDuration: TimeInterval?
   let featuredImageURL: URL
   let isFeatured: Bool
+  let source: Item<BrightDigitSite>
 
   var featuredItemContent: [Node<HTML.BodyContext>] {
     [
@@ -26,7 +27,7 @@ struct PodcastItem: SectionItem {
     ]
   }
 
-  var itemContent: [Node<HTML.BodyContext>] {
+  var sectionItemContent: [Node<HTML.BodyContext>] {
     [
       .id("episode-\(episodeNo)"),
       .header(
@@ -46,10 +47,23 @@ struct PodcastItem: SectionItem {
     ]
   }
 
+  var pageTitle: String {
+    title
+  }
+
+  var pageBodyID: String? {
+    nil
+  }
+
+  var pageMainContent: [Node<HTML.BodyContext>] {
+    [.contentBody(source.body)]
+  }
+
   // swiftlint:disable:next force_try
   static let regex = try! NSRegularExpression(pattern: "^\\d+", options: [])
 
   init(item: Item<BrightDigitSite>) throws {
+    source = item
     let featuredImageURL = item.metadata.featuredImage.flatMap(URL.init(string:))
     let archiveURL = item.metadata.longArchiveURL.flatMap(URL.init(string:))
     let isFeatured = item.metadata.featured ?? false
