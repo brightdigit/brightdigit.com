@@ -16,19 +16,22 @@ struct ArticleItem: SectionItem {
       .header(
         .img(.src(featuredImageURL))
       ),
-      .header(
-        .a(
-          .h2(.text(title))
-        )
-      ),
       .main(
-        .text(description)
-      ),
-      .footer(
-        " published on ",
-        .span(
-          .class("published-date"),
-          .text(PiHTMLFactory.itemFormatter.string(from: publishedDate))
+        .header(
+          .a(
+            .h2(.text(title)),
+            .href(slug)
+          )
+        ),
+        .main(
+          .text(description)
+        ),
+        .footer(
+          " published on ",
+          .span(
+            .class("published-date"),
+            .text(PiHTMLFactory.itemFormatter.string(from: publishedDate))
+          )
         )
       )
     ]
