@@ -20,15 +20,9 @@ struct SectionContent<SectionBuilderType: SectionBuilderProtocol>: PageContent {
   var main: [Node<HTML.BodyContext>] {
     [
       .class("section"),
-      .header(
-        .section(
-          .class("hero"),
-          .section(
-            .class("featured"),
-            .forEach(builder.featuredItem.featuredItemContent) { $0 }
-          )
-        )
-      ),
+
+      headerNode,
+
       .section(
         .ol(
           .forEach(builder.children) { .li(
@@ -37,5 +31,25 @@ struct SectionContent<SectionBuilderType: SectionBuilderProtocol>: PageContent {
         )
       )
     ]
+  }
+
+  var headerNode: Node<HTML.BodyContext> {
+    if builder.section.id == .newsletters {
+      return .header(
+        .section(
+          .h1("NEWSLETTER!!")
+        )
+      )
+    } else {
+      return .header(
+        .section(
+          .class("hero"),
+          .section(
+            .class("featured"),
+            .forEach(builder.featuredItem.featuredItemContent) { $0 }
+          )
+        )
+      )
+    }
   }
 }
