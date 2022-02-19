@@ -1,4 +1,5 @@
 import Foundation
+import Publish
 
 protocol SectionLocation: Location {
   var sectionID: BrightDigitSite.SectionID { get }
