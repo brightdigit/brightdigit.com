@@ -40,12 +40,12 @@ struct PodcastItem: SectionItem {
           .class("length"),
           .div(
             .class("audio"),
-            .text(PiHTMLFactory.timeFormatter.string(from: audioDuration)!)
+            .text(PiHTMLFactory.formatTimeInterval(audioDuration))
           ),
           .unwrap(videoDuration) { videoDuration in
             .div(
               .class("video"),
-              .text(PiHTMLFactory.timeFormatter.string(from: videoDuration)!)
+              .text(PiHTMLFactory.formatTimeInterval(videoDuration))
             )
           }
         )
@@ -79,12 +79,12 @@ struct PodcastItem: SectionItem {
           .class("length"),
           .div(
             .class("audio"),
-            .text(PiHTMLFactory.timeFormatter.string(from: audioDuration)!)
+            .text(PiHTMLFactory.formatTimeInterval(audioDuration))
           ),
           .unwrap(videoDuration) { videoDuration in
             .div(
               .class("video"),
-              .text(PiHTMLFactory.timeFormatter.string(from: videoDuration)!)
+              .text(PiHTMLFactory.formatTimeInterval(videoDuration))
             )
           }
         )
@@ -122,12 +122,12 @@ struct PodcastItem: SectionItem {
           .class("length"),
           .div(
             .class("audio"),
-            .text(PiHTMLFactory.timeFormatter.string(from: audioDuration)!)
+            .text(PiHTMLFactory.formatTimeInterval(audioDuration))
           ),
           .unwrap(videoDuration) { videoDuration in
             .div(
               .class("video"),
-              .text(PiHTMLFactory.timeFormatter.string(from: videoDuration)!)
+              .text(PiHTMLFactory.formatTimeInterval(videoDuration))
             )
           }
         )
