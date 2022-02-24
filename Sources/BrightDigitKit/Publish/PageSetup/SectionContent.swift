@@ -23,16 +23,6 @@ struct SectionContent<SectionBuilderType: SectionBuilderProtocol>: PageContent {
 
       newsLetterHeaderNode,
 
-      .header(
-        .section(
-          .class("hero"),
-          .section(
-            .class("featured"),
-            .forEach(builder.featuredItem.featuredItemContent) { $0 }
-          )
-        )
-      ),
-
       .section(
         .ol(
           .forEach(builder.children) { .li(
@@ -43,6 +33,7 @@ struct SectionContent<SectionBuilderType: SectionBuilderProtocol>: PageContent {
     ]
   }
 
+  // I need to rename this, if it's a newsletter we'll have to do something special, vs if it's not it's organized differently
   var newsLetterHeaderNode: Node<HTML.BodyContext> {
     if builder.section.id == .newsletters {
       return .header(
@@ -52,7 +43,15 @@ struct SectionContent<SectionBuilderType: SectionBuilderProtocol>: PageContent {
         )
       )
     } else {
-      return .p("") // an extra blank paragraph, if this isn't a newsletter
+      return .header(
+        .section(
+          .class("hero"),
+          .section(
+            .class("featured"),
+            .forEach(builder.featuredItem.featuredItemContent) { $0 }
+          )
+        )
+      )
     }
   }
 }
