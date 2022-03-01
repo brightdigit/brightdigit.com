@@ -32,7 +32,20 @@ public extension Node where Context == HTML.BodyContext {
         .sectionForHero2()
       ),
       .footer(
-        .img(.src("https://via.placeholder.com/1920x1080.png"))
+        .video(
+          .attribute(named: "autoplay"),
+          .attribute(named: "muted"),
+          .attribute(named: "loop"),
+          .source(
+            .src("/media/iPhone.mov"),
+            .attribute(named: "type", value: "video/quicktime")
+          ),
+          .source(
+            .src("/media/iPhone.webm"),
+            .type(.webM)
+          )
+          
+        )
       )
     )
   }
@@ -58,7 +71,7 @@ public extension Node where Context == HTML.BodyContext {
     .section(
       .class("hero"),
       .header(
-        .img(.src("https://via.placeholder.com/1920x1080.png"))
+        .img(.src("/media/swift-heroes.jpg"))
       ),
       .main(
         .section(
