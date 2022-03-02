@@ -174,8 +174,11 @@ public extension Node where Context == HTML.ListContext {
   static func latestArticle(_ article: IndexArticle) -> Node {
     .li(
       .header(
-        .img(.src(article.featuredImageURL)),
-        .h3(.text(article.title)),
+        .a(
+          .href(article.url),
+          .img(.src(article.featuredImageURL)),
+          .h3(.text(article.title))
+        ),
         .ol(
           .forEach(article.tags) { tag in
             .li(.text(tag.string))
@@ -186,15 +189,18 @@ public extension Node where Context == HTML.ListContext {
         .p(.text(article.description))
       ),
       .footer(
-        .div(
-          .class("publishedAt"),
-          .text(
-            PiHTMLFactory.itemFormatter.string(from: article.publishedAt)
+        .a(
+          .href(article.url),
+          .div(
+            .class("publishedAt"),
+            .text(
+              PiHTMLFactory.itemFormatter.string(from: article.publishedAt)
+            )
+          ),
+          .div(
+            .class("readTime"),
+            .text("\(article.lengthInMinutes) mins")
           )
-        ),
-        .div(
-          .class("readTime"),
-          .text("\(article.lengthInMinutes) mins")
         )
       )
     )

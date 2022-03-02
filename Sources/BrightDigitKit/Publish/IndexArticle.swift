@@ -8,9 +8,14 @@ public protocol IndexArticle {
   var publishedAt: Date { get }
   var lengthInMinutes: Int { get }
   var featuredImageURL: URL { get }
+  var url: URL { get }
 }
 
 extension Item: IndexArticle where Site == BrightDigitSite {
+  public var url: URL {
+    URL(staticString: "/\(path)")
+  }
+
   public var publishedAt: Date {
     metadata.date
   }
