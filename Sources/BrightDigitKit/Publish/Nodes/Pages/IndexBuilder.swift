@@ -7,7 +7,6 @@ import Publish
 
 struct IndexBuilder: ContentBuilder {
   func main(forLocation _: Index, withContext context: PublishingContext<BrightDigitSite>) -> [Node<HTML.BodyContext>] {
-    
     [
       .mainHeader(),
       .sectionForServices(),
@@ -45,7 +44,6 @@ public extension Node where Context == HTML.BodyContext {
             .src("/media/iPhone.webm"),
             .type(.webM)
           )
-          
         )
       )
     )
@@ -125,11 +123,11 @@ public extension Node where Context == HTML.BodyContext {
 
   // MARK: - Latest Articles
 
-  static func sectionForLatestArticles(basedOn context: PublishingContext<BrightDigitSite>) -> Node {
+  static func sectionForLatestArticles(basedOn _: PublishingContext<BrightDigitSite>) -> Node {
 //    let latestArticles = context.sections.compactMap{
 //      $0.items.first
 //    }.map{ item
-//      
+//
 //    }
     .section(
       .id("posts"),
