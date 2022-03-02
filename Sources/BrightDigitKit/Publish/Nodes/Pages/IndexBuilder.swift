@@ -1,36 +1,8 @@
 import Foundation
-import LoremSwiftum
 import Plot
 import Publish
 
 // MARK: - BodyContext
-
-public protocol IndexArticle {
-  var title: String { get }
-  var tags: [Tag] { get }
-  var description: String { get }
-  var publishedAt: Date { get }
-  var lengthInMinutes: Int { get }
-  var featuredImageURL: URL { get }
-}
-
-extension Item: IndexArticle where Site == BrightDigitSite {
-  public var publishedAt: Date {
-    metadata.date
-  }
-
-  public var lengthInMinutes: Int {
-    if let mediaDuration = metadata.videoDuration ?? metadata.audioDuration,
-       self.sectionID == .episodes {
-      return Int(mediaDuration / 60.0)
-    }
-    return readingTime.minutes
-  }
-
-  public var featuredImageURL: URL {
-    URL(staticString: metadata.featuredImage)
-  }
-}
 
 struct IndexBuilder: ContentBuilder {
   func main(forLocation _: Index, withContext context: PublishingContext<BrightDigitSite>) -> [Node<HTML.BodyContext>] {
@@ -160,7 +132,7 @@ public extension Node where Context == HTML.BodyContext {
       ),
       .ol(
         .forEach(latestArticles) { article in
-          .loremIpsumArticle(article)
+          .latestArticle(article)
         }
       )
     )
@@ -199,7 +171,7 @@ public extension Node where Context == HTML.ListContext {
     )
   }
 
-  static func loremIpsumArticle(_ article: IndexArticle) -> Node {
+  static func latestArticle(_ article: IndexArticle) -> Node {
     .li(
       .header(
         .img(.src(article.featuredImageURL)),
