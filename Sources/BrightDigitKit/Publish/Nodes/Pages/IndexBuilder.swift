@@ -6,12 +6,13 @@ import Publish
 // MARK: - BodyContext
 
 struct IndexBuilder: ContentBuilder {
-  func main(forLocation _: Index, withContext _: PublishingContext<BrightDigitSite>) -> [Node<HTML.BodyContext>] {
+  func main(forLocation _: Index, withContext context: PublishingContext<BrightDigitSite>) -> [Node<HTML.BodyContext>] {
+    
     [
       .mainHeader(),
       .sectionForServices(),
       .sectionForTestimonials(),
-      .sectionForLatestArticles(),
+      .sectionForLatestArticles(basedOn: context),
       .sectionForNewsletterCTA()
     ]
   }
@@ -117,19 +118,19 @@ public extension Node where Context == HTML.BodyContext {
         .h2("Testimonials")
       ),
       .ol(
-        .loremIpsumTestimonial(),
-        .loremIpsumTestimonial(),
-        .loremIpsumTestimonial(),
-        .loremIpsumTestimonial(),
-        .loremIpsumTestimonial(),
-        .loremIpsumTestimonial()
+        .forEach(Testimonial.all, Testimonial.listItem)
       )
     )
   }
 
   // MARK: - Latest Articles
 
-  static func sectionForLatestArticles() -> Node {
+  static func sectionForLatestArticles(basedOn context: PublishingContext<BrightDigitSite>) -> Node {
+//    let latestArticles = context.sections.compactMap{
+//      $0.items.first
+//    }.map{ item
+//      
+//    }
     .section(
       .id("posts"),
       .header(
@@ -174,21 +175,6 @@ public extension Node where Context == HTML.ListContext {
       .main(
         .p(.text(paragraph))
       )
-    )
-  }
-
-  static func loremIpsumTestimonial() -> Node {
-    .li(
-      .element(named: "figure", nodes: [.blockquote(
-        .p(
-          .text(Lorem.sentences(2))
-        )
-      ), .element(named: "figcaption", nodes: [
-        .text("-"),
-        .text(Lorem.fullName),
-        .text(", "),
-        .element(named: "cite", nodes: [.text(Lorem.title)])
-      ])])
     )
   }
 
