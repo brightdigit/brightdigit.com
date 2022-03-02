@@ -24,7 +24,7 @@ public extension Node where Context == HTML.BodyContext {
       .class("item-list"),
       .forEach(items) { item in
         .li(.article(
-          .img(.src(item.metadata.featuredImage ?? "http://placeimg.com/800/450/tech/\(UUID().uuidString)")),
+          .img(.src(item.metadata.featuredImage)),
           .h2(.a(
             .href(item.path),
             .text(item.title)

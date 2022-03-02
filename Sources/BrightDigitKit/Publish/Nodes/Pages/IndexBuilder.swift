@@ -5,6 +5,33 @@ import Publish
 
 // MARK: - BodyContext
 
+public protocol IndexArticle {
+  var title: String { get }
+  var tags: [Tag] { get }
+  var description: String { get }
+  var publishedAt: Date { get }
+  var lengthInMinutes: Int { get }
+  var featuredImageURL: URL { get }
+}
+
+extension Item: IndexArticle where Site == BrightDigitSite {
+  public var publishedAt: Date {
+    metadata.date
+  }
+
+  public var lengthInMinutes: Int {
+    if let mediaDuration = metadata.videoDuration ?? metadata.audioDuration,
+       self.sectionID == .episodes {
+      return Int(mediaDuration / 60.0)
+    }
+    return readingTime.minutes
+  }
+
+  public var featuredImageURL: URL {
+    URL(staticString: metadata.featuredImage)
+  }
+}
+
 struct IndexBuilder: ContentBuilder {
   func main(forLocation _: Index, withContext context: PublishingContext<BrightDigitSite>) -> [Node<HTML.BodyContext>] {
     [
@@ -123,22 +150,18 @@ public extension Node where Context == HTML.BodyContext {
 
   // MARK: - Latest Articles
 
-  static func sectionForLatestArticles(basedOn _: PublishingContext<BrightDigitSite>) -> Node {
-//    let latestArticles = context.sections.compactMap{
-//      $0.items.first
-//    }.map{ item
-//
-//    }
-    .section(
+  static func sectionForLatestArticles(basedOn context: PublishingContext<BrightDigitSite>) -> Node {
+    let latestArticles = context.sections.compactMap(\.items.first)
+
+    return .section(
       .id("posts"),
       .header(
         .h2("Latest")
       ),
       .ol(
-        .loremIpsumArticle(),
-        .loremIpsumArticle(),
-        .loremIpsumArticle(),
-        .loremIpsumArticle()
+        .forEach(latestArticles) { article in
+          .loremIpsumArticle(article)
+        }
       )
     )
   }
@@ -176,31 +199,30 @@ public extension Node where Context == HTML.ListContext {
     )
   }
 
-  static func loremIpsumArticle() -> Node {
+  static func loremIpsumArticle(_ article: IndexArticle) -> Node {
     .li(
       .header(
-        .img(.src("http://placeimg.com/200/150/tech/\(UUID().uuidString)")),
-        .h3(.text(Lorem.title)),
+        .img(.src(article.featuredImageURL)),
+        .h3(.text(article.title)),
         .ol(
-          .li(.text(Lorem.word))
-        ),
-        .ol(
-          .group(
-            (1 ... Int.random(in: 1 ... 3)).map { _ in Lorem.word }.map { .text($0) }.map { .li($0) }
-          )
+          .forEach(article.tags) { tag in
+            .li(.text(tag.string))
+          }
         )
       ),
       .main(
-        .p(.text(Lorem.sentences(2)))
+        .p(.text(article.description))
       ),
       .footer(
         .div(
           .class("publishedAt"),
-          .text("Feb 2, 2021") // Date(timeIntervalSinceNow: .random(in: 1.365) * 86400.0)
+          .text(
+            PiHTMLFactory.itemFormatter.string(from: article.publishedAt)
+          )
         ),
         .div(
           .class("readTime"),
-          .text("4 mins read") // Date(timeIntervalSinceNow: .random(in: 1.365) * 86400.0)
+          .text("\(article.lengthInMinutes) mins")
         )
       )
     )

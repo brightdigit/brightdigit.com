@@ -25,6 +25,7 @@ let package = Package(
     // .package(url: /* package url */, from: "1.0.0"),
     .package(name: "Publish", url: "https://github.com/johnsundell/publish.git", from: "0.6.0"),
     .package(url: "https://github.com/JohnSundell/Splash", from: "0.15.0"),
+    .package(name: "ReadingTimePublishPlugin", url: "https://github.com/alexito4/ReadingTimePublishPlugin", from: "0.2.0"),
 
     .package(url: "https://github.com/BrightDigit/SwiftTube.git", from: "0.2.0-beta.1"),
     .package(url: "https://github.com/BrightDigit/Spinetail.git", from: "0.2.0-beta.1"),
@@ -50,6 +51,7 @@ let package = Package(
     ),
     .target(name: "BrightDigitKit",
             dependencies: ["SyndiKit", "Publish", "Splash", "LoremSwiftum", "Kanna", "MarkdownGenerator", "Yams",
+                           "ReadingTimePublishPlugin",
                            "SwiftTube", "Spinetail", "Options",
                            .product(name: "ArgumentParser", package: "swift-argument-parser")]),
     .testTarget(
