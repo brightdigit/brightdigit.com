@@ -14,4 +14,8 @@ public struct MockContent: PageContent {
       .text(text)
     ]
   }
+
+  public var bodyClasses: [String] {
+    []
+  }
 }
