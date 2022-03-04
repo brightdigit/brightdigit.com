@@ -31,23 +31,23 @@ public extension Node where Context == HTML.BodyContext {
               .data(named: "netlify", value: "true"),
               .div(
                 .div(
-                  .input(.type(.text), .placeholder("Leo")),
+                  .input(.type(.text), .name("first-name"), .placeholder("Leo")),
                   .label("First Name")
                 ),
                 .div(
-                  .input(.type(.text), .placeholder("Dion")),
+                  .input(.type(.text), .name("last-name"), .placeholder("Dion")),
                   .label("Last Name")
                 )
               ),
               .div(
                 .div(
-                  .input(.type(.text), .placeholder("leo@brightdigit.com")),
+                  .input(.type(.text), .name("email"), .placeholder("leo@brightdigit.com")),
                   .label("Email")
                 )
               ),
               .div(
                 .div(
-                  .textarea(.placeholder("You Message Here"))
+                  .textarea(.placeholder("You Message Here"), .name("message"))
                 )
               ),
               .div(
