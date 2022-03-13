@@ -2,7 +2,7 @@ import Foundation
 import Plot
 import Publish
 
-struct ArticleItem: SectionItem {
+struct PostItem: SectionItem {
   let slug: String
   let description: String
   let featuredImageURL: URL
@@ -13,35 +13,36 @@ struct ArticleItem: SectionItem {
   let isFeatured: Bool
 
   var featuredItemContent: Node<HTML.BodyContext> {
-    .header(
-      .section(
-        .class("hero"),
+      .header(
         .section(
-          .class("featured"),
-          .header(
-            .img(.src(featuredImageURL))
-          ),
-          .main(
+          .class("hero"),
+          .section(
+            .class("featured"),
             .header(
-              .a(
-                .h2(.text(title))
-              )
+              .img(.src(featuredImageURL))
             ),
             .main(
-              .text(description)
-            ),
-            .footer(
-              " published on ",
-              .span(
-                .class("published-date"),
-                .text(PiHTMLFactory.itemFormatter.string(from: publishedDate))
+              .header(
+                .a(
+                  .h2(.text(title))
+                )
+              ),
+              .main(
+                .text(description)
+              ),
+              .footer(
+                " published on ",
+                .span(
+                  .class("published-date"),
+                  .text(PiHTMLFactory.itemFormatter.string(from: publishedDate))
+                )
               )
             )
           )
         )
       )
-    )
-  }
+    }
+
 
   var sectionItemContent: [Node<HTML.BodyContext>] {
     [
@@ -88,3 +89,5 @@ struct ArticleItem: SectionItem {
     self.isFeatured = isFeatured
   }
 }
+
+typealias ArticleItem = PostItem

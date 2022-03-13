@@ -12,7 +12,7 @@ enum Pages {
 
   fileprivate static let sectionFactories: [String: SectionContentFactory.Type] = [
     "newsletters": NewsletterItem.self,
-    "articles": ArticleItem.self,
+    "articles": PostItem.self,
     "episodes": PodcastItem.self,
     "tutorials": TutorialItem.self
   ]
