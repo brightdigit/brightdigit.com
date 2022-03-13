@@ -79,41 +79,24 @@ here is how:
 1.  In your favorite editor, open the file: 
 
 <!-- -->
-
+```
     /Applications/Xcode.app/Contents/PlugIns/Xcode3Core.ideplugin/Contents/SharedSupport/Developer/Library/Xcode/Plug-ins/XCLanguageSupport.xcplugin/Contents/Resources/Swift.xcspec
+```
 
 1.  Find the section with SupportedLanguage
 
 <!-- -->
-
-            SupportedLanguageVersions = (  
-                3.0,             
-                4.0,
-                 4.2      
-            );         
-            LanguageVersionDisplayNames = {             
-                3.0 = "Swift 3";             
-                4.0 = "Swift 4";             
-                4.2 = "Swift 4.2";       
-            }; 
+```
+            SupportedLanguageVersions = (
+```
 
 1.  Add 5.0 as a ***SupportedLanguageVersions*** and add a label for it
     under ***LanguageVersionDisplayNames*** (such as "5.0-dev")
 
 <!-- -->
-
-            SupportedLanguageVersions = (  
-                3.0,             
-                4.0,
-                 4.2,
-                 5.0         
-            );         
-            LanguageVersionDisplayNames = {             
-                3.0 = "Swift 3";             
-                4.0 = "Swift 4";             
-                4.2 = "Swift 4.2";             
-                5.0 = "Swift 5.0-dev";         
-            }; 
+```
+            SupportedLanguageVersions = (
+```
 
 Now all you'll need to do is select the SWIFT\_VERSION as the display
 name you have set up for Swift 5.0. Now you are using both the ***New

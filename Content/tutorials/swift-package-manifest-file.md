@@ -46,9 +46,10 @@ to file new and Swift package to create a package in Xcode.
 Besides Xcode, you can also create one via the command line as well.
 Assuming you have Xcode or Swift installed on your machine, you could
 simply run:
-
+```
     > mkdir New-Package
     > swift package init
+```
 
 By default, it'll use the directory name for the name of your package.
 Otherwise you can customize the name with the command line option

@@ -62,8 +62,9 @@ Some idioms denote their purpose is for App Store:
 
 App Icons contain the same information as an Image Set with a few
 particular properties for app icons on certain devices:
-
-    ... {   "size" : "24x24",   "idiom" : "watch",   "scale" : "2x",   "role" : "notificationCenter",   "subtype" : "38mm" }, ... 
+```
+    ...{  "size" : "24x24",  "idiom" : "watch",  "scale" : "2x",  "role" : "notificationCenter",  "subtype" : "38mm"},...
+```
 
 -   `size` the size of the image file in points, this designates whether
     the image

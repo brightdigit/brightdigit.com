@@ -21,7 +21,8 @@ struct PostItem: SectionItem {
         .header(
           .a(
             .h2(.text(title)),
-            .href(slug)
+
+            .href(source.path)
           )
         ),
         .main(
@@ -44,6 +45,7 @@ struct PostItem: SectionItem {
       .header(
         .img(.src(featuredImageURL)),
         .a(
+          .href(source.path),
           .h2(.text(title))
         )
       ),
@@ -83,5 +85,3 @@ struct PostItem: SectionItem {
     self.isFeatured = isFeatured
   }
 }
-
-typealias ArticleItem = PostItem

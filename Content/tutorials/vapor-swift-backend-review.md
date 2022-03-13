@@ -155,12 +155,13 @@ a title has an *é*, that result won’t show up. In spite of this, there
 is code in PostgreSQL to *unaccent* a string, such as there is a way to
 do lower or upper case transformation. Having adding the necessary
 functions, I am able to call the function with Fluent’s API:
-
-    let columnId = PostgreSQLColumnIdentifier.column("Game", "title")
-    let column = PostgreSQLExpression.column(columnId)
-    let arg = GenericSQLFunctionArgument<PostgreSQLExpression>.expression(column)
-    let args : [GenericSQLFunctionArgument<PostgreSQLExpression>] = [arg]
-    let expression = PostgreSQLExpression.function("unaccent", args)
+```
+let columnId = PostgreSQLColumnIdentifier.column("Game", "title")
+let column = PostgreSQLExpression.column(columnId)
+let arg = GenericSQLFunctionArgument<PostgreSQLExpression>.expression(column)
+let args : [GenericSQLFunctionArgument<PostgreSQLExpression>] = [arg]
+let expression = PostgreSQLExpression.function("unaccent", args)
+```
 
 As shown above, this may not be ideal, but it works. In addition, you
 always have access to lower level, direct SQL code using the Database

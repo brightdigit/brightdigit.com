@@ -68,12 +68,14 @@ compiled libraries themselves.
 After installing the libraries using HomeBrew, copy the directories for
 Cairo and librsvg to your project folder. **HomeBrew stores its
 applications and libraries at:**
-
+```
     /usr/local/Cellar
+```
 
 Therefore, **Cairo**, for instance, would be located at:
-
+```
     /usr/local/Cellar/cairo
+```
 
 Once it's copied to your project, there are three spots the files need
 to be under **build phases:**
@@ -96,8 +98,9 @@ under build phases in your Xcode projec**t.
 With your C++ libraries linked and embedded, you run the app and it
 works without a hitch. So then you archive and package your product and
 send it off for someone to run and they get something like this:
-
+```
     dyld: Library not loaded: @loader _path/../lib/libintl.8.dylib
+```
 
 **Unfortunatley libraries like Cairo and librsvg, often have
 dependencies of their own which are required.** However there are a few
@@ -121,7 +124,7 @@ commands to help with this:
 Firstly we need to make sure we've included all the dependencies in your
 App by adding the dynamic libraries described by `otool -L`. For
 instance if we ran `otool -L` on the Cairo library we get this:
-
+```
     $ otool -L libcairo.2.dylib
     /usr/local/Cellar/cairo/1.14.12/lib/libcairo.2.dylib:
         /usr/local/opt/cairo/lib/libcairo.2.dylib (compatibility version 11403.0.0, current version 11403.12.0)
@@ -135,12 +138,13 @@ instance if we ran `otool -L` on the Cairo library we get this:
         /System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation (compatibility version 150.0.0, current version 1450.16.0)
         /System/Library/Frameworks/CoreGraphics.framework/Versions/A/CoreGraphics (compatibility version 64.0.0, current version 1129.5.0)
         /System/Library/Frameworks/CoreText.framework/Versions/A/CoreText (compatibility version 1.0.0, current version 1.0.0)
+```
 
 Therefore, we see Cairo requires a few libraries like *pixman*.
 Thankfully, **we can get the HomeBrew dependency tree by using the
 command**  
 `brew deps —tree`:
-
+```
     $ brew deps -tree cairo
     fontconfig
     freetype
@@ -150,6 +154,7 @@ command**
     libpng
     pcre
     pixman
+```
 
 Thankfully now, if we are missing *pixman* on our development machine,
 we can install it using `brew install pixman` and then copy the HomeBrew
@@ -185,7 +190,7 @@ dependencies, it will need to do the following:
 6.  And update the search path to use `@rpath`
 
 Here is the result:
-
+```
     #!/bin/sh
 
     LIBS=`otool -L "$1" | grep "/opt\|Cellar" | awk -F' ' '{ print $1 }'`
@@ -205,12 +210,14 @@ Here is the result:
           install_name_tool -change $dependency @rpath/`basename $dependency` "$dylib"
         done
     done
+```
 
 Let’s break this down...
 
 ##### Breaking Down Updating Dynamic Libraries
-
+```
     LIBS=`otool -L "$1" | grep "/opt\|Cellar" | awk -F' ' '{ print $1 }'`
+```
 
 1.  Look for the dependencies using `otool -L` which are not system
     installed  
@@ -222,11 +229,12 @@ Let’s break this down...
     results into a format we can use in a for loop.
 
 <!-- -->
-
+```
     for lib in $LIBS; do
       install_name_tool -id @rpath/`basename $lib` "`dirname $1`/Frameworks/`basename $lib`"
       install_name_tool -change $lib @rpath/`basename $lib` "$1"
     done
+```
 
 1.  Update the *id* of each dynamic library and the path to use @rpath
     which is the run-time search path the application uses.  
@@ -235,34 +243,38 @@ Let’s break this down...
     `@rpath`.
 
 <!-- -->
-
+```
     FRAMEWORKS_FOLDER_PATH="`dirname $1`/Frameworks/"
     deps=`ls "$FRAMEWORKS_FOLDER_PATH" | awk -F' ' '{ print $1 }'`
     for lib in $deps; do
+```
 
 1.  Go through each file in our `Frameworks` folder and…
 
 <!-- -->
-
+```
       install_name_tool -id @rpath/`basename $lib` "`dirname $1`/Frameworks/`basename $lib`"
       install_name_tool -change $lib @rpath/`basename $lib` "$1"
+```
 
 1.  Again update the *id* as well as the path to use `@rpath`
 
 <!-- -->
-
+```
       dylib="`dirname $1`/Frameworks/`basename $lib`"
       deps=`otool -L "$dylib" | grep "/opt\|Cellar" | awk -F' ' 
+```
 
 1.  Use `otool -L` to look for each dependency of that dependency  
     Calculate the path to the dependency and run `otool -L` to get its
     dependencies.
 
 <!-- -->
-
+```
     for dependency in $deps; do
           install_name_tool -change $dependency @rpath/`basename $dependency` "$dylib"
         done
+```
 
 1.  And update the search path to use `@rpath`
 
