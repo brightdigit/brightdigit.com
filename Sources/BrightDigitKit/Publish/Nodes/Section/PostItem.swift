@@ -2,7 +2,7 @@ import Foundation
 import Plot
 import Publish
 
-struct ArticleItem: SectionItem {
+struct PostItem: SectionItem {
   let slug: String
   let description: String
   let featuredImageURL: URL
@@ -83,3 +83,5 @@ struct ArticleItem: SectionItem {
     self.isFeatured = isFeatured
   }
 }
+
+typealias ArticleItem = PostItem

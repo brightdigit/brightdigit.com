@@ -15,6 +15,8 @@ struct IndexBuilder: ContentBuilder {
     ]
   }
 
+  var bodyClasses: [String] { [] }
+
   typealias LocationType = Index
 }
 
