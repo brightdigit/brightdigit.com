@@ -16,6 +16,7 @@ struct NewsletterItem: SectionItem {
   var featuredItemContent: [Node<HTML.BodyContext>] {
     [
       .header(
+        .h3("Featured issue"),
         .img(.src(featuredImageURL)),
         .a(
           .href(archiveURL),

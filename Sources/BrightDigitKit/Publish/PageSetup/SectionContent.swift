@@ -58,7 +58,9 @@ struct SectionContent<SectionBuilderType: SectionBuilderProtocol>: PageContent {
             .div(
               .h3("Be the first to know:"),
               .ol(
-                .li("When we publish new content", .b(" new content "), "on building better apps on our blog or podcast.")
+                .li("When we publish", .b(" new content "), "on building better apps on our blog or podcast."),
+                .li("Details about", .b(" upcoming events and conferences "), "Leo is speaking at."),
+                .li("About the", .b(" latest developments "), "in the world of Swift and Apple software, and how they can help you.")
               )
             )
           )
