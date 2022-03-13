@@ -21,7 +21,7 @@ struct SectionContent<SectionBuilderType: SectionBuilderProtocol>: PageContent {
     [
       .class("section"),
 
-      headerNode,
+      featuredNode,
 
       .section(
         .ol(
@@ -33,7 +33,7 @@ struct SectionContent<SectionBuilderType: SectionBuilderProtocol>: PageContent {
     ]
   }
   
-  var headerNode: Node<HTML.BodyContext> {
+  var featuredNode: Node<HTML.BodyContext> {
     return .header(
       .section(
         .h1("Don't Let Your App", .em("Fall Behind")),
@@ -41,36 +41,41 @@ struct SectionContent<SectionBuilderType: SectionBuilderProtocol>: PageContent {
       ),
       .section(
         .class("hero"),
-        .form(
-          .div(
-            .div(
-              .input(.type(.text), .placeholder("leo@brightdigit.com")),
-              .label("Email")
-            )
-          ),
-          .div(
-            .div(
-              .button("Sign me up!")
-            )
-          ),
-          .div(
-            .class("message"),
-            .div(
-              .h3("Be the first to know:"),
-              .ol(
-                .li("When we publish", .b(" new content "), "on building better apps on our blog or podcast."),
-                .li("Details about", .b(" upcoming events and conferences "), "Leo is speaking at."),
-                .li("About the", .b(" latest developments "), "in the world of Swift and Apple software, and how they can help you.")
-              )
-            )
-          )
-        ),
+        
+        formNode,
+        
         .section(
           .class("featured"),
           .forEach(builder.featuredItem.featuredItemContent) { $0 }
         )
       )
     )
-    
+  }
+  
+  var formNode: Node<HTML.BodyContext> {
+    .form(
+      .div(
+        .div(
+          .input(.type(.text), .placeholder("leo@brightdigit.com")),
+          .label("Email")
+        )
+      ),
+      .div(
+        .div(
+          .button("Sign me up!")
+        )
+      ),
+      .div(
+        .class("message"),
+        .div(
+          .h3("Be the first to know:"),
+          .ol(
+            .li("When we publish", .b(" new content "), "on building better apps on our blog or podcast."),
+            .li("Details about", .b(" upcoming events and conferences "), "Leo is speaking at."),
+            .li("About the", .b(" latest developments "), "in the world of Swift and Apple software, and how they can help you.")
+          )
+        )
+      )
+    )
   }
 }
