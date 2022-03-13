@@ -217,7 +217,7 @@ in your app, you’re exposing it to the risk of bugs or outright failure
 if the 3rd party ever decides to shut down or has not been properly
 upgraded and maintained themselves.
 
-https://www.youtube.com/watch?v=BXePggcWpuE
+> youtube https://www.youtube.com/watch?v=BXePggcWpuE
 
 If you are going to use a 3rd-party library or tool, make sure you spend
 time weighing the costs to your app should it fail against the benefits
