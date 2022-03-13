@@ -84,25 +84,26 @@ first time the app is run), the permission screen is shown.**
 `completion`  closure is where you'd begin to interact with the user and
 begin queries for data. Let’s take a look at how to properly with
 request authorization.
-
-    if HKHealthStore.isHealthDataAvailable() {
-      let healthStore = HKHealthStore()
-      let heartRateQuantityType = HKObjectType.quantityType(forIdentifier: .heartRate)!
-      let allTypes = Set([HKObjectType.workoutType(),
-                          heartRateQuantityType
-        ])
-      healthStore.requestAuthorization(toShare: nil, read: allTypes) { (result, error) in
-        if let error = error {
-          // deal with the error
-          return
-        }
-        guard result else {
-          // deal with the failed request 
-          return
-        }
-        // begin any necessary work if needed
-      }
+```
+if HKHealthStore.isHealthDataAvailable() {
+  let healthStore = HKHealthStore()
+  let heartRateQuantityType = HKObjectType.quantityType(forIdentifier: .heartRate)!
+  let allTypes = Set([HKObjectType.workoutType(),
+                      heartRateQuantityType
+    ])
+  healthStore.requestAuthorization(toShare: nil, read: allTypes) { (result, error) in
+    if let error = error {
+      // deal with the error
+      return
     }
+    guard result else {
+      // deal with the failed request 
+      return
+    }
+    // begin any necessary work if needed
+  }
+}
+```
 
 ## Conclusion
 
@@ -111,9 +112,9 @@ and health app.
 
 -   `HKObjectType` - the base class for HealthKit data.
 -   `HKHealthStore` - the access point for requesting authorization to
-    read and data.
+read and data.
 -   `.requestAuthoriation(toShare:, read:, completion:)` - requests
-    authorization of what data to read and write on a `HKHealthStore`
-    object.
+authorization of what data to read and write on a `HKHealthStore`
+object.
 -   When any change is made to the authorization requested, the
-    permission sheet will show.
+permission sheet will show.

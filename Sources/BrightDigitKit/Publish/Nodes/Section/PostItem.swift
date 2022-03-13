@@ -44,12 +44,14 @@ struct PostItem: SectionItem {
     }
 
 
+
   var sectionItemContent: [Node<HTML.BodyContext>] {
     [
       .id("post-\(slug)"),
       .header(
         .img(.src(featuredImageURL)),
         .a(
+          .href(source.path),
           .h2(.text(title))
         )
       ),
@@ -89,5 +91,3 @@ struct PostItem: SectionItem {
     self.isFeatured = isFeatured
   }
 }
-
-typealias ArticleItem = PostItem

@@ -1,6 +1,7 @@
 import Foundation
 import Plot
 import Publish
+import SplashPublishPlugin
 
 // This type acts as the configuration for your website.
 public struct BrightDigitSite: Website {
