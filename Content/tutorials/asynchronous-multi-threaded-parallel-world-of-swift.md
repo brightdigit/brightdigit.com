@@ -12,7 +12,7 @@ chosen to add more cores or processing units. **Therefore nearly every
 device has multiple cores: from a Mac Pro to the Apple Watch.** For this
 reason, Swift developers should take advantage of asynchronous methods.
 
-https://www.youtube.com/watch?v=GyrJYWOGXY0
+> youtube https://www.youtube.com/watch?v=GyrJYWOGXY0
 
 <figure>
 <img src="https://learningswift.brightdigit.com/wp-content/uploads/sites/2/2019/09/GraphOfCPUSpeed.001-e1569273003542-1024x657.jpg" class="wp-image-691" alt="Graph of CPU Speed from 1970 to 2020" /><figcaption aria-hidden="true">Graph of CPU Speed from 1970 to 2020</figcaption>
@@ -1011,7 +1011,7 @@ With `async` and `await` along with `Combine`, Swift can really take
 advantage of asynchronous programming both from the simple
 Promise/Future mindset as well as the Reactive programming paradigm.
 
-https://www.youtube.com/watch?v=GyrJYWOGXY0
+> youtube https://www.youtube.com/watch?v=GyrJYWOGXY0
 
 ## What’s the Right Toolset?
 

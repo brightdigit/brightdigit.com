@@ -28,7 +28,7 @@ create a shared understanding between you and your developers. This
 includes how they structure and design the app. As a result, you are
 saving you time and money.
 
-https://www.youtube.com/watch?v=TQpRYibmyvQ&feature=youtu.be
+> youtube https://www.youtube.com/watch?v=TQpRYibmyvQ&feature=youtu.be
 
 In this post, I cover three essential concepts for good iOS software
 architecture:

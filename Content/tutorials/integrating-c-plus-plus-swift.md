@@ -302,7 +302,7 @@ external applications or cumbersome installations.
 If interested check out [the presentation I did at Ann Arbor Cocoaheads
 on this very topic](https://www.youtube.com/watch?v=SxW5fs7_o18):
 
-https://www.youtube.com/watch?v=SxW5fs7\_o18
+> youtube https://www.youtube.com/watch?v=SxW5fs7o18
 
 What are some challenges you face using C++ Libraries? Have you ever
 using any libraries for an iOS app? Let me know in the comments.

@@ -18,7 +18,7 @@ I’ll be covering:
 -   When you should use it.
 -   When you shouldn't.
 
-https://www.youtube.com/watch?v=8X2GVqg2lUI
+> youtube https://www.youtube.com/watch?v=8X2GVqg2lUI
 
 *<span class="small">In this episode, Leo talks about what he's learned
 using SwiftUI, where he sees it's the right fit, where it's not quite

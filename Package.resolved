@@ -243,6 +243,15 @@
           "revision": "9ff1cc9327586db4e0c8f46f064b6a82ec1566fa",
           "version": "4.0.6"
         }
+      },
+      {
+        "package": "YoutubePublishPlugin",
+        "repositoryURL": "https://github.com/tanabe1478/YoutubePublishPlugin.git",
+        "state": {
+          "branch": null,
+          "revision": "9117188d760cad6f7cd7603caae32b92cd76705e",
+          "version": "0.1.0"
+        }
       }
     ]
   },

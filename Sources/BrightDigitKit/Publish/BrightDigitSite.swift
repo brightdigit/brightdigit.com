@@ -2,6 +2,7 @@ import Foundation
 import Plot
 import Publish
 import SplashPublishPlugin
+import YoutubePublishPlugin
 
 // This type acts as the configuration for your website.
 public struct BrightDigitSite: Website {
@@ -35,6 +36,7 @@ public struct BrightDigitSite: Website {
 
   static let defaultSteps: [PublishingStep<BrightDigitSite>] = [
     .optional(.copyResources()),
+    .installPlugin(.youtube()),
     .installPlugin(.splash(withClassPrefix: "")),
     .addMarkdownFiles(),
     .yamlStringFix,

@@ -113,7 +113,7 @@ support SPM. At this point, the list of Cocoapods and Carthage packages
 which also support SPM continues to grow as SPM expands its support for
 features like binary packages (i.e. XCFrameworks).
 
-https://www.youtube.com/watch?v=2ZhvfG\_vd5Y
+> youtube https://www.youtube.com/watch?v=2ZhvfGvd5Y
 
 Not only does SPM provide benefits in your Xcode projects but also in
 the way you modularize and share your code.

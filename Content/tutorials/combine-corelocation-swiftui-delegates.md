@@ -211,7 +211,7 @@ This same pattern can be used with other Delegation APIs such as:
 If you are interested in catching this in video format, be sure to check
 out my presentation from 360iDev 2020:
 
-https://www.youtube.com/watch?v=zkFxOlmLWoA
+> youtube https://www.youtube.com/watch?v=zkFxOlmLWoA
 
 Combine-ing the Old with the New from 360iDev
 

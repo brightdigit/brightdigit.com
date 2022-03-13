@@ -92,7 +92,7 @@ Once you have Homebrew installed we can go ahead and install **Vapor**
 on your Mac. Before we proceed, we’ll need to add the Vapor repository
 to Homebrew.
 
-https://m.youtube.com/watch?v=yYCxa6ev1Ng
+> youtube https://www.youtube.com/watch?v=yYCxa6ev1Ng
 
 1.  Firstly, **add the Vapor repository** using the `tap` command:
 
@@ -125,7 +125,7 @@ For example, **with the Vapor CLI tool**, you can:
 
 ### Creating Your First Vapor Project
 
-https://m.youtube.com/watch?v=iZqHmFnisXQ
+> youtube https://www.youtube.com/watch?v=iZqHmFnisXQ
 
 Therefore, **we can create the Switch package which will contain the
 dependencies needed to run our server application** with the command:
@@ -149,7 +149,7 @@ As a result, we can open the newly created Xcode project.
 <img src="https://learningswift.brightdigit.com/wp-content/uploads/sites/2/2019/03/macos_xcode_run.jpg" class="wp-image-515" alt="Building and running the Run target" /><figcaption aria-hidden="true">Building and running the <em>Run</em> target</figcaption>
 </figure>
 
-https://www.youtube.com/watch?v=kZKP2MiFaLQ
+> youtube https://www.youtube.com/watch?v=kZKP2MiFaLQ
 
 After that, switch the target in the top left to *Run* and press the
 *play button* to run the application. Consequently, you should see a log
@@ -166,7 +166,7 @@ Therefore, you should receive the message:
 Hello, world!%
 ```
 
-https://m.youtube.com/watch?v=bRXTT8K-lP8
+> youtube https://www.youtube.com/watch?v=bRXTT8K-lP8
 
 In conclusion, we’ve successfully used the provided Vapor templates with
 the *new* and *xcode* commands to create the Swift package and build the
@@ -187,7 +187,7 @@ with the following command:
 brew install postgresql
 ```
 
-https://www.youtube.com/watch?v=KeLHTQrZXNI
+> youtube https://www.youtube.com/watch?v=KeLHTQrZXNI
 
 Further, to run the server from the Terminal:
 ```
@@ -237,7 +237,7 @@ Subsequently grant that user the privileges it needs with:
 grant all privileges on database app_collection to app_collection;
 ```
 
-https://www.youtube.com/watch?v=gmKSy71PxWM
+> youtube https://www.youtube.com/watch?v=gmKSy71PxWM
 
 As a result, our database should be ready for access. However, we’ll
 need to update the code and specifically the Swift package to use
@@ -279,7 +279,7 @@ to the line:
  .target(name: "App", dependencies: ["FluentPostgreSQL", "Vapor"]),
 ```
 
-https://www.youtube.com/watch?v=j3Z1HxSMVWU
+> youtube https://www.youtube.com/watch?v=j3Z1HxSMVWU
 
 In addition to updating the *Package.swift* file, we need to actually
 update our Xcode project to use the new dependencies.
@@ -384,7 +384,7 @@ to
 final class Todo: PostgreSQLModel {
 ```
 
-https://www.youtube.com/watch?v=EL98HVIzV9M
+> youtube https://www.youtube.com/watch?v=EL98HVIzV9M
 
 As a result, we can go ahead and run the Vapor application.
 
@@ -449,7 +449,7 @@ the following line:
 web: Run serve --env production --port $PORT --hostname 0.0.0.0
 ```
 
-https://m.youtube.com/watch?v=8piDsDi6PNo
+> youtube https://www.youtube.com/watch?v=8piDsDi6PNo
 
 Moreover when you run the command, you do not need the supply any
 customizations. However we will need to add PostgreSQL to our Heroku
@@ -475,7 +475,7 @@ instance of
 PostgreSQL](https://www.heroku.com/postgres#heroku-postgres-hobby) to
 our application.
 
-https://m.youtube.com/watch?v=rprznYi-kKQ
+> youtube https://www.youtube.com/watch?v=rprznYi-kKQ
 
 Consequently, Heroku will add an environment variable for the database
 called `DATABASE_URL`. Therefore, we’ll need to update our code to use
@@ -502,7 +502,7 @@ if let url = Environment.get("DATABASE_URL") {
 }
 ```
 
-https://www.youtube.com/watch?v=J7VILggBt0Q
+> youtube https://www.youtube.com/watch?v=J7VILggBt0Q
 
 As a result of changing the code, we will be checking if there is an
 environment variable called `DATABASE_URL`. In other words, we are using
@@ -535,7 +535,7 @@ In short, either command will:
 -   Secondly, build the Application
 -   Lastly, run the application (based on the command in the Procfile)
 
-https://m.youtube.com/watch?v=J0-wLRCarzc
+> youtube https://www.youtube.com/watch?v=J0-wLRCarzc
 
 Therefore, if our application instance is called *damp-spire-56788* , we
 should be call our application with `curl`:
@@ -548,7 +548,7 @@ Hello, world!%
 [{"id":1,"title":"example"}]%
 ```
 
-https://m.youtube.com/watch?v=a0IJUTOJafo
+> youtube https://www.youtube.com/watch?v=a0IJUTOJafo
 
 In short, we can setup our app for Heroku by
 
@@ -598,7 +598,7 @@ Therefore, we can install the application with:
 apt install git supervisor postgresql swift vapor nginx
 ```
 
-https://m.youtube.com/watch?v=Ul4hL9vP06g
+> youtube https://www.youtube.com/watch?v=Ul4hL9vP06g
 
 ### Setting Up the PostgreSQL Database
 
@@ -653,7 +653,7 @@ the `PostgresDefaults` struct or null and let’s the
 will still work on Heroku (with the `DATABASE_URL`) and on localhost
 with the defaults setup.
 
-https://www.youtube.com/watch?v=xb3LNa\_eADo
+> youtube https://www.youtube.com/watch?v=xb3LNaeADo
 
 However, before we setup the environment variables for our application,
 we need to setup the database.
@@ -678,7 +678,7 @@ To clarify, we are creating:
 -   user named *app\_collection* with a password *app\_collection\_pw*
 -   grant the user all privileges on the database, we’ve created
 
-https://m.youtube.com/watch?v=hY1gOcB4XbE
+> youtube https://www.youtube.com/watch?v=hY1gOcB4XbE
 
 As a result of setting up the database, we can begin to setup
 *supervisor*.
@@ -718,7 +718,7 @@ cd app
 vapor build
 ```
 
-https://m.youtube.com/watch?v=RU3jJUe66uE
+> youtube https://www.youtube.com/watch?v=RU3jJUe66uE
 
 In short, we have cloned the code from our repo and built the
 application. As a result, we can move forward with configuring
@@ -763,7 +763,7 @@ supervisorctl reread
 supervisorctl update
 ```
 
-https://m.youtube.com/watch?v=-dCqEE3L0nk
+> youtube https://www.youtube.com/watch?v=-dCqEE3L0nk
 
 After that, you can test if supervisor was successful by calling the
 application from port 3000:
@@ -805,7 +805,7 @@ nginx:
 service nginx restart
 ```
 
-https://m.youtube.com/watch?v=qUrDtoHI-zw
+> youtube https://www.youtube.com/watch?v=qUrDtoHI-zw
 
 Most importantly, if you are using a `.local` host name, make sure to
 setup the host name on your network. That is to say, make sure the host
