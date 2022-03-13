@@ -21,7 +21,7 @@ struct SectionContent<SectionBuilderType: SectionBuilderProtocol>: PageContent {
     [
       .class("section"),
 
-      newsLetterHeaderNode,
+      headerNode,
 
       .section(
         .ol(
@@ -32,26 +32,43 @@ struct SectionContent<SectionBuilderType: SectionBuilderProtocol>: PageContent {
       )
     ]
   }
-
-  // I need to rename this, if it's a newsletter we'll have to do something special, vs if it's not it's organized differently
-  var newsLetterHeaderNode: Node<HTML.BodyContext> {
-    if builder.section.id == .newsletters {
-      return .header(
-        .section(
-          .h1("Don't Let Your App", .em("Fall Behind")),
-          .p("\(Strings.Newsletter.featuredParagraph)")
-        )
-      )
-    } else {
-      return .header(
-        .section(
-          .class("hero"),
-          .section(
-            .class("featured"),
-            .forEach(builder.featuredItem.featuredItemContent) { $0 }
+  
+  var headerNode: Node<HTML.BodyContext> {
+    return .header(
+      .section(
+        .h1("Don't Let Your App", .em("Fall Behind")),
+        .p("\(Strings.Newsletter.featuredParagraph)")
+      ),
+      .section(
+        .class("hero"),
+        .form(
+          .div(
+            .div(
+              .input(.type(.text), .placeholder("leo@brightdigit.com")),
+              .label("Email")
+            )
+          ),
+          .div(
+            .div(
+              .button("Sign me up!")
+            )
+          ),
+          .div(
+            .class("message"),
+            .div(
+              .h3("Be the first to know:"),
+              .ol(
+                .li("When we publish new content", .b(" new content "), "on building better apps on our blog or podcast.")
+              )
+            )
           )
+        ),
+        .section(
+          .class("featured"),
+          .forEach(builder.featuredItem.featuredItemContent) { $0 }
         )
       )
-    }
+    )
+    
   }
 }
