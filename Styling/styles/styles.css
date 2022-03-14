@@ -1224,9 +1224,11 @@ body.articles, body.tutorials {
   & > main {
     @apply mx-6;
     & > header {
-      @apply mx-0 py-2;
-      & > img {
-        @apply h-40 w-full object-cover;
+      & > header {
+        @apply mx-0 py-2;
+        & > img {
+          @apply h-40 w-full object-cover;
+        }
       }
     }
     & > main {
