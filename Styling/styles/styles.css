@@ -1224,10 +1224,25 @@ body.articles, body.tutorials {
   & > main {
     @apply mx-6;
     & > header {
+      @apply mx-0 py-2;
       & > header {
-        @apply mx-0 py-2;
         & > img {
           @apply h-40 w-full object-cover;
+        }
+      }
+      & > footer {
+        @apply flex m-0 justify-between items-baseline;
+        & > ol {
+          @apply flex -ml-2;
+          & > li {
+            @apply contents;
+            & > a {
+              @apply text-xl p-2;
+            }
+          }
+        }
+        & > .readtime {
+          @apply font-extralight text-gray-600;
         }
       }
     }
@@ -1250,6 +1265,38 @@ body.articles, body.tutorials {
       }
       ol, ul {
         @apply list-disc list-inside;
+      }
+    }
+    & > footer {
+      & > ol {
+        @apply border-b-2 border-t-2 border-gray-200 py-2 text-2xl mb-2;
+      }
+      & > main {
+        @apply mt-2;
+        h2 {
+          @apply my-2;
+        }
+        p {
+          @apply my-2;
+        }
+      }
+      & > form {
+        @apply w-full flex flex-col my-4 pt-2  sm:flex-1;
+        button {
+          @apply _button;
+        }
+        & > div {
+          @apply flex flex-row my-2 -mx-2;
+          & > div {
+            @apply flex flex-col flex-grow mx-2;
+            input {
+              @apply flex flex-row flex-grow w-full p-2 rounded border-2;
+            }
+            label {
+              @apply text-xs flex px-2 py-1;
+            }
+          }
+        }
       }
     }
   }
