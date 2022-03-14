@@ -12,18 +12,13 @@ struct TutorialItem: SectionItem {
 
   let isFeatured: Bool
 
-  var featuredItemContent: [Node<HTML.BodyContext>] {
-    [
-      .header(
-        .img(.src(featuredImageURL)),
-        .a(
-          .h2(.text(title))
-        )
-      ),
-      .main(
-        .text(description)
+  var featuredItemContent: Node<HTML.BodyContext> {
+    .header(
+      .img(.src(featuredImageURL)),
+      .a(
+        .h2(.text(title))
       )
-    ]
+    )
   }
 
   var sectionItemContent: [Node<HTML.BodyContext>] {
