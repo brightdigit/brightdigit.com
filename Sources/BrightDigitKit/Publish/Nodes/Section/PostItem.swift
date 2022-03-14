@@ -69,7 +69,13 @@ struct PostItem: SectionItem {
   }
 
   var pageMainContent: [Node<HTML.BodyContext>] {
-    [.contentBody(source.body)]
+    [
+      .header(
+        .img(.src(featuredImageURL)),
+        .h1(.text(title))
+      ),
+      .main(.contentBody(source.body))
+    ]
   }
 
   init(item: Item<BrightDigitSite>) throws {

@@ -94,7 +94,7 @@ body > header > nav > ol.menu ~ ol.menu{
 body > main {
   @apply xl:container mx-auto;
   & > header {
-    @apply lg:flex mx-6 ;
+    @apply lg:flex mx-6;
    & > main {
      @apply  lg:w-1/2 flex-none xl:items-stretch;
      & > header {
@@ -1212,6 +1212,39 @@ body.episodes {
           }
           
         }
+      }
+    }
+  }
+}
+
+body.articles, body.tutorials {
+  h1 {
+    @apply text-2xl font-bold py-2;
+  }
+  & > main {
+    @apply mx-6;
+    & > header {
+      @apply mx-0 py-2;
+    }
+    & > main {
+      @apply leading-tight border-t-2 border-gray-200 py-2;
+      h2 {
+        @apply text-xl py-2;
+      }
+      h3 {
+        @apply text-lg font-semibold py-1;
+      }
+      h4 {
+        @apply text-base font-semibold py-1;
+      }
+      p {
+        @apply py-2;
+      }
+      blockquote {
+        @apply ml-8 tracking-tight italic;
+      }
+      ol, ul {
+        @apply list-disc list-inside;
       }
     }
   }
