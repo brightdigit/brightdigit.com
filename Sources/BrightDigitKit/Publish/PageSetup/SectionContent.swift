@@ -32,18 +32,18 @@ struct SectionContent<SectionBuilderType: SectionBuilderProtocol>: PageContent {
       )
     ]
   }
-  
+
   var featuredNode: Node<HTML.BodyContext> {
-    return .header(
+    .header(
       .section(
         .h1("Don't Let Your App", .em("Fall Behind")),
         .p("\(Strings.Newsletter.featuredParagraph)")
       ),
       .section(
         .class("hero"),
-        
+
         formNode,
-        
+
         .section(
           .class("featured"),
           .forEach(builder.featuredItem.featuredItemContent) { $0 }
@@ -51,7 +51,7 @@ struct SectionContent<SectionBuilderType: SectionBuilderProtocol>: PageContent {
       )
     )
   }
-  
+
   var formNode: Node<HTML.BodyContext> {
     .form(
       .div(
