@@ -1225,6 +1225,9 @@ body.articles, body.tutorials {
     @apply mx-6;
     & > header {
       @apply mx-0 py-2;
+      & > img {
+        @apply h-40 w-full object-cover;
+      }
     }
     & > main {
       @apply leading-tight border-t-2 border-gray-200 py-2;
