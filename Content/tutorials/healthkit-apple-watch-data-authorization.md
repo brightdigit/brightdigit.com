@@ -5,7 +5,7 @@ description: The Apple Watch has become the premier device for health monitoring
   So now that authorization is setup on the iPhone, let's take a look at how get authorization
   setup on the Apple Watch.
 tags: Smart Intensity
-featuredImage: /media/wp-images/learningswift/2018/06/ezgif.com-gif-maker.gif
+featuredImage: /media/wp-images/learningswift/2018/06/andres-urena-438712-unsplash-e1528485621309.jpg
 ---
 The Apple Watch has become the premier device for health, fitness, and
 workout tracking. So now that [authorization is setup on the
@@ -41,7 +41,9 @@ if HKHealthStore.isHealthDataAvailable() {
 access.** So what this method will do is prompt the user to go to their
 iPhone and grant access. This will be through the Health app as the user
 did previously on the iPhone example.
-<img src="/media/wp-images/learningswift/2018/06/Simulator-Screen-Shot-Apple-Watch-Series-3-38mm-2018-06-08-at-14.36.24.png" class="size-full wp-image-76 aligncenter" width="272" height="486" />
+
+<img src="/media/wp-images/learningswift/2018/06/Simulator-Screen-Shot-Apple-Watch-Series-3-38mm-2018-06-08-at-14.36.24.png" class="full-size" width="272" height="486" />
+
 On the iPhone app, a method will need to be implemented in order to
 listen to this request and prompt the user with the authorization
 request. This is where
@@ -68,8 +70,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 Now whenever the request for authorization is made on the Apple Watch
 and with new `HKObjectType` or `HKSampleType` objects (such as the first
 time the app is run), the iPhone will prompt the user with the request.
-\[caption id="attachment\_89" align="aligncenter"
-width="640"\]<img src="/media/wp-images/learningswift/2018/06/ezgif.com-gif-maker.gif" class="wp-image-89 size-full" width="640" height="640" alt="iPhone and Apple Watch Simulation of Health Data Authorization" />
+
+<img src="/media/wp-images/learningswift/2018/06/ezgif.com-gif-maker.gif" class="full-size" width="640" height="640" alt="iPhone and Apple Watch Simulation of Health Data Authorization" />
+
 this is what it should look like\[/caption\] After the prompt is
 completed by the user, the `requestAuthorization` callback on the Apple
 Watch will be called and from there, the usual code can begin.

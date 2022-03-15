@@ -5,6 +5,7 @@ description: Many APIs from Apple come from an era of Objective-C and Delegate P
   How do we adapt those APIs for SwiftUI and create Publishers from delegates?
 tags: combine, functional programming, GCD
 featuredImage: /media/wp-images/learningswift/2020/08/Combine-ing-the-Old-with-the-New-360iDev-August-2020.001-2.png
+subscriptionCTA: Notify me when the next post is out
 ---
 Most of the APIs from Apple come from an era of Objective-C and the
 Delegation Pattern. With this in mind, the challenge is figuring how to
@@ -32,9 +33,7 @@ and longitude with CoreLocation.** This includes:
 -   [Understanding FlatMap and Built-In Publishers
 (Part 3)](https://learningswift.brightdigit.com/combine-corelocation-swiftui-delegates/)
 
-For this part, we'll be getting into how to create a `Protocol` and
-`Class` which will act as a go-between for the *Delegation Pattern* and
-the *Reactive Functional Programming* of **SwiftUI** and **Combine**.
+For this part, we'll be getting into how to create a `Protocol` and `Class` which will act as a go-between for the *Delegation Pattern* and the *Reactive Functional Programming* of **SwiftUI** and **Combine**.
 
 ## Gonna Delegate Like It’s 2009
 
@@ -81,7 +80,7 @@ reacts properly, then the `View` will update accordingly. In the end, we
 should see this in our application:
 
 <figure>
-<img src="/media/wp-images/learningswift/2020/08/CoreLocation-AppPreview-300x125.jpg" class="wp-image-1036" />
+<img src="/media/wp-images/learningswift/2020/08/CoreLocation-AppPreview-300x125.jpg" class="full-size" />
 </figure>
 
 Before we setup our publishers, let's scaffold our `View` and
@@ -159,7 +158,7 @@ Now, we have our scaffolding setup, let's plug-in *CoreLocation*.
 ## Extending Delegates into Combine Publishers
 
 <figure>
-<img src="/media/wp-images/learningswift/2020/08/Combine-ing-the-Old-with-the-New-360iDev-August-2020.001-2-1024x538.png" class="wp-image-1040" />
+<img src="/media/wp-images/learningswift/2020/08/Combine-ing-the-Old-with-the-New-360iDev-August-2020.001-2-1024x538.png" class="full-size" />
 </figure>
 
 With the Delegation Pattern, the Delegate (in this case
@@ -301,7 +300,7 @@ reason, we can use `merge` to join the intial value with the result from
 the our `authorizationSubject`:
 
 <figure>
-<img src="/media/wp-images/learningswift/2020/08/optimized.gif" class="wp-image-1044" />
+<img src="/media/wp-images/learningswift/2020/08/optimized.gif" class="full-size" />
 </figure>
 
 We have the publisher factories setup now!

@@ -256,6 +256,6 @@ If you are interested in learning more, watch [the presentation, New
 Ways to Work with Workouts from WWDC
 2018.](https://developer.apple.com/videos/play/wwdc2018/707) For more
 info on how to develop with HealthKit, take a look at our [recent posts
-here](https://learningswift.brightdigit.com/category/healthkit/) and for
+here](/tutorials) and for
 [sign up for updates
-here.](https://mailchi.mp/29b439ff4ce6/learning-swift-newsletter)
+here.](/newsletters)
