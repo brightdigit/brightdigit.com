@@ -22,7 +22,7 @@ Therefore, this meant packaging any required dependencies within the
 has other dependencies such as *XQuartz* meant that would be too
 cumbersome. Therefore, Cairo and librsvg became the obvious choice.
 
-<img src="https://learningswift.brightdigit.com/wp-content/uploads/sites/2/2018/11/440px-Librsvg.svg_-e1541095349996.png" class="wp-image-201" /><img src="https://learningswift.brightdigit.com/wp-content/uploads/sites/2/2018/11/500px-Cairo_banner_1.svg_-e1541095276942.png" class="wp-image-200" />
+<img src="/media/wp-images/learningswift/2018/11/440px-Librsvg.svg_-e1541095349996.png" class="wp-image-201" /><img src="/media/wp-images/learningswift/2018/11/500px-Cairo_banner_1.svg_-e1541095276942.png" class="wp-image-200" />
 
 ## Integrating Cairo and librsvg with Swift
 
@@ -50,7 +50,7 @@ all, both of these libraries can be installed on your Mac through
 Now we'll need to make sure to copy and link the files.
 
 <figure>
-<img src="https://learningswift.brightdigit.com/wp-content/uploads/sites/2/2019/01/xe7za0jttem-e1547589614468-1024x513.jpg" class="wp-image-350" />
+<img src="/media/wp-images/learningswift/2019/01/xe7za0jttem-e1547589614468-1024x513.jpg" class="wp-image-350" />
 </figure>
 
 ## Properly Linking and Copying C++ Libraries
@@ -90,7 +90,7 @@ building the application, **double check all the proper files are listed
 under build phases in your Xcode projec**t.
 
 <figure>
-<img src="https://learningswift.brightdigit.com/wp-content/uploads/sites/2/2019/01/eiwvoa9zb10-e1547589663680-1024x512.jpg" class="wp-image-351" />
+<img src="/media/wp-images/learningswift/2019/01/eiwvoa9zb10-e1547589663680-1024x512.jpg" class="wp-image-351" />
 </figure>
 
 ### Staying Organized in Dependency Hell
@@ -165,7 +165,7 @@ under build phases. In other words, you should have something like this
 under **Build Phases**:
 
 <figure>
-<img src="https://learningswift.brightdigit.com/wp-content/uploads/sites/2/2018/10/pixman_example.png" class="wp-image-193" />
+<img src="/media/wp-images/learningswift/2018/10/pixman_example.png" class="wp-image-193" />
 </figure>
 
 #### Updating References with `install_name_tool`

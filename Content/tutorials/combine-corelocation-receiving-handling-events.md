@@ -178,7 +178,7 @@ stored.
 ## Sink vs Assign when Receiving and Handling Events
 
 <figure>
-<img src="https://learningswift.brightdigit.com/wp-content/uploads/sites/2/2020/08/Combine-ing-the-Old-with-the-New.001-1024x204.png" class="wp-image-1062" />
+<img src="/media/wp-images/learningswift/2020/08/Combine-ing-the-Old-with-the-New.001-1024x204.png" class="wp-image-1062" />
 </figure>
 
 Choosing the correct method can be difficult but here's some guidelines:

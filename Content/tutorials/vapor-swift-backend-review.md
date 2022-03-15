@@ -17,7 +17,7 @@ into [Vapor](https://vapor.codes) and whether it is really a viable
 choice.
 
 <figure>
-<img src="https://learningswift.brightdigit.com/wp-content/uploads/sites/2/2019/03/jared-murray-974070-unsplash-e1552938209336-1024x512.jpg" class="wp-image-551" />
+<img src="/media/wp-images/learningswift/2019/03/jared-murray-974070-unsplash-e1552938209336-1024x512.jpg" class="wp-image-551" />
 </figure>
 
 ## A Plethora Of Choices
@@ -43,7 +43,7 @@ for data storage but lacks options such as:
 However there are other options to remain developing in Swift on server.
 
 <figure>
-<img src="https://learningswift.brightdigit.com/wp-content/uploads/sites/2/2019/03/wordmark-horizontal-1024x271.png" class="wp-image-554" />
+<img src="/media/wp-images/learningswift/2019/03/wordmark-horizontal-1024x271.png" class="wp-image-554" />
 </figure>
 
 ## Vapor - Swift for the Server
@@ -93,7 +93,7 @@ and
 Ubuntu.](https://learningswift.brightdigit.com/vapor-heroku-ubuntu-setup-deploy/?utm_medium=web&utm_source=learning-swift)**
 
 <figure>
-<img src="https://learningswift.brightdigit.com/wp-content/uploads/sites/2/2019/03/developer-tools-1024x512.jpg" class="wp-image-558" />
+<img src="/media/wp-images/learningswift/2019/03/developer-tools-1024x512.jpg" class="wp-image-558" />
 </figure>
 
 ## Developing with Vapor
@@ -169,7 +169,7 @@ Kit API. However what truly makes Fluent ORM so robust is the use of
 SwiftNIO async API.
 
 <figure>
-<img src="https://learningswift.brightdigit.com/wp-content/uploads/sites/2/2019/03/futures-and-promises-1024x512.jpg" class="wp-image-559" />
+<img src="/media/wp-images/learningswift/2019/03/futures-and-promises-1024x512.jpg" class="wp-image-559" />
 </figure>
 
 ### The *Future* of Programming

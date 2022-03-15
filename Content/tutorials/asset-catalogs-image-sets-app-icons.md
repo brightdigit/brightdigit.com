@@ -10,13 +10,13 @@ files) as well as JSON files containing metadata. The metadata from the
 JSON files are used for organizing the specialized files and denoting
 their purpose within the set. In the case of graphic sets like Image
 Sets, they contain several pieces of information.
-<img src="https://learningswift.brightdigit.com/wp-content/uploads/sites/2/2018/10/AppIcons.jpg" class="alignnone size-full wp-image-186" width="1920" height="903" />
+<img src="/media/wp-images/learningswift/2018/10/AppIcons.jpg" class="alignnone size-full wp-image-186" width="1920" height="903" />
 
 ## Image Sets
 
 Here is a sample Image Set:
 
-    {   "images" : [     {       "idiom" : "universal",       "filename" : "apple-watch@1x.png",       "scale" : "1x"     },     {       "idiom" : "universal",       "filename" : "apple-watch@2x.png",       "scale" : "2x"     },     {       "idiom" : "universal",       "filename" : "apple-watch@3x.png",       "scale" : "3x"     }   ],   "info" : {     "version" : 1,     "author" : "xcode"   } } 
+    {  "images" : [    {      "idiom" : "universal",      "filename" : "apple-watch@1x.png",      "scale" : "1x"    },    {      "idiom" : "universal",      "filename" : "apple-watch@2x.png",      "scale" : "2x"    },    {      "idiom" : "universal",      "filename" : "apple-watch@3x.png",      "scale" : "3x"    }  ],  "info" : {    "version" : 1,    "author" : "xcode"  }}
 
 First, we have a collection of images with the following properties:
 

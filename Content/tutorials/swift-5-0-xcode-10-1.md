@@ -37,7 +37,7 @@ Here's how:
     Snapshot...***
 
 <figure>
-<img src="https://learningswift.brightdigit.com/wp-content/uploads/sites/2/2018/12/Xcode-Toolchain-Menu.png" class="wp-image-308" alt="Xcode Toolchain Menu Item" /><figcaption aria-hidden="true">Xcode Toolchain Menu Item</figcaption>
+<img src="/media/wp-images/learningswift/2018/12/Xcode-Toolchain-Menu.png" class="wp-image-308" alt="Xcode Toolchain Menu Item" /><figcaption aria-hidden="true">Xcode Toolchain Menu Item</figcaption>
 </figure>
 
 If you try to compile you will get an error saying no *SWIFT\_VERSION*
@@ -53,7 +53,7 @@ To use the *Legacy Build System* which essentially ignores
 the *SWIFT\_VERSION*:
 
 <figure>
-<img src="https://learningswift.brightdigit.com/wp-content/uploads/sites/2/2018/12/Xcode-ProjectSettings-Menu-e1545173707171.png" class="wp-image-309" alt="Xcode Project Settings Menu Item" /><figcaption aria-hidden="true">Xcode Project Settings Menu Item</figcaption>
+<img src="/media/wp-images/learningswift/2018/12/Xcode-ProjectSettings-Menu-e1545173707171.png" class="wp-image-309" alt="Xcode Project Settings Menu Item" /><figcaption aria-hidden="true">Xcode Project Settings Menu Item</figcaption>
 </figure>
 
 1.  Go to the Top Menu and Select ***File...Project Settings***
@@ -61,7 +61,7 @@ the *SWIFT\_VERSION*:
     System*.** 
 
 <figure>
-<img src="https://learningswift.brightdigit.com/wp-content/uploads/sites/2/2018/12/Xcode-ProjectSettings-Window-e1545173841972.png" class="wp-image-310" alt="Xcode Project Settings Window" /><figcaption aria-hidden="true">Xcode Project Settings Window</figcaption>
+<img src="/media/wp-images/learningswift/2018/12/Xcode-ProjectSettings-Window-e1545173841972.png" class="wp-image-310" alt="Xcode Project Settings Window" /><figcaption aria-hidden="true">Xcode Project Settings Window</figcaption>
 </figure>
 
 You should be good to go. However, if you wish to use the ***New Build

@@ -81,7 +81,7 @@ reacts properly, then the `View` will update accordingly. In the end, we
 should see this in our application:
 
 <figure>
-<img src="https://learningswift.brightdigit.com/wp-content/uploads/sites/2/2020/08/CoreLocation-AppPreview-300x125.jpg" class="wp-image-1036" />
+<img src="/media/wp-images/learningswift/2020/08/CoreLocation-AppPreview-300x125.jpg" class="wp-image-1036" />
 </figure>
 
 Before we setup our publishers, let's scaffold our `View` and
@@ -159,7 +159,7 @@ Now, we have our scaffolding setup, let's plug-in *CoreLocation*.
 ## Extending Delegates into Combine Publishers
 
 <figure>
-<img src="https://learningswift.brightdigit.com/wp-content/uploads/sites/2/2020/08/Combine-ing-the-Old-with-the-New-360iDev-August-2020.001-2-1024x538.png" class="wp-image-1040" />
+<img src="/media/wp-images/learningswift/2020/08/Combine-ing-the-Old-with-the-New-360iDev-August-2020.001-2-1024x538.png" class="wp-image-1040" />
 </figure>
 
 With the Delegation Pattern, the Delegate (in this case
@@ -301,7 +301,7 @@ reason, we can use `merge` to join the intial value with the result from
 the our `authorizationSubject`:
 
 <figure>
-<img src="https://learningswift.brightdigit.com/wp-content/uploads/sites/2/2020/08/optimized.gif" class="wp-image-1044" />
+<img src="/media/wp-images/learningswift/2020/08/optimized.gif" class="wp-image-1044" />
 </figure>
 
 We have the publisher factories setup now!

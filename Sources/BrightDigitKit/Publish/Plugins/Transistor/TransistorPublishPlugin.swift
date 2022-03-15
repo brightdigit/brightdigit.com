@@ -26,8 +26,8 @@ public extension Modifier {
       }
 
       let generator = TransistorEmbedGenerator(url: url, configuration: .default)
-      let Transistor = try! generator.generate().get()
-      return try! renderer.render(Transistor: Transistor)
+      let transistor = generator.generate()
+      return renderer.render(transistor: transistor)
     }
   }
 }

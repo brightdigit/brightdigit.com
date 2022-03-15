@@ -1,8 +1,8 @@
 public protocol TransistorRenderer {
-  func render(Transistor: EmbeddedTransistor) throws -> String
+  func render(transistor: EmbeddedTransistor) -> String
 }
 
 public final class DefaultTransistorRenderer: TransistorRenderer {
   public init() {}
-  public func render(Transistor: EmbeddedTransistor) throws -> String { Transistor.html }
+  public func render(transistor: EmbeddedTransistor) -> String { transistor.html }
 }

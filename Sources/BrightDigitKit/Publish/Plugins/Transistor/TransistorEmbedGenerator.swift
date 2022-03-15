@@ -23,11 +23,7 @@ struct TransistorEmbedGenerator {
     """
   }
 
-  func generate() -> Result<EmbeddedTransistor, Error> {
-    guard let host = transistorURL.host, host == "share.transistor.fm" else {
-      return .failure(.invalidURL)
-    }
-
-    return .success(EmbeddedTransistor(html: html(from: transistorURL.lastPathComponent)))
+  func generate() -> EmbeddedTransistor {
+    EmbeddedTransistor(html: html(from: transistorURL.lastPathComponent))
   }
 }

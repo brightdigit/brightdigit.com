@@ -21,11 +21,11 @@ First, let's get into **why you'd want to use any package manager in the
 first place**.
 
 <figure>
-<img src="https://learningswift.brightdigit.com/wp-content/uploads/sites/2/2021/04/030-puzzle-17054.png" class="wp-image-1146" />
+<img src="/media/wp-images/learningswift/2021/04/030-puzzle-17054.png" class="wp-image-1146" />
 </figure>
 
 <figure>
-<img src="https://learningswift.brightdigit.com/wp-content/uploads/sites/2/2021/04/029-delivery-17051.png" class="wp-image-1145" />
+<img src="/media/wp-images/learningswift/2021/04/029-delivery-17051.png" class="wp-image-1145" />
 </figure>
 
 ## Modularity and Reuse - Benefits of Package Management
@@ -52,11 +52,11 @@ version tag or even a branch name. Let's get into the different package
 managers for developers in the Apple ecosystem.
 
 <figure>
-<img src="https://learningswift.brightdigit.com/wp-content/uploads/sites/2/2021/04/colored-14344.png" class="wp-image-1148" />
+<img src="/media/wp-images/learningswift/2021/04/colored-14344.png" class="wp-image-1148" />
 </figure>
 
 <figure>
-<img src="https://learningswift.brightdigit.com/wp-content/uploads/sites/2/2021/04/pasted-image-small-14348.png" class="wp-image-1149" />
+<img src="/media/wp-images/learningswift/2021/04/pasted-image-small-14348.png" class="wp-image-1149" />
 </figure>
 
 ## What Came Before... and is Still Around
@@ -92,7 +92,7 @@ stick with it.** However your best bet is migrating to Swift Package
 Manager.
 
 <figure>
-<img src="https://learningswift.brightdigit.com/wp-content/uploads/sites/2/2021/04/Xcode_Icon-small-15043.png" class="wp-image-1151" />
+<img src="/media/wp-images/learningswift/2021/04/Xcode_Icon-small-15043.png" class="wp-image-1151" />
 </figure>
 
 ## Why Swift Package Manager?
@@ -218,7 +218,7 @@ feature. This makes it easier to test the server application without
 having to run the Heartwitch app on my Apple Watch or via simulator.
 
 <figure>
-<img src="https://learningswift.brightdigit.com/wp-content/uploads/sites/2/2021/05/hwmonitor.gif" class="wp-image-1165" width="1732" height="838" alt="Faking a Watch App with a Command Line Tool" /><figcaption aria-hidden="true">Faking a Watch App with a Command Line Tool</figcaption>
+<img src="/media/wp-images/learningswift/2021/05/hwmonitor.gif" class="wp-image-1165" width="1732" height="838" alt="Faking a Watch App with a Command Line Tool" /><figcaption aria-hidden="true">Faking a Watch App with a Command Line Tool</figcaption>
 </figure>
 
 One of my favorite tools out there is [the Swift Argument Parser by the

@@ -142,11 +142,11 @@ vapor xcode
 As a result, we can open the newly created Xcode project.
 
 <figure>
-<img src="https://learningswift.brightdigit.com/wp-content/uploads/sites/2/2019/03/macos_xcode_switch_target.jpg" class="wp-image-514" alt="Switching the target to Run" /><figcaption aria-hidden="true">Switching the target to <em>Run</em></figcaption>
+<img src="/media/wp-images/learningswift/2019/03/macos_xcode_switch_target.jpg" class="wp-image-514" alt="Switching the target to Run" /><figcaption aria-hidden="true">Switching the target to <em>Run</em></figcaption>
 </figure>
 
 <figure>
-<img src="https://learningswift.brightdigit.com/wp-content/uploads/sites/2/2019/03/macos_xcode_run.jpg" class="wp-image-515" alt="Building and running the Run target" /><figcaption aria-hidden="true">Building and running the <em>Run</em> target</figcaption>
+<img src="/media/wp-images/learningswift/2019/03/macos_xcode_run.jpg" class="wp-image-515" alt="Building and running the Run target" /><figcaption aria-hidden="true">Building and running the <em>Run</em> target</figcaption>
 </figure>
 
 > youtube https://www.youtube.com/watch?v=kZKP2MiFaLQ

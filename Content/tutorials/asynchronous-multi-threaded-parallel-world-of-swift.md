@@ -4,7 +4,7 @@ date: 2019-09-25 06:00
 description: From the Mac Pro to the Apple Watch developers need to design thier applications
   to best take advantage of multiple cores in Swift using asynchronous methods.
 tags: combine, GCD, promises, swiftui
-featuredImage: /media/wp-images/learningswift/2019/09/Screen-Shot-2019-09-23-at-5.30.47-PM.png
+featuredImage: /media/wp-images/learningswift/2019/09/The-Multi-Threaded-Asynchronous-Parallel-World-of-Swift-360iDev-copy.001.jpeg
 ---
 Over the last 15 years, CPU clock rate has plateaued due to thermal
 limitations in processors. As a result, CPU manufactures have instead
@@ -15,7 +15,7 @@ reason, Swift developers should take advantage of asynchronous methods.
 > youtube https://www.youtube.com/watch?v=GyrJYWOGXY0
 
 <figure>
-<img src="https://learningswift.brightdigit.com/wp-content/uploads/sites/2/2019/09/GraphOfCPUSpeed.001-e1569273003542-1024x657.jpg" class="wp-image-691" alt="Graph of CPU Speed from 1970 to 2020" /><figcaption aria-hidden="true">Graph of CPU Speed from 1970 to 2020</figcaption>
+<img src="/media/wp-images/learningswift/2019/09/GraphOfCPUSpeed.001-e1569273003542-1024x657.jpg" class="full-size" alt="Graph of CPU Speed from 1970 to 2020" /><figcaption aria-hidden="true">Graph of CPU Speed from 1970 to 2020</figcaption>
 </figure>
 
 That is to say, with asynchronous methods, **we can design applications
@@ -46,7 +46,7 @@ run *concurrently*. **Concurrency** means that the operation can be
 partitioned and run at the same time on the same processor.
 
 <figure>
-<img src="https://learningswift.brightdigit.com/wp-content/uploads/sites/2/2019/09/ParallelConcurrency.001-1024x768.jpeg" class="wp-image-681" width="1024" height="768" alt="The Difference Between Concurrency and Paralellism" /><figcaption aria-hidden="true">The Difference Between Concurrency and Paralellism</figcaption>
+<img src="/media/wp-images/learningswift/2019/09/ParallelConcurrency.001-1024x768.jpeg" class="full-size" width="1024" height="768" alt="The Difference Between Concurrency and Paralellism" /><figcaption aria-hidden="true">The Difference Between Concurrency and Paralellism</figcaption>
 </figure>
 
 In addition, when the operating system has access to multiple processing
@@ -62,7 +62,7 @@ importantly for developers is to make our operations **asynchronous**,
 in order to allow for **concurrency** and **parallelism.**
 
 <figure>
-<img src="https://learningswift.brightdigit.com/wp-content/uploads/sites/2/2019/09/The-Multi-Threaded-Asynchronous-Parallel-World-of-Swift-360iDev-copy.gif" class="wp-image-682" width="480" height="360" />
+<img src="/media/wp-images/learningswift/2019/09/The-Multi-Threaded-Asynchronous-Parallel-World-of-Swift-360iDev-copy.gif" class="full-size" width="480" height="360" />
 </figure>
 
 ### Asynchronous Operations
@@ -196,7 +196,7 @@ Central Dispatch* works, let’s breakdown how operating systems schedule
 operations.
 
 <figure>
-<img src="https://i1.wp.com/learningswift.brightdigit.com/wp-content/uploads/sites/2/2019/09/Screen-Shot-2019-09-24-at-2.04.19-PM.png?fit=640%2C438&amp;ssl=1" class="wp-image-719" alt="An example of the top command view of processes and threads" /><figcaption aria-hidden="true">An example of the <em>top</em> command view of processes and threads</figcaption>
+<img src="/media/wp-images/learningswift/2019/09/Screen-Shot-2019-09-24-at-2.04.19-PM.png" class="full-size" alt="An example of the top command view of processes and threads" /><figcaption aria-hidden="true">An example of the <em>top</em> command view of processes and threads</figcaption>
 </figure>
 
 ## How Operating Systems Handle Operations
@@ -206,7 +206,7 @@ Threads. A process is a running instance of an application such as this
 running instance of *Activity Monitor* listing out actual processes*:*
 
 <figure>
-<img src="https://i0.wp.com/learningswift.brightdigit.com/wp-content/uploads/sites/2/2019/09/Screen-Shot-2019-09-23-at-5.30.47-PM.png?fit=640%2C414&amp;ssl=1" class="wp-image-688" alt="List of Processes Running In Activity Monitor" /><figcaption aria-hidden="true">List of Processes Running In Activity Monitor</figcaption>
+<img src="/media/wp-images/learningswift/2019/09/Screen-Shot-2019-09-23-at-5.30.47-PM.png" class="full-size" alt="List of Processes Running In Activity Monitor" /><figcaption aria-hidden="true">List of Processes Running In Activity Monitor</figcaption>
 </figure>
 
 Moreover, a developer can breakdown a process into **threads**. A
@@ -221,7 +221,7 @@ control of threads and processes and slowly evolve into the more
 abstract and easy to manage.
 
 <figure>
-<img src="https://learningswift.brightdigit.com/wp-content/uploads/sites/2/2019/09/493303884_5c71fbcefb_o.jpg" class="wp-image-720" alt="Original Mac (courtesy of https://www.flickr.com/photos/befuddledsenses/493303884)" /><figcaption aria-hidden="true">Original Mac<br />
+<img src="/media/wp-images/learningswift/2019/09/493303884_5c71fbcefb_o.jpg" class="wp-image-720" alt="Original Mac (courtesy of https://www.flickr.com/photos/befuddledsenses/493303884)" /><figcaption aria-hidden="true">Original Mac<br />
 (courtesy of <a href="https://www.flickr.com/photos/befuddledsenses/493303884">https://www.flickr.com/photos/befuddledsenses/493303884</a>)</figcaption>
 </figure>
 
@@ -279,7 +279,7 @@ synchronous result from the operation, using the property
 using `terminationHandler` allows the application to do other operation
 as it waits for that process to finish.
 
-![Queues](https://learningswift.brightdigit.com/wp-content/uploads/sites/2/2019/09/1o77vgbvkxq.jpg)
+![Queues](/media/wp-images/learningswift/2019/09/1o77vgbvkxq.jpg)
 
 ### Working with Queues and Asynchronous Operations
 
@@ -529,7 +529,7 @@ methods and their results or errors comes in the form of Promises and
 Futures.
 
 <figure>
-<img src="https://learningswift.brightdigit.com/wp-content/uploads/sites/2/2019/09/zolfyh_ygpw-e1569349209279.jpg" class="wp-image-728" />
+<img src="/media/wp-images/learningswift/2019/09/zolfyh_ygpw-e1569349209279.jpg" class="wp-image-728" />
 </figure>
 
 ### Promises and Futures of Better Asynchronous APIs
@@ -954,7 +954,7 @@ and Futures and your code is more simple and straightforward it’s
 perfectly reasonable to go with that method.
 
 <figure>
-<img src="https://learningswift.brightdigit.com/wp-content/uploads/sites/2/2019/09/vk284nkoavu-e1569349443454-300x300.jpg" class="wp-image-731" />
+<img src="/media/wp-images/learningswift/2019/09/vk284nkoavu-e1569349443454-300x300.jpg" class="wp-image-731" />
 </figure>
 
 ### Coroutines - The Future of Asynchronous Operations
