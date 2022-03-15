@@ -76,7 +76,7 @@ file of your app container target:
     file with your HealthKit Privacy strings set.
 
 <figure>
-<img src="https://i1.wp.com/learningswift.brightdigit.com/wp-content/uploads/sites/2/2019/09/Screen-Shot-2019-09-17-at-2.32.21-PM.png?fit=640%2C325&amp;ssl=1" class="wp-image-669" />
+<img src="/media/wp-images/learningswift/sites/2/2019/09/Screen-Shot-2019-09-17-at-2.32.21-PM.png?fit=640%2C325&amp;ssl=1" class="wp-image-669" />
 </figure>
 
 Now go ahead and archive and distribute your app to App Store Connect

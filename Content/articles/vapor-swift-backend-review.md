@@ -61,7 +61,7 @@ In this article, I will review Vapor and cover:
 Therefore, let’s begin by talking about how easy it is to get started.
 
 <figure>
-<img src="https://i1.wp.com/learningswift.brightdigit.com/wp-content/uploads/sites/2/2019/03/getting-things-setup.jpg?fit=1024%2C512&amp;ssl=1" class="wp-image-1555" />
+<img src="/media/wp-images/learningswift/sites/2/2019/03/getting-things-setup.jpg?fit=1024%2C512&amp;ssl=1" class="wp-image-1555" />
 </figure>
 
 ## Getting Started with Vapor
@@ -204,7 +204,7 @@ do need to customize your type to use Codable, I highly recommend my
 post on improving how you decode JSON.
 
 <figure>
-<img src="https://i0.wp.com/learningswift.brightdigit.com/wp-content/uploads/sites/2/2019/03/swift-vapor-choice.jpg?fit=1024%2C512&amp;ssl=1" class="wp-image-1561" />
+<img src="/media/wp-images/learningswift/sites/2/2019/03/swift-vapor-choice.jpg?fit=1024%2C512&amp;ssl=1" class="wp-image-1561" />
 </figure>
 
 ## Vaporware or Swift-ly Switch?

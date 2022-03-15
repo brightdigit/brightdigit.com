@@ -17,7 +17,7 @@ I believe this is the year the Apple Watch will come into its own.**
 useful device for everyone.
 
 <figure>
-<img src="https://i2.wp.com/brightdigit.com/wp-content/uploads/2020/03/daniel-canibano-JE3ASpuEld4-unsplash-1.jpg?fit=640%2C263&amp;ssl=1" class="wp-image-2024" />
+<img src="/media/wp-images/brightdigit/2020/03/daniel-canibano-JE3ASpuEld4-unsplash-1.jpg?fit=640%2C263&amp;ssl=1" class="wp-image-2024" />
 </figure>
 
 If you’re thinking about building an app for the Watch, read on: **this
@@ -89,7 +89,7 @@ necessary if Apple wants to develop the Watch ‘app ecosystem’ and make
 it easy to deploy, buy, and install apps on the Watch itself.
 
 <figure>
-<img src="https://i2.wp.com/brightdigit.com/wp-content/uploads/2020/03/Screen-Shot-2020-03-23-at-2.46.07-PM.png?fit=640%2C400&amp;ssl=1" class="wp-image-2020" alt="Building an Apple Watch app in Xcode" /><figcaption aria-hidden="true">Building an Apple Watch app in Xcode</figcaption>
+<img src="/media/wp-images/brightdigit/2020/03/Screen-Shot-2020-03-23-at-2.46.07-PM.png?fit=640%2C400&amp;ssl=1" class="wp-image-2020" alt="Building an Apple Watch app in Xcode" /><figcaption aria-hidden="true">Building an Apple Watch app in Xcode</figcaption>
 </figure>
 
 ## So you want to build a Watch app?

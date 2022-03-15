@@ -118,7 +118,7 @@ includes things like Apple’s improvements to UI design, UI transitions,
 animations, and how Dark Mode works.
 
 <figure>
-<img src="https://i0.wp.com/brightdigit.com/wp-content/uploads/2020/02/xcode-lansing-codes.png?fit=640%2C360&amp;ssl=1" class="wp-image-1947" alt="SwiftUI being used to build an app for local developer meetups in Lansing" /><figcaption aria-hidden="true"><a href="https://github.com/brightdigit/lansingcodes-apple"><em>SwiftUI being used to build an app for local developer meetups in Lansing</em></a></figcaption>
+<img src="/media/wp-images/brightdigit/2020/02/xcode-lansing-codes.png?fit=640%2C360&amp;ssl=1" class="wp-image-1947" alt="SwiftUI being used to build an app for local developer meetups in Lansing" /><figcaption aria-hidden="true"><a href="https://github.com/brightdigit/lansingcodes-apple"><em>SwiftUI being used to build an app for local developer meetups in Lansing</em></a></figcaption>
 </figure>
 
 ## When is SwiftUI not a good choice?
