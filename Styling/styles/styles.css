@@ -1218,18 +1218,16 @@ body.episodes {
   }
 }
 
-body > main{
-
-  a {
-    @apply text-bellow-600 font-semibold;
-  }
-}
 body.articles, body.tutorials {
   h1 {
     @apply text-2xl font-bold py-2;
   }
   & > main {
     @apply  xl:container xl:mx-auto;
+
+  a {
+    @apply text-bellow-600 font-semibold;
+  }
     & > header {
       @apply py-2 mx-6 md:flex-col md:mx-0 md:h-80 md:relative md:mb-4;
       & > header {
@@ -1265,7 +1263,7 @@ body.articles, body.tutorials {
     & > main {
       @apply leading-tight border-t-2 border-gray-200 py-2 mx-6 md:border-0 lg:text-lg;
       h2 {
-        @apply text-xl py-2 md:text-2xl lg:text-4xl xl:text-7xl xl:mt-8 xl:py-8 md:py-4 md:mt-4 md:tracking-tight;
+        @apply text-xl py-2 md:text-2xl lg:text-4xl xl:text-6xl xl:mt-8 xl:py-8 md:py-4 md:mt-4 md:tracking-tight;
       }
       h3 {
         @apply text-lg font-semibold py-1 xl:text-4xl xl:py-4 md:mt-4 xl:tracking-tight;

@@ -182,7 +182,7 @@ public extension Node where Context == HTML.ListContext {
     .li(
       .header(
         .a(
-          .href(article.url),
+          .href(article.rootRelativeURL),
           .img(.src(article.featuredImageURL)),
           .h3(.text(article.title))
         ),
@@ -197,7 +197,7 @@ public extension Node where Context == HTML.ListContext {
       ),
       .footer(
         .a(
-          .href(article.url),
+          .href(article.rootRelativeURL),
           .div(
             .class("publishedAt"),
             .text(

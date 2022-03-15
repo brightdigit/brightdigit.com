@@ -14,12 +14,14 @@ protocol SectionItem: SectionContentFactory {
 
   var pageMainContent: [Node<HTML.BodyContext>] { get }
 
-  init(item: Item<BrightDigitSite>) throws
+  init(item: Item<BrightDigitSite>, site: BrightDigitSite) throws
 }
 
 extension SectionItem {
-  static func content(forSection section: Section<BrightDigitSite>, withContext _: PublishingContext<BrightDigitSite>) throws -> PageContent {
-    let allChildren = try section.items.map(Self.init(item:))
+  static func content(forSection section: Section<BrightDigitSite>, withContext context: PublishingContext<BrightDigitSite>) throws -> PageContent {
+    let allChildren = try section.items.map {
+      try Self(item: $0, site: context.site)
+    }
     let featuredIndex = allChildren.firstIndex(where: { $0.isFeatured }) ?? allChildren.startIndex
     var children = allChildren
     children.remove(at: featuredIndex)
@@ -27,8 +29,8 @@ extension SectionItem {
     return SectionContent(builder: builder)
   }
 
-  static func content(forItem item: Item<BrightDigitSite>, withContext _: PublishingContext<BrightDigitSite>) throws -> PageContent {
-    let object = try Self(item: item)
+  static func content(forItem item: Item<BrightDigitSite>, withContext context: PublishingContext<BrightDigitSite>) throws -> PageContent {
+    let object = try Self(item: item, site: context.site)
     return ItemContent(item: object)
   }
 }
