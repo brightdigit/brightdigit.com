@@ -1224,14 +1224,17 @@ body.articles, body.tutorials {
   & > main {
     @apply  xl:container xl:mx-auto;
     & > header {
-      @apply py-2 mx-6;
+      @apply py-2 mx-6 md:flex-col md:mx-0 md:h-80 md:relative;
       & > header {
         & > img {
-          @apply h-40 w-full object-cover;
+          @apply h-40 md:h-80 w-full object-cover md:absolute md:z-0;
+        }
+        h1 {
+          @apply z-50 md:relative md:mx-6 md:backdrop-grayscale md:backdrop-brightness-50 md:backdrop-filter md:p-8 top-4 md:text-white md:text-6xl;
         }
       }
       & > footer {
-        @apply flex m-0 justify-between items-baseline;
+        @apply flex m-0 justify-between items-baseline md:absolute md:z-50 md:bottom-0;
         & > ol {
           @apply flex -ml-2;
           & > li {
