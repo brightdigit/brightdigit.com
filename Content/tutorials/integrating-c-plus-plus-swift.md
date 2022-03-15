@@ -3,10 +3,10 @@ title: Integrating ​​​C++ Libraries with Swift - How Speculid Is Built
 date: 2019-01-16 05:00
 description: Previously, I discussed using Objective-C to integrate C++ with Swift
   in Speculid. Today, I'm going to talk about the challenges of using C++.
-featuredImage: /media/wp-images/learningswift/2018/10/pixman_example.png
+featuredImage: /media/wp-images/learningswift/2018/10/cswift.png
 ---
 In the article [Objective-C and Swift - Being
-Friendly](https://learningswift.brightdigit.com/objective-c-and-swift-being-friendly/),
+Friendly](/tutorials/objective-c-and-swift-being-friendly/),
 I talked about how I used Objective-C to integrate C++ libraries with
 Swift in [Speculid](https://Speculid.com). Today, I'm going to talk
 about the challenges of using C++ Libraries in your XCode project.
@@ -22,7 +22,9 @@ Therefore, this meant packaging any required dependencies within the
 has other dependencies such as *XQuartz* meant that would be too
 cumbersome. Therefore, Cairo and librsvg became the obvious choice.
 
-<img src="/media/wp-images/learningswift/2018/11/440px-Librsvg.svg_-e1541095349996.png" class="wp-image-201" /><img src="/media/wp-images/learningswift/2018/11/500px-Cairo_banner_1.svg_-e1541095276942.png" class="wp-image-200" />
+<img src="/media/wp-images/learningswift/2018/11/440px-Librsvg.svg_-e1541095349996.png" class="full-size" />
+
+<img src="/media/wp-images/learningswift/2018/11/500px-Cairo_banner_1.svg_-e1541095276942.png" class="full-size" />
 
 ## Integrating Cairo and librsvg with Swift
 
@@ -165,7 +167,7 @@ under build phases. In other words, you should have something like this
 under **Build Phases**:
 
 <figure>
-<img src="/media/wp-images/learningswift/2018/10/pixman_example.png" class="wp-image-193" />
+<img src="/media/wp-images/learningswift/2018/10/pixman_example.png" class="full-size" />
 </figure>
 
 #### Updating References with `install_name_tool`
@@ -272,8 +274,8 @@ Let’s break this down...
 <!-- -->
 ```
     for dependency in $deps; do
-          install_name_tool -change $dependency @rpath/`basename $dependency` "$dylib"
-        done
+        install_name_tool -change $dependency @rpath/`basename $dependency` "$dylib"
+    done
 ```
 
 1.  And update the search path to use `@rpath`
@@ -305,4 +307,4 @@ on this very topic](https://www.youtube.com/watch?v=SxW5fs7_o18):
 > youtube https://www.youtube.com/watch?v=SxW5fs7o18
 
 What are some challenges you face using C++ Libraries? Have you ever
-using any libraries for an iOS app? Let me know in the comments.
+using any libraries for an iOS app? Let [me know on twitter.](https://twitter.com/intent/tweet?text=Integrating%20%E2%80%8B%E2%80%8B%E2%80%8BC++%20Libraries%20with%20Swift%20-%20How%20Speculid%20Is%20Built&url=https://brightdigit.com/tutorials/integrating-c-plus-plus-swift&via=leogdion)
