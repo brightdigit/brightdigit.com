@@ -88,7 +88,7 @@ CI can help you answer these questions quickly and help you create a
 better experience for them.
 
 <figure>
-<img src="https://i2.wp.com/brightdigit.com/wp-content/uploads/2020/02/ci-appstore-iphone-1.png?fit=640%2C360&amp;ssl=1" class="wp-image-1966" />
+<img src="/media/wp-images/brightdigit/2020/02/ci-appstore-iphone-1.png?fit=640%2C360&amp;ssl=1" class="wp-image-1966" />
 </figure>
 
 ## Continuous Integration & iOS
@@ -114,7 +114,7 @@ way. Some of it can be automated, but some can’t. This will mean you may
 need more time than developing apps for other platforms.
 
 <figure>
-<img src="https://i2.wp.com/brightdigit.com/wp-content/uploads/2020/02/people-doing-marathon-618612.jpg?fit=640%2C427&amp;ssl=1" class="wp-image-1968" />
+<img src="/media/wp-images/brightdigit/2020/02/people-doing-marathon-618612.jpg?fit=640%2C427&amp;ssl=1" class="wp-image-1968" />
 </figure>
 
 ## How to get started using Continuous Integration

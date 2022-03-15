@@ -131,7 +131,7 @@ planned tests, and their ability to question and review these tests if
 necessary. This is usually a steep learning curve.
 
 <figure>
-<img src="https://i0.wp.com/brightdigit.com/wp-content/uploads/2019/12/alfons-morales-YLSwjSy7stw-unsplash.jpg?fit=640%2C376&amp;ssl=1" class="wp-image-1868" />
+<img src="/media/wp-images/brightdigit/2019/12/alfons-morales-YLSwjSy7stw-unsplash.jpg?fit=640%2C376&amp;ssl=1" class="wp-image-1868" />
 </figure>
 
 ### TDD Resources

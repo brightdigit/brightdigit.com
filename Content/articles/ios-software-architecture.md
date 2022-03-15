@@ -64,7 +64,7 @@ There are a few architectural patterns that are very useful when making
 iOS apps:
 
 <figure>
-<img src="https://i0.wp.com/brightdigit.com/wp-content/uploads/2020/03/EAS.42-Slides.001-scaled.jpeg?fit=640%2C360&amp;ssl=1" class="wp-image-2045" />
+<img src="/media/wp-images/brightdigit/2020/03/EAS.42-Slides.001-scaled.jpeg?fit=640%2C360&amp;ssl=1" class="wp-image-2045" />
 </figure>
 
 ### Delegation and MVC with iOS Software Architecture
@@ -114,7 +114,7 @@ adapt to your user’s behavior, which is always a desirable trait in a
 well-designed app.
 
 <figure>
-<img src="https://i0.wp.com/brightdigit.com/wp-content/uploads/2020/03/EAS.42-Slides.002-1-scaled.jpeg?fit=640%2C360&amp;ssl=1" class="wp-image-2047" />
+<img src="/media/wp-images/brightdigit/2020/03/EAS.42-Slides.002-1-scaled.jpeg?fit=640%2C360&amp;ssl=1" class="wp-image-2047" />
 </figure>
 
 ### Reactive Programming in iOS Software Architecture

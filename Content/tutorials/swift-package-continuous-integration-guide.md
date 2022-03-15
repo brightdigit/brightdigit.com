@@ -410,7 +410,7 @@ order to support Linux when it comes to testing.
 ## Testing, CI, and Linux
 
 <figure>
-<img src="https://i1.wp.com/learningswift.brightdigit.com/wp-content/uploads/sites/2/2020/03/linux-test-swift.png?fit=640%2C316&amp;ssl=1" class="wp-image-875" />
+<img src="/media/wp-images/learningswift/sites/2/2020/03/linux-test-swift.png?fit=640%2C316&amp;ssl=1" class="wp-image-875" />
 </figure>
 
 When it comes to verifying whether your package works correctly, having
