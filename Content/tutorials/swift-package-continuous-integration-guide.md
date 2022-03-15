@@ -54,7 +54,7 @@ In the end, you should have:
 ## Specifying Platforms and Devices
 
 <figure>
-<img src="/media/wp-images/learningswift/2020/03/platforms-and-devices.png" class="wp-image-871" width="1864" height="878" />
+<img src="/media/wp-images/learningswift/2020/03/platforms-and-devices.png" class="full-size" width="1864" height="878" />
 </figure>
 
 Before distributing your Swift package, it’s important to note which
@@ -145,7 +145,9 @@ Integration for iOS Applications rather than Swift packages such as
 **[Travis-CI](https://travis-ci.com)** as well as the most recent
 **[GitHub Actions](https://github.com/features/actions)** allow for
 Swift Package Continuous
-Integration.<img src="/media/wp-images/learningswift/2020/02/TravisCI-Full-Color-2.png" class="alignnone size-full wp-image-841" width="642" height="201" />
+Integration.
+
+<img src="/media/wp-images/learningswift/2020/02/TravisCI-Full-Color-2.png" class="full-size" width="642" height="201" />
 
 ### Travis-CI
 
@@ -187,7 +189,7 @@ recently GitHub has also offered its own service with **[GitHub
 Actions](https://github.com/features/actions)**.
 
 <figure>
-<img src="/media/wp-images/learningswift/2020/02/44036562-2.png" class="wp-image-840" />
+<img src="/media/wp-images/learningswift/2020/02/44036562-2.png" class="full-size"  />
 </figure>
 
 ### Github Actions
@@ -267,7 +269,7 @@ support Linux with your Swift package, it is import to configure the
 Swift package continuous integration for a Linux environment as well.
 
 <figure>
-<img src="/media/wp-images/learningswift/2020/02/ubuntu_black-orange_hex.png" class="wp-image-839" width="379" height="86" />
+<img src="/media/wp-images/learningswift/2020/02/ubuntu_black-orange_hex.png" class="full-size" width="379" height="86" />
 </figure>
 
 ### Linux Support for Swift Package Continuous Integration
@@ -410,7 +412,7 @@ order to support Linux when it comes to testing.
 ## Testing, CI, and Linux
 
 <figure>
-<img src="/media/wp-images/learningswift/sites/2/2020/03/linux-test-swift.png?fit=640%2C316&amp;ssl=1" class="wp-image-875" />
+<img src="/media/wp-images/learningswift/sites/2/2020/03/linux-test-swift.png" class="full-size"  />
 </figure>
 
 When it comes to verifying whether your package works correctly, having
@@ -443,11 +445,7 @@ Code coverage is a good way to keep track of how well your unit tests
 are handling. Luckily there are some great services out there to keep
 track of your code coverage as you build your Swift package.
 
-<figure>
-<img src="/media/wp-images/learningswift/2020/02/7c4f41a-pink.png" class="wp-image-838" width="150" height="150" />
-</figure>
-
-#### CodeCov
+#### <img src="/media/wp-images/learningswift/2020/02/7c4f41a-pink.png" class="full-size thumbnail-inline"  /> CodeCov
 
 **[CodeCov.io](http://codecov.io/)** is one such service which we can
 plugin into our Swift Package Continuous Integration setup. However,
@@ -515,7 +513,7 @@ Now that we have completed setting up a code coverage report with
 **CodeCov.io**, Let’s talk about ensuring good code quality.
 
 <figure>
-<img src="/media/wp-images/learningswift/2020/02/medal-150x150.png" class="wp-image-837" />
+<img src="/media/wp-images/learningswift/2020/02/medal-150x150.png" class="full-size" />
 </figure>
 
 ## Code Quality and CI
@@ -688,7 +686,7 @@ Additionally there can easily be instances of false positives such as
 but determined approach to code quality.
 
 <figure>
-<img src="/media/wp-images/learningswift/2020/03/book-2.png" class="wp-image-877" />
+<img src="/media/wp-images/learningswift/2020/03/book-2.png" class="full-size"  />
 </figure>
 
 ## Documenting Your Swift Package
