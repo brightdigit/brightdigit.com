@@ -3,7 +3,7 @@ title: 'Upgrading Old Apps: The Dirty Job of iOS Development'
 date: 2021-03-26 06:27
 description: This is an introductory guide to upgrading old iOS apps, including where
   to start, what refactoring strategy to use, and other useful tips.
-featuredImage: /media/wp-images/brightdigit/2021/03/tim-gouw-1K9T5YiZ2WU-unsplash.jpg
+featuredImage: https://brightdigit.com/wp-content/uploads/2021/03/tim-gouw-1K9T5YiZ2WU-unsplash.jpg
 ---
 Upgrading an iOS app can be time-consuming. It involves the process of
 refactoring, rewriting, and replacing some or all of the app’s code.
@@ -20,12 +20,7 @@ It is true that app upgrades aren’t easy. But they don't need to be
 painful if you plan ahead and make some key decisions of how to approach
 the process.
 
-
-
-Part 1 of our episode with Antoine van der Lee of WeTransfer and
-SwiftLee about maintaining and migrating messy and old projects – how to
-refactor them, avoiding third party libraries, implementing a style
-guide, and more.
+> transistor https://share.transistor.fm/s/de8caf60
 
 To help people who maintain iOS apps, particularly product managers,
 I’ve put together this small introductory guide to this dirty job of iOS
@@ -89,10 +84,7 @@ The biggest benefits of this approach:
 -   This approach also encourages developers to have **healthy,
     effective habits of building good software** architecture.
 
-
-
-In this episode we talk with Joshua Greene and Michael Katz, authors of
-iOS Test Driven Development by Tutorials.
+> transisitor https://share.transistor.fm/s/eddb8632
 
 ## Refactoring Strategies for Upgrading iOS Apps
 
@@ -265,5 +257,5 @@ any questions you might have. **I offer some free consulting time each
 month for companies that are serious about moving their iOS app projects
 forward and are looking for help or guidance.** To book a free
 consultation call with me, [go here and book an
-appointment](https://doodle.com/mm/leodion/book-a-time). I look forward
+appointment](https://zcal.co/leogdion/consultation). I look forward
 to hearing from you and learning more about your app!

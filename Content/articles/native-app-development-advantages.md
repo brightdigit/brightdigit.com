@@ -4,7 +4,7 @@ date: 2019-10-18 05:59
 description: For a more optimal user experience and easier maintenance, there are
   important reasons to consider native app development.
 tags: Coding, Native iOS development, Programming, Software
-featuredImage: /media/wp-images/brightdigit/2019/10/featured_image.png
+featuredImage: https://brightdigit.com/wp-content/uploads/2019/10/featured_image.png
 ---
 While cross-platform mobile development has become a trend when it comes
 to making apps, people still ask us regularly when it is worth getting

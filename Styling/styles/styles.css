@@ -1245,7 +1245,7 @@ body.articles, body.tutorials {
           & > li {
             @apply contents;
             & > a {
-              @apply text-xl p-2  text-white md:flex md:items-baseline md:bg-bellow-500 md:bg-opacity-50 md:px-2 md:mr-2;
+              @apply text-xl p-2  md:text-white md:flex md:items-baseline md:bg-bellow-500 md:bg-opacity-50 md:px-2 md:mr-2;
               span {
                 @apply hidden md:inline md:text-xs md:mr-1 md:opacity-50;
                 &.name {
@@ -1292,11 +1292,18 @@ body.articles, body.tutorials {
           @apply w-auto h-auto;
           @apply xl:max-w-2xl xl:mx-auto;
         }
+        &.thumbnail-inline {
+          @apply h-6 w-auto inline-block my-auto;
+        }
       }
       iframe {
         @apply w-full h-auto my-2;
         aspect-ratio: 16/9;
         @apply xl:max-w-2xl xl:mx-auto;
+        &[src^="https://share.transistor.fm"]  {
+          @apply xl:max-w-none;
+          height: 180px;
+        }
       }
       code {
         color: #9B2393;
@@ -1358,7 +1365,7 @@ body.articles, body.tutorials {
         & > li {
           @apply contents;
           & > a {
-            @apply text-xl p-2 flex items-baseline mr-1 md:mr-4 md:text-2xl md:bg-bellow-500 md:p-4 md:px-4 md:rounded-lg text-black;
+            @apply text-xl p-2 text-bellow-600 md:text-black flex items-baseline mr-1 md:mr-4 md:text-2xl md:bg-bellow-500 md:p-4 md:px-4 md:rounded-lg text-black;
             span {
               @apply text-base mr-1 md:text-lg;
               &.action {

@@ -3,7 +3,7 @@ title: What Mac should a Swift developer buy?
 date: 2019-06-18 11:48
 description: 'For those learning Swift, it can be a challenge to choose the right
   Mac —our guidelines depending on your experience and budget:'
-featuredImage: /media/wp-images/brightdigit/2019/06/vzjdyl5jvxy.jpg
+featuredImage: https://brightdigit.com/wp-content/uploads/2019/06/vzjdyl5jvxy.jpg
 ---
 For beginners learning Swift, it can be a challenge to find the right
 Mac for developers. As with many things, I strongly believe you

@@ -4,7 +4,10 @@ date: 2020-02-04 05:00
 description: SwiftUI promieses to change the way we do Apple-based app development.
   Learn about what makes SwiftUI great and how your app can benefit.
 tags: apple-development, swift, swiftui, UI
-featuredImage: /media/wp-images/brightdigit/2020/02/xcode-lansing-codes.png
+featuredImage: https://brightdigit.com/wp-content/uploads/2020/02/xcode-lansing-codes.png
+subscriptionCTA: If you’re interested in keeping up to date with what’s new for iOS and
+Apple development, I invite you to sign up for my
+newsletter...
 ---
 SwiftUI is Apple’s new framework for building user interfaces (UI). It
 promises **simplicity and consistency that's been difficult to find
@@ -82,10 +85,6 @@ This is possible because SwiftUI works in Apple’s latest development
 environment, XCode 11.
 
 > transistor https://share.transistor.fm/s/03051561
-
-How does Functional Reactive Programming work?  
-**[Check out Episode 19 with Jason
-Anderson](https://share.transistor.fm/s/03051561)**
 
 ## What SwiftUI is good for?
 
@@ -194,9 +193,3 @@ blog](https://learningswift.brightdigit.com/tag/swiftui/)** as well as:
     Wals](https://www.donnywals.com/understanding-combines-publishers-and-subscribers/)
 -   [Combine and SwiftUI views by Majid
     Jabrayilov](https://swiftwithmajid.com/2019/11/27/combine-and-swiftui-views/)
-
-If you’re interested in keeping up to date with what’s new for iOS and
-Apple development, I invite you to [sign up for my
-newsletter](https://brightdigit.com/subscribe/). I will let you know
-when I put out new content and if there are important things you should
-know when it comes to creating or updating your apps.

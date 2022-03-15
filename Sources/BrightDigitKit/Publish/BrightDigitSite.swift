@@ -37,6 +37,7 @@ public struct BrightDigitSite: Website {
 
   static let defaultSteps: [PublishingStep<BrightDigitSite>] = [
     .optional(.copyResources()),
+    .installPlugin(.transistor()),
     .installPlugin(.youtube()),
     .installPlugin(.splash(withClassPrefix: "")),
     .addMarkdownFiles(),

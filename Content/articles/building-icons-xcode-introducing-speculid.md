@@ -3,7 +3,7 @@ title: Building Icons in Xcode - Introducing Speculid
 date: 2016-10-12 14:25
 description: We developed Speculid for Mac – Now you can take your vector graphics
   and raster images and render them to all their correct sizes
-featuredImage: /media/wp-images/brightdigit/2016/10/XcodeUnorganizedAssets.png
+featuredImage: https://brightdigit.com/wp-content/uploads/2016/10/XcodeUnorganizedAssets.png
 ---
 <img src="https://www.brightdigit.com/wp-content/uploads/2016/10/XcodeUnorganizedAssets.png" class="aligncenter size-full wp-image-289" width="1024" height="680" />
 Have you ever had a difficult time getting all the correct sizes
