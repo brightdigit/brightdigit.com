@@ -70,7 +70,7 @@ struct NewsletterItem: SectionItem {
     [.contentBody(source.body)]
   }
 
-  init(item: Item<BrightDigitSite>) throws {
+  init(item: Item<BrightDigitSite>, site _: BrightDigitSite) throws {
     source = item
     let featuredImageURL = item.featuredImageURL
     let archiveURL = item.metadata.longArchiveURL.flatMap(URL.init(string:))

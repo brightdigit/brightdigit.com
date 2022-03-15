@@ -25,6 +25,7 @@ public struct BrightDigitSite: Website {
     var audioDuration: TimeInterval?
     var videoDuration: TimeInterval?
     var transistorID: String?
+    var subscriptionCTA: String?
   }
 
   // Update these properties to configure your website:
