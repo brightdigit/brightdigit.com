@@ -177,7 +177,7 @@ out everyone’s roles and responsibilities before you start.
 
 ------------------------------------------------------------------------
 
-
+> transistor https://share.transistor.fm/s/a14f868f
 
 *Listen to our episode with Kyle Newsome on Continuous Integration to
 learn more*
