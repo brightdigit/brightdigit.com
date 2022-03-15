@@ -129,27 +129,19 @@ sandboxing the user may have differing access to the actual file system.
 There are few method to porting code over from iOS to macOS. All these
 methods are valid and could be used together in various ways:
 
--   Just Copy the Code
-
--   -   more code to maintain
+*   Just Copy the Code
+    -   more code to maintain
     -   most flexible
     -   least consistent
-
--   Use Lower-Level Common Framework
-
--   -   less code to maintain
+*   Use Lower-Level Common Framework
+    -   less code to maintain
     -   more difficult to provide functionality
     -   some consistency
-
--   Use Adapter Pattern
-
--   -   less code to maintain than copying
+*   Use Adapter Pattern
+    -   less code to maintain than copying
     -   more consistency with some flexibility
-
--   Preprocessor Directives
-
--   -   use for small pieces of code which have little difference (i.e.
-        NSColor / UIColor, etc…)
+*   Preprocessor Directives
+    -   use for small pieces of code which have little difference (i.e. NSColor / UIColor, etc…)
 
 <img src="/media/wp-images/brightdigit/2018/02/Marzipan_fruit_with_nervous_expression-430.jpg" class="wp-image-618 size-full" width="1920" height="1440" />
 
