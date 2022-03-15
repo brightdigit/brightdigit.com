@@ -4,7 +4,8 @@ date: 2020-12-08 03:47
 description: Learn the best strategies for how to manage error handling when developing
   apps in Swift. See examples of processes for common Swift errors
 tags: swift, swiftui
-featuredImage: /media/wp-images/brightdigit/2020/12/Screen-Shot-2020-12-03-at-7.27.00-AM-3.png
+featuredImage: https://brightdigit.com/wp-content/uploads/2020/12/Screen-Shot-2020-12-03-at-7.27.00-AM-3.png
+subscriptionCTA: Subscribe to the BrightDigit newsletter for more on best practices with Swift
 ---
 With the use of Swift as the sole language for creating apps with Apple,
 it is now essential to know how to plan for, and respond to, Swift-based
@@ -53,7 +54,7 @@ A successful testing approach for Swift should then include this
 functionality, allowing you to be able to proactively fix and, more
 importantly, anticipate and accommodate expected errors.  
 
--   **Communicating With Users**  
+* **Communicating With Users**  
     This last part is essential to delivering a quality user experience.
     So many apps that experience errors do an inadequate job of
     communicating to the user how and why an error occurs, or what the
@@ -98,7 +99,7 @@ overwhelming to a non-technical user. As a rule, if the information is
 not relevant to the user experience, it should be hidden from the user.
 
 <figure>
-<img src="https://brightdigit.com/wp-content/uploads/2020/12/Screen-Shot-2020-12-03-at-7.27.00-AM-3.png" class="wp-image-2252" alt="From Apple&#39;s Human Interface Guidelines on Alerts" /><figcaption aria-hidden="true"><a href="https://developer.apple.com/design/human-interface-guidelines/ios/views/alerts/">From Apple's Human Interface Guidelines on Alerts</a></figcaption>
+<img class="full-size" src="https://brightdigit.com/wp-content/uploads/2020/12/Screen-Shot-2020-12-03-at-7.27.00-AM-3.png" class="wp-image-2252" alt="From Apple&#39;s Human Interface Guidelines on Alerts" /><figcaption aria-hidden="true"><a href="https://developer.apple.com/design/human-interface-guidelines/ios/views/alerts/">From Apple's Human Interface Guidelines on Alerts</a></figcaption>
 </figure>
 
 ### Permissions – An Informed User is a Happy User
@@ -126,10 +127,10 @@ There are two key considerations when dealing with permissions. The
 first is making it clear to the user why the app needs access to a given
 Protected Resource. Apple itself is explicit about this:
 
-***“Accurately and concisely explaining to the user why your app needs
+> Accurately and concisely explaining to the user why your app needs
 access to sensitive data, typically in one complete sentence, lets the
 user make an informed decision and improves the chances that they’ll
-grant access.”***
+grant access.
 
 Having an easy-to-understand explanation then is not only needed, it
 makes for a better user experience and ultimately, a more successful
@@ -169,21 +170,9 @@ storyboard file, an image, a database, or a key piece of code. The app
 needs to close and a bug report sent to the developer to review the
 error and make fixes. 
 
+> transistor https://share.transistor.fm/s/03d8db53
+
 Indicate to the user that something has gone seriously wrong and the app
 needs to shut down. Perhaps offer them a button to close the app and
 assure them that a bug report has been sent. You can also let them know
-if it’s not just a glitch or the user has tampered with the app.*  *
-
-> > transistor https://share.transistor.fm/s/03d8db53
-
-## Subscribe to the BrightDigit newsletter for more on best practices with Swift
-
- As a specialist iOS and Apple developer, I’m always looking to the
-future to see what is coming next and how we can build better apps for
-our customers. Being able to proactively address error handling in Swift
-is a big part of not only building a better app but also optimizing the
-time and resources you need to manage an app over its lifetime.
-
-If that’s something you and your business are committed to,
-[subscribe](https://brightdigit.com/subscribe/), where I’ll let you know
-the latest best practices for making and maintaining Apple apps.
+if it’s not just a glitch or the user has tampered with the app.

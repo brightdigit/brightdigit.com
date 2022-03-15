@@ -4,7 +4,7 @@ date: 2020-04-13 06:30
 description: 2020 is the year the Apple Watch will come into its own, moving from
   being a curiosity and a status object to a useful device for everyone.
 tags: Apple Hardware, Apple Watch, apple-development, swiftui
-featuredImage: /media/wp-images/brightdigit/2020/03/daniel-canibano-JE3ASpuEld4-unsplash-1.jpg
+featuredImage: https://brightdigit.com/wp-content/uploads/2020/03/daniel-canibano-JE3ASpuEld4-unsplash-1.jpg
 ---
 2020 is the year you should start building that Apple Watch app you’ve
 been thinking about making.

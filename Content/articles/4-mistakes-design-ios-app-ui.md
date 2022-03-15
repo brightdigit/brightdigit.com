@@ -3,7 +3,7 @@ title: 4 Mistakes to Avoid When Designing Your iOS App UI
 date: 2021-05-25 20:36
 description: Learn four mistakes to avoid when designing your iOS App's UI so you
   can deliver a great experience to your users while keeping it easy to maintain.
-featuredImage: /media/wp-images/brightdigit/2021/05/szabo-viktor-k1A0LleY4Mo-unsplash.jpg
+featuredImage: https://brightdigit.com/wp-content/uploads/2021/05/szabo-viktor-k1A0LleY4Mo-unsplash.jpg
 ---
 It's common for UI design to be one of the last things development teams
 think about when creating iOS apps. This includes situations when the

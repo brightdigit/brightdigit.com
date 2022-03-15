@@ -3,7 +3,8 @@ title: Choosing the Best Backend for your iOS App
 date: 2019-07-30 12:19
 description: Choosing the best backend for your iOS App can be a challenge. Our guide
   to questions on app servers, databases & cloud services.
-featuredImage: /media/wp-images/brightdigit/2019/07/Untitled-design-3-1.png
+featuredImage: https://brightdigit.com/wp-content/uploads/2019/07/Untitled-design-3-1.png
+subscriptionCTA: Want even MORE info?
 ---
 Choosing the best backend for your iOS App can be a challenge. The
 options are robust and depend on a number of questions like--do you need

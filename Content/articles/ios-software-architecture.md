@@ -5,7 +5,8 @@ description: You've started out with an idea to build an iOS app and you need to
   its software architecture. Here is a quick overview of what you need to know.
 tags: apple-development, iOS development, ios software architecture, software design,
   swiftui
-featuredImage: /media/wp-images/brightdigit/2020/03/EAS.42-Slides.001-scaled.jpeg
+featuredImage: https://brightdigit.com/wp-content/uploads/2020/03/EAS.42-Slides.001-scaled.jpeg
+subscriptionCTA: Want more about iOS software architecture on how to create better iOS apps?
 ---
 You’ve made the decision to build your own iOS app. Therefore, you’ve
 started out with an idea based on a customer need. Also how the app will
@@ -133,7 +134,7 @@ reacting accordingly. This is useful for iOS apps that need to use a
 resource library that isn’t written in Swift. It allows you to bridge
 from another programming language into Swift.
 
-
+> transistor https://share.transistor.fm/s/c8f9aa41
 
 ## Why Code Modularity Matters in iOS Software Architecture
 
@@ -175,7 +176,7 @@ are interested in learning how to use Continuous Integration with your
 Swift Packages, [check out our developer article
 here.](https://learningswift.brightdigit.com/swift-package-continuous-integration-guide/)
 
-
+> transistor https://share.transistor.fm/s/eddb8632
 
 ## Why Maintaining Code Quality Matters
 
@@ -224,7 +225,7 @@ who wrote the code and the person maintaining it are different people.
 Overall, keeping your complexity low by limiting file and function
 length means adding features and fixing bugs takes less effort.
 
-
+> transistor https://share.transistor.fm/s/a14f868f
 
 ### Code Reviews
 
@@ -259,12 +260,4 @@ you will find:
 
 I believe these are things we should all try to observe. You’ll find it
 not only improves the morale of your developers, but it will also save
-you a lot of time and money in the long term.  
-
-## Want more about iOS software architecture on how to create better iOS apps?
-
-If you want to learn ways to save time and money and make smart
-decisions about developing an iOS app for your business, I invite you to
-[sign up for my newsletter](https://brightdigit.com/subscribe/). I will
-let you know when I put out new content like this and if there are
-important things you should know.
+you a lot of time and money in the long term.

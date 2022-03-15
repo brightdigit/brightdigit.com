@@ -3,7 +3,7 @@ title: 'iOS Continuous Integration: How To Avoid Merge Hell'
 date: 2020-03-02 05:00
 description: Continuous integration is the practice where small code changes are tested
   to ensure nothing breaks. Learn how it makes deploying your iOS app easy!
-featuredImage: /media/wp-images/brightdigit/2020/02/ci-appstore-iphone-1.png
+featuredImage: https://brightdigit.com/wp-content/uploads/2020/02/ci-appstore-iphone-1.png
 ---
 Continuous integration is the software practice where small code changes
 are frequently tested with the rest of the code to ensure nothing breaks

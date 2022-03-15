@@ -4,7 +4,7 @@ date: 2020-11-17 04:36
 description: Traditional management and iOS development don't work well together.
   How can we fix this? What I've found is the best iOS team managers share a few traits.
 tags: iOS, swiftui
-featuredImage: /media/wp-images/brightdigit/2020/10/Feedback.mp3
+featuredImage: https://brightdigit.com/wp-content/uploads/2020/10/Feedback.mp3
 ---
 In any organization, you have a hierarchy. The opinions or comments of
 executives and managers carry authority employees will feel compelled to

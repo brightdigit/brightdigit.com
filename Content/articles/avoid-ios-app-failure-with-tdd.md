@@ -4,7 +4,7 @@ date: 2020-01-06 07:57
 description: Test-Driven Development or TDD is a way to ensure code is of good quality
   and will do its job. A guide to understanding and using TDD to make better apps
 tags: tdd, test driven development, unit testing
-featuredImage: /media/wp-images/brightdigit/2019/12/f16515a9-43da-44fe-862d-43ac3eafad23.png
+featuredImage: https://brightdigit.com/wp-content/uploads/2019/12/f16515a9-43da-44fe-862d-43ac3eafad23.png
 ---
 It is surprisingly easy to build the wrong thing in iOS app development.
 For instance we can easily build something that doesn’t meet client or

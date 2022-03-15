@@ -4,7 +4,7 @@ date: 2020-10-06 12:26
 description: Apple Watch Series 6 with WatchOS 7 presents exciting opportunities for
   Apple app developers and their customers with the power of watch face complications.
 tags: swiftui
-featuredImage: /media/wp-images/brightdigit/2020/10/luke-chesser-vCF5sB7QecM-unsplash.jpg
+featuredImage: https://brightdigit.com/wp-content/uploads/2020/10/luke-chesser-vCF5sB7QecM-unsplash.jpg
 ---
 Apple unveiled its brand-new Apple Watch Series 6 on September 15 with
 some fanfare. This was followed the next day by the release of the

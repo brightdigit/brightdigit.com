@@ -4,7 +4,7 @@ date: 2020-08-21 05:24
 description: Apple announced at a virtual WWDC 2020 lot of things that have the potential
   to really shift the way we create software. Here's what you need to know...
 tags: iOS 14, macOS Big Sur, swiftui, WWDC 2020
-featuredImage: /media/wp-images/brightdigit/2020/08/IOS_14_Homescreen.png
+featuredImage: https://brightdigit.com/wp-content/uploads/2020/08/IOS_14_Homescreen.png
 ---
 For those of us heavily invested in iOS development, it was unfortunate
 to have to miss this year’s Apple Worldwide Developers Conference 2020

@@ -4,7 +4,7 @@ date: 2019-11-24 19:56
 description: A guide for anyone looking to hire an iOS developer and needs to know
   what kind of knowledge and experience you should be looking for
 tags: hiring, human resources, iOS development, swiftui
-featuredImage: /media/wp-images/brightdigit/2019/11/linkedin-sales-navigator-W3Jl3jREpDY-unsplash.jpg
+featuredImage: https://brightdigit.com/wp-content/uploads/2019/11/linkedin-sales-navigator-W3Jl3jREpDY-unsplash.jpg
 ---
 When you want to hire an iOS developer to build an app for you, it can
 be hard to know what they need to know if you’re not a developer
