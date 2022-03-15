@@ -32,7 +32,7 @@ fluctuate between  150 and 125 beats per minute - for 15 - 30 seconds
 each. Right now I use the built-in Workout app on my Apple Watch and
 check my heart rate throughout my exercise. \[caption
 id="attachment\_33" align="alignnone"
-width="1024"\]<img src="https://learningswift.brightdigit.com/wp-content/uploads/sites/2/2018/05/IMG_208F0706D0D0-1-1024x534.jpeg" class="wp-image-33 size-large" width="1024" height="534" />
+width="1024"\]<img src="/media/wp-images/learningswift/2018/05/IMG_208F0706D0D0-1-1024x534.jpeg" class="wp-image-33 size-large" width="1024" height="534" />
 An example of one of my workouts. Notice how fluctuate my heart rate
 with the intensity of the workout.\[/caption\] However **a custom app
 which could notify me of when I reach certain heart rates for a period
@@ -53,7 +53,7 @@ rate `HKQuantityType`:
 `HKObjectType` is `HKWorkoutType`, which is accessed by calling
 `HKObjectType.workoutType()`. \[caption id="attachment\_41"
 align="aligncenter"
-width="800"\]<img src="https://learningswift.brightdigit.com/wp-content/uploads/sites/2/2018/05/diagram.png" class="wp-image-41 size-full" width="800" height="275" />
+width="800"\]<img src="/media/wp-images/learningswift/2018/05/diagram.png" class="wp-image-41 size-full" width="800" height="275" />
 HKObjectType Hierarchy\[/caption\] The first thing we are going to use
 with these types is request permission from the user to read and write
 to HealthKit.
@@ -75,7 +75,7 @@ instantiate an object to use throughout your app. With the
 (`HKObjectType` subclass for data samples) to write and an optional
 `Set` of `HKObjectType` to read from. \[caption id="attachment\_42"
 align="aligncenter"
-width="505"\]<img src="https://learningswift.brightdigit.com/wp-content/uploads/sites/2/2018/05/Artboard-1-253x300.png" class="wp-image-42" width="505" height="600" />
+width="505"\]<img src="/media/wp-images/learningswift/2018/05/Artboard-1-253x300.png" class="wp-image-42" width="505" height="600" />
 Diagram of Requesting Authorization\[/caption\] **Whenever this method
 with new** `HKObjectType` **or** `HKSampleType` **objects (such as the
 first time the app is run), the permission screen is shown.**

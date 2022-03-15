@@ -65,7 +65,7 @@ allow more flexibility. However, that does not mean we can’t use
 protocols in order simplify the consumption of those types in functions.
 
 <figure>
-<img src="https://learningswift.brightdigit.com/wp-content/uploads/sites/2/2019/02/401od83ke6o-1024x680.jpg" class="wp-image-458" width="512" height="340" />
+<img src="/media/wp-images/learningswift/2019/02/401od83ke6o-1024x680.jpg" class="wp-image-458" width="512" height="340" />
 </figure>
 
 ## Using Protocols with Codable
@@ -178,7 +178,7 @@ time adding similar functionality using *Protocols*.** Next, let's
 cleanup the property names.
 
 <figure>
-<img src="https://learningswift.brightdigit.com/wp-content/uploads/sites/2/2019/02/hrtdxy5urbu.jpg" width="400" height="267" />
+<img src="/media/wp-images/learningswift/2019/02/hrtdxy5urbu.jpg" width="400" height="267" />
 </figure>
 
 ## Custom Property Names
@@ -220,7 +220,7 @@ enumeration. **In short, you want to use the simplest and most
 consistent strategy for mapping property names or JSON keys.**
 
 <figure>
-<img src="https://learningswift.brightdigit.com/wp-content/uploads/sites/2/2019/02/zmmxsrmsoi8.jpg" width="400" height="281" />
+<img src="/media/wp-images/learningswift/2019/02/zmmxsrmsoi8.jpg" width="400" height="281" />
 </figure>
 
 ## Custom Property Values
@@ -278,7 +278,7 @@ In conclusion, by customizing the DateFormatter, dates can be decoded as
 Date property values. However, colors will be slightly more challenging.
 
 <figure>
-<img src="https://learningswift.brightdigit.com/wp-content/uploads/sites/2/2019/02/f6xv0xs9jwg.jpg" width="400" height="300" />
+<img src="/media/wp-images/learningswift/2019/02/f6xv0xs9jwg.jpg" width="400" height="300" />
 </figure>
 
 ### Custom Decoding of Property Values
@@ -345,7 +345,7 @@ extension Color {
 ```
 
 <figure>
-<img src="https://learningswift.brightdigit.com/wp-content/uploads/sites/2/2019/02/xde_p0expc8.jpg" width="400" height="267" />
+<img src="/media/wp-images/learningswift/2019/02/xde_p0expc8.jpg" width="400" height="267" />
 </figure>
 
 ## Make Codable Work For Us

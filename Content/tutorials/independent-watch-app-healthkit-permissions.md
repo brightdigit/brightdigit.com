@@ -52,14 +52,14 @@ To resolve this issue, create a new *Property List* **with no target
 set** in your project at the root:
 
 <figure>
-<img src="https://learningswift.brightdigit.com/wp-content/uploads/sites/2/2019/09/Screen-Shot-2019-09-17-at-2.25.49-PM.png" class="wp-image-667" />
+<img src="/media/wp-images/learningswift/2019/09/Screen-Shot-2019-09-17-at-2.25.49-PM.png" class="wp-image-667" />
 </figure>
 
 Inside that *Property List* add (or copy) the required *HealthKit
 Property Strings* to your new *Property List* file.
 
 <figure>
-<img src="https://learningswift.brightdigit.com/wp-content/uploads/sites/2/2019/09/Screen-Shot-2019-09-17-at-2.27.48-PM.png" class="wp-image-668" />
+<img src="/media/wp-images/learningswift/2019/09/Screen-Shot-2019-09-17-at-2.27.48-PM.png" class="wp-image-668" />
 </figure>
 
 In short, these properties should be the only required properties in
