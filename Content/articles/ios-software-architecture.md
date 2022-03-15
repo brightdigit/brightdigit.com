@@ -5,7 +5,7 @@ description: You've started out with an idea to build an iOS app and you need to
   its software architecture. Here is a quick overview of what you need to know.
 tags: apple-development, iOS development, ios software architecture, software design,
   swiftui
-featuredImage: https://brightdigit.com/wp-content/uploads/2020/03/EAS.42-Slides.001-scaled.jpeg
+featuredImage: /media/wp-images/brightdigit/2020/03/EAS.42-Slides.001-scaled.jpeg
 subscriptionCTA: Want more about iOS software architecture on how to create better iOS apps?
 ---
 You’ve made the decision to build your own iOS app. Therefore, you’ve
@@ -14,7 +14,7 @@ meet that need and what it will look like. It’s at this point you should
 think about iOS software architecture.  
 
 <figure>
-<img src="https://brightdigit.com/wp-content/uploads/2020/03/amelie-mourichon-hcLSA1MiU3A-unsplash-1024x768.jpg" class="wp-image-2043" width="1024" height="768" />
+<img src="/media/wp-images/brightdigit/2020/03/amelie-mourichon-hcLSA1MiU3A-unsplash-1024x768.jpg" class="wp-image-2043" width="1024" height="768" />
 </figure>
 
 Software architecture is the term we use to describe how major

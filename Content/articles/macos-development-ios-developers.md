@@ -4,7 +4,7 @@ date: 2018-02-16 05:00
 description: There are good reasons to get into Mac development if you are already
   an iOS developer.
 tags: apple-development
-featuredImage: https://brightdigit.com/wp-content/uploads/2018/02/list-394.png
+featuredImage: /media/wp-images/brightdigit/2018/02/list-394.png
 ---
 There has been a recent rumor about Apple allowing developers to create
 multi-platform apps for macOS and iOS. The hope is that iOS developers
@@ -18,7 +18,7 @@ macOS apps.
 There are some very good reasons to get
 into Mac development if you already are an iOS developer.
 
-### <img src="https://brightdigit.com/wp-content/uploads/2018/02/discount-383-150x150.png" class="thumbnail-inline" width="150" height="150" alt="price tag icon" /> Market Potential
+### <img src="/media/wp-images/brightdigit/2018/02/discount-383-150x150.png" class="thumbnail-inline" width="150" height="150" alt="price tag icon" /> Market Potential
 
 Many app developers will tell you how difficult it is to get users to
 find your app, use the app, and then give you money through some means.
@@ -30,7 +30,7 @@ comes that your software is more than just another social network app or
 streaming app but a professional application for creating or building
 something.
 
-### <img src="https://brightdigit.com/wp-content/uploads/2018/02/responsive-388-150x150.png" class="thumbnail-inline" width="150" height="150" alt="cross apple communication" />  Companion App
+### <img src="/media/wp-images/brightdigit/2018/02/responsive-388-150x150.png" class="thumbnail-inline" width="150" height="150" alt="cross apple communication" />  Companion App
 
 
 By building a macOS companion app for already existing iOS app, you can
@@ -60,7 +60,7 @@ other hand is based around Cocoa and uses AppKit for its UI framework.
 The main differences come down to methodologies, language support, UX,
 and hardware.
 
-<img src="https://brightdigit.com/wp-content/uploads/2017/12/uczf1sxcejo.jpg" class="size-full wp-image-178" width="1600" height="1068" />
+<img src="/media/wp-images/brightdigit/2017/12/uczf1sxcejo.jpg" class="size-full wp-image-178" width="1600" height="1068" />
 
 #### Methodologies
 
@@ -86,7 +86,7 @@ which are used throughout Cocoa Touch and UIKit. Also the prefixes for
 many classes use the NextStep prefix “NS-“ still rather than the UIKit
 prefix “UI-“.
 
-<img src="https://brightdigit.com/wp-content/uploads/2018/02/lilly-rum-342740-425.jpg" class="wp-image-621 size-full" width="1920" height="1280" />
+<img src="/media/wp-images/brightdigit/2018/02/lilly-rum-342740-425.jpg" class="wp-image-621 size-full" width="1920" height="1280" />
 
 #### Development Workflow
 
@@ -100,7 +100,7 @@ sizes have grown in variety quite a bit but macs have a practically
 infinite possibilities with screen sizes. Of course macOS apps unlike
 iOS apps don’t always run in full-screen.
 
-## <img src="https://brightdigit.com/wp-content/uploads/2018/02/kaitlyn-baker-422999-409.jpg" class="size-full wp-image-622" width="1920" height="1280" />
+## <img src="/media/wp-images/brightdigit/2018/02/kaitlyn-baker-422999-409.jpg" class="size-full wp-image-622" width="1920" height="1280" />
 
 #### Human Computer Interaction
 
@@ -122,7 +122,7 @@ the way documents and the file system is handled. macOS comes with more
 complex document handling and depending on how your app is setup with
 sandboxing the user may have differing access to the actual file system.
 
-<img src="https://brightdigit.com/wp-content/uploads/2018/02/vadim-sherbakov-36-437.jpg" class="wp-image-619 size-full" width="1920" height="1282" />
+<img src="/media/wp-images/brightdigit/2018/02/vadim-sherbakov-36-437.jpg" class="wp-image-619 size-full" width="1920" height="1282" />
 
 ## Remedies For Porting to macOS
 
@@ -151,7 +151,7 @@ methods are valid and could be used together in various ways:
 -   -   use for small pieces of code which have little difference (i.e.
         NSColor / UIColor, etc…)
 
-<img src="https://brightdigit.com/wp-content/uploads/2018/02/Marzipan_fruit_with_nervous_expression-430.jpg" class="wp-image-618 size-full" width="1920" height="1440" />
+<img src="/media/wp-images/brightdigit/2018/02/Marzipan_fruit_with_nervous_expression-430.jpg" class="wp-image-618 size-full" width="1920" height="1440" />
 
 ## What’s the Future of macOS Development?
 

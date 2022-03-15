@@ -4,7 +4,7 @@ date: 2019-11-24 19:56
 description: A guide for anyone looking to hire an iOS developer and needs to know
   what kind of knowledge and experience you should be looking for
 tags: hiring, human resources, iOS development, swiftui
-featuredImage: https://brightdigit.com/wp-content/uploads/2019/11/linkedin-sales-navigator-W3Jl3jREpDY-unsplash.jpg
+featuredImage: /media/wp-images/brightdigit/2019/11/linkedin-sales-navigator-W3Jl3jREpDY-unsplash.jpg
 ---
 When you want to hire an iOS developer to build an app for you, it can
 be hard to know what they need to know if you’re not a developer
@@ -12,7 +12,7 @@ yourself. This is pretty significant, as choosing the *right* developer
 could have huge consequences once the project starts.
 
 <figure>
-<img src="https://brightdigit.com/wp-content/uploads/2019/11/linkedin-sales-navigator-W3Jl3jREpDY-unsplash-1024x512.jpg" class="wp-image-1794" width="1024" height="512" />
+<img src="/media/wp-images/brightdigit/2019/11/linkedin-sales-navigator-W3Jl3jREpDY-unsplash-1024x512.jpg" class="wp-image-1794" width="1024" height="512" />
 </figure>
 
 This post is a guide for **anyone looking to hire an iOS developer** and
@@ -31,7 +31,7 @@ professionals use, but there are a couple of things you should know,
 otherwise, the rest of this article is going to be confusing:
 
 <figure>
-<img src="https://brightdigit.com/wp-content/uploads/2019/11/campaign-creators-iEiUITs149M-unsplash-1024x512.jpg" class="wp-image-1792" width="1024" height="512" />
+<img src="/media/wp-images/brightdigit/2019/11/campaign-creators-iEiUITs149M-unsplash-1024x512.jpg" class="wp-image-1792" width="1024" height="512" />
 </figure>
 
 ### User Interface
@@ -54,7 +54,7 @@ a product and how you want the user to feel when they use it, the plan
 you have to get the user to interact with your app.**
 
 <figure>
-<img src="https://brightdigit.com/wp-content/uploads/2019/11/alex-wong-l5Tzv1alcps-unsplash-1024x512.jpg" class="wp-image-1791" />
+<img src="/media/wp-images/brightdigit/2019/11/alex-wong-l5Tzv1alcps-unsplash-1024x512.jpg" class="wp-image-1791" />
 </figure>
 
 ### Software Framework
@@ -156,7 +156,7 @@ this year, many developers have been moving away from *UIKit* and
 *Storyboards*, flocking to this new way to develop a user interface. 
 
 <figure>
-<img src="https://brightdigit.com/wp-content/uploads/2019/11/marc-olivier-jodoin-TQUERQGUZ8-unsplash-1024x512.jpg" class="wp-image-1795" />
+<img src="/media/wp-images/brightdigit/2019/11/marc-olivier-jodoin-TQUERQGUZ8-unsplash-1024x512.jpg" class="wp-image-1795" />
 </figure>
 
 ## Can they be critically self-reflective?
@@ -178,7 +178,7 @@ libraries and frameworks they use, including what Apple might recommend
 for iOS and Apple developers.
 
 <figure>
-<img src="https://brightdigit.com/wp-content/uploads/2019/11/florian-krumm-yLDabpoCL3s-unsplash-1024x512.jpg" class="wp-image-1793" />
+<img src="/media/wp-images/brightdigit/2019/11/florian-krumm-yLDabpoCL3s-unsplash-1024x512.jpg" class="wp-image-1793" />
 </figure>
 
 ## If they are front-end developers, do they at least know a little about the back-end?

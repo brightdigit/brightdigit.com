@@ -3,7 +3,7 @@ title: 4 Mistakes to Avoid When Designing Your iOS App UI
 date: 2021-05-25 20:36
 description: Learn four mistakes to avoid when designing your iOS App's UI so you
   can deliver a great experience to your users while keeping it easy to maintain.
-featuredImage: https://brightdigit.com/wp-content/uploads/2021/05/szabo-viktor-k1A0LleY4Mo-unsplash.jpg
+featuredImage: /media/wp-images/brightdigit/2021/05/szabo-viktor-k1A0LleY4Mo-unsplash.jpg
 ---
 It's common for UI design to be one of the last things development teams
 think about when creating iOS apps. This includes situations when the
@@ -25,7 +25,7 @@ a little bit of planning goes a long way in avoiding common mistakes.
 with UI designers.**
 
 <figure>
-<img src="https://brightdigit.com/wp-content/uploads/2021/05/amelie-mourichon-wusOJ-2uY6w-unsplash-1-1024x512.jpg" class="wp-image-2334" width="1024" height="512" />
+<img src="/media/wp-images/brightdigit/2021/05/amelie-mourichon-wusOJ-2uY6w-unsplash-1-1024x512.jpg" class="wp-image-2334" width="1024" height="512" />
 </figure>
 
 ## Mistake 1: Failing to Communicate
@@ -81,7 +81,7 @@ And with the widespread deployment of SwiftUI, Apple is encouraging us
 to make it easy for ourselves.
 
 <figure>
-<img src="https://brightdigit.com/wp-content/uploads/2021/05/harpal-singh-_zKxPsGOGKg-unsplash-1024x512.jpg" class="wp-image-2335" width="1024" height="512" />
+<img src="/media/wp-images/brightdigit/2021/05/harpal-singh-_zKxPsGOGKg-unsplash-1024x512.jpg" class="wp-image-2335" width="1024" height="512" />
 </figure>
 
 ## Mistake 3: Not Being Consistent With Design
@@ -107,7 +107,7 @@ libraries, making this mistake easier to avoid as time goes
 on.](https://brightdigit.com/blog/2020/02/04/swiftui-everything-is-possible-if-you-think-like-apple/)
 
 <figure>
-<img src="https://brightdigit.com/wp-content/uploads/2021/05/szabo-viktor-k1A0LleY4Mo-unsplash.jpg" class="wp-image-2337" />
+<img src="/media/wp-images/brightdigit/2021/05/szabo-viktor-k1A0LleY4Mo-unsplash.jpg" class="wp-image-2337" />
 </figure>
 
 ## Mistake 4: Trying To Do Too Much With An App
