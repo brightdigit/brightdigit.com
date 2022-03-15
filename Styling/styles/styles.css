@@ -1224,38 +1224,41 @@ body.articles, body.tutorials {
   & > main {
     @apply  xl:container xl:mx-auto;
     & > header {
-      @apply py-2 mx-6 md:flex-col md:mx-0 md:h-80 md:relative;
+      @apply py-2 mx-6 md:flex-col md:mx-0 md:h-80 md:relative md:mb-4;
       & > header {
         & > img {
           @apply h-40 md:h-80 w-full object-cover md:absolute md:z-0;
         }
         h1 {
-          @apply z-50 md:relative md:mx-6 md:backdrop-grayscale md:backdrop-brightness-50 md:backdrop-filter md:p-8 top-4 md:text-white md:text-6xl;
+          @apply z-50 md:relative md:mx-6 md:backdrop-grayscale md:backdrop-blur md:backdrop-brightness-50 md:backdrop-filter md:p-8 top-4 md:text-white md:text-6xl lg:mr-48 xl:mr-96 lg:tracking-tight lg:leading-none;
         }
       }
       & > footer {
-        @apply flex m-0 justify-between items-baseline md:absolute md:z-50 md:bottom-0;
+        @apply flex m-0 justify-between items-baseline md:absolute md:text-white md:z-50 md:bottom-2 md:backdrop-grayscale md:backdrop-blur md:backdrop-brightness-50 md:backdrop-filter md:left-6;
         & > ol {
-          @apply flex -ml-2;
+          @apply flex -ml-2 md:ml-0;
           & > li {
             @apply contents;
             & > a {
-              @apply text-xl p-2;
+              @apply text-xl p-2 md:flex md:items-baseline md:bg-bellow-500 md:bg-opacity-50 md:px-2 md:mr-2;
               span {
-                @apply hidden;
+                @apply hidden md:inline md:text-xs md:mr-1 md:opacity-50;
+                &.name {
+                  @apply md:opacity-100 lg:text-base;
+                }
               }
             }
           }
         }
         & > .readtime {
-          @apply font-extralight text-gray-600;
+          @apply font-extralight text-gray-600 md:text-white md:px-2;
         }
       }
     }
     & > main {
-      @apply leading-tight border-t-2 border-gray-200 py-2 mx-6;;
+      @apply leading-tight border-t-2 border-gray-200 py-2 mx-6 md:border-0 lg:text-lg;
       h2 {
-        @apply text-xl py-2;
+        @apply text-xl py-2 md:text-2xl lg:text-4xl md:py-4 md:mt-4 md:tracking-tight;
       }
       h3 {
         @apply text-lg font-semibold py-1;
@@ -1271,6 +1274,9 @@ body.articles, body.tutorials {
       }
       ol, ul {
         @apply list-disc list-inside;
+      }
+      img {
+        @apply w-full mt-4 h-40 object-cover sm:h-48 md:h-64 lg:h-80 xl:h-96;
       }
     }
     & > footer {
