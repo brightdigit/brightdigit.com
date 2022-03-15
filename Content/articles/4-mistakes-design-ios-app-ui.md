@@ -49,7 +49,7 @@ for them.** It gives them room to develop a mutual understanding of both
 what the app can do and how that can be designed to create a great user
 experience.
 
-
+> transistor https://share.transistor.fm/s/35474f21
 
 ## Mistake 2: Not Respecting The Development Environment of iOS
 

@@ -47,7 +47,7 @@ Typically, the storyboard might not show what’s wrong if it’s not
 aligned with the code. For this reason, **bug fixing becomes especially
 difficult**
 
-
+> transistor https://share.transistor.fm/s/7247db7e
 
 Interested in learning more about **App Architecture on iOS**?  
 [**Check out Episode 14 with with René Cacheaux and Josh
@@ -81,7 +81,7 @@ a complete UI with just SwiftUI using only one programming language.
 This is possible because SwiftUI works in Apple’s latest development
 environment, XCode 11.
 
-
+> transistor https://share.transistor.fm/s/03051561
 
 How does Functional Reactive Programming work?  
 **[Check out Episode 19 with Jason
