@@ -3,7 +3,7 @@ title: Choosing the Best Backend for your iOS App
 date: 2019-07-30 12:19
 description: Choosing the best backend for your iOS App can be a challenge. Our guide
   to questions on app servers, databases & cloud services.
-featuredImage: https://brightdigit.com/wp-content/uploads/2019/07/Untitled-design-3-1.png
+featuredImage: /media/wp-images/brightdigit/2019/07/Untitled-design-3-1.png
 subscriptionCTA: Want even MORE info?
 ---
 Choosing the best backend for your iOS App can be a challenge. The
@@ -15,7 +15,7 @@ these questions and the other things you should consider when looking
 into back-end and cloud services for your iOS app.
 
 <figure>
-<img src="https://brightdigit.com/wp-content/uploads/2019/07/Untitled-design-3-1-1024x512.png" class="wp-image-1682" width="768" height="384" />
+<img src="/media/wp-images/brightdigit/2019/07/Untitled-design-3-1-1024x512.png" class="wp-image-1682" width="768" height="384" />
 </figure>
 
 First, it's important to point out that cloud services aren't needed in
@@ -32,7 +32,7 @@ do without them? A lot, actually.
 > Services](https://share.transistor.fm/s/ffcb9fc1)**
 
 <figure>
-<img src="https://brightdigit.com/wp-content/uploads/2019/07/Untitled-design-4-1024x512.png" class="wp-image-1680" width="768" height="384" />
+<img src="/media/wp-images/brightdigit/2019/07/Untitled-design-4-1024x512.png" class="wp-image-1680" width="768" height="384" />
 </figure>
 
 ## Best Backend is No Backend?
@@ -66,7 +66,7 @@ back to their phones. 
 > transistor https://share.transistor.fm/s/ffcb9fc1
 
 <figure>
-<img src="https://brightdigit.com/wp-content/uploads/2019/07/taylor-vick-M5tzZtFCOfs-unsplash-1-1024x574.jpg" class="wp-image-1685" width="768" height="431" />
+<img src="/media/wp-images/brightdigit/2019/07/taylor-vick-M5tzZtFCOfs-unsplash-1-1024x574.jpg" class="wp-image-1685" width="768" height="431" />
 </figure>
 
 ## Choosing Cloud Services for Your Best Backend

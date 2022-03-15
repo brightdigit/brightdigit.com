@@ -3,7 +3,7 @@ title: 'Upgrading Old Apps: The Dirty Job of iOS Development'
 date: 2021-03-26 06:27
 description: This is an introductory guide to upgrading old iOS apps, including where
   to start, what refactoring strategy to use, and other useful tips.
-featuredImage: https://brightdigit.com/wp-content/uploads/2021/03/tim-gouw-1K9T5YiZ2WU-unsplash.jpg
+featuredImage: /media/wp-images/brightdigit/2021/03/tim-gouw-1K9T5YiZ2WU-unsplash.jpg
 ---
 Upgrading an iOS app can be time-consuming. It involves the process of
 refactoring, rewriting, and replacing some or all of the app’s code.
@@ -42,7 +42,7 @@ fundamentally changed, it’s likely going to be more cost-effective to
 refactor than to start from scratch.**
 
 <figure>
-<img src="https://brightdigit.com/wp-content/uploads/2021/03/tim-gouw-1K9T5YiZ2WU-unsplash-1024x685.jpg" class="wp-image-2280" width="512" height="343" alt="Not everybody wants to do but sometimes you need to." /><figcaption aria-hidden="true">Not everybody wants to do but sometimes you need to.</figcaption>
+<img src="/media/wp-images/brightdigit/2021/03/tim-gouw-1K9T5YiZ2WU-unsplash-1024x685.jpg" class="wp-image-2280" width="512" height="343" alt="Not everybody wants to do but sometimes you need to." /><figcaption aria-hidden="true">Not everybody wants to do but sometimes you need to.</figcaption>
 </figure>
 
 On the other hand, the one significant downside to refactoring is how

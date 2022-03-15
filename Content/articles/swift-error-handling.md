@@ -4,7 +4,7 @@ date: 2020-12-08 03:47
 description: Learn the best strategies for how to manage error handling when developing
   apps in Swift. See examples of processes for common Swift errors
 tags: swift, swiftui
-featuredImage: https://brightdigit.com/wp-content/uploads/2020/12/Screen-Shot-2020-12-03-at-7.27.00-AM-3.png
+featuredImage: /media/wp-images/brightdigit/2020/12/Screen-Shot-2020-12-03-at-7.27.00-AM-3.png
 subscriptionCTA: Subscribe to the BrightDigit newsletter for more on best practices with Swift
 ---
 With the use of Swift as the sole language for creating apps with Apple,
@@ -99,7 +99,7 @@ overwhelming to a non-technical user. As a rule, if the information is
 not relevant to the user experience, it should be hidden from the user.
 
 <figure>
-<img class="full-size" src="https://brightdigit.com/wp-content/uploads/2020/12/Screen-Shot-2020-12-03-at-7.27.00-AM-3.png" class="wp-image-2252" alt="From Apple&#39;s Human Interface Guidelines on Alerts" /><figcaption aria-hidden="true"><a href="https://developer.apple.com/design/human-interface-guidelines/ios/views/alerts/">From Apple's Human Interface Guidelines on Alerts</a></figcaption>
+<img class="full-size" src="/media/wp-images/brightdigit/2020/12/Screen-Shot-2020-12-03-at-7.27.00-AM-3.png" class="wp-image-2252" alt="From Apple&#39;s Human Interface Guidelines on Alerts" /><figcaption aria-hidden="true"><a href="https://developer.apple.com/design/human-interface-guidelines/ios/views/alerts/">From Apple's Human Interface Guidelines on Alerts</a></figcaption>
 </figure>
 
 ### Permissions – An Informed User is a Happy User

@@ -4,7 +4,7 @@ date: 2020-02-04 05:00
 description: SwiftUI promieses to change the way we do Apple-based app development.
   Learn about what makes SwiftUI great and how your app can benefit.
 tags: apple-development, swift, swiftui, UI
-featuredImage: https://brightdigit.com/wp-content/uploads/2020/02/xcode-lansing-codes.png
+featuredImage: /media/wp-images/brightdigit/2020/02/xcode-lansing-codes.png
 subscriptionCTA: If you’re interested in keeping up to date with what’s new for iOS and
 Apple development, I invite you to sign up for my
 newsletter...

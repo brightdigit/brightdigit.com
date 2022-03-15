@@ -1,7 +1,7 @@
 ---
 title: Vapor &#8211; Swift Choice For the Back End
 date: 2019-03-19 06:10
-featuredImage: https://brightdigit.com/wp-content/uploads/2019/03/swift-vapor-choice.jpg
+featuredImage: /media/wp-images/brightdigit/2019/03/swift-vapor-choice.jpg
 ---
 Back in February, I did [an episode of my podcast where I gave an
 overview of different backend options when developing a mobile
@@ -41,7 +41,7 @@ for data storage but lacks options such as:
 However there are other options to remain developing in Swift on server.
 
 <figure>
-<img src="https://brightdigit.com/wp-content/uploads/2019/03/wordmark-horizontal-1024x271.png" class="wp-image-1553" />
+<img src="/media/wp-images/brightdigit/2019/03/wordmark-horizontal-1024x271.png" class="wp-image-1553" />
 </figure>
 
 ## Vapor - Swift for the Server
@@ -91,7 +91,7 @@ and
 Ubuntu.](https://learningswift.brightdigit.com/vapor-heroku-ubuntu-setup-deploy/?utm_medium=web&utm_source=learning-swift)**
 
 <figure>
-<img src="https://brightdigit.com/wp-content/uploads/2019/03/developer-tools-1024x512.jpg" class="wp-image-1557" />
+<img src="/media/wp-images/brightdigit/2019/03/developer-tools-1024x512.jpg" class="wp-image-1557" />
 </figure>
 
 ## Developing with Vapor
@@ -166,7 +166,7 @@ Kit API. However what truly makes Fluent ORM so robust is the use of
 SwiftNIO async API.
 
 <figure>
-<img src="https://brightdigit.com/wp-content/uploads/2019/03/futures-and-promises-1024x512.jpg" class="wp-image-1559" />
+<img src="/media/wp-images/brightdigit/2019/03/futures-and-promises-1024x512.jpg" class="wp-image-1559" />
 </figure>
 
 ### The *Future* of Programming

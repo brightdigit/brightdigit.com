@@ -4,7 +4,7 @@ date: 2020-10-06 12:26
 description: Apple Watch Series 6 with WatchOS 7 presents exciting opportunities for
   Apple app developers and their customers with the power of watch face complications.
 tags: swiftui
-featuredImage: https://brightdigit.com/wp-content/uploads/2020/10/luke-chesser-vCF5sB7QecM-unsplash.jpg
+featuredImage: /media/wp-images/brightdigit/2020/10/luke-chesser-vCF5sB7QecM-unsplash.jpg
 ---
 Apple unveiled its brand-new Apple Watch Series 6 on September 15 with
 some fanfare. This was followed the next day by the release of the
@@ -29,7 +29,7 @@ into what app developers can do to take advantage of this new release,
 and what I think they should consider offering to their customers.
 
 <figure>
-<img src="https://brightdigit.com/wp-content/uploads/2020/10/Apple_announces-watch-se_09152020-1024x881.jpg" class="wp-image-2206" />
+<img src="/media/wp-images/brightdigit/2020/10/Apple_announces-watch-se_09152020-1024x881.jpg" class="wp-image-2206" />
 </figure>
 
 ## Watch Faces Are Now More Complicated… and that’s a good thing.
@@ -127,7 +127,7 @@ delivered this year, you can take full advantage of the latest Apple has
 to offer.
 
 <figure>
-<img src="https://brightdigit.com/wp-content/uploads/2020/10/luke-chesser-vCF5sB7QecM-unsplash-1024x683.jpg" class="wp-image-2210" />
+<img src="/media/wp-images/brightdigit/2020/10/luke-chesser-vCF5sB7QecM-unsplash-1024x683.jpg" class="wp-image-2210" />
 </figure>
 
 ## What Can You Do Now?

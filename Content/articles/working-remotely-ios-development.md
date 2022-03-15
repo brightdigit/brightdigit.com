@@ -3,7 +3,7 @@ title: 'Working Remotely: Best Practices for Distributed iOS development'
 date: 2021-02-25 04:17
 description: Working remotely on iOS development can be very successful. To make it
   a powerful tool for building great apps, you should consider these best practices...
-featuredImage: https://brightdigit.com/wp-content/uploads/2021/02/dan-gold-kARZuSYMfrA-unsplash.jpg
+featuredImage: /media/wp-images/brightdigit/2021/02/dan-gold-kARZuSYMfrA-unsplash.jpg
 ---
 2020 was the year so many businesses were pushed into remote work to
 survive. **The number of Americans working remotely more than a day a
@@ -22,7 +22,7 @@ going to want to put in place. This will ensure remote work supports
 your capacity to build great iOS apps without slowing everything down.
 
 <figure>
-<img src="https://brightdigit.com/wp-content/uploads/2021/02/dan-gold-kARZuSYMfrA-unsplash-1024x576.jpg" class="wp-image-2270" />
+<img src="/media/wp-images/brightdigit/2021/02/dan-gold-kARZuSYMfrA-unsplash-1024x576.jpg" class="wp-image-2270" />
 </figure>
 
 ## The Benefits of Remote Working
@@ -139,7 +139,7 @@ this. Also here's a great list of tech articles to help with this:
     Abhimuralidharan](https://martiancraft.com/blog/2017/05/demystifying-ios-provisioning-part1/)
 
 <figure>
-<img src="https://brightdigit.com/wp-content/uploads/2021/02/chris-montgomery-smgTvepind4-unsplash-1024x768.jpg" class="wp-image-2271" />
+<img src="/media/wp-images/brightdigit/2021/02/chris-montgomery-smgTvepind4-unsplash-1024x768.jpg" class="wp-image-2271" />
 </figure>
 
 ### Communication

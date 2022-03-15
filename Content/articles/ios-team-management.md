@@ -4,7 +4,7 @@ date: 2020-11-17 04:36
 description: Traditional management and iOS development don't work well together.
   How can we fix this? What I've found is the best iOS team managers share a few traits.
 tags: iOS, swiftui
-featuredImage: https://brightdigit.com/wp-content/uploads/2020/10/Feedback.mp3
+featuredImage: /media/wp-images/brightdigit/2020/10/Feedback.mp3
 ---
 In any organization, you have a hierarchy. The opinions or comments of
 executives and managers carry authority employees will feel compelled to
@@ -32,7 +32,7 @@ halfway through the project. As a result, your team will need to rethink
 the app going forward.
 
 <figure>
-<img src="https://brightdigit.com/wp-content/uploads/2020/10/cytonn-photography-n95VMLxqM2I-unsplash-1024x684.jpg" class="wp-image-2227" />
+<img src="/media/wp-images/brightdigit/2020/10/cytonn-photography-n95VMLxqM2I-unsplash-1024x684.jpg" class="wp-image-2227" />
 </figure>
 
 ### Tried and True iOS Team Management?
@@ -153,7 +153,7 @@ manager. And critically, when they feel the manager's opinions aren’t
 serving the best interests of the team or the project.
 
 <figure>
-<img src="https://brightdigit.com/wp-content/uploads/2020/10/n-RFId0_7kep4-unsplash-1024x683.jpg" class="wp-image-2230" width="1024" height="683" />
+<img src="/media/wp-images/brightdigit/2020/10/n-RFId0_7kep4-unsplash-1024x683.jpg" class="wp-image-2230" width="1024" height="683" />
 </figure>
 
 ## Understanding Your Options
