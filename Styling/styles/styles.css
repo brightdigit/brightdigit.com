@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Cardo:ital,wght@0,400;0,700;1,400&family=Oxygen:wght@300;400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cousine:wght@400;700&family=Oxygen+Mono&display=swap');
 @import url('./flaticon.css');
 
 @tailwind base;
@@ -1217,6 +1218,12 @@ body.episodes {
   }
 }
 
+body > main{
+
+  a {
+    @apply text-bellow-600 font-semibold;
+  }
+}
 body.articles, body.tutorials {
   h1 {
     @apply text-2xl font-bold py-2;
@@ -1240,7 +1247,7 @@ body.articles, body.tutorials {
           & > li {
             @apply contents;
             & > a {
-              @apply text-xl p-2 md:flex md:items-baseline md:bg-bellow-500 md:bg-opacity-50 md:px-2 md:mr-2;
+              @apply text-xl p-2  text-white md:flex md:items-baseline md:bg-bellow-500 md:bg-opacity-50 md:px-2 md:mr-2;
               span {
                 @apply hidden md:inline md:text-xs md:mr-1 md:opacity-50;
                 &.name {
@@ -1258,13 +1265,16 @@ body.articles, body.tutorials {
     & > main {
       @apply leading-tight border-t-2 border-gray-200 py-2 mx-6 md:border-0 lg:text-lg;
       h2 {
-        @apply text-xl py-2 md:text-2xl lg:text-4xl md:py-4 md:mt-4 md:tracking-tight;
+        @apply text-xl py-2 md:text-2xl lg:text-4xl xl:text-7xl xl:mt-8 xl:py-8 md:py-4 md:mt-4 md:tracking-tight;
       }
       h3 {
-        @apply text-lg font-semibold py-1;
+        @apply text-lg font-semibold py-1 xl:text-4xl xl:py-4 md:mt-4 xl:tracking-tight;
       }
       h4 {
-        @apply text-base font-semibold py-1;
+        @apply text-base font-semibold py-1 xl:text-2xl xl:py-2 md:mt-2;
+      }
+      h5 {
+        @apply text-base font-semibold py-1 text-gray-700 xl:text-black xl:text-xl;
       }
       p {
         @apply py-2;
@@ -1275,18 +1285,82 @@ body.articles, body.tutorials {
       ol, ul {
         @apply list-disc list-inside;
       }
+      li {
+        @apply ml-4;
+      }
       img {
         @apply w-full mt-4 h-40 object-cover sm:h-48 md:h-64 lg:h-80 xl:h-96;
+        &.full-size {
+          @apply w-auto h-auto;
+          @apply xl:max-w-2xl xl:mx-auto;
+        }
+      }
+      iframe {
+        @apply w-full h-auto my-2;
+        aspect-ratio: 16/9;
+        @apply xl:max-w-2xl xl:mx-auto;
+      }
+      code {
+        color: #9B2393;
+
+      }
+      figure {
+        @apply my-2;
+      }
+      figcaption {
+        @apply text-sm italic text-center;
+      }
+      pre code {
+        @apply whitespace-pre-wrap text-xs font-extralight p-4 bg-gray-900 text-white block my-4 lg:text-base lg:p-8;      
+
+        .keyword {
+          @apply font-bold;
+          color: #FC5FA3;
+
+        }
+
+        .type {
+          color: #9EF1DD;
+        }
+
+        .call {
+          color: #67B7A4 ;
+        }
+
+        .property {
+          color: #21ab9d;
+        }
+
+        .number {
+          color: #db6f57;
+        }
+
+        .string {
+          color: #fa641e;
+        }
+
+        .comment {
+          color: #6b8a94;
+        }
+
+        .dotAccess {
+          color: #92b300;
+        }
+
+        .preprocessing {
+          color: #b68a00;
+        }
+
       }
     }
     & > footer {
-      @apply flex flex-col mx-6;;
+      @apply flex flex-col mx-6;
       & > ol {
         @apply border-b-2 border-t-2 border-gray-200 py-2 text-2xl sm:text-3xl md:justify-start mb-2 -ml-2 items-stretch justify-between flex lg:py-6;
         & > li {
           @apply contents;
           & > a {
-            @apply text-xl p-2 flex items-baseline mr-1 md:mr-4 md:text-2xl md:bg-bellow-500 md:p-4 md:px-4 md:rounded-lg;
+            @apply text-xl p-2 flex items-baseline mr-1 md:mr-4 md:text-2xl md:bg-bellow-500 md:p-4 md:px-4 md:rounded-lg text-black;
             span {
               @apply text-base mr-1 md:text-lg;
               &.action {
