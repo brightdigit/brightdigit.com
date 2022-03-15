@@ -58,7 +58,7 @@ time for a meeting? In another situation, a nurse could find out where a
 doctor is in the hospital. It would mean not having to page them because
 they could see they're seeing a patient or doing surgery.
 
-
+> transistor https://share.transistor.fm/s/3d4c7634
 
 ## It’s come a long way, but Apple Watch still has a ways to go.
 

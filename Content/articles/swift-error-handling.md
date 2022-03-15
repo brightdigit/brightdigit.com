@@ -46,12 +46,9 @@ An effective error handling plan for a Swift-built app should include:
     take a little bit of work. 
 
 I’d recommend taking a look at the [links on our Error Handling
-episode](https://share.transistor.fm/s/03d8db53) with Jeff Kelley or his
-presentation from 360iDev:
+episode](https://share.transistor.fm/s/03d8db53) with Jeff Kelley or [his
+presentation from 360iDev](https://vimeo.com/366587634).
 
-https://vimeo.com/366587634
-
-  
 A successful testing approach for Swift should then include this
 functionality, allowing you to be able to proactively fix and, more
 importantly, anticipate and accommodate expected errors.  
@@ -177,7 +174,7 @@ needs to shut down. Perhaps offer them a button to close the app and
 assure them that a bug report has been sent. You can also let them know
 if it’s not just a glitch or the user has tampered with the app.*  *
 
-
+> > transistor https://share.transistor.fm/s/03d8db53
 
 ## Subscribe to the BrightDigit newsletter for more on best practices with Swift
 

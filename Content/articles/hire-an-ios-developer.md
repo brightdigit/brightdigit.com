@@ -233,7 +233,7 @@ fact it only means you would have access to their specialist knowledge.
 Markedly, it is a sign they have a mature level of knowledge of the
 Apple software ecosystem.
 
-
+> transistor https://share.transistor.fm/s/bcf9bb21
 
 ## Summary of Questions
 
