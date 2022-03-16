@@ -14,9 +14,31 @@ struct TutorialItem: SectionItem {
 
   var featuredItemContent: Node<HTML.BodyContext> {
     .header(
-      .img(.src(featuredImageURL)),
-      .a(
-        .h2(.text(title))
+      .section(
+        .class("hero"),
+        .section(
+          .class("featured"),
+          .header(
+            .img(.src(featuredImageURL))
+          ),
+          .main(
+            .header(
+              .a(
+                .h2(.text(title))
+              )
+            ),
+            .main(
+              .text(description)
+            ),
+            .footer(
+              " published on ",
+              .span(
+                .class("published-date"),
+                .text(PiHTMLFactory.itemFormatter.string(from: publishedDate))
+              )
+            )
+          )
+        )
       )
     )
   }
