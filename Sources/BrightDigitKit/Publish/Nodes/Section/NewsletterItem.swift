@@ -15,6 +15,9 @@ struct NewsletterItem: SectionItem {
 
   var formNode: Node<HTML.BodyContext> {
     .form(
+      .attribute(named: "name", value: "contact"),
+      .method(.post),
+      .attribute(named: "data-netlify", value: "true"),
       .div(
         .div(
           .input(.type(.text), .placeholder("leo@brightdigit.com")),
@@ -23,7 +26,7 @@ struct NewsletterItem: SectionItem {
       ),
       .div(
         .div(
-          .button("Sign me up!")
+          .button("Sign me up!", .type(.submit))
         )
       ),
       .div(
