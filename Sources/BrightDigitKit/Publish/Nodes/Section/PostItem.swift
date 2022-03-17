@@ -15,37 +15,35 @@ struct PostItem: SectionItem {
   let isFeatured: Bool
 
   var featuredItemContent: Node<HTML.BodyContext> {
-      .header(
+    .header(
+      .section(
+        .class("hero"),
         .section(
-          .class("hero"),
-          .section(
-            .class("featured"),
+          .class("featured"),
+          .header(
+            .img(.src(featuredImageURL))
+          ),
+          .main(
             .header(
-              .img(.src(featuredImageURL))
+              .a(
+                .h2(.text(title))
+              )
             ),
             .main(
-              .header(
-                .a(
-                  .h2(.text(title))
-                )
-              ),
-              .main(
-                .text(description)
-              ),
-              .footer(
-                " published on ",
-                .span(
-                  .class("published-date"),
-                  .text(PiHTMLFactory.itemFormatter.string(from: publishedDate))
-                )
+              .text(description)
+            ),
+            .footer(
+              " published on ",
+              .span(
+                .class("published-date"),
+                .text(PiHTMLFactory.itemFormatter.string(from: publishedDate))
               )
             )
           )
         )
       )
-    }
-
-
+    )
+  }
 
   var sectionItemContent: [Node<HTML.BodyContext>] {
     [
