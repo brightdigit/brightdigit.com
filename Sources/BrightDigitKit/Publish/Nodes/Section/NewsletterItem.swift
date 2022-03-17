@@ -15,12 +15,14 @@ struct NewsletterItem: SectionItem {
 
   var formNode: Node<HTML.BodyContext> {
     .form(
-      .attribute(named: "name", value: "contact"),
+      .attribute(named: "name", value: "subscribers"),
       .method(.post),
       .attribute(named: "data-netlify", value: "true"),
       .div(
         .div(
-          .input(.type(.text), .placeholder("leo@brightdigit.com")),
+          .input(.type(.text),
+                 .placeholder("leo@brightdigit.com"),
+                 .name("email")),
           .label("Email")
         )
       ),
