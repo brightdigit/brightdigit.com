@@ -107,6 +107,10 @@ public extension Node where Context == HTML.DocumentContext {
 
       .script(
         .src("/js/main.js")
+      ),
+      .script(
+        .async(),
+        .src("https://www.googletagmanager.com/gtag/js?id=G-K3MSJ0CTMJ")
       )
     )
   }
