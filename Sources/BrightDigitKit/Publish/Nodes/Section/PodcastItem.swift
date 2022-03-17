@@ -69,7 +69,43 @@ struct PodcastItem: SectionItem {
                   .class("publish-date"),
                   .text(PiHTMLFactory.itemFormatter.string(from: publishedDate))
                 ),
-                .p("\(description)")
+                .p("\(description)"),
+                .iframe(
+                  .attribute(named: "width", value: "100%"),
+                  .attribute(named: "height", value: "180"),
+                  .attribute(named: "frameborder", value: "no"),
+                  .attribute(named: "scrolling", value: "no"),
+                  .attribute(named: "seamless src", value: "\(transistorShareURL)")
+                )
+              )
+            ),
+            .footer(
+              .iframe(
+                .attribute(named: "width", value: "100%"),
+                .attribute(named: "height", value: "180"),
+                .attribute(named: "frameborder", value: "no"),
+                .attribute(named: "scrolling", value: "no"),
+                .attribute(named: "seamless src", value: "\(transistorShareURL)")
+              ),
+              .main(
+                .div(
+                  .class("audio-length"),
+                  .i(.class("flaticon-podcast")),
+                  .text(PiHTMLFactory.formatTimeInterval(audioDuration))
+                ),
+                .unwrap(videoDuration) { videoDuration in
+                  .div(
+                    .class("video-length"),
+                    .i(.class("flaticon-youtube")),
+                    .text(PiHTMLFactory.formatTimeInterval(videoDuration))
+                  )
+                },
+                .div(
+                  .a(
+                    .href(source.path),
+                    .text("More Info")
+                  )
+                )
               )
             )
 //                .div(
