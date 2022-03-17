@@ -117,7 +117,7 @@ public extension Node where Context == HTML.BodyContext {
         .h2("Testimonials")
       ),
       .ol(
-        .forEach(Testimonial.all, Testimonial.listItem)
+        .forEach(Testimonial.all.sorted(), Testimonial.listItem)
       )
     )
   }
