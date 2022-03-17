@@ -36,48 +36,75 @@ struct PodcastItem: SectionItem {
   }
 
   var featuredItemContent: Node<HTML.BodyContext> {
-    .header(
-      .id("episode-\(episodeNo)"),
+    .main(
+      .class("section"),
       .header(
-        .img(.src(imageURL)),
-        .a(
-          .href(source.path),
-          .h2(.text(title))
-        ),
-        .div(
-          .class("publish-date"),
-          .text(PiHTMLFactory.itemFormatter.string(from: publishedDate))
-        ),
-        .div(
-          .class("length"),
-          .div(
-            .class("audio"),
-            .text(PiHTMLFactory.formatTimeInterval(audioDuration))
-          ),
-          .unwrap(videoDuration) { videoDuration in
-            .div(
-              .class("video"),
-              .text(PiHTMLFactory.formatTimeInterval(videoDuration))
+        .section(
+          .class("hero"),
+          .section(
+            .class("featured"),
+            .id("episode-\(episodeNo)"),
+            .header(
+              .div(
+                .class("episode-no"),
+                .text("episode \(episodeNo)")
+              ),
+              .a(
+                .href(source.path),
+                .img(.src(imageURL)),
+                .h2(.text(title))
+              ),
+              .div(
+                .class("publish-date"),
+                .text(PiHTMLFactory.itemFormatter.string(from: publishedDate))
+              )
+            ),
+            .main(
+              .a(
+                .href(source.path),
+                .img(.src(imageURL))
+              ),
+              .main(
+                .div(
+                  .class("publish-date"),
+                  .text(PiHTMLFactory.itemFormatter.string(from: publishedDate))
+                ),
+                .p("\(description)")
+              )
             )
-          }
+//                .div(
+//                  .class("length"),
+//                  .div(
+//                    .class("audio"),
+//                    .text(PiHTMLFactory.formatTimeInterval(audioDuration))
+//                  ),
+//                  .unwrap(videoDuration) { videoDuration in
+//                    .div(
+//                      .class("video"),
+//                      .text(PiHTMLFactory.formatTimeInterval(videoDuration))
+//                    )
+//                  }
+//                )
+//
+//              ),
+//              .main(
+//                .text(description)
+//              ),
+//              .footer(
+//                .div(.class("published-date"), .text(PiHTMLFactory.dateFormatter.string(from: publishedDate))),
+//
+//                .div(.class("audio-length"), .text(
+//                  PiHTMLFactory.formatTimeInterval(audioDuration)
+//                )),
+//
+//                .unwrap(videoDuration) { videoDuration in
+//                  .div(.class("video-length"), .text(
+//                    PiHTMLFactory.formatTimeInterval(videoDuration)
+//                  ))
+//                }
+//              )
+          )
         )
-
-      ),
-      .main(
-        .text(description)
-      ),
-      .footer(
-        .div(.class("published-date"), .text(PiHTMLFactory.dateFormatter.string(from: publishedDate))),
-
-        .div(.class("audio-length"), .text(
-          PiHTMLFactory.formatTimeInterval(audioDuration)
-        )),
-
-        .unwrap(videoDuration) { videoDuration in
-          .div(.class("video-length"), .text(
-            PiHTMLFactory.formatTimeInterval(videoDuration)
-          ))
-        }
       )
     )
   }
