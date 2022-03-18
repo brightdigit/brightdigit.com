@@ -12,7 +12,7 @@ struct ItemContent<ItemType: SectionItem>: PageContent {
   }
 
   var socialImageURL: URL {
-    item.featuredImageURL
+    context.site.absoluteURL(for: item.featuredImageURL)
   }
 
   var absoluteURL: URL {

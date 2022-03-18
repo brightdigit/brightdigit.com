@@ -4,7 +4,7 @@ import Publish
 struct ServicesBuilder: PageBuilder {
   var imagePath: Path = .init("")
 
-  let description: String = "Services We Offer"
+  let description: String = "We work with companies and agencies that want Swift-based apps that are: Thoughtfully Designed, Effective & Easy to Maintain"
   func main(forLocation _: Page, withContext _: PublishingContext<BrightDigitSite>) -> [Node<HTML.BodyContext>] {
     Node.servicesBody()
   }
