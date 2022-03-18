@@ -1,1 +1,3 @@
-#  Products
+--
+title: Our Products
+--

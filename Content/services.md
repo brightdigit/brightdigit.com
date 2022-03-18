@@ -1,4 +1,4 @@
 ---
-title: Servcies
+title: Intuitive. Effective. Well-Designed.
 ---
-#  Services
+# Intuitive. Effective. Well-Designed.
