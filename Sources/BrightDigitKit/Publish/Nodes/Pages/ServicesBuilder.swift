@@ -2,9 +2,10 @@ import Plot
 import Publish
 
 struct ServicesBuilder: PageBuilder {
-  var imagePath: Path = .init("")
+  let imagePath: Path = "/media/services/new2-12.png"
 
-  let description: String = "We work with companies and agencies that want Swift-based apps that are: Thoughtfully Designed, Effective & Easy to Maintain"
+  let description: String = "Is your app making customers and driving sales? We help you create, rebuild and port apps to excite customers and boost your business."
+
   func main(forLocation _: Page, withContext _: PublishingContext<BrightDigitSite>) -> [Node<HTML.BodyContext>] {
     Node.servicesBody()
   }

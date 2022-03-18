@@ -5,9 +5,8 @@ import Publish
 // MARK: - BodyContext
 
 struct IndexBuilder: ContentBuilder {
-  let description: String = "Founded in 2021, BrightDigit aims to provide you with the very best in Swift-based development for the Apple ecosystem."
-
-  var imagePath: Path = "/media/brightdigit-name.svg"
+  let description: String = BrightDigitSite.SiteInfo.description
+  var imagePath: Path = BrightDigitSite.SiteInfo.imagePath
 
   func main(forLocation _: Index, withContext context: PublishingContext<BrightDigitSite>) -> [Node<HTML.BodyContext>] {
     [

@@ -3,6 +3,10 @@ import Plot
 import Publish
 
 struct SectionBuilder<ChildType: SectionItem>: SectionBuilderProtocol {
+  var title: String {
+    ChildType.sectionTitle
+  }
+
   var description: String {
     ChildType.sectionDescription
   }

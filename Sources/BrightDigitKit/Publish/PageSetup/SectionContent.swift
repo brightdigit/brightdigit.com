@@ -19,11 +19,16 @@ struct SectionContent<SectionBuilderType: SectionBuilderProtocol>: PageContent {
   }
 
   var socialTitle: String {
-    builder.section.title
+    title
   }
 
   var socialImageURL: URL {
-    context.site.absoluteURL(for: builder.featuredItem.featuredImageURL)
+    if builder.featuredItem.featuredImageURL.path.isEmpty {
+      return builder.featuredItem.featuredImageURL.absoluteURL
+    } else {
+      let path = Path(builder.featuredItem.featuredImageURL.path)
+      return context.site.url(for: path)
+    }
   }
 
   var absoluteURL: URL {
@@ -34,7 +39,7 @@ struct SectionContent<SectionBuilderType: SectionBuilderProtocol>: PageContent {
   let context: PublishingContext<BrightDigitSite>
 
   var title: String {
-    builder.section.title
+    builder.title
   }
 
   var bodyClasses: [String] {

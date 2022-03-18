@@ -3,7 +3,8 @@ import Plot
 import Publish
 
 struct NewsletterItem: SectionItem {
-  static let sectionDescription: String = "Latest Newsletters"
+  static let sectionTitle: String = "Newsletters"
+  static let sectionDescription: String = "Subscribe to the BrightDigit newsletter now and get  helpful tips and advice right to your inbox!"
 
   let description: String
   let issueNo: Int

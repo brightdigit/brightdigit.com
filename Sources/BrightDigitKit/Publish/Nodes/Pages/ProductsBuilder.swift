@@ -3,7 +3,7 @@ import Plot
 import Publish
 
 struct ProductsBuilder: PageBuilder {
-  let description: String = "BrightDigit has built a selection of apps and open-source libraries in Swift."
+  let description: String = "Here are some of the apps and libraries we’ve created. Like what you see? Contact us to find out if we can help you reach your app goals."
 
   var imagePath: Path = "livestream/Heartwitch-BOTW-HCG.png"
 

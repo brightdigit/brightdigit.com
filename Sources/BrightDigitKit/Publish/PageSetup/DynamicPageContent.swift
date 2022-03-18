@@ -30,7 +30,11 @@ struct DynamicPageContent<BuilderType: ContentBuilder>: PageContent {
   let context: PublishingContext<BrightDigitSite>
 
   var title: String {
-    location.title
+    if BuilderType.self == IndexBuilder.self {
+      return BrightDigitSite.SiteInfo.name
+    } else {
+      return location.title
+    }
   }
 
   var main: [Node<HTML.BodyContext>] {

@@ -7,7 +7,13 @@ import Publish
 #endif
 
 struct PodcastItem: SectionItem {
-  static let sectionDescription: String = "Latest episodes of EmpowerApps Show"
+  var redirectURL: URL? {
+    nil
+  }
+
+  static let sectionTitle: String = "EmpowerApps Podcast"
+
+  static let sectionDescription: String = "Watch and Listen to the latest episodes of EmpowerApps Show, we talk all things app development and Apple"
 
   let description: String
   let episodeNo: Int
@@ -313,10 +319,6 @@ struct PodcastItem: SectionItem {
     var urlComponents = Self.youtubeShareBaseURLComponents
     urlComponents.queryItems = [URLQueryItem(name: "v", value: youtubeID)]
     return urlComponents.url
-  }
-
-  var redirectURL: URL? {
-    nil
   }
 
   var youtubeEmbed: Node<HTML.BodyContext>? {
