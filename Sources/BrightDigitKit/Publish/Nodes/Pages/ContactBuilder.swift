@@ -3,6 +3,9 @@ import Plot
 import Publish
 
 struct ContactBuilder: PageBuilder {
+  let description: String = "Contact Us"
+
+  var imagePath: Path = .init("")
   func main(forLocation _: Page, withContext _: PublishingContext<BrightDigitSite>) -> [Node<HTML.BodyContext>] {
     [
       .makeContactUsFormWithPicture(),

@@ -7,4 +7,5 @@ protocol SectionBuilderProtocol {
   var section: Section<BrightDigitSite> { get }
   var children: [ChildType] { get }
   var featuredItem: ChildType { get }
+  var description: String { get }
 }
