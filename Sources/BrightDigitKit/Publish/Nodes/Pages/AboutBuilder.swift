@@ -3,9 +3,9 @@ import Plot
 import Publish
 
 struct AboutBuilder: PageBuilder {
-  let description: String = "About Us"
+  let description: String = Strings.About.ctaP1
 
-  var imagePath: Path = .init("")
+  var imagePath: Path = "/media/about-us/graphic-attract.webm"
   func main(forLocation _: LocationType, withContext _: PublishingContext<BrightDigitSite>) -> [Node<HTML.BodyContext>] {
     [
       .aboutHeader(),

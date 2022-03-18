@@ -3,9 +3,9 @@ import Plot
 import Publish
 
 struct ProductsBuilder: PageBuilder {
-  let description: String = "Our Products"
+  let description: String = "BrightDigit has built a selection of apps and open-source libraries in Swift."
 
-  var imagePath: Path = .init("")
+  var imagePath: Path = "livestream/Heartwitch-BOTW-HCG.png"
 
   internal init(products: [Product] = Product.all) {
     self.products = products

@@ -2,6 +2,17 @@ import Foundation
 import Plot
 import Publish
 
+extension Website {
+  func absoluteURL(for url: URL) -> URL {
+    if url.path.isEmpty || url.host != nil {
+      return url
+    } else {
+      let path = Path(url.path)
+      return self.url(for: path)
+    }
+  }
+}
+
 struct SectionContent<SectionBuilderType: SectionBuilderProtocol>: PageContent {
   var description: String {
     builder.description
@@ -12,12 +23,7 @@ struct SectionContent<SectionBuilderType: SectionBuilderProtocol>: PageContent {
   }
 
   var socialImageURL: URL {
-    if builder.featuredItem.featuredImageURL.path.isEmpty {
-      return builder.featuredItem.featuredImageURL.absoluteURL
-    } else {
-      let path = Path(builder.featuredItem.featuredImageURL.path)
-      return context.site.url(for: path)
-    }
+    context.site.absoluteURL(for: builder.featuredItem.featuredImageURL)
   }
 
   var absoluteURL: URL {
