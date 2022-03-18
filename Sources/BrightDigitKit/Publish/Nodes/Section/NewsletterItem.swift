@@ -3,6 +3,8 @@ import Plot
 import Publish
 
 struct NewsletterItem: SectionItem {
+  static let sectionDescription: String = "Latest Newsletters"
+
   let description: String
   let issueNo: Int
   let featuredImageURL: URL
@@ -114,6 +116,10 @@ struct NewsletterItem: SectionItem {
 
   var pageMainContent: [Node<HTML.BodyContext>] {
     [.contentBody(source.body)]
+  }
+
+  var redirectURL: URL? {
+    archiveURL
   }
 
   init(item: Item<BrightDigitSite>, site _: BrightDigitSite) throws {

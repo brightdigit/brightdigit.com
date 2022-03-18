@@ -5,6 +5,10 @@ import Publish
 // MARK: - BodyContext
 
 struct IndexBuilder: ContentBuilder {
+  let description: String = "BrightDigit – Apple, iOS & Swift Development"
+
+  var imagePath: Path = ""
+
   func main(forLocation _: Index, withContext context: PublishingContext<BrightDigitSite>) -> [Node<HTML.BodyContext>] {
     [
       .mainHeader(),
