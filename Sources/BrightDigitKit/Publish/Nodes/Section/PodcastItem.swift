@@ -73,7 +73,7 @@ struct PodcastItem: SectionItem {
                 .attribute(named: "height", value: "180"),
                 .attribute(named: "frameborder", value: "no"),
                 .attribute(named: "scrolling", value: "no"),
-                .attribute(named: "seamless src", value: "\(transistorShareURL)")
+                .attribute(named: "seamless src", value: "\(transistorEmbedURL)")
               )
             )
           ),
@@ -83,7 +83,7 @@ struct PodcastItem: SectionItem {
               .attribute(named: "height", value: "180"),
               .attribute(named: "frameborder", value: "no"),
               .attribute(named: "scrolling", value: "no"),
-              .attribute(named: "seamless src", value: "\(transistorShareURL)")
+              .attribute(named: "seamless src", value: "\(transistorEmbedURL)")
             ),
             .main(
               .div(
