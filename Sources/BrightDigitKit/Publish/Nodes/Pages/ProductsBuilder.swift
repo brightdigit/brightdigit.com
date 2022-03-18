@@ -3,6 +3,10 @@ import Plot
 import Publish
 
 struct ProductsBuilder: PageBuilder {
+  let description: String = "Our Products"
+
+  var imagePath: Path = .init("")
+
   internal init(products: [Product] = Product.all) {
     self.products = products
   }

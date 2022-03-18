@@ -3,6 +3,22 @@ import Plot
 import Publish
 
 struct DynamicPageContent<BuilderType: ContentBuilder>: PageContent {
+  var description: String {
+    builder.description
+  }
+
+  var socialTitle: String {
+    title
+  }
+
+  var socialImageURL: URL {
+    context.site.url(for: builder.imagePath)
+  }
+
+  var absoluteURL: URL {
+    context.site.url(for: location)
+  }
+
   init(builder: BuilderType, location: BuilderType.LocationType, context: PublishingContext<BrightDigitSite>) {
     self.builder = builder
     self.location = location
@@ -27,5 +43,9 @@ struct DynamicPageContent<BuilderType: ContentBuilder>: PageContent {
 
   var bodyClasses: [String] {
     builder.bodyClasses
+  }
+
+  var redirectURL: URL? {
+    nil
   }
 }

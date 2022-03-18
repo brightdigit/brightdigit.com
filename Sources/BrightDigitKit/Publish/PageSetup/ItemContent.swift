@@ -1,7 +1,26 @@
+import Foundation
 import Plot
+import Publish
 
 struct ItemContent<ItemType: SectionItem>: PageContent {
+  var description: String {
+    item.description
+  }
+
+  var socialTitle: String {
+    item.pageTitle
+  }
+
+  var socialImageURL: URL {
+    item.featuredImageURL
+  }
+
+  var absoluteURL: URL {
+    item.source.absoluteURL(forSite: context.site)
+  }
+
   let item: ItemType
+  let context: PublishingContext<BrightDigitSite>
 
   var title: String {
     item.pageTitle
@@ -17,5 +36,9 @@ struct ItemContent<ItemType: SectionItem>: PageContent {
 
   var main: [Node<HTML.BodyContext>] {
     item.pageMainContent
+  }
+
+  var redirectURL: URL? {
+    item.redirectURL
   }
 }
