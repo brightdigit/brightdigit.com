@@ -244,8 +244,8 @@ struct PodcastItem: SectionItem {
       .h1("\(title)"),
       .main(
         .img(
-          .class("album")
-          // add transistor image url here
+          .class("album"),
+          .src(featuredImageURL)
         ),
         .div(
           .class("description"),
