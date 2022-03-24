@@ -170,6 +170,9 @@ struct PodcastItem: SectionItem {
     [
       podcastHeader,
       .main(
+        descriptionHeader
+      ),
+      .main(
         .header(
           .img(.src(featuredImageURL)),
           .div(.class("description"), .text(description)),
@@ -228,6 +231,65 @@ struct PodcastItem: SectionItem {
       .img(
         .class("default"),
         .src(imageURL)
+      )
+    )
+  }
+
+  var descriptionHeader: Node<HTML.BodyContext> {
+    .header(
+      .img(
+        .class("youtube"),
+        .src(imageURL)
+      ),
+      .h1("\(title)"),
+      .main(
+        .img(
+          .class("album")
+          // add transistor image url here
+        ),
+        .div(
+          .class("description"),
+          .text(description)
+        )
+      ),
+      .ol(
+        .class("media"),
+        .li(
+          .a(
+            .href(transistorShareURL),
+            .i(
+              .class("flaticon-podcast"),
+              .text(PiHTMLFactory.formatTimeInterval(audioDuration))
+            ),
+            .span(
+              .class("specs"),
+              .text(" podcast "),
+              .span(
+                .class("source"),
+                .text("at transistor.fm")
+              )
+            )
+          )
+        ),
+        .li(
+          .a(
+            .unwrap(youtubeShareURL) { youtubeShareURL in
+              .href(youtubeShareURL)
+            },
+            .i(.class("flaticon-youtube")),
+            .unwrap(videoDuration) { videoDuration in
+              .text(PiHTMLFactory.formatTimeInterval(videoDuration))
+            },
+            .span(
+              .class("specs"),
+              .text(" video "),
+              .span(
+                .class("source"),
+                .text("at youtube.com")
+              )
+            )
+          )
+        )
       )
     )
   }
