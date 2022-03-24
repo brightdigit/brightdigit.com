@@ -168,27 +168,7 @@ struct PodcastItem: SectionItem {
 
   var pageMainContent: [Node<HTML.BodyContext>] {
     [
-      .header(
-        .h2(.text("Episode #\(episodeNo)")),
-        .h1(.text(title)),
-        .div(
-          .class("publish-date"),
-          .text(PiHTMLFactory.itemFormatter.string(from: publishedDate))
-        ),
-        .div(
-          .class("length"),
-          .div(
-            .class("audio"),
-            .text(PiHTMLFactory.formatTimeInterval(audioDuration))
-          ),
-          .unwrap(videoDuration) { videoDuration in
-            .div(
-              .class("video"),
-              .text(PiHTMLFactory.formatTimeInterval(videoDuration))
-            )
-          }
-        )
-      ),
+      podcastHeader,
       .main(
         .header(
           .img(.src(featuredImageURL)),
@@ -216,6 +196,40 @@ struct PodcastItem: SectionItem {
         .contentBody(source.body)
       )
     ]
+  }
+
+  var podcastHeader: Node<HTML.BodyContext> {
+    .header(
+      .ol(
+        .li(
+          .class("episode-no"),
+          .i(.class("flaticon-announcement")),
+          .text("Episode #\(episodeNo)")
+        ),
+        .li(
+          .class("publish-date"),
+          .i(.class("flaticon-calendar")),
+          .text(PiHTMLFactory.itemFormatter.string(from: publishedDate))
+        ),
+        .li(
+          .class("audio-length"),
+          .i(.class("flaticon-podcast")),
+          .text(PiHTMLFactory.formatTimeInterval(audioDuration))
+        ),
+        .li(
+          .class("video-length"),
+          .i(.class("flaticon-youtube")),
+          .unwrap(videoDuration) { videoDuration in
+            .text(PiHTMLFactory.formatTimeInterval(videoDuration))
+          }
+        )
+      ),
+      .h1("\(title)"),
+      .img(
+        .class("default"),
+        .src(imageURL)
+      )
+    )
   }
 
   static let transistorShareBaseURL: URL = Self.transistorBaseURL.appendingPathComponent("s")
