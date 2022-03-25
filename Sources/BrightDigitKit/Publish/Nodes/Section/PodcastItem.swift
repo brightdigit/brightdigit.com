@@ -172,32 +172,8 @@ struct PodcastItem: SectionItem {
       .main(
         descriptionHeader
       ),
-      .main(
-        .header(
-          .img(.src(featuredImageURL)),
-          .div(.class("description"), .text(description)),
-          .ol(
-            .li(
-              .a(
-                .href(transistorShareURL),
-                .text("podcast")
-              )
-            ),
-            .unwrap(youtubeShareURL) { youtubeShareURL in
-              .li(
-                .a(
-                  .href(youtubeShareURL),
-                  .text("youtube")
-                )
-              )
-            }
-          )
-        ),
-        transistorEmbed,
-        .unwrap(youtubeEmbed) { $0 },
-
-        .contentBody(source.body)
-      )
+      mainContent,
+      showNotes
     ]
   }
 
@@ -294,6 +270,23 @@ struct PodcastItem: SectionItem {
     )
   }
 
+  var mainContent: Node<HTML.BodyContext> {
+    .main(
+      .div(
+        .class("content"),
+        transistorEmbed,
+        .unwrap(youtubeEmbed) { $0 }
+      )
+    )
+  }
+
+  var showNotes: Node<HTML.BodyContext> {
+    .main(
+      .class("show-notes"),
+      .contentBody(source.body)
+    )
+  }
+
   static let transistorShareBaseURL: URL = Self.transistorBaseURL.appendingPathComponent("s")
   static let transistorEmbedBaseURL: URL = Self.transistorBaseURL.appendingPathComponent("e")
   static let transistorBaseURL: URL = .init(staticString: "https://share.transistor.fm/")
@@ -327,8 +320,8 @@ struct PodcastItem: SectionItem {
   var youtubeEmbed: Node<HTML.BodyContext>? {
     youtubeEmbedURL.map { youtubeEmbedURL in
       .iframe(
-        .attribute(named: "width", value: "560"),
-        .attribute(named: "height", value: "315"),
+        //        .attribute(named: "width", value: "560"),
+//        .attribute(named: "height", value: "315"),
         .src(youtubeEmbedURL),
         .frameborder(false),
         .allowfullscreen(true),
