@@ -170,10 +170,9 @@ struct PodcastItem: SectionItem {
     [
       podcastHeader,
       .main(
-        descriptionHeader
-      ),
-      mainContent,
-      showNotes
+        descriptionHeader,
+        mainContent
+      )
     ]
   }
 
@@ -276,7 +275,8 @@ struct PodcastItem: SectionItem {
         .class("content"),
         transistorEmbed,
         .unwrap(youtubeEmbed) { $0 }
-      )
+      ),
+      showNotes
     )
   }
 
@@ -320,8 +320,6 @@ struct PodcastItem: SectionItem {
   var youtubeEmbed: Node<HTML.BodyContext>? {
     youtubeEmbedURL.map { youtubeEmbedURL in
       .iframe(
-        //        .attribute(named: "width", value: "560"),
-//        .attribute(named: "height", value: "315"),
         .src(youtubeEmbedURL),
         .frameborder(false),
         .allowfullscreen(true),
