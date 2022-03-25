@@ -1,7 +1,11 @@
 import Foundation
 import Plot
 import Publish
-import SwiftUI
+
+#if canImport(FoundationNetworking)
+  import FoundationNetworking
+#endif
+
 struct PodcastItem: SectionItem {
   let description: String
   let episodeNo: Int
