@@ -115,46 +115,57 @@ struct PodcastItem: SectionItem {
     [
       .id("episode-\(episodeNo)"),
       .header(
-        .img(.src(imageURL)),
         .a(
           .href(source.path),
+          .img(.src(imageURL)),
           .h2(.text(title))
         ),
         .div(
           .class("publish-date"),
           .text(PiHTMLFactory.itemFormatter.string(from: publishedDate))
-        ),
-        .div(
-          .class("length"),
-          .div(
-            .class("audio"),
-            .text(PiHTMLFactory.formatTimeInterval(audioDuration))
-          ),
-          .unwrap(videoDuration) { videoDuration in
-            .div(
-              .class("video"),
-              .text(PiHTMLFactory.formatTimeInterval(videoDuration))
-            )
-          }
         )
-
       ),
-      .main(
-        .text(description)
-      ),
-      .footer(
-        .div(.class("published-date"), .text(PiHTMLFactory.dateFormatter.string(from: publishedDate))),
+      .main(.text(description))
 
-        .div(.class("audio-length"), .text(
-          PiHTMLFactory.formatTimeInterval(audioDuration)
-        )),
+//        .img(.src(imageURL)),
+//        .a(
+//          .href(source.path),
+//          .h2(.text(title))
+//        ),
+//        .div(
+//          .class("publish-date"),
+//          .text(PiHTMLFactory.itemFormatter.string(from: publishedDate))
+//        ),
+//        .div(
+//          .class("length"),
+//          .div(
+//            .class("audio"),
+//            .text(PiHTMLFactory.formatTimeInterval(audioDuration))
+//          ),
+//          .unwrap(videoDuration) { videoDuration in
+//            .div(
+//              .class("video"),
+//              .text(PiHTMLFactory.formatTimeInterval(videoDuration))
+//            )
+//          }
+//        )
 
-        .unwrap(videoDuration) { videoDuration in
-          .div(.class("video-length"), .text(
-            PiHTMLFactory.formatTimeInterval(videoDuration)
-          ))
-        }
-      )
+//      .main(
+//        .text(description)
+//      ),
+//      .footer(
+//        .div(.class("published-date"), .text(PiHTMLFactory.dateFormatter.string(from: publishedDate))),
+//
+//        .div(.class("audio-length"), .text(
+//          PiHTMLFactory.formatTimeInterval(audioDuration)
+//        )),
+//
+//        .unwrap(videoDuration) { videoDuration in
+//          .div(.class("video-length"), .text(
+//            PiHTMLFactory.formatTimeInterval(videoDuration)
+//          ))
+//        }
+//      )
     ]
   }
 
