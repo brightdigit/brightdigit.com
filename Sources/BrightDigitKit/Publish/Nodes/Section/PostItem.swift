@@ -2,11 +2,6 @@ import Foundation
 import Plot
 import Publish
 
-protocol Postable {
-  static var sectionDescription: String { get }
-  static var sectionTitle: String { get }
-}
-
 struct PostItem<PostableType: Postable>: SectionItem {
   static var sectionDescription: String {
     PostableType.sectionDescription
