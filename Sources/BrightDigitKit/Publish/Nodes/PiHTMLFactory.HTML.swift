@@ -137,8 +137,9 @@ public extension Node where Context == HTML.DocumentContext {
       .link(.id("apple-dark-mode-icon"), .rel(.alternate), .href("/dark-mode-mask.svg?v=2022")),
       .link(.id("apple-light-mode-icon"), .rel(.alternate), .href("/safari-pinned-tab.svg?v=2022")),
 
-//      <meta name="apple-mobile-web-app-title" content="BrightDigit">
-//      <meta name="application-name" content="BrightDigit">
+      .unwrap(page.canonicalURL) { canonicalURL in
+        .link(.rel(.canonical), .href(canonicalURL))
+      },
 
       .script(
         .src("/js/main.js")

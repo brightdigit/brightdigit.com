@@ -30,7 +30,8 @@ public struct BrightDigitSite: Website {
 
   public enum SiteInfo {
     public static let url = URL(staticString: "https://brightdigit.com")
-    public static let name = "BrightDigit | Expert Swift App Development"
+    public static let name = "BrightDigit"
+    public static let title = "BrightDigit | Expert Swift App Development"
     public static let description = "Need a specialist Swift developer for your business’s next app to grow sales and delight customers? We are your go-to for expert development in the Apple ecosystem. Learn more..."
     public static let imagePath: Path = "/android-chrome-512x512.png"
   }

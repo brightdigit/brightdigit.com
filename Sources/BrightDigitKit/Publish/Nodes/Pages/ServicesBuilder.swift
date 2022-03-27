@@ -19,7 +19,7 @@ public extension Node where Context == HTML.BodyContext {
   static func makeHeroSection() -> Node {
     .header(
       .section(
-        .p("We work with ", .i("companies and agencies"), " that want Swift-based apps that are"),
+        .p("We work with ", .i("companies and agencies"), " that want Swift-based apps that are:"),
         .h1("Intuitive.", .br(), "Effective.", .br(), "Well-Designed.")
       )
     )

@@ -73,4 +73,8 @@ struct SectionContent<SectionBuilderType: SectionBuilderProtocol>: PageContent {
   var redirectURL: URL? {
     nil
   }
+
+  var canonicalURL: URL? {
+    context.site.url(for: builder.section.path)
+  }
 }

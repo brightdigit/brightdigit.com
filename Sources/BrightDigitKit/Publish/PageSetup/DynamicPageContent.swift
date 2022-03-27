@@ -19,6 +19,10 @@ struct DynamicPageContent<BuilderType: ContentBuilder>: PageContent {
     context.site.url(for: location)
   }
 
+  var canonicalURL: URL? {
+    absoluteURL
+  }
+
   init(builder: BuilderType, location: BuilderType.LocationType, context: PublishingContext<BrightDigitSite>) {
     self.builder = builder
     self.location = location
@@ -31,7 +35,7 @@ struct DynamicPageContent<BuilderType: ContentBuilder>: PageContent {
 
   var title: String {
     if BuilderType.self == IndexBuilder.self {
-      return BrightDigitSite.SiteInfo.name
+      return BrightDigitSite.SiteInfo.title
     } else {
       return location.title
     }

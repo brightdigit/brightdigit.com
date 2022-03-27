@@ -41,4 +41,8 @@ struct ItemContent<ItemType: SectionItem>: PageContent {
   var redirectURL: URL? {
     item.redirectURL
   }
+
+  var canonicalURL: URL? {
+    redirectURL ?? absoluteURL
+  }
 }

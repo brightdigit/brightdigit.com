@@ -11,6 +11,7 @@ public protocol PageContent {
   var bodyID: String? { get }
   var bodyClasses: [String] { get }
   var redirectURL: URL? { get }
+  var canonicalURL: URL? { get }
 }
 
 extension PageContent {
