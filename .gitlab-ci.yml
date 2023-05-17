@@ -25,8 +25,8 @@ build focal:
     - export ARCH_PREFIX=$(uname -i)
     - swift build
     - swift test
-  only:
-    changes:
+  rules:
+    - changes: 
       - Sources/**/*
 
 build macos:
@@ -41,8 +41,8 @@ build macos:
     - swift run swiftformat --lint .
     - swift run swiftlint
     - swift test
-  only:
-    changes:
+  rules:
+    - changes: 
       - Sources/**/*
 
 package macos:
