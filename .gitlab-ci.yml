@@ -25,6 +25,9 @@ build focal:
     - export ARCH_PREFIX=$(uname -i)
     - swift build
     - swift test
+  only:
+    changes:
+      - Sources/**/*
 
 build macos:
   except:
@@ -38,6 +41,9 @@ build macos:
     - swift run swiftformat --lint .
     - swift run swiftlint
     - swift test
+  only:
+    changes:
+      - Sources/**/*
 
 package macos:
   except:
@@ -53,6 +59,9 @@ package macos:
     - swift build -c release --product brightdigitwg
     - BIN_PATH=`swift build -c release --product brightdigitwg --show-bin-path`
     - cp $BIN_PATH/brightdigitwg brightdigitwg-`uname`-`arch`
+  only:
+    changes:
+      - Sources/**/*
 
 package focal:
   timeout: 3h
@@ -71,6 +80,9 @@ package focal:
     - swift build -c release --product brightdigitwg
     - BIN_PATH=`swift build -c release --product brightdigitwg --show-bin-path`
     - cp $BIN_PATH/brightdigitwg brightdigitwg-`uname`-`arch`
+  only:
+    changes:
+      - Sources/**/*
 
 deploy:
   cache: []
