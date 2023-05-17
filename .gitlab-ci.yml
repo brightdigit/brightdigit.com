@@ -46,6 +46,7 @@ package macos:
     - if: '$CI_COMMIT_BRANCH && $CI_COMMIT_BRANCH !~ /.*WIP$/ && $CI_COMMIT_BRANCH !~ /styling\/.*$/'
       changes:
         - Sources/**/*
+    - when: manual
   stage: package
   artifacts:
     paths:
@@ -63,6 +64,7 @@ package focal:
     - if: '$CI_COMMIT_BRANCH !~ /.*WIP$/ && $CI_COMMIT_BRANCH !~ /styling\/.*$/'
       changes:
         - Sources/**/*
+    - when: manual
   # only:
   #   - main
   #   - develop
@@ -77,7 +79,7 @@ package focal:
     - cp $BIN_PATH/brightdigitwg brightdigitwg-`uname`-`arch`
 
 deploy:
-  cache: []
+  # cache: []
   stage: deploy
   tags:
     - macos  
