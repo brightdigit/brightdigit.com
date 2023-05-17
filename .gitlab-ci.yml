@@ -16,9 +16,6 @@ cache:
     - .build/
 
 build focal:
-  except:
-    - /.*WIP$/
-    - /styling\/.*$/
   stage: build
   image: brightdigit/publish-xml
   script:
@@ -26,8 +23,8 @@ build focal:
     - swift build
     - swift test
   rules:
-    - if: $CI_COMMIT_BRANCH
-      changes: 
+    - if: '$CI_COMMIT_BRANCH && $CI_COMMIT_BRANCH !~ /.*WIP$/ && $CI_COMMIT_BRANCH !~ /styling\/.*$/'
+      changes:
         - Sources/**/*
 
 build macos:
@@ -42,10 +39,6 @@ build macos:
     - swift run swiftformat --lint .
     - swift run swiftlint
     - swift test
-  rules:
-    - if: $CI_COMMIT_BRANCH
-      changes: 
-        - Sources/**/*
 
 package macos:
   except:
