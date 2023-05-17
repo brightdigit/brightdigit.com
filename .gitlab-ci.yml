@@ -59,9 +59,6 @@ package macos:
     - swift build -c release --product brightdigitwg
     - BIN_PATH=`swift build -c release --product brightdigitwg --show-bin-path`
     - cp $BIN_PATH/brightdigitwg brightdigitwg-`uname`-`arch`
-  only:
-    changes:
-      - Sources/**/*
 
 package focal:
   timeout: 3h
@@ -80,9 +77,6 @@ package focal:
     - swift build -c release --product brightdigitwg
     - BIN_PATH=`swift build -c release --product brightdigitwg --show-bin-path`
     - cp $BIN_PATH/brightdigitwg brightdigitwg-`uname`-`arch`
-  only:
-    changes:
-      - Sources/**/*
 
 deploy:
   cache: []
