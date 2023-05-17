@@ -16,21 +16,22 @@ cache:
     - .build/
 
 build focal:
+  rules:
+    - if: '$CI_COMMIT_BRANCH !~ /.*WIP$/ && $CI_COMMIT_BRANCH !~ /styling\/.*$/'
+      changes:
+        - Sources/**/*
   stage: build
   image: brightdigit/publish-xml
   script:
     - export ARCH_PREFIX=$(uname -i)
     - swift build
     - swift test
-  rules:
-    - if: '$CI_COMMIT_BRANCH && $CI_COMMIT_BRANCH !~ /.*WIP$/ && $CI_COMMIT_BRANCH !~ /styling\/.*$/'
-      changes:
-        - Sources/**/*
 
 build macos:
-  except:
-    - /.*WIP$/
-    - /styling\/.*$/
+  rules:
+    - if: '$CI_COMMIT_BRANCH !~ /.*WIP$/ && $CI_COMMIT_BRANCH !~ /styling\/.*$/'
+      changes:
+        - Sources/**/*
   stage: build
   tags:
     - macos  
@@ -41,9 +42,10 @@ build macos:
     - swift test
 
 package macos:
-  except:
-    - /.*WIP$/
-    - /styling\/.*$/
+  rules:
+    - if: '$CI_COMMIT_BRANCH && $CI_COMMIT_BRANCH !~ /.*WIP$/ && $CI_COMMIT_BRANCH !~ /styling\/.*$/'
+      changes:
+        - Sources/**/*
   stage: package
   artifacts:
     paths:
@@ -57,12 +59,13 @@ package macos:
 
 package focal:
   timeout: 3h
-  only:
-    - main
-    - develop
-  except:
-    - /.*WIP$/
-    - /styling\/.*$/
+  rules:
+    - if: '$CI_COMMIT_BRANCH !~ /.*WIP$/ && $CI_COMMIT_BRANCH !~ /styling\/.*$/'
+      changes:
+        - Sources/**/*
+  # only:
+  #   - main
+  #   - develop
   stage: package
   artifacts:
     paths:
