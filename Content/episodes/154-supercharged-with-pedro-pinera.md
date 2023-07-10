@@ -4,7 +4,7 @@ date: 2023-06-30 08:58
 description: Pedro Piñera of Tuist comes on to talk about his work on Tuist, thoughts on Mergable Libraries, Server-Side Swift, SwiftData, and the future of Tuist Cloud.
 featuredImage: https://images.transistor.fm/file/transistor/images/episode/1401624/full_1687983486-artwork.jpg
 youtubeID: jK6MNF_t3sc
-audioDuration: 1814
+audioDuration: 2099
 videoDuration: 2081
 podcastID: e0ee5618
 ---
@@ -30,9 +30,9 @@ podcastID: e0ee5618
 <li><a href="https://developer.apple.com/videos/play/wwdc2023-10171">WWDC 2023 - Meet Swift OpenAPI Generator</a></li>
 </ul><p><b>We talked about </b></p><p></p><ul>
 <li>(00:00) - What is Tuist</li>
-<li>(04:55) - What are Mergable Libraries</li>
-<li>(08:40) - Modularity and SPM</li>
-<li>(16:41) - Future of Tuist</li>
+<li>(05:25) - What are Mergable Libraries</li>
+<li>(09:48) - Modularity and SPM</li>
+<li>(18:16) - Future of Tuist</li>
 </ul><p><b>Social Media</b></p><p>Twitter <a href="https://twitter.com/leogdion">Leo - @leogdion</a><a href="https://twitter.com/brightdigit"><br></a>Twitter <a href="https://twitter.com/brightdigit">BrightDigit - @brightdigit</a><br><a href="https://www.linkedin.com/in/leogdion/">LinkedIn - @leogdion</a><br><a href="https://github.com/brightdigit">GitHub - @brightdigit</a><br><a href="https://github.com/leogdion/">GitHub - @leogdion</a><br><a href="https://www.tiktok.com/@brightdigit">TikTok - @brightdigit</a><br><a href="https://c.im/@leogdion">Mastodon - @leogdion@c.im</a><br><a href="http://youtube.com/@brightdigit">Youtube - @brightdigit</a></p><p><b>Credits</b></p><p><a href="https://filmmusic.io/">Music from https://filmmusic.io</a><br><a href="https://incompetech.com/">"Blippy Trance" by Kevin MacLeod (https://incompetech.com)</a><br><a href="http://creativecommons.org/licenses/by/4.0/">License: CC BY (http://creativecommons.org/licenses/by/4.0/)</a></p>
 <strong>
   <a href="https://www.patreon.com/empowerappsshow" rel="payment" title="★ Support this podcast on Patreon ★">★ Support this podcast on Patreon ★</a>

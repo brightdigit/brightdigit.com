@@ -10,7 +10,7 @@ podcastID: f98dc3f4
 ---
 <p>Adrian Eves tells us about what it was like meeting folks at WWDC and what it was like watching some his work and his colleagues' work come to fruition.</p><p><b>Guest</b></p><ul><li>
 <a href="https://twitter.com/swifteves">Adrian Eves - @swifteves</a><ul>
-<li><a href="https://mastodon.social/@swifteves">Mastadon - @swifteves@mastodon.social</a></li>
+<li><a href="https://mastodon.social/@swifteves">Mastodon - @swifteves@mastodon.social</a></li>
 <li>
 <a href="https://www.linkedin.com/in/adrian-eves-06368844/">LinkedIn</a> </li>
 </ul>
