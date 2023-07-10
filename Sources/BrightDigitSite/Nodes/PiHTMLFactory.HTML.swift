@@ -187,6 +187,8 @@ public extension Node where Context == HTML.BodyContext {
           .class("social"),
           .li(href: "http://twitter.com/brightdigit", flatIcon: "twitter"),
           .li(href: "http://github.com/brightdigit", flatIcon: "github"),
+          .li(href: "https://c.im/@leogdion", flatIcon: "mastodon", rel: .me),
+          .li(href: "https://www.linkedin.com/in/leogdion/", flatIcon: "linkedin"),
           .li(href: "https://www.empowerapps.show", flatIcon: "podcast"),
           .li(href: "http://youtube.com/c/BrightdigitLLC", flatIcon: "youtube"),
           .li(href: "https://us12.campaign-archive.com/home/?u=cb3bba007ed171091f55c47f0&id=584d0d5c40", flatIcon: "newsletter"),
@@ -208,13 +210,20 @@ public extension Node where Context == HTML.BodyContext {
   }
 }
 
+public extension HTMLAnchorRelationship {
+  static let me: HTMLAnchorRelationship = "me"
+}
+
 public extension Node where Context == HTML.ListContext {
-  static func li(href: String, flatIcon: String) -> Node {
+  static func li(href: String, flatIcon: String, rel: HTMLAnchorRelationship? = nil) -> Node {
     .li(
       .a(
         .ariaLabel(flatIcon.capitalized),
         .href(href),
-        .i(.class("flaticon-\(flatIcon)"))
+        .i(.class("flaticon-\(flatIcon)")),
+        .unwrap(rel, {
+          .rel($0)
+        })
       )
     )
   }
