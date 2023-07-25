@@ -169,3 +169,4 @@ Output
 .publish
 # Local Netlify folder
 .netlify
+Styling/*.svg
