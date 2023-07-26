@@ -16,6 +16,7 @@ podcastID: be21511d
 <li><a href="https://brightdigit.com/episodes/152-spatial-experiences-of-the-wild-with-adrian-eves/">Episode 152 - Spatial Experiences of the Wild with Adrian Eves</a></li>
 <li><a href="https://brightdigit.com/episodes/130-macos-by-tutorials-with-sarah-reichelt/">Episode 130 - macOS by Tutorials with Sarah Reichelt</a></li>
 </ul><p><b>Related Links</b></p><ul>
+<li><a href="https://brightdigit.com/articles/microapps-architecture/">What are the benefits of microapps?</a></li>
 <li><a href="https://heartwitch.app">Heartwitch</a></li>
 <li><a href="https://getbushel.app">Bushel</a></li>
 <li><a href="https://developer.apple.com/documentation/virtualization?changes=latest_minor">Virtualization Changes</a></li>
