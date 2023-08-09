@@ -30,6 +30,7 @@ struct PodcastItem: SectionItem {
   let isFeatured: Bool
   let transistorID: String
   let source: Item<BrightDigitSite>
+  let site: WebsiteType
 
   static let youtubeImageBaseURL = URL(staticString: "https://i.ytimg.com/vi/")
 
@@ -148,8 +149,10 @@ struct PodcastItem: SectionItem {
         ),
         .div(
           .a(
+            .data(named: "text", value: "Episode \(episodeNo) - \(title)"),
+            .data(named: "url", value: source.absoluteURL(forSite: site).absoluteString),
             .href(source.path),
-            .text(" More Info ")
+            .raw("<i class=\"flaticon-share\"></i> Share")
           )
         )
       )
@@ -337,11 +340,9 @@ struct PodcastItem: SectionItem {
     )
   }
 
-  // swiftlint:disable:next force_try
-  // static let regex = try! NSRegularExpression(pattern: "^\\d+", options: [])
-
-  init(item: Item<BrightDigitSite>, site _: BrightDigitSite) throws {
+  init(item: Item<BrightDigitSite>, site: BrightDigitSite) throws {
     source = item
+    self.site = site
     let featuredImageURL = item.featuredImageURL
     let isFeatured = item.metadata.featured ?? false
 

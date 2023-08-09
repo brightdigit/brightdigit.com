@@ -162,6 +162,11 @@ public extension Node where Context == HTML.DocumentContext {
       .script(
         .async(),
         .src("https://www.googletagmanager.com/gtag/js?id=G-K3MSJ0CTMJ")
+      ),
+      .script(
+        .defer(),
+        .data(named: "domain", value: "brightdigit.com"),
+        .src("https://plausible.io/js/script.js")
       )
     )
   }

@@ -2,7 +2,7 @@ import path from "path";
 import { Configuration } from "webpack";
 
 const config: Configuration = {
-  entry: "./scripts/index.ts",
+  entry: ["regenerator-runtime/runtime.js","./scripts/index.ts"],
   output: {
     path: path.resolve(__dirname)
   },
