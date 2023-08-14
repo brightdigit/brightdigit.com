@@ -1282,7 +1282,7 @@ body.articles, body.tutorials {
           @apply w-20 h-20 lg:w-48 lg:h-48 object-contain mt-8;
         }
       }
-      iframe {
+      iframe, video {
         @apply w-full h-auto my-2;
         aspect-ratio: 16/9;
         @apply xl:max-w-2xl xl:mx-auto;
