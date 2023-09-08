@@ -17,7 +17,6 @@ cache:
     - .build/
 
 variables:
-  GIT_DEPTH: 0
   main_branch: 'main'
   automate_content_commit: '/^automate-content/i'
   excluded_branches: '/(styling\/.*$)|(.*WIP$)/i'
@@ -76,6 +75,8 @@ automate content:
     - if: $AUTOMATE_CONTENT != null
   stage: automate-content
   resource_group: automate-content
+  variables:
+    GIT_STRATEGY: clone
   tags:
     - macos
   before_script:
