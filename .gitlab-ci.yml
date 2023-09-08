@@ -108,6 +108,7 @@ automate content:
       if [[ $CHANGES_COUNT -ne 0 ]]; then
         TODAY_DATE=`date '+%y%m%d%H%M'`
         COMMIT_MESSAGE="Bot:- ${TODAY_DATE} - ${CHANGES_COUNT} new changes"
+        git remote set-url origin git@gitlab.com:BrightDigit/Public/brightdigit.com.git
         git add .
         git commit -m "${COMMIT_MESSAGE}"
         git push origin $CI_COMMIT_BRANCH
