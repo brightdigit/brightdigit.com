@@ -20,7 +20,7 @@ public struct PandocMarkdownGenerator: MarkdownGenerator {
 
   let shellOut: (String, [String]) throws -> String
   let temporaryFile: (String) throws -> URL
-  let pandocPath = ProcessInfo.processInfo.environment["PANDOC_PATH"] ?? "/usr/local/bin/pandoc"
+  let pandocPath = ProcessInfo.processInfo.environment["PANDOC_PATH"] ?? "$(which pandoc)"
 
   public enum Temporary {
     static let temporaryDirURL = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)

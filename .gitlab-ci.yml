@@ -1,4 +1,5 @@
 stages:
+  - automate-content
   - build
   - package
   - deploy
@@ -16,46 +17,105 @@ cache:
     - .build/
 
 variables:
+  GIT_DEPTH: 0
   main_branch: 'main'
+  automate_content_commit: '/^automate-content/i'
   excluded_branches: '/(styling\/.*$)|(.*WIP$)/i'
   merge_request_draft:  '/^(\[Draft\]|\(Draft\)|Draft:)/'
   merge_request_pipeline_source: 'merge_request_event'
 
-## Rules ##
 
-.default_build_rules:
+###############
+#### Rules ####
+###############
+
+.build_rules:
   rules:
-    - if: $CI_PIPELINE_SOURCE == $merge_request_pipeline_source && $CI_MERGE_REQUEST_TITLE =~ $merge_request_draft
+    # To run manually for draft merge request.
+    - if: $AUTOMATE_CONTENT == null && ($CI_PIPELINE_SOURCE == $merge_request_pipeline_source && $CI_MERGE_REQUEST_TITLE =~ $merge_request_draft)
       when: manual
-    - if: '$CI_COMMIT_BRANCH !~ $excluded_branches'
+    
+    # To run only if any swift file changed.
+    - if: $AUTOMATE_CONTENT == null && ('$CI_COMMIT_BRANCH !~ $excluded_branches')
       changes:
         - "**/*.swift"
-    - if: '$CI_COMMIT_BRANCH !~ $excluded_branches'
+    
+    # To never run brightdigitwg executable is available
+    - if: $AUTOMATE_CONTENT == null && ('$CI_COMMIT_BRANCH !~ $excluded_branches')
       exists:
         - brightdigitwg-*
       when: never
 
 .package_jammy_rules:
   rules:
-    - if: $CI_COMMIT_BRANCH == $main_branch
+    # To run only on main branch commits if any swift file changes.
+    - if: $AUTOMATE_CONTENT == null && ($CI_COMMIT_BRANCH == $main_branch)
       changes:
         - "**/*.swift"
-    - if: $CI_COMMIT_BRANCH == $main_branch
+
+    # To never run on main branch commits if executable is available.
+    - if: $AUTOMATE_CONTENT == null && ($CI_COMMIT_BRANCH == $main_branch)
       exists:
         - brightdigitwg-*
       when: never
 
 .deploy_rules:
   rules:
-    - if: $CI_PIPELINE_SOURCE == $merge_request_pipeline_source && $CI_MERGE_REQUEST_TITLE =~ $merge_request_draft
+    # To run manually if merge request is of type Draft.
+    - if: $AUTOMATE_CONTENT == null && ($CI_PIPELINE_SOURCE == $merge_request_pipeline_source && $CI_MERGE_REQUEST_TITLE =~ $merge_request_draft)
       when: manual
-    - when: on_success
+    - if: $AUTOMATE_CONTENT == null
 
-## JOBS ##
+
+##############
+#### JOBS ####
+##############
+
+automate content:
+  rules:
+    - if: $AUTOMATE_CONTENT != null
+  stage: automate-content
+  resource_group: automate-content
+  tags:
+    - macos
+  before_script:
+    - git checkout $CI_COMMIT_BRANCH
+  script:
+    # Run import commands (mailchimp, podcast, etc..)
+    - |- 
+      if [[ -z "$DONOT_SKIP_BUILD" ]]
+      then
+        echo "Build will be skipped"
+        SKIP_BUILD_OPTION="--skip-build"
+
+      else
+        echo "Build will NOT be skipped"
+        SKIP_BUILD_OPTION=""
+      fi
+    - swift run $SKIP_BUILD_OPTION brightdigitwg 
+      import mailchimp 
+        --mailchimp-api-key=$MAILCHIMP_API_KEY 
+        --mailchimp-list-id=$MAILCHIMP_LIST_ID 
+        --export-markdown-directory=Content/newsletters
+    - swift run $SKIP_BUILD_OPTION brightdigitwg 
+      import podcast 
+        --youtube-api-key=$YOUTUBE_API_KEY 
+        --export-markdown-directory Content/episodes
+
+    # Commit any changes (new newsletters, podcasts, etc..) if found
+    - CHANGES_COUNT=`git status --porcelain | wc -l`
+    - |-
+      if [[ $CHANGES_COUNT -ne 0 ]]; then
+        TODAY_DATE=`date '+%y%m%d%H%M'`
+        COMMIT_MESSAGE="Bot:- ${TODAY_DATE} - ${CHANGES_COUNT} new changes"
+        git add .
+        git commit -m "${COMMIT_MESSAGE}"
+        git push origin $CI_COMMIT_BRANCH
+      fi
 
 build jammy:
   rules:
-    - !reference [.default_build_rules, rules]
+    - !reference [.build_rules, rules]
   stage: build
   resource_group: $CI_COMMIT_REF_NAME
   image: brightdigit/publish-xml
@@ -66,7 +126,7 @@ build jammy:
 
 build macos:
   rules:
-    - !reference [.default_build_rules, rules]
+    - !reference [.build_rules, rules]
   stage: build
   resource_group: $CI_COMMIT_REF_NAME
   tags:
@@ -79,7 +139,7 @@ build macos:
 
 package macos:
   rules:
-    - !reference [.default_build_rules, rules]
+    - !reference [.build_rules, rules]
   stage: package
   resource_group: $CI_COMMIT_REF_NAME
   tags:
@@ -117,7 +177,7 @@ deploy:
   artifacts:
     paths:
       - brightdigitwg-*
-  script:    
+  script:
     - if [ "$CI_COMMIT_REF_NAME" = "main" ]; then SITE_ID=$NETLIFY_PRODUCTION_SITE_ID; else SITE_ID=$NETLIFY_BETA_SITE_ID; fi
     - if [ "$CI_COMMIT_REF_NAME" = "main" ]; then PUBLISHING_MODE=production; else PUBLISHING_MODE=drafts; fi
     - if [ "$CI_COMMIT_REF_NAME" = "main" ]; then PROD_FLAG="--prod"; else PROD_FLAG=""; fi   
@@ -131,7 +191,6 @@ code_quality:
   stage: test
   resource_group: $CI_COMMIT_REF_NAME
   rules:
-    - !reference [.default_build_rules, rules]
+    - !reference [.build_rules, rules]
   artifacts:
     paths: [gl-code-quality-report.json]
-
