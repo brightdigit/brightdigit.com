@@ -4,7 +4,7 @@ campaignID: 2dbce120fd
 featuredImage: https://dim.mcusercontent.com/cs/cb3bba007ed171091f55c47f0/images/917f9151-9e2a-bbe3-6cd5-7e8e9018edb5.jpeg?w=564&dpr=2
 longArchiveURL: https://mailchi.mp/12d9bd171086/brightdigit-81-watchos-10
 newsletterTitle: 'BrightDigit Newsletter - Issue #81 - 23.08.17'
-title: "BrightDigit #81 - \U0001F476 Apple Watch Is About To Grow Up \U0001F9D4‍♂️"
+title: "BrightDigit #81 - \U0001F476 Apple Watch Is About To Grow Up"
 date: 2023-08-17 09:00
 description: watchOS 10 could fundamentally change how we make apps for the Apple Watch, becoming a platform where you can build dedicated apps.
 ---
