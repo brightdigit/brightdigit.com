@@ -97,6 +97,6 @@ This has an advantage over traditional meetings or standups in multi-team enviro
 
 ## Get updated on Tjeerd’s upcoming book
 
-Thank you again to Tjeerd in 't Veen for sharing his ideas and for the privilege of seeing the draft of his book. Tjeerd is still finishing his book at the time of writing, but you can[ sign up here to receive updates](https://tjeerdintveen.gumroad.com/l/mobile-system-design-tactical-engineering) when preorders become available. If you found this topic interesting, I recommend reading the book when it comes out.
+Thank you again to Tjeerd in 't Veen for sharing his ideas and for the privilege of seeing the draft of his book. Tjeerd is still finishing his book at the time of writing, but you can[ sign up here to receive updates](https://mobilesystemdesign.com) when preorders become available. If you found this topic interesting, I recommend reading the book when it comes out.
 
 Also, if you enjoyed this article and want to keep reading more about interesting ideas in Swift and iOS development, you can check out the latest content on our blog. You can also sign up for our newsletter, where, about once a month, I’ll send you updates on the latest news, tips, and tricks about all things Apple and Swift.
