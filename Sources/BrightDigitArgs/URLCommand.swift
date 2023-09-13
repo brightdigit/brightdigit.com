@@ -29,7 +29,7 @@ public extension BrightDigitSiteCommand {
       public var episodeTitle: String
 
       public func run() throws {
-        let fileName = ContributeMedia.Podcast.fileNameWithoutExtensionForEpisode(withNumber: episodeNumber, title: episodeTitle)
+        let fileName = ContributeMedia.LegacyPodcast.fileNameWithoutExtensionForEpisode(withNumber: episodeNumber, title: episodeTitle)
         let url = baseURL.appendingPathComponent(basePath).appendingPathComponent(fileName)
         print(url)
       }

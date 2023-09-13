@@ -5,7 +5,7 @@ import SyndiKit
 #if canImport(FoundationNetworking)
   import FoundationNetworking
 #endif
-public extension Podcast {
+public extension LegacyPodcast {
   struct Source {
     public init(episodeNo: Int, slug: String, title: String, date: Date, summary: String, content: String, audioURL: URL, imageURL: URL, duration: TimeInterval, podcastID: String, video: Video) {
       self.episodeNo = episodeNo
@@ -35,7 +35,7 @@ public extension Podcast {
   }
 }
 
-public extension Podcast.Source {
+public extension LegacyPodcast.Source {
   init(podcastID: String, item: RSSItem, video: Video) throws {
     guard let content = item.contentEncoded?.value ?? item.description?.value else {
       throw ImportError.invalidPodcastEpisodeFromRSSItem(item)
@@ -74,7 +74,7 @@ public extension Podcast.Source {
     self.init(episodeNo: episodeNo, slug: slug, title: title, date: date, summary: summary, content: content, audioURL: imageURL, imageURL: imageURL, duration: duration, podcastID: podcastID, video: video)
   }
 
-  static func episodesBasedOn(rssItems: [RSSItem], withVideos videos: [String: Video], id: @escaping (RSSItem, Video) -> String?) throws -> [Podcast.Source] {
+  static func episodesBasedOn(rssItems: [RSSItem], withVideos videos: [String: Video], id: @escaping (RSSItem, Video) -> String?) throws -> [LegacyPodcast.Source] {
     try rssItems.map { rssItem in
       let title = rssItem.title.trimmingCharacters(in: .whitespacesAndNewlines)
       guard let video = videos[title] else {

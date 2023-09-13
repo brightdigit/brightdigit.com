@@ -19,6 +19,24 @@
       }
     },
     {
+      "identity" : "contribute",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/brightdigit/Contribute.git",
+      "state" : {
+        "revision" : "5db9f5d03b9f009702cc4ec508162d8db6b00491",
+        "version" : "1.0.0-alpha.5"
+      }
+    },
+    {
+      "identity" : "contributewordpress",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/brightdigit/ContributeWordPress.git",
+      "state" : {
+        "revision" : "6dceda3ea4c7df328311ecc516b7adb11865df5a",
+        "version" : "1.0.0"
+      }
+    },
+    {
       "identity" : "files",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/johnsundell/files.git",
@@ -176,8 +194,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/BrightDigit/SyndiKit",
       "state" : {
-        "revision" : "238c8d85a94b67072c8fafcb4feff1b6df11d87b",
-        "version" : "0.3.3"
+        "revision" : "0a077415a1ae3d20fb0327fdc3837442f7298708",
+        "version" : "0.3.7"
       }
     },
     {

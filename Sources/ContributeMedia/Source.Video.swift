@@ -1,7 +1,7 @@
 import Contribute
 import Foundation
 
-public extension Podcast.Source {
+public extension LegacyPodcast.Source {
   struct Video: Equatable {
     public let youtubeID: String
     public let duration: TimeInterval
@@ -9,7 +9,7 @@ public extension Podcast.Source {
   }
 }
 
-public extension Podcast.Source.Video {
+public extension LegacyPodcast.Source.Video {
   static func dictionaryBasedOn(videos: [YouTubeVideo]) throws -> [String: Self] {
     let videoDurationList = try videos.map { video -> (String, Self) in
       guard let title = video.snippet?.title?.trimmingCharacters(in: .whitespacesAndNewlines) else {

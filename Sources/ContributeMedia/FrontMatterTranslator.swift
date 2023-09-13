@@ -1,6 +1,6 @@
 import Contribute
 import Foundation
-public extension Podcast {
+public extension LegacyPodcast {
   struct FrontMatterTranslator: Contribute.FrontMatterTranslator {
     public func frontMatter(from source: Source) -> FrontMatter {
       FrontMatter(episode: source)

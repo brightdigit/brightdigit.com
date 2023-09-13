@@ -11,8 +11,8 @@ import SyndiKit
   import FoundationNetworking
 #endif
 
-typealias PodcastEpisode = ContributeMedia.Podcast.Source
-typealias PodcastEpisodeVideo = ContributeMedia.Podcast.Source.Video
+typealias PodcastEpisode = ContributeMedia.LegacyPodcast.Source
+typealias PodcastEpisodeVideo = ContributeMedia.LegacyPodcast.Source.Video
 
 public extension BrightDigitSiteCommand.ImportCommand {
   struct Podcast: ParsableCommand {
@@ -45,7 +45,7 @@ public extension BrightDigitSiteCommand.ImportCommand {
       URL(fileURLWithPath: exportMarkdownDirectory)
     }
 
-    static func id(fromRssItem item: RSSItem, andVideo _: ContributeMedia.Podcast.Source.Video) -> String? {
+    static func id(fromRssItem item: RSSItem, andVideo _: ContributeMedia.LegacyPodcast.Source.Video) -> String? {
       guard item.link.host == "share.transistor.fm" else {
         return nil
       }
@@ -56,13 +56,13 @@ public extension BrightDigitSiteCommand.ImportCommand {
       let youtubeClient = Prch.Client(api: YouTube.API(), session: URLSession.shared)
       let videos = try youtubeClient.videos(fromRequest: .init(apiKey: youtubeAPIKey, playlistID: playlistID))
       let videoDurations = try PodcastEpisodeVideo.dictionaryBasedOn(videos: videos)
-      let rssItems = try ContributeMedia.Podcast.rssItemsFrom(rss)
+      let rssItems = try ContributeMedia.LegacyPodcast.rssItemsFrom(rss)
 
       let options: MarkdownContentBuilderOptions = .init(shouldOverwriteExisting: overwriteExisting, includeMissingPrevious: includeMissingPrevious)
       let episodes: [PodcastEpisode] = try PodcastEpisode.episodesBasedOn(rssItems: rssItems, withVideos: videoDurations, id: Self.id).sorted(by: { lhs, rhs in
         lhs.episodeNo < rhs.episodeNo
       })
-      try ContributeMedia.Podcast.write(from: episodes, atContentPathURL: contentPathURL, using: BrightDigitSiteCommand.ImportCommand.markdownGenerator.markdown(fromHTML:), options: options)
+      try ContributeMedia.LegacyPodcast.write(from: episodes, atContentPathURL: contentPathURL, using: BrightDigitSiteCommand.ImportCommand.markdownGenerator.markdown(fromHTML:), options: options)
     }
   }
 }

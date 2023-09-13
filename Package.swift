@@ -18,9 +18,7 @@ let package = Package(
     ),
     .library(name: "Tagscriber", targets: ["Tagscriber"]),
     .library(name: "ContributeMailchimp", targets: ["ContributeMailchimp"]),
-    .library(name: "ContributeWordPress", targets: ["ContributeWordPress"]),
     .library(name: "ContributeMedia", targets: ["ContributeMedia"]),
-    .library(name: "Contribute", targets: ["Contribute"]),
     .library(name: "PublishType", targets: ["PublishType"])
   ],
   dependencies: [
@@ -31,12 +29,13 @@ let package = Package(
     .package(url: "https://github.com/alexito4/ReadingTimePublishPlugin.git", from: "0.3.0"),
     .package(url: "https://github.com/johnsundell/ShellOut.git", from: "2.3.0"),
 
-    .package(url: "https://github.com/BrightDigit/Prch.git", from: "0.2.1"),
     .package(url: "https://github.com/BrightDigit/SwiftTube.git", from: "0.2.0-beta.4"),
     .package(url: "https://github.com/BrightDigit/Spinetail.git", from: "0.3.0"),
-    .package(url: "https://github.com/BrightDigit/SyndiKit", from: "0.3.3"),
+    .package(url: "https://github.com/BrightDigit/SyndiKit", from: "0.3.7"),
     .package(url: "https://github.com/BrightDigit/Options.git", from: "0.2.0"),
     .package(url: "https://github.com/brightdigit/NPMPublishPlugin.git", from: "1.0.0"),
+    .package(url: "https://github.com/brightdigit/Contribute.git", from: "1.0.0-alpha.5"),
+    .package(url: "https://github.com/brightdigit/ContributeWordPress.git", from: "1.0.0"),
     .package(url: "https://github.com/brightdigit/TransistorPublishPlugin.git", from: "1.0.0"),
 
     .package(url: "https://github.com/jpsim/Yams.git", from: "4.0.4"),
@@ -51,29 +50,36 @@ let package = Package(
     ),
     .target(name: "Tagscriber", dependencies: ["Kanna", "MarkdownGenerator", "ShellOut"]),
     .target(name: "ContributeMailchimp", dependencies: ["Contribute", "Spinetail"]),
-    .target(name: "ContributeWordPress", dependencies: ["Contribute", "SyndiKit"]),
     .target(name: "ContributeMedia", dependencies: ["Contribute", "SyndiKit", "SwiftTube"]),
-    .target(name: "Contribute", dependencies: ["Yams", "Prch"]),
-    .target(name: "BrightDigitArgs",
-            dependencies: [
-              .product(name: "ArgumentParser", package: "swift-argument-parser"),
-              "BrightDigitSite",
-              "ContributeMailchimp",
-              "ContributeWordPress",
-              "ContributeMedia",
-              "Tagscriber"
-            ]),
-    .target(name: "BrightDigitSite",
-            dependencies: [
-              "Publish", "SplashPublishPlugin", "YoutubePublishPlugin", "ReadingTimePublishPlugin", "Options", "PublishType", "TransistorPublishPlugin", "NPMPublishPlugin"
-            ]),
-    .target(name: "PublishType",
-            dependencies: [
-              "Publish"
-            ]),
-    .testTarget(
-      name: "ContributeTests",
-      dependencies: ["Contribute"]
+    .target(
+      name: "BrightDigitArgs",
+      dependencies: [
+        .product(name: "ArgumentParser", package: "swift-argument-parser"),
+        "BrightDigitSite",
+        "ContributeMailchimp",
+        "ContributeWordPress",
+        "ContributeMedia",
+        "Tagscriber"
+      ]
+    ),
+    .target(
+      name: "BrightDigitSite",
+      dependencies: [
+        "Publish",
+        "SplashPublishPlugin",
+        "YoutubePublishPlugin",
+        "ReadingTimePublishPlugin",
+        "Options",
+        "PublishType",
+        "TransistorPublishPlugin",
+        "NPMPublishPlugin"
+      ]
+    ),
+    .target(
+      name: "PublishType",
+      dependencies: [
+        "Publish"
+      ]
     ),
     .testTarget(
       name: "BrightDigitSiteTests",
