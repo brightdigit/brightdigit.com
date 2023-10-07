@@ -1,8 +1,7 @@
 import ArgumentParser
+import Contribute
 import Foundation
-import MarkdownGenerator
 import Publish
-import ShellOut
 import SyndiKit
 import Tagscriber
 
@@ -17,4 +16,5 @@ public extension BrightDigitSiteCommand {
       subcommands: [WordPress.self, Podcast.self, Mailchimp.self]
     )
   }
+
 }

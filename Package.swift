@@ -18,7 +18,9 @@ let package = Package(
     ),
     .library(name: "Tagscriber", targets: ["Tagscriber"]),
     .library(name: "ContributeMailchimp", targets: ["ContributeMailchimp"]),
-    .library(name: "ContributeMedia", targets: ["ContributeMedia"]),
+    .library(name: "BrightDigitPodcast", targets: ["BrightDigitPodcast"]),
+    .library(name: "ContributeYouTube", targets: ["ContributeYouTube"]),
+    .library(name: "ContributeRSS", targets: ["ContributeRSS"]),
     .library(name: "PublishType", targets: ["PublishType"])
   ],
   dependencies: [
@@ -29,7 +31,7 @@ let package = Package(
     .package(url: "https://github.com/alexito4/ReadingTimePublishPlugin.git", from: "0.3.0"),
     .package(url: "https://github.com/johnsundell/ShellOut.git", from: "2.3.0"),
 
-    .package(url: "https://github.com/BrightDigit/SwiftTube.git", from: "0.2.0-beta.4"),
+    .package(url: "https://github.com/BrightDigit/SwiftTube.git", from: "0.2.0-beta.5"),
     .package(url: "https://github.com/BrightDigit/Spinetail.git", from: "0.3.0"),
     .package(url: "https://github.com/BrightDigit/SyndiKit", from: "0.3.7"),
     .package(url: "https://github.com/BrightDigit/Options.git", from: "0.2.0"),
@@ -48,18 +50,17 @@ let package = Package(
       name: "brightdigitwg",
       dependencies: ["BrightDigitArgs"]
     ),
-    .target(name: "Tagscriber", dependencies: ["Kanna", "MarkdownGenerator", "ShellOut"]),
-    .target(name: "ContributeMailchimp", dependencies: ["Contribute", "Spinetail"]),
-    .target(name: "ContributeMedia", dependencies: ["Contribute", "SyndiKit", "SwiftTube"]),
     .target(
       name: "BrightDigitArgs",
       dependencies: [
-        .product(name: "ArgumentParser", package: "swift-argument-parser"),
         "BrightDigitSite",
+        "BrightDigitPodcast",
+        "ContributeYouTube",
+        "ContributeRSS",
         "ContributeMailchimp",
         "ContributeWordPress",
-        "ContributeMedia",
-        "Tagscriber"
+        "Tagscriber",
+        .product(name: "ArgumentParser", package: "swift-argument-parser"),
       ]
     ),
     .target(
@@ -76,6 +77,31 @@ let package = Package(
       ]
     ),
     .target(
+      name: "BrightDigitPodcast",
+      dependencies: ["ContributeYouTube", "ContributeRSS"]
+    ),
+    .target(
+      name: "ContributeMailchimp",
+      dependencies: ["Contribute", "Spinetail"]
+    ),
+    .target(
+      name: "ContributeYouTube",
+      dependencies: ["Contribute", "SwiftTube"]
+    ),
+    .target(
+      name: "ContributeRSS",
+      dependencies: ["Contribute", "SyndiKit"]
+    ),
+    .target(
+      name: "Tagscriber",
+      dependencies: [
+        "Kanna",
+        "Contribute",
+        "MarkdownGenerator",
+        "ShellOut"
+      ]
+    ),
+    .target(
       name: "PublishType",
       dependencies: [
         "Publish"
@@ -83,7 +109,10 @@ let package = Package(
     ),
     .testTarget(
       name: "BrightDigitSiteTests",
-      dependencies: ["Yams", "BrightDigitSite"]
+      dependencies: [
+        "Yams",
+        "BrightDigitSite"
+      ]
     )
   ]
 )

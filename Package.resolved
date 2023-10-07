@@ -185,8 +185,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/BrightDigit/SwiftTube.git",
       "state" : {
-        "revision" : "11262e260b9a86aa6626b98e7fc8dfcb84e106d9",
-        "version" : "0.2.0-beta.4"
+        "revision" : "4b9a3eae80cef01943f80ec94dcc3fa6d3db5909",
+        "version" : "0.2.0-beta.5"
       }
     },
     {

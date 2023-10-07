@@ -1,18 +1,24 @@
 import ArgumentParser
+import ContributeYouTube
+import ContributeRSS
 import Contribute
-import ContributeMedia
-
+import BrightDigitPodcast
 import Foundation
-import Prch
-import SwiftTube
 import SyndiKit
 
 #if canImport(FoundationNetworking)
   import FoundationNetworking
 #endif
 
-typealias PodcastEpisode = ContributeMedia.LegacyPodcast.Source
-typealias PodcastEpisodeVideo = ContributeMedia.LegacyPodcast.Source.Video
+
+extension RSSContent.Source : AudioPodcastItem {
+  
+}
+
+
+extension YouTubeContent.Source : VideoYouTubeItem {
+  
+}
 
 public extension BrightDigitSiteCommand.ImportCommand {
   struct Podcast: ParsableCommand {
@@ -41,28 +47,52 @@ public extension BrightDigitSiteCommand.ImportCommand {
     @Flag
     public var includeMissingPrevious: Bool = false
 
+    private static let markdownGenerator: MarkdownGenerator = BrightDigitSiteCommand.ImportCommand.markdownGenerator
+
     var contentPathURL: URL {
       URL(fileURLWithPath: exportMarkdownDirectory)
     }
 
-    static func id(fromRssItem item: RSSItem, andVideo _: ContributeMedia.LegacyPodcast.Source.Video) -> String? {
-      guard item.link.host == "share.transistor.fm" else {
-        return nil
-      }
-      return item.link.lastPathComponent
-    }
-
     public func run() throws {
-      let youtubeClient = Prch.Client(api: YouTube.API(), session: URLSession.shared)
-      let videos = try youtubeClient.videos(fromRequest: .init(apiKey: youtubeAPIKey, playlistID: playlistID))
-      let videoDurations = try PodcastEpisodeVideo.dictionaryBasedOn(videos: videos)
-      let rssItems = try ContributeMedia.LegacyPodcast.rssItemsFrom(rss)
+      let podcastEpisodes = try RSSContent.items(from: rss, id: \.link.lastPathComponent)
+      let videos = try YouTubeContent.videos(
+        byRequest: .init(
+          apiKey: youtubeAPIKey,
+          playlistID: playlistID
+        )
+      )
+      let videoDurations = try YouTubeContent.videoDurations(videos)
 
-      let options: MarkdownContentBuilderOptions = .init(shouldOverwriteExisting: overwriteExisting, includeMissingPrevious: includeMissingPrevious)
-      let episodes: [PodcastEpisode] = try PodcastEpisode.episodesBasedOn(rssItems: rssItems, withVideos: videoDurations, id: Self.id).sorted(by: { lhs, rhs in
-        lhs.episodeNo < rhs.episodeNo
-      })
-      try ContributeMedia.LegacyPodcast.write(from: episodes, atContentPathURL: contentPathURL, using: BrightDigitSiteCommand.ImportCommand.markdownGenerator.markdown(fromHTML:), options: options)
+      let episodes: [BrightDigitPodcastSource] = try Self.episodesBasedOn(
+        rssItems: podcastEpisodes,
+        withVideoDurations: videoDurations
+      ).sorted(by: { lhs, rhs in lhs.episodeNo < rhs.episodeNo })
+
+      let options: MarkdownContentBuilderOptions = .init(
+        shouldOverwriteExisting: overwriteExisting,
+        includeMissingPrevious: includeMissingPrevious
+      )
+
+      try BrightDigitPodcast.write(
+        episodes: episodes,
+        atContentPathURL: contentPathURL,
+        using: Self.markdownGenerator.markdown(fromHTML:),
+        options: options
+      )
+    }
+    
+    
+    static func episodesBasedOn(
+      rssItems: [RSSContent.Source],
+      withVideoDurations videoDurations: VideoDurations
+    ) throws -> [BrightDigitPodcastSource] {
+      try BrightDigitPodcastSource
+        .episodesBasedOn(
+          rssItems: rssItems
+        ) { rssItem in
+              let title = rssItem.title.trimmingCharacters(in: .whitespacesAndNewlines)
+              return videoDurations[title]
+      }
     }
   }
 }
