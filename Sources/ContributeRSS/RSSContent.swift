@@ -16,8 +16,9 @@ public extension RSSContent {
     guard let rssFeed = synfeed as? RSSFeed else {
       throw RSSError.invalidRSS(rssURL)
     }
-    return try rssFeed.channel.items.map{
-      try Source(item: $0, id: id)
+    return rssFeed.channel.items.compactMap{
+      #warning("Allow old episode errors to be ignored")
+      return try? Source(item: $0, id: id)
     }
   }
 }
