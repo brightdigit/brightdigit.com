@@ -29,7 +29,7 @@ podcastID: 29d6ee9b
 <li>Specialize in helping businesses build apps for iPhone, iPad, Mac and Apple Watch</li>
 <li>10 years of experience developing for a variety of Apple platform</li>
 <li>Helping dev shops which lack experience with Apple platforms and Swift</li>
-</ul><p><a href="https://brightdigit.com/contact/"><strong>Contact me if you need help today.</strong></a></p><p><br></p><p><strong>We have an opening for sponsors</strong></p><ul><li>Do you have a product or service which can target our ever growing community of developers as well as technology and business leaders? </li></ul><p><a href="https://brightdigit.com/contact/">Contact me today if you are interested in sponsoring</a> or <a href="https://www.patreon.com/empowerappsshow">go to our Patreon page.</a></p><p><b>Developer Apps and WWDC</b></p><ul>
+</ul><p><a href="https://brightdigit.com/contact/"><strong>Contact me if you need help today.</strong></a></p><p><br></p><p><strong>We have an opening for sponsors</strong></p><ul><li>Do you have a product or service which can target our ever growing community of developers as well as technology and business leaders? </li></ul><p><a href="https://brightdigit.com/contact/">Contact me today if you are interested in sponsoring</a> or <a href="https://www.patreon.com/brightdigit">go to our Patreon page.</a></p><p><b>Developer Apps and WWDC</b></p><ul>
 <li><a href="https://apps.apple.com/us/app/apple-developer/id640199958"><strong>New Apple Developer App!</strong></a></li>
 <li>Apple keeping in contact with developers</li>
 <li>Streamlining getting started as a developer</li>
@@ -71,5 +71,5 @@ podcastID: 29d6ee9b
 <li>Faster Processor and Better Battery</li>
 <li>Lack of In-App Purchases</li>
 <li>Lack of Biometric Authentication (i.e. Finger Print Reader)</li>
-</ul><p><strong>Social Media</strong></p><p><a href="https://twitter.com/brightdigit">Twitter - @brightdigit</a></p><p><a href="http://facebook.com/brightdigit">Facebook - BrightDigit</a></p><p><a href="https://www.linkedin.com/company/bright-digit">LinkedIn - BrightDigit</a></p><p><a href="https://www.instagram.com/brightdigit/">Instagram - @brightdigit</a><br><a href="https://www.patreon.com/empowerappsshow">Patreon - empowerappshow</a></p><p><br></p><p><strong><a href="https://www.patreon.com/empowerappsshow" rel="payment" title="★ Support this podcast on Patreon ★">★ Support this podcast on Patreon ★</a></strong></p>
+</ul><p><strong>Social Media</strong></p><p><a href="https://twitter.com/brightdigit">Twitter - @brightdigit</a></p><p><a href="http://facebook.com/brightdigit">Facebook - BrightDigit</a></p><p><a href="https://www.linkedin.com/company/bright-digit">LinkedIn - BrightDigit</a></p><p><a href="https://www.instagram.com/brightdigit/">Instagram - @brightdigit</a><br><a href="https://www.patreon.com/brightdigit">Patreon</a></p><p><br></p><p><strong><a href="https://www.patreon.com/brightdigit" rel="payment" title="★ Support this podcast on Patreon ★">★ Support this podcast on Patreon ★</a></strong></p>
       

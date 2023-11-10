@@ -23,5 +23,5 @@ podcastID: 4f13fa7b
 </li>
 <li><a href="https://www.plex.tv">Plex</a></li>
 <li><a href="https://buyersguide.macrumors.com">MacRumors Buyers Guide</a></li>
-</ul><p><strong><a href="https://www.patreon.com/empowerappsshow" rel="payment" title="★ Support this podcast on Patreon ★">★ Support this podcast on Patreon ★</a></strong></p>
+</ul><p><strong><a href="https://www.patreon.com/brightdigit" rel="payment" title="★ Support this podcast on Patreon ★">★ Support this podcast on Patreon ★</a></strong></p>
       

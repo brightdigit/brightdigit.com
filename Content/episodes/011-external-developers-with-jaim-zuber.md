@@ -22,5 +22,5 @@ podcastID: d746d2ff
 </ul><p><b>What is the best way to know you have a good developer?</b></p><ul>
 <li>How about “cheaper” developers?</li>
 <li>What are other gotchas with developers?</li>
-</ul><p>Follow Jaim at <a href="https://jaimzuber.com">jaimzuber.com</a></p><p><strong><a href="https://www.patreon.com/empowerappsshow" rel="payment" title="★ Support this podcast on Patreon ★">★ Support this podcast on Patreon ★</a></strong></p>
+</ul><p>Follow Jaim at <a href="https://jaimzuber.com">jaimzuber.com</a></p><p><strong><a href="https://www.patreon.com/brightdigit" rel="payment" title="★ Support this podcast on Patreon ★">★ Support this podcast on Patreon ★</a></strong></p>
       

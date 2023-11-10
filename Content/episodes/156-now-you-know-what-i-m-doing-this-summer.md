@@ -34,6 +34,6 @@ podcastID: be21511d
 <li>(15:50) - Final Thoughts</li>
 </ul><p><b>Social Media</b></p><p>Twitter <a href="https://twitter.com/leogdion">Leo - @leogdion</a><a href="https://twitter.com/brightdigit"><br></a>Twitter <a href="https://twitter.com/brightdigit">BrightDigit - @brightdigit</a><br><a href="https://www.linkedin.com/in/leogdion/">LinkedIn - @leogdion</a><br><a href="https://github.com/brightdigit">GitHub - @brightdigit</a><br><a href="https://github.com/leogdion/">GitHub - @leogdion</a><br><a href="https://www.tiktok.com/@brightdigit">TikTok - @brightdigit</a><br><a href="https://c.im/@leogdion">Mastodon - @leogdion@c.im</a><br><a href="http://youtube.com/@brightdigit">Youtube - @brightdigit</a></p><p><b>Credits</b></p><p><a href="https://filmmusic.io/">Music from https://filmmusic.io</a><br><a href="https://incompetech.com/">"Blippy Trance" by Kevin MacLeod (https://incompetech.com)</a><br><a href="http://creativecommons.org/licenses/by/4.0/">License: CC BY (http://creativecommons.org/licenses/by/4.0/)</a></p>
 <strong>
-  <a href="https://www.patreon.com/empowerappsshow" rel="payment" title="★ Support this podcast on Patreon ★">★ Support this podcast on Patreon ★</a>
+  <a href="https://www.patreon.com/brightdigit" rel="payment" title="★ Support this podcast on Patreon ★">★ Support this podcast on Patreon ★</a>
 </strong>
       

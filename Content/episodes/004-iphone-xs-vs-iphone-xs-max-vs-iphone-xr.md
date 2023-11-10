@@ -18,5 +18,5 @@ podcastID: b358d0a4
 <li><a href="https://stratechery.com/2018/the-iphone-franchise/">Stratechery - The iPhone Franchise</a></li>
 <li><a href="https://learningswift.brightdigit.com/swift-thoughts-tryswift-nyc-2018/">Swift Thoughts on try!Swift NYC 2018</a></li>
 <li><a href="https://developer.apple.com/videos/play/tech-talks/207/">Building Apps for iPhone XS, iPhone XS Max, and iPhone XR</a></li>
-</ul><p><strong><a href="https://www.patreon.com/empowerappsshow" rel="payment" title="★ Support this podcast on Patreon ★">★ Support this podcast on Patreon ★</a></strong></p>
+</ul><p><strong><a href="https://www.patreon.com/brightdigit" rel="payment" title="★ Support this podcast on Patreon ★">★ Support this podcast on Patreon ★</a></strong></p>
       

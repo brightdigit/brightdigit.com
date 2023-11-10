@@ -31,5 +31,5 @@ podcastID: '82709349'
 <li><a href="https://developer.apple.com/videos/play/tech-talks/803/">Designing for Subscription Success</a></li>
 </ul>
 </li>
-</ul><p><strong><a href="https://www.patreon.com/empowerappsshow" rel="payment" title="★ Support this podcast on Patreon ★">★ Support this podcast on Patreon ★</a></strong></p>
+</ul><p><strong><a href="https://www.patreon.com/brightdigit" rel="payment" title="★ Support this podcast on Patreon ★">★ Support this podcast on Patreon ★</a></strong></p>
       

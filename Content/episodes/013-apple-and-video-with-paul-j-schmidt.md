@@ -58,5 +58,5 @@ podcastID: 6321c757
 </ul><p><b>WWDC</b></p><ul>
 <li><em>New Mac Pro?</em></li>
 <li><em>Pro App Updates</em></li>
-</ul><p><strong><a href="https://www.patreon.com/empowerappsshow" rel="payment" title="★ Support this podcast on Patreon ★">★ Support this podcast on Patreon ★</a></strong></p>
+</ul><p><strong><a href="https://www.patreon.com/brightdigit" rel="payment" title="★ Support this podcast on Patreon ★">★ Support this podcast on Patreon ★</a></strong></p>
       

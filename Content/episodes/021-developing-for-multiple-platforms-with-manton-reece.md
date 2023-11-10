@@ -19,7 +19,7 @@ podcastID: 3498c82f
 <li>Specialize in helping businesses build apps for iPhone, iPad, Mac and Apple Watch</li>
 <li>10 years of experience developing for a variety of Apple platform</li>
 <li>Helping dev shops which lack experience with Apple platforms and Swift</li>
-</ul><p><a href="https://brightdigit.com/contact/"><strong>Contact me if you need help today.</strong></a></p><p><br></p><p><strong>We have an opening for sponsors</strong></p><ul><li>Do you have a product or service which can target our ever growing community of developers as well as technology and business leaders? </li></ul><p><a href="https://brightdigit.com/contact/">Contact me today if you are interested in sponsoring</a> or <a href="https://www.patreon.com/empowerappsshow">go to our Patreon page.</a></p><p><b>Micro.blog</b></p><ul>
+</ul><p><a href="https://brightdigit.com/contact/"><strong>Contact me if you need help today.</strong></a></p><p><br></p><p><strong>We have an opening for sponsors</strong></p><ul><li>Do you have a product or service which can target our ever growing community of developers as well as technology and business leaders? </li></ul><p><a href="https://brightdigit.com/contact/">Contact me today if you are interested in sponsoring</a> or <a href="https://www.patreon.com/brightdigit">go to our Patreon page.</a></p><p><b>Micro.blog</b></p><ul>
 <li>Self-Hosted and Indie Web Focus</li>
 <li>Dealing with Twitter Issues<ul>
 <li>Developer-Friendly</li>
@@ -51,5 +51,5 @@ podcastID: 3498c82f
 <li>Maturity of the iPhone</li>
 <li>Emphasis on Photography with third lens</li>
 <li>Independence of the Watch App</li>
-</ul><p><b>Social Media</b></p><p><a href="https://twitter.com/brightdigit">Twitter - @brightdigit</a></p><p><a href="http://facebook.com/brightdigit">Facebook - BrightDigit</a></p><p><a href="https://www.linkedin.com/company/bright-digit">LinkedIn - BrightDigit</a></p><p><a href="https://www.instagram.com/brightdigit/">Instagram - @brightdigit</a><br><a href="https://www.patreon.com/empowerappsshow">Patreon - empowerappshow</a></p><p><br></p><p><strong><a href="https://www.patreon.com/empowerappsshow" rel="payment" title="★ Support this podcast on Patreon ★">★ Support this podcast on Patreon ★</a></strong></p>
+</ul><p><b>Social Media</b></p><p><a href="https://twitter.com/brightdigit">Twitter - @brightdigit</a></p><p><a href="http://facebook.com/brightdigit">Facebook - BrightDigit</a></p><p><a href="https://www.linkedin.com/company/bright-digit">LinkedIn - BrightDigit</a></p><p><a href="https://www.instagram.com/brightdigit/">Instagram - @brightdigit</a><br><a href="https://www.patreon.com/brightdigit">Patreon</a></p><p><br></p><p><strong><a href="https://www.patreon.com/brightdigit" rel="payment" title="★ Support this podcast on Patreon ★">★ Support this podcast on Patreon ★</a></strong></p>
       

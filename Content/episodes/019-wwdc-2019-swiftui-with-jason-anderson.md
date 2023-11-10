@@ -17,7 +17,7 @@ podcastID: '03051561'
 <li>The Leading indie iOS/Mac (and watchOS, and tvOS) Developer conference</li>
 <li>It’s all about Community and Code!</li>
 <li>Four days of hands-on training, amazing sessions, and the great community. All Swift.</li>
-</ul><p>Use the promo code <strong><em>FriendsInHighPlaces</em></strong> to get <a href="https://360idev.com/#tile_registration">20% off registration.<br></a><br></p><p><strong>We have an opening for sponsors</strong></p><ul><li>Do you have a product or service which can target our ever growing community of developers as well as technology and business leaders? <a href="https://brightdigit.com/contact/">Contact me today if you are interested in sponsoring</a> or <a href="https://www.patreon.com/empowerappsshow">go to our Patreon page.</a>
+</ul><p>Use the promo code <strong><em>FriendsInHighPlaces</em></strong> to get <a href="https://360idev.com/#tile_registration">20% off registration.<br></a><br></p><p><strong>We have an opening for sponsors</strong></p><ul><li>Do you have a product or service which can target our ever growing community of developers as well as technology and business leaders? <a href="https://brightdigit.com/contact/">Contact me today if you are interested in sponsoring</a> or <a href="https://www.patreon.com/brightdigit">go to our Patreon page.</a>
 </li></ul><p><b>Functional Reactive Programming</b></p><ul>
 <li><a href="https://github.com/ReactiveCocoa">ReactiveCocoa · GitHub</a></li>
 <li><a href="https://developer.apple.com/documentation/combine">Combine | Apple Developer Documentation</a></li>
@@ -37,5 +37,5 @@ podcastID: '03051561'
 <li>Not Best for New Recent Releases</li>
 <li>Do Need To Use It Now</li>
 <li><a href="https://www.youtube.com/watch?v=e5EzQgKx2Es&amp;t=2051s">Leo’s Swift UI Stream</a></li>
-</ul><p><b>Social Media</b></p><p><a href="https://twitter.com/brightdigit">Twitter - @brightdigit</a></p><p><a href="http://facebook.com/brightdigit">Facebook - BrightDigit</a></p><p><a href="https://www.linkedin.com/company/bright-digit">LinkedIn - BrightDigit</a></p><p><a href="https://www.instagram.com/brightdigit/">Instagram - @brightdigit</a><br><a href="https://www.patreon.com/empowerappsshow">Patreon - empowerappshow</a></p><p><strong><a href="https://www.patreon.com/empowerappsshow" rel="payment" title="★ Support this podcast on Patreon ★">★ Support this podcast on Patreon ★</a></strong></p>
+</ul><p><b>Social Media</b></p><p><a href="https://twitter.com/brightdigit">Twitter - @brightdigit</a></p><p><a href="http://facebook.com/brightdigit">Facebook - BrightDigit</a></p><p><a href="https://www.linkedin.com/company/bright-digit">LinkedIn - BrightDigit</a></p><p><a href="https://www.instagram.com/brightdigit/">Instagram - @brightdigit</a><br><a href="https://www.patreon.com/brightdigit">Patreon</a></p><p><strong><a href="https://www.patreon.com/brightdigit" rel="payment" title="★ Support this podcast on Patreon ★">★ Support this podcast on Patreon ★</a></strong></p>
       

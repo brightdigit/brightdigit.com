@@ -17,7 +17,7 @@ podcastID: 2f12eb02
 <li>Specialize in helping businesses build apps for iPhone, iPad, Mac and Apple Watch</li>
 <li>10 years of experience developing for a variety of Apple platform</li>
 <li>Helping dev shops which lack experience with Apple platforms and Swift</li>
-</ul><p><a href="https://brightdigit.com/contact/"><strong>Contact me if you need help today.</strong></a></p><p><br></p><p><strong>We have an opening for sponsors</strong></p><ul><li>Do you have a product or service which can target our ever growing community of developers as well as technology and business leaders? </li></ul><p><a href="https://brightdigit.com/contact/">Contact me today if you are interested in sponsoring</a> or <a href="https://www.patreon.com/empowerappsshow">go to our Patreon page.</a></p><p><b>Maturity for the iPhone</b></p><ul>
+</ul><p><a href="https://brightdigit.com/contact/"><strong>Contact me if you need help today.</strong></a></p><p><br></p><p><strong>We have an opening for sponsors</strong></p><ul><li>Do you have a product or service which can target our ever growing community of developers as well as technology and business leaders? </li></ul><p><a href="https://brightdigit.com/contact/">Contact me today if you are interested in sponsoring</a> or <a href="https://www.patreon.com/brightdigit">go to our Patreon page.</a></p><p><b>Maturity for the iPhone</b></p><ul>
 <li>Unlikely to see any big hardware innovations at this point</li>
 <li>Maybe foldable</li>
 <li>Great time to get an app on here, because it’s a mature product</li>
@@ -36,5 +36,5 @@ podcastID: 2f12eb02
 <li>First Swift-only API (no Objective-C compatibility)</li>
 <li>Maybe not be ideal for some companies with different design patterns but it’s a better starting place then Storyboards and UIKit</li>
 <li>Cross-Platform compatible with iOS, watchOS, tvOS, and macOS</li>
-</ul><p>Social Media</p><p><a href="https://twitter.com/brightdigit">Twitter - @brightdigit</a></p><p><a href="http://facebook.com/brightdigit">Facebook - BrightDigit</a></p><p><a href="https://www.linkedin.com/company/bright-digit">LinkedIn - BrightDigit</a></p><p><a href="https://www.instagram.com/brightdigit/">Instagram - @brightdigit</a><br><a href="https://www.patreon.com/empowerappsshow">Patreon - empowerappshow</a></p><p><br></p><p><br></p><p><br></p><p><strong><a href="https://www.patreon.com/empowerappsshow" rel="payment" title="★ Support this podcast on Patreon ★">★ Support this podcast on Patreon ★</a></strong></p>
+</ul><p>Social Media</p><p><a href="https://twitter.com/brightdigit">Twitter - @brightdigit</a></p><p><a href="http://facebook.com/brightdigit">Facebook - BrightDigit</a></p><p><a href="https://www.linkedin.com/company/bright-digit">LinkedIn - BrightDigit</a></p><p><a href="https://www.instagram.com/brightdigit/">Instagram - @brightdigit</a><br><a href="https://www.patreon.com/brightdigit">Patreon</a></p><p><br></p><p><br></p><p><br></p><p><strong><a href="https://www.patreon.com/brightdigit" rel="payment" title="★ Support this podcast on Patreon ★">★ Support this podcast on Patreon ★</a></strong></p>
       

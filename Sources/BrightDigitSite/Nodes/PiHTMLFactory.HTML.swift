@@ -47,6 +47,12 @@ public extension Node where Context == HTML.BodyContext {
           .li(for: "Podcast", at: "episodes"),
           .li(for: "Newsletters"),
           .li(
+            .a(
+              .href("https://www.patreon.com/brightdigit"),
+              .text("🎉Sponsorship")
+            )
+          ),
+          .li(
             .a(.href("/about-us"),
                .text("About"))
           )
@@ -193,6 +199,7 @@ public extension Node where Context == HTML.BodyContext {
           .li(href: "http://twitter.com/brightdigit", flatIcon: "twitter"),
           .li(href: "http://github.com/brightdigit", flatIcon: "github"),
           .li(href: "https://c.im/@leogdion", flatIcon: "mastodon", rel: .me),
+          .li(href: "https://www.patreon.com/brightdigit", flatIcon: "patreon"),
           .li(href: "https://www.linkedin.com/in/leogdion/", flatIcon: "linkedin"),
           .li(href: "https://www.empowerapps.show", flatIcon: "podcast"),
           .li(href: "http://youtube.com/c/BrightdigitLLC", flatIcon: "youtube"),

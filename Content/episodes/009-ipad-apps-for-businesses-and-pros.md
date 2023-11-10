@@ -42,5 +42,5 @@ podcastID: a34307ee
 <li>
 <a href="https://www.recode.net/2019/1/30/18203231/apple-banning-facebook-research-app"><strong>How did Facebook abuse Enterprise Licensing? (Recode Article)</strong></a><strong> </strong>
 </li>
-</ul><p><b><br></b></p><p><strong><a href="https://www.patreon.com/empowerappsshow" rel="payment" title="★ Support this podcast on Patreon ★">★ Support this podcast on Patreon ★</a></strong></p>
+</ul><p><b><br></b></p><p><strong><a href="https://www.patreon.com/brightdigit" rel="payment" title="★ Support this podcast on Patreon ★">★ Support this podcast on Patreon ★</a></strong></p>
       

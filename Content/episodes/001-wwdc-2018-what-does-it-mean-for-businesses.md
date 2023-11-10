@@ -24,5 +24,5 @@ podcastID: 8108defb
 <a href="https://www.apple.com/newsroom/2018/06/apple-previews-ios-12/">Memoji</a> </li>
 <li><a href="https://questvisual.com">WordLens</a></li>
 <li><a href="https://itunes.apple.com/us/app/ikea-place/id1279244498?mt=8">Ikea Place</a></li>
-</ul><p><strong><a href="https://www.patreon.com/empowerappsshow" rel="payment" title="★ Support this podcast on Patreon ★">★ Support this podcast on Patreon ★</a></strong></p>
+</ul><p><strong><a href="https://www.patreon.com/brightdigit" rel="payment" title="★ Support this podcast on Patreon ★">★ Support this podcast on Patreon ★</a></strong></p>
       

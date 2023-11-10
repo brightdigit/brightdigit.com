@@ -21,5 +21,5 @@ podcastID: c1521cf5
 <li><a href="https://light.co/camera">Light L16 Camera</a></li>
 <li><a href="https://www.youtube.com/watch?v=oD_3wMh5kLg">MKBHD - Top 5 Smartphone Cameras: The Blind Test! [2018]</a></li>
 <li><a href="https://itunes.apple.com/us/podcast/apple-special-event-march-2015-1080p/id509310064?i=1000337281199&amp;mt=2">Original Apple Watch Event - March 2015</a></li>
-</ul><p><strong><a href="https://www.patreon.com/empowerappsshow" rel="payment" title="★ Support this podcast on Patreon ★">★ Support this podcast on Patreon ★</a></strong></p>
+</ul><p><strong><a href="https://www.patreon.com/brightdigit" rel="payment" title="★ Support this podcast on Patreon ★">★ Support this podcast on Patreon ★</a></strong></p>
       

@@ -75,5 +75,5 @@ podcastID: a19efbf9
 <a href="https://www.waveapps.com?ref=empowerapps">Wave</a> - Business Accounting</li>
 <li>
 <a href="https://www.paypal.com">Paypal</a> - Transfer Money</li>
-</ul><p>Music by <a href="https://icons8.com/music/author/bimbotronic">Bimbotronic</a> from <a href="https://icons8.com/music">Fugue</a></p><p><br></p><p><strong><a href="https://www.patreon.com/empowerappsshow" rel="payment" title="★ Support this podcast on Patreon ★">★ Support this podcast on Patreon ★</a></strong></p>
+</ul><p>Music by <a href="https://icons8.com/music/author/bimbotronic">Bimbotronic</a> from <a href="https://icons8.com/music">Fugue</a></p><p><br></p><p><strong><a href="https://www.patreon.com/brightdigit" rel="payment" title="★ Support this podcast on Patreon ★">★ Support this podcast on Patreon ★</a></strong></p>
       
