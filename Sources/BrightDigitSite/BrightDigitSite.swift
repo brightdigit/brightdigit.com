@@ -21,6 +21,7 @@ public struct BrightDigitSite: Website, MetadataAttached {
     case episodes
     case tutorials
     case newsletters
+    case products
   }
 
   // periphery:ignore
@@ -36,6 +37,15 @@ public struct BrightDigitSite: Website, MetadataAttached {
     var videoDuration: TimeInterval?
     var podcastID: String?
     var subscriptionCTA: String?
+    var platforms: String?
+    var productURL: String?
+    var appStoreURL: String?
+    var pressKitURL: String?
+    var technologies: String?
+    var githubRepoName: String?
+    var screenshots: [String]?
+    var style: String?
+    var isFeatured: Bool?
   }
 
   public static var metadata: WebsiteMetadata {
@@ -83,7 +93,7 @@ public struct BrightDigitSite: Website, MetadataAttached {
       .generateRSSFeed(including: [.tutorials], config: .init(targetPath: "tutorials.rss"))
     ]),
 
-    .generateSiteMap(excluding: .init(["newsletters/"])),
+    .generateSiteMap(excluding: .init(["newsletters/", "products/"])),
 
     .npm(npmPath, at: "Styling") {
       ci()

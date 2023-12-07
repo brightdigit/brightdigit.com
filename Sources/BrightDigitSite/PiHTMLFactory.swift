@@ -33,7 +33,10 @@ struct PiHTMLFactory: HTMLFactory {
 
   // MARK: - makeIndexHTML
 
-  func makeIndexHTML(for index: Index, context: PublishingContext<BrightDigitSite>) throws -> HTML {
+  func makeIndexHTML(
+    for index: Index,
+    context: PublishingContext<BrightDigitSite>
+  ) throws -> HTML {
     let setup = Pages.page(forIndex: index, withContext: context)
     return HTML(
       .lang(.usEnglish),
@@ -48,7 +51,10 @@ struct PiHTMLFactory: HTMLFactory {
 
   // MARK: - makeSectionHTML
 
-  func makeSectionHTML(for section: Section<BrightDigitSite>, context: PublishingContext<BrightDigitSite>) throws -> HTML {
+  func makeSectionHTML(
+    for section: Section<BrightDigitSite>,
+    context: PublishingContext<BrightDigitSite>
+  ) throws -> HTML {
     let content = try Pages.content(forSection: section, withContext: context)
 
     return HTML(

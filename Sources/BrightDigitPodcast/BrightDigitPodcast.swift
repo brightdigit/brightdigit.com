@@ -2,7 +2,6 @@ import Foundation
 import SyndiKit
 import Contribute
 import ContributeRSS
-import ContributeYouTube
 
 public struct BrightDigitPodcast: ContentType {
   public typealias SourceType = Source

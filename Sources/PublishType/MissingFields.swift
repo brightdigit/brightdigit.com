@@ -20,4 +20,15 @@ public enum MissingFields {
       rawValue
     }
   }
+
+  public enum ProductField: String, MissingField {
+    case platforms
+    case productURL
+    case technologies
+    case screenshots
+    public static let typeName: String = "Product"
+    public var fieldName: String {
+      rawValue
+    }
+  }
 }

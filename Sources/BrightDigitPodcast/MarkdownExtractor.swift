@@ -1,6 +1,5 @@
 import Foundation
 import Contribute
-import ContributeYouTube
 
 public extension BrightDigitPodcast {
   struct MarkdownExtractor: Contribute.MarkdownExtractor {
