@@ -1276,6 +1276,9 @@ body.articles, body.tutorials {
           @apply w-auto h-auto;
           @apply xl:max-w-2xl xl:mx-auto;
         }
+        &.contained{
+          @apply object-contain;
+        }
         &.thumbnail-inline {
           @apply h-6 w-auto inline-block my-auto;
         }
@@ -1301,6 +1304,9 @@ body.articles, body.tutorials {
       }
       figcaption {
         @apply text-sm italic text-center;
+      }
+      hr {
+        @apply my-4;
       }
       pre code {
         @apply whitespace-pre-wrap text-xs font-extralight p-4 bg-gray-900 text-white block my-4 lg:text-base lg:p-8;      

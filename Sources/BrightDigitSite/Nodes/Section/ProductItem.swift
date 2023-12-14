@@ -97,7 +97,7 @@ struct ProductItem: SectionItem {
   }
 
   var redirectURL: URL? {
-    nil
+    self.productURL
   }
 
   var featuredImageURL: URL { URL(staticString: logo) }
