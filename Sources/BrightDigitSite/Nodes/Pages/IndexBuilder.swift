@@ -135,7 +135,7 @@ public extension Node where Context == HTML.BodyContext {
   // MARK: - Latest Articles
 
   static func sectionForLatestArticles(basedOn context: PublishingContext<BrightDigitSite>) -> Node {
-    let latestArticles = context.sections.compactMap(\.items.first)
+    let latestArticles : [IndexArticle] = context.sections.compactMap(\.items.first).filter(\.isAvailable)
 
     return .section(
       .id("posts"),

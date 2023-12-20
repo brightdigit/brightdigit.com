@@ -15,7 +15,6 @@ enum Pages {
     switch page.path.string {
     case "services": return ServicesBuilder().pageSetup(forPage: page, withContext: context)
     case "contact-us": return ContactBuilder().pageSetup(forPage: page, withContext: context)
-//    case "products": return ProductsBuilder().pageSetup(forPage: page, withContext: context)
     case "about-us": return AboutBuilder().pageSetup(forPage: page, withContext: context)
     default: throw PublishTypeError.missingContentFor(page)
     }

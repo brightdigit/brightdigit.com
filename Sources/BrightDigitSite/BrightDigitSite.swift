@@ -22,6 +22,10 @@ public struct BrightDigitSite: Website, MetadataAttached {
     case tutorials
     case newsletters
     case products
+    
+    var isIndexable : Bool {
+      return self != .products
+    }
   }
 
   // periphery:ignore

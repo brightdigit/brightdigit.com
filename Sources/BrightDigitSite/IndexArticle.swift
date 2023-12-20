@@ -9,6 +9,7 @@ public protocol IndexArticle {
   var lengthInMinutes: Int { get }
   var featuredImageURL: URL { get }
   var rootRelativeURL: URL { get }
+  var isAvailable: Bool { get }
 }
 
 extension Item: IndexArticle where Site == BrightDigitSite {
@@ -26,5 +27,9 @@ extension Item: IndexArticle where Site == BrightDigitSite {
 
   public var featuredImageURL: URL {
     URL(staticString: metadata.featuredImage)
+  }
+  
+  public var isAvailable: Bool {
+    self.sectionID.isIndexable
   }
 }
