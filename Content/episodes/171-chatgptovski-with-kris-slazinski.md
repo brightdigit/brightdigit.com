@@ -1,0 +1,24 @@
+---
+title: ChatGPTovski with Kris Slazinski
+date: 2024-01-28 00:00
+description: Indie Developer, Kris Slazinski comes on to talk about App Store localization, UX, and his favorite intern/mentor - ChatGPT.
+featuredImage: https://images.transistor.fm/images/episode/1696544/full_1706204526-artwork.jpg
+youtubeID: uFybZNvDE_I
+audioDuration: 2978
+videoDuration: 3374
+podcastID: 3183f5e9
+---
+<p>Indie Developer, Kris Slazinski comes on to talk about App Store localization, UX, and his favorite intern/mentor - ChatGPT.</p><p><b>Guest</b></p><ul><li><a href="https://www.next-planet.com/"><strong>Kris Slazinski</strong></a><ul><li><a href="https://apps.apple.com/developer/next-planet/id1495155532">Apps</a> </li><li><a href="https://twitter.com/kslazinski%20">Twitter</a></li><li><a href="https://www.linkedin.com/in/slazinski/">LinkedIn</a></li><li><a href="https://mastodon.social/@kslazinski%20">Mastodon</a></li><li><a href="https://www.threads.net/@k.slazinski">Threads</a></li></ul></li></ul><p><strong>Announcements</strong></p><ul><li><a href="https://brightdigit.com/contact-us/"><strong>Need help with your projects this year? BrightDigit has openings.</strong></a></li><li><a href="https://getbushel.app/"><strong>Bushel on Sale</strong></a></li><li><a href="https://nyswifty.com/"><strong>Come to NYSwifty April 23 &amp; 24 - Get 10% Off using Promo Code</strong></a><strong> </strong><strong><em>Leo</em></strong></li><li><a href="https://brightdigit.com/newsletters/"><strong>Subscribe to our newsletter</strong></a></li><li>Join our <a href="https://patreon.com/brightdigit?utm_medium=clipboard_copy&amp;utm_source=copyLink&amp;utm_campaign=creatorshare_creator&amp;utm_content=join_link"><strong>Brand New Patreon Page!</strong></a></li></ul><p><b>Related Episodes</b></p><ul><li><a href="https://brightdigit.com/episodes/144-yak-shaving-with-tim-mitra/">Yak Shaving with Tim Mitra</a></li><li><a href="https://brightdigit.com/episodes/170-pixelblitz-in-public-with-martin-lasek/">PixelBlitz in Public with Martin Lasek</a></li><li><a href="https://brightdigit.com/episodes/169-the-bushel-holiday-special/">The Bushel Holiday Special</a></li><li><a href="https://brightdigit.com/episodes/164-the-making-of-callsheet-with-casey-liss/">The Making of Callsheet with Casey Liss</a></li><li><a href="https://brightdigit.com/episodes/150-my-taylor-deep-dish-swift-heroes-world-tour/">My Taylor Deep Dish Swift Heroes World Tour</a></li><li><a href="https://brightdigit.com/episodes/146-apples-glasses-and-hal-oh-my/">Apples, Glasses, and HAL, Oh My!</a></li><li><a href="https://brightdigit.com/episodes/136-posture-island-with-jordi-bruin/">Posture Island with Jordi Bruin</a></li><li><a href="https://brightdigit.com/episodes/116-indie-dev-5-knowing-your-market-with-david-barnard/">Indie Dev #5 - Knowing Your Market with David Barnard</a></li><li><a href="https://brightdigit.com/episodes/112-indie-dev-1-dark-noise-by-charlie-chapman/">Indie Dev #1 - Dark Noise by Charlie Chapman</a></li><li><a href="https://brightdigit.com/episodes/099-practical-entrepreneur-with-donny-wals/">Practical Entrepreneur with Donny Wals</a></li></ul><p><b>Related Links </b></p><ul><li><a href="https://tryastro.app%20">Astro (ASO tool)</a></li><li><a href="https://applelocalization.com/%20">Apple Localization Terms Glossary</a></li></ul><p><b>Social Media</b></p><p><strong>Email</strong><br>leo@brightdigit.com<br><a href="https://github.com/brightdigit">GitHub - @brightdigit</a></p><p><a href="https://twitter.com/brightdigit"><strong>Twitter </strong><br>BrightDigit - @brightdigit</a><br><a href="https://twitter.com/leogdion">Leo - @leogdion</a></p><p><a href="https://www.linkedin.com/company/bright-digit"><strong>LinkedIn</strong><br>BrightDigit</a><br><a href="https://www.linkedin.com/in/leogdion/">Leo</a></p><p><a href="https://patreon.com/brightdigit?utm_medium=clipboard_copy&amp;utm_source=copyLink&amp;utm_campaign=creatorshare_creator&amp;utm_content=join_link">Patreon - brightdigit</a></p><p><b>Credits</b></p><p><a href="https://filmmusic.io/">Music from https://filmmusic.io</a><br><a href="https://incompetech.com/">"Blippy Trance" by Kevin MacLeod (https://incompetech.com)</a><br><a href="http://creativecommons.org/licenses/by/4.0/">License: CC BY (http://creativecommons.org/licenses/by/4.0/)</a></p>
+<ul><li>(00:00) - Announcements</li>
+<li>(02:01) - (App Store) Localization</li>
+<li>(19:21) - ChatGPTovsky</li>
+<li>(33:50) - UX vs UI</li>
+</ul>
+<strong>Thanks to our monthly supporters</strong>
+<ul>
+  <li>Steven Lipton</li>
+</ul>
+<strong>
+  <a href="https://www.patreon.com/brightdigit" rel="payment" title="★ Support this podcast on Patreon ★">★ Support this podcast on Patreon ★</a>
+</strong>
+      
