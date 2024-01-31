@@ -1,6 +1,6 @@
 ---
 title: What You Should Know About iOS Software Architecture
-date: 2020-03-31 02:37
+date: 2024-01-30 02:37
 description: You've started out with an idea to build an iOS app and you need to choose
   its software architecture. Here is a quick overview of what you need to know.
 tags: apple-development, iOS development, ios software architecture, software design,
@@ -8,256 +8,140 @@ tags: apple-development, iOS development, ios software architecture, software de
 featuredImage: /media/wp-images/brightdigit/2020/03/EAS.42-Slides.001-scaled.jpeg
 subscriptionCTA: Want more about iOS software architecture on how to create better iOS apps?
 ---
-You’ve made the decision to build your own iOS app. Therefore, you’ve
-started out with an idea based on a customer need. Also how the app will
-meet that need and what it will look like. It’s at this point you should
-think about iOS software architecture.  
+You’ve made the decision to build your own iOS app. The app is being built to meet specific customer needs. If that’s all clear in your mind, you are at a point where you want to start thinking about iOS software architecture.
 
 <figure>
-<img src="/media/wp-images/brightdigit/2020/03/amelie-mourichon-hcLSA1MiU3A-unsplash-1024x768.jpg" class="wp-image-2043" width="1024" height="768" />
+<img src="/media/wp-images/brightdigit/2020/03/amelie-mourichon-hcLSA1MiU3A-unsplash-1024x768.jpg"/>
 </figure>
 
-Software architecture is the term we use to describe how major
-components of an app work together. The structure and design of modern
-software are usually too complex to consider. Therefore, we use the term
-‘architecture’ as an abstraction. In practice, ‘software architecture’
-means “the parts of the app we need to get right.”
+Software architecture is the term developers use to describe how major components of an app work together. Modern software structure and design are usually too complex for one person to easily think about all at once. So **we use _architecture_ as an abstraction, drawing parallels to traditional architecture,** where software has inherited ideas of design patterns and user-centered design. In practice, software architecture means _the parts of the app you need to get right_.
 
-The reason well-planned architecture for your app is critical is that by
-investing time in planning, it pays off over time. In the end, you
-create a shared understanding between you and your developers. This
-includes how they structure and design the app. As a result, you are
-saving you time and money.
+**Well-planned architecture for your iOS app starts with investing lots of time in planning and pays off over time.** If you start early, you can create a clear, shared understanding between you and your developers around your app’s architecture.** If you do it well, you save lots of time and money over the lifecycle of your app.**
 
 > youtube https://www.youtube.com/watch?v=TQpRYibmyvQ&feature=youtu.be
 
-In this post, I cover three essential concepts for good iOS software
-architecture:
+In this article, I cover three essential concepts for good iOS software architecture:
 
--   Patterns & Practices
--   Code Modularization
--   Code Quality
+* **Patterns and Practices**
+* **Code Modularization**
+* **Code Quality**
 
-I’ll be explaining a bit about each, how you can put them in place for
-your app.
+I’ll be explain a bit about each and how to implement them correctly in your app.
+
 
 ## iOS Software Architecture Patterns
 
-Choosing a certain architecture for your iOS app determines the design
-of different aspects of your software. Within that, it also determines
-what kind of design patterns you will want to use. A Pattern in the
-context of software is a common response to a recurring problem. It uses
-a common language to outline the elements needed to solve a software
-challenge.
+Choosing a certain architecture for your iOS app determines the design of different aspects of its software. Within that, you’ll also figure out what kind of design patterns you will want to use. A _software pattern_ is essentially a common response to a recurring problem.
 
-Patterns are particularly useful when working with a large team of
-developers. They can make your developers substantially more efficient
-by using a refined approach to solving problems. Patterns ensure changes
-to the code are consistent and reduce risk for major changes.
+Patterns are particularly useful when working with a large team of developers. They can make your developers substantially more efficient at solving problems.  It also guides new developers on how to add features to an app. Patterns ensure changes to the code are consistent and reduce risk when making major changes.
 
-Good use of Architecture Patterns makes it easy for developers to
-understand the software. In the end that makes it easy to change it.
-This means new features can be delivered faster, with fewer bugs, and
-therefore easier fixes.
+Good use of architecture patterns make it easy for developers to understand the software. If it’s easy for them to understand, it’s easier for them to make changes. This means new features can be delivered faster, with fewer bugs and simpler fixes.
 
-There are a few architectural patterns that are very useful when making
-iOS apps:
+There are a few architectural patterns that are very useful when making iOS apps:
 
 <figure>
-<img src="/media/wp-images/brightdigit/2020/03/EAS.42-Slides.001-scaled.jpeg?fit=640%2C360&amp;ssl=1" class="wp-image-2045" />
+<img src="/media/wp-images/brightdigit/2020/03/EAS.42-Slides.001-scaled.jpeg" />
 </figure>
-
-### Delegation and MVC with iOS Software Architecture
-
-Delegation is a pattern we use in iOS user interface (UI) development
-for displaying tables of information in an app. The
-Model-View-Controller (MVC) pattern uses Delegation. Additionally, MVC
-is the most popular iOS Software architectural pattern for developing
-Apple apps. This is how it works:
-
--   A user performs an action within the user interface (ie **View**).
--   View passes it to the **Controller** to deal with.
--   The Controller makes decisions about what to do with the action it's
-    been given. If needed, it makes changes to the state of the
-    **Model**, which will change its data values in response.
--   The Controller then sees these new values and sets them for View.
-
-Delegation allows you to control how the Controller provides both the
-data and the way that data needs to be displayed to View in the final
-step. This makes it easy to break apart the functionality of the code to
-display table information to your user the way you want.
 
 ### Protocol-Oriented Programming
 
-This is fundamental to developing any app written in Swift (ie all
-native apps for iOS). Protocols allow you to group together and separate
-functionality. Additionally it shows how data and their objects work
-together.
+This is a fundamental pattern for developing any app written in Swift (i.e. all native apps on any Apple platform). Protocols allow you to group functionality and define how your data and objects work together. This pattern is sometimes referred to different names, most popularly [Interface](https://www.linkedin.com/pulse/why-swift-called-protocol-oriented-language-rajesh-sharma/) and [Contract or Design By Contract](https://www.cs.usfca.edu/~parrt/course/601/lectures/programming.by.contract.html).
 
-Protocols are useful tools for creating functionality for your app.
-Instead of building a whole new object (which you might with other kinds
-of architecture), you add different protocols until your objects can do
-what you want. Protocol-oriented programming means using an architecture
-where you design your app around protocols. This makes it easy to test
-the different parts of your app and [use Test-Driven
-Development](https://brightdigit.com/blog/2020/01/06/avoid-ios-app-failure-with-tdd/).
+Protocols are useful for creating functionality in your app while making the lives of your developers easier. Instead of building a whole new object you can define protocols for new developers to implement. This makes it really easy to reuse objects throughout your code. Protocols also make it easy to separate your app’s behavior from its data, usually referred to as _separation of concerns_.
 
-### Functional Programming
-
-Functional programming is the idea of having your app work based around
-information supplied to it and rules it must follow. What this means is
-you want the app to react to what your user is doing. In contrast other
-kinds of programming styles, such as Imperative which follow a set of
-instructions, this can be a challenge. For instance, if there are
-multiple data sources and multiple views. The result is an app that can
-adapt to your user’s behavior, which is always a desirable trait in a
-well-designed app.
-
-<figure>
-<img src="/media/wp-images/brightdigit/2020/03/EAS.42-Slides.002-1-scaled.jpeg?fit=640%2C360&amp;ssl=1" class="wp-image-2047" />
-</figure>
+Finally, designing your app around protocols makes it easy to test the different parts of your app for the purposes of [Test-Driven Development](https://brightdigit.com/blog/2020/01/06/avoid-ios-app-failure-with-tdd/), which I cover below.
 
 ### Reactive Programming in iOS Software Architecture
 
-This pattern has become popular with the introduction of
-[SwiftUI](https://brightdigit.com/blog/2020/02/04/swiftui-everything-is-possible-if-you-think-like-apple/),
-which encourages developers to use functional reactive programming. For
-this reason, Apple introduced [the Combine
-framework](https://developer.apple.com/documentation/combine) and the
-Subscriber-Publisher model. Specifically, this allows you to sort and
-filter values into your UI.  Additionally, it's also used with
-Model-View-ViewModel, which removes the Controller in the MVC pattern
-mentioned above. With Model-View-Model, the Controller is replaced with
-a ViewModel. Conversely, the ViewModel automates how the Model can be
-rendered directly into the View by making changes to the Model data and
-reacting accordingly. This is useful for iOS apps that need to use a
-resource library that isn’t written in Swift. It allows you to bridge
-from another programming language into Swift.
+This pattern has become popular since the introduction of [SwiftUI](https://brightdigit.com/blog/2020/02/04/swiftui-everything-is-possible-if-you-think-like-apple/), which encourages developers to use both functional and reactive programming. Similar to functional programming, reactive programming is the concept of designing your app around _events_. An event is anything where an input of data triggers a routine within your app. This could be a keystroke from the user, a signal from a connected device such as a sensor, or an alert generated by the software itself.
+
+Apple introduced the [Combine framework](https://developer.apple.com/documentation/combine) in 2019 and the [Observation framework](https://developer.apple.com/documentation/observation?changes=__3_5) in 2023 to help iOS developers with reactive programming. These allow you to modify and update values as they come in within your UI. Additionally, these can be used with Model-View-ViewModel (MVVM), which removes the Controller in the MVC pattern mentioned above. WithMVVM, the Controller is replaced with a ViewModel. The ViewModel automates how the Model can be rendered directly into the View by making changes to the Model data and reacting accordingly. This is particularly useful for iOS apps that need to use a resource library that isn’t written in Swift. It allows you to bridge from another programming language into Swift.
+
 
 > transistor https://share.transistor.fm/s/c8f9aa41
+
+### Delegation and MVC with iOS Software Architecture
+
+
+Delegation is an older pattern inherited from Objective-C and UIKit which we use in iOS user interface (UI) development for displaying information in an app. Model-View Controller (MVC) uses Delegation and is historically the most used iOS software architecture pattern for developing Apple apps. With the rise of SwiftUI though, delegation is beginning to decline in popularity. This is how it works:
+
+
+
+1. A user performs an action within the user interface (i.e. View).
+2. View passes it to the Controller.
+3. The Controller makes decisions about what to do with the action it's been given. If needed, it makes changes to the state of the Model, which will change its data values in response.
+4. The Controller then sees these new values and sets them for View, showing them to the user.
+
+Delegation allows you to control how the Controller provides both the data and the way that data needs to be displayed to View in the final step. This makes it easy to break apart the functionality of the code to display information to your user the way you want.
 
 ## Why Code Modularity Matters in iOS Software Architecture
 
 Another key component of great architecture is modularity.
 
-Modularity is the idea that different parts of your app should be able
-to work independently of each other. As a result, this makes it easier
-to both test and reuse pieces of code in different parts of your app.
-Additionally, makes it easy to use the same piece of code for different
-platforms, so your iOS code could work on macOS too.
+Modularity is the idea that different parts of your app should be able to work independently of each other. This makes it easier to both test and reuse pieces of code in different parts of your app. It also makes it easy to use the same piece of code for different platforms, so your iOS code can work on any Apple platform.
 
-There are three ways I recommend for creating modularity in iOS app
-development:
+There are three ways I recommend for creating modularity in iOS app development:
 
 ### Framework Targets
 
-In Xcode (the development environment for macOS), Framework Targets are
-a way to easily move your app’s code from the testing environment where
-it was built to the production environment your users can see.
-Ordinarily, you have to swap out all the URLs and APIs from the testing
-version of your app to the production one. With Framework Targets, this
-is done automatically.
+In Xcode (the development environment for macOS), Framework Targets are a way to easily move your app’s code from the testing environment where it was built to the production environment your users can see. Ordinarily, you have to swap out all the URLs and APIs from the testing version of your app to the production one. With Framework Targets, this is done automatically.
 
 ### Projects and Workspaces
 
-You have a specific piece of code that doesn’t fit into an existing
-framework but might be used in many apps. A way to deal with this is to
-have more than one project and workspace. This allows you to organize
-pieces of code like this and show how they are related to different
-development projects.
+You have a specific piece of code that doesn’t fit into an existing framework but might be used in many apps. The way to deal with this is to have more than one project and workspace. This allows you to organize pieces of code and show how they are related to different development projects.
 
 ### Swift Packages
 
-The newest and simplest way to achieve modularity. Although limited to
-Swift and not compatible with older apps, Apple is encouraging a shift
-toward using only Swift for new apps. As a result, this means Packages
-will likely become the default to create modularity for iOS apps. If you
-are interested in learning how to use Continuous Integration with your
-Swift Packages, [check out our developer article
-here.](https://learningswift.brightdigit.com/swift-package-continuous-integration-guide/)
+The newest and simplest way to achieve modularity. Apple is encouraging a shift toward using only Swift for new apps. This means Packages  is essentially the default for creating modularity for iOS apps. If you’re interested in learning how to use Continuous Integration with your Swift Packages, check out our developer article here.
+
+If you’re interested in learning more, check out my more [in-depth article on micro apps and code modularity](https://brightdigit.com/articles/microapps-architecture/).
 
 > transistor https://share.transistor.fm/s/eddb8632
 
 ## Why Maintaining Code Quality Matters
 
-This isn’t so much about app architecture as it is the ability of other
-to maintain your code. If you have high-quality code, it will make
-development faster, easier, and cheaper.
+If you’re serious about app architecture and structuring your app well, it pays to also think about how you maintain your code. If you have high-quality code, it makes development faster, easier and cheaper.
 
-There are a few are great ways to ensure high-quality code:
+There are two great ways to ensure high-quality code:
 
 ### Test-Driven Development
 
-[I recently did a piece about Test-Driven Development (TDD), which you
-can find
-here](https://brightdigit.com/blog/2020/01/06/avoid-ios-app-failure-with-tdd/).
-Committing to doing good testing and setting up a good testing
-environment is one of the most powerful things you can do to make your
-code top-notch.
+I’ve previously written about Test-Driven Development (TDD), [which you can find here](https://brightdigit.com/articles/avoid-ios-app-failure-with-tdd/). Committing to good testing and setting up a good testing environment is one of the most powerful things you can do to make your code top-notch.
+
 
 ### Ensure Good Code Coverage
 
-Code coverage, measured as a percentage, refers to how much of your
-app’s code is executed during testing. A high degree of code coverage
-indicates a low number of possible undetected bugs in your app. This is
-a great measurement for determining code quality, although you shouldn't
-be too strict about it. While it’s obviously great if you reach 100%
-coverage, it might come at a cost when there are more important things
-you could be doing to serve your users.
+Code coverage, measured as a percentage, refers to how much of your app’s code is executed during testing. A high degree of code coverage indicates a low number of possible undetected bugs in your app. This is a great measurement for determining code quality, although you shouldn't be too strict about it. While it’s obviously great if you reach 100% coverage, it might come at a cost when there are more important things you could be doing to serve your users.
 
 ### Complexity
 
-In software development, there are two kinds of complexity we want to
-observe and measure:
+In software development, there are two kinds of complexity we want to observe and measure:
 
-**Cyclomatic Complexity** – this metric looks at the number of linear
-paths it is possible for data to take through your app’s source code.
-While there are going to be times when it's necessary to have many
-paths, you generally want to limit this kind of complexity. The reason
-is that more paths mean needing more test cases to make sure they all
-work, and more paths mean more opportunities for bugs.
+**[Cyclomatic Complexity](https://brightdigit.com/articles/humane-code/)** – this metric looks at the number of linear paths it is possible for data to take through your app’s source code. While there are going to be times when it's necessary to have many paths, you generally want to limit this kind of complexity. The reason is that more paths mean needing more test cases to make sure they all work, and more paths mean more opportunities for bugs.
 
-**Cognitive Complexity** – this metric simply refers to how easy it is
-for people to understand your code. Easy-to-understand code is always
-going to be easier to maintain. This is especially true if the person
-who wrote the code and the person maintaining it are different people.
+**Cognitive Complexity** – this metric simply refers to how easy it is for people to understand your code. Easy-to-understand code is always going to be easier to maintain. This is especially true if the person who wrote the code and the person maintaining it are different people.
 
-Overall, keeping your complexity low by limiting file and function
-length means adding features and fixing bugs takes less effort.
+Overall, keeping your complexity low by limiting file and function length means adding features and fixing bugs takes less effort.
 
 > transistor https://share.transistor.fm/s/a14f868f
 
 ### Code Reviews
 
-A code review is when someone other than the code’s creator reads the
-code, looking for errors or anything unclear. While simple to do, this
-often gets missed because it takes time to sit down and review code
-someone else has written —time you might feel you don't have. Having
-someone review what you’ve written is a great way of spotting mistakes
-and ensuring better-quality code.
+A code review is when someone other than the code’s creator reads the code, looking for errors or anything unclear. While simple to do, this often gets missed because it takes time to sit down and review code someone else has written —time you might feel you don't have. Having someone review what you’ve written is a great way of spotting mistakes and ensuring better-quality code.
 
 ### Continuous Integration
 
-This is something [I’ve written about recently, explaining what
-Continuous Integration (CI) is and why it’s
-important.](https://brightdigit.com/blog/2020/03/02/ios-continuous-integration-avoid-merge-hell/)
-If you are able to deploy the code frequently, it means you can deliver
-features more rapidly. Additionally, if there are problems or bugs, you
-will discover them faster and will be easier to fix. Therefore, using CI
-is a great way to shorten the time it takes to get feedback from your
-users.
+This is something I’ve written about previously, [explaining what Continuous Integration (CI) is and why it’s important](https://brightdigit.com/articles/ios-continuous-integration-avoid-merge-hell/). If you can deploy code frequently, it means you can deliver features more rapidly.If there are problems or bugs, you discover them earlier and faster. CI is also a great way to shorten the time it takes to get feedback from your users.
 
 ## The Components of Good iOS Software Architecture
 
-By thoughtfully choosing an architecture for your app, using effective
-patterns and modularity, as well following good code quality practices,
-you will find:
+By putting in the time to think through the architecture for your app using effective patterns and modularity, as well as following good code quality practices, you will find:
 
--   bug fixes become easier;
--   adding new features becomes straightforward;
--   your app becomes easier to test and maintain; and,
--   your developers will have an easier time understanding the code.
 
-I believe these are things we should all try to observe. You’ll find it
-not only improves the morale of your developers, but it will also save
-you a lot of time and money in the long term.
+
+* bug fixes become easier;
+* adding new features becomes straightforward;
+* your app becomes easier to test and maintain; and,
+* your developers will have an easier time understanding the code.
+
+I believe these are things we should all try to observe. You’ll find it not only improves the morale of your developers but also saves you loads of time and money in the long run.
