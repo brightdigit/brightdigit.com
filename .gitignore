@@ -170,3 +170,5 @@ Output
 # Local Netlify folder
 .netlify
 Styling/*.svg
+
+.Ulysses*
