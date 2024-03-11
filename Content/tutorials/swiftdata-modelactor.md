@@ -20,7 +20,7 @@ This _fixed_ the problem but it was clear to me that this wasn't ideal. Moving d
 
 ## Creating Our ModelActor
 
-This is where [`@MainActor`](https://developer.apple.com/documentation/swiftdata/modelactor) comes in. **ModelActor** introduces a way to interface with the database (i.e. `ModelContext`) in a mutually-exclusive way. **This means the database can only be accessed one at a time as required by SwiftData.** In other words I no longer require all database actions be run on the `MainActor` but a background actor shared by the application.
+This is where [`@ModelActor`](https://developer.apple.com/documentation/swiftdata/modelactor) comes in. **ModelActor** introduces a way to interface with the database (i.e. `ModelContext`) in a mutually-exclusive way. **This means the database can only be accessed one at a time as required by SwiftData.** In other words I no longer require all database actions be run on the `MainActor` but a background actor shared by the application.
 
 It was unclear to me when in development ModelActor was introduced as I couldn't find a WWDC video or much documentation on the subject. However [this article from Vyacheslav Ansimov](https://medium.com/@vyacheslavansimov/swift-utilities-working-with-swiftdata-in-the-background-02e28c3b6908) helped spark the beginning of this transition.
 
