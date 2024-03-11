@@ -335,7 +335,7 @@ public class BackgroundDatabase: Database {
 }
 ```
 
-Now let's add some connivence methods for using this in our application:
+Now let's add some convenience methods for using this in our application:
 
 ```swift
 public class BackgroundDatabase: Database {
