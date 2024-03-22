@@ -1,0 +1,27 @@
+---
+title: SwiftUI Tips and Tricks with Craig Clayton
+date: 2024-03-22 00:00
+description: Craig Clayton from the DesignToSwiftUI Youtube channel comes on to talk about his favorite tips as as designer when it comes to SwiftUI as well as previews his upcoming talk on testing at Deep Dish Swift.
+featuredImage: https://images.transistor.fm/images/episode/1801375/full_1711029637-artwork.jpg
+youtubeID: BJqV5-50o5A
+audioDuration: 2954
+videoDuration: 3292
+podcastID: 98685f7f
+---
+<p>Craig Clayton from the DesignToSwiftUI Youtube channel comes on to talk about his favorite tips as as designer when it comes to SwiftUI as well as previews his upcoming talk on testing at Deep Dish Swift.</p><p><b>Guest</b></p><ul><li><a href="https://www.youtube.com/c/DesigntoSwiftUI">Craig Clayton (YouTube @DesigntoSwiftUI)</a></li><li><a href="https://mastodon.cloud/@thedevme">Craig Clayton (@thedevme@mastodon.cloud) - mastodon.cloud</a></li><li><a href="https://twitter.com/thedevme">mastodon.cloud/@thedevme (@thedevme) / X</a></li><li><a href="https://www.linkedin.com/in/thedevme/">Craig Clayton | LinkedIn</a></li></ul><p><strong>Announcements</strong></p><ul><li><a href="https://brightdigit.com/contact-us/"><strong>Need help with your projects this year? BrightDigit has openings.</strong></a></li><li>Join <a href="https://testflight.apple.com/join/z8xEa2no"><strong>Bushel Beta</strong></a></li><li><a href="https://www.youtube.com/@brightdigit">LiveStreaming on YouTube </a></li><li><a href="https://swiftcraft.uk/session/advancing-in-swift-by-learning-how-to-count">Join me at SwiftCraft</a></li><li>Join our <a href="https://patreon.com/brightdigit?utm_medium=clipboard_copy&amp;utm_source=copyLink&amp;utm_campaign=creatorshare_creator&amp;utm_content=join_link"><strong>Brand New Patreon Page!</strong></a></li></ul><p><strong>Related Links</strong></p><ul><li><a href="https://brightdigit.com/tutorials/swiftdata-modelactor/"><strong>Using ModelActor in SwiftData</strong></a></li></ul><p><b>Related Episodes</b></p><ul><li><a href="https://brightdigit.com/episodes/174-triple-glazed-apple-development-with-malin-sundberg-and-kai-dombrowski/">Triple Glazed Apple Development with Malin Sundberg and Kai Dombrowski</a></li><li><a href="https://brightdigit.com/episodes/170-pixelblitz-in-public-with-martin-lasek/">PixelBlitz in Public with Martin Lasek</a></li><li><a href="https://brightdigit.com/episodes/165-learning-judo-with-sean-rucker/">Learning Judo with Sean Rucker</a></li><li><a href="https://brightdigit.com/episodes/164-the-making-of-callsheet-with-casey-liss/">The Making of Callsheet with Casey Liss</a></li><li><a href="https://brightdigit.com/episodes/153-arm-sling-for-apple-watch-developers-with-hidde-van-der-ploeg/">Arm Sling for Apple Watch Developers with Hidde van der Ploeg</a></li><li><a href="https://brightdigit.com/episodes/150-my-taylor-deep-dish-swift-heroes-world-tour/">My Taylor Deep Dish Swift Heroes World Tour</a></li><li><a href="https://brightdigit.com/episodes/147-going-pro-with-sean-allen/">Going Pro with Sean Allen</a></li><li><a href="https://brightdigit.com/episodes/140-a-swiftly-year-in-review-with-antoine-van-der-lee/">A Swiftly Year in Review with Antoine van der Lee</a></li><li><a href="https://brightdigit.com/episodes/136-posture-island-with-jordi-bruin/">Posture Island with Jordi Bruin</a></li><li><a href="https://brightdigit.com/episodes/117-empower-station-with-matt-braun/">Empower Station with Matt Braun</a></li><li><a href="https://brightdigit.com/episodes/115-indie-dev-4-making-an-app-best-in-class-with-jordan-morgan/">Indie Dev #4 - Making an App Best-in-Class with Jordan Morgan</a></li><li><a href="https://brightdigit.com/episodes/094-ipad-development-with-adam-shaw/">iPad Development with Adam Shaw</a></li><li><a href="https://brightdigit.com/episodes/066-ui-design-for-developers-with-heidi-helen-pilypas/">UI Design for Developers with Heidi Helen Pilypas</a></li></ul><p><b>Social Media</b></p><p><strong>Email</strong><br>leo@brightdigit.com<br><a href="https://github.com/brightdigit">GitHub - @brightdigit</a></p><p><a href="https://twitter.com/brightdigit"><strong>Twitter </strong><br>BrightDigit - @brightdigit</a><br><a href="https://twitter.com/leogdion">Leo - @leogdion</a></p><p><a href="https://www.linkedin.com/company/bright-digit"><strong>LinkedIn</strong><br>BrightDigit</a><br><a href="https://www.linkedin.com/in/leogdion/">Leo</a></p><p><a href="https://patreon.com/brightdigit?utm_medium=clipboard_copy&amp;utm_source=copyLink&amp;utm_campaign=creatorshare_creator&amp;utm_content=join_link">Patreon - brightdigit</a></p><p><b>Credits</b></p><p><a href="https://filmmusic.io/">Music from https://filmmusic.io</a><br><a href="https://incompetech.com/">"Blippy Trance" by Kevin MacLeod (https://incompetech.com)</a><br><a href="http://creativecommons.org/licenses/by/4.0/">License: CC BY (http://creativecommons.org/licenses/by/4.0/)</a></p>
+<ul><li>(00:00) - Designing with SwiftUI</li>
+<li>(11:16) - SwiftUI Tips</li>
+<li>(18:53) - What's Countdown to Binge?</li>
+<li>(25:31) - Concurrency, SwiftData, and Storyboards?</li>
+<li>(35:05) - Shapes and Fonts in SwiftUI</li>
+<li>(39:37) - Deep Slice of Design and Testing</li>
+<li>(42:45) - Vision Pro Stuff</li>
+</ul>
+<strong>Thanks to our monthly supporters</strong>
+<ul>
+  <li>Steven Lipton</li>
+</ul>
+<strong>
+  <a href="https://www.patreon.com/brightdigit" rel="payment" title="★ Support this podcast on Patreon ★">★ Support this podcast on Patreon ★</a>
+</strong>
+      
