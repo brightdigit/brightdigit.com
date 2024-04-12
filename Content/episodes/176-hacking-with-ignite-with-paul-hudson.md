@@ -1,7 +1,7 @@
 ---
 title: Hacking with Ignite with Paul Hudson
 date: 2024-04-03 08:15
-description: After a major pandemic and 3 iOS releases later, <strong>Paul Hudson</strong> of Hacking with Swift comes on to talk about his new open-source project <strong>Ignite</strong>. Ignite is a static site builder for Swift developers, offering an expressive, powerful API to build beautiful websites that work great on all devices. We chat about his use Result Builders, the future of Macros, and what it takes to get started on your own open-source project or website.
+description: After a major pandemic and 3 iOS releases later, Paul Hudson of Hacking with Swift comes on to talk about his new open-source project Ignite. Ignite is a static site builder for Swift developers, offering an expressive, powerful API to build beautiful websites that work great on all devices. We chat about his use Result Builders, the future of Macros, and what it takes to get started on your own open-source project or website.
 featuredImage: https://images.transistor.fm/images/episode/1814620/full_1711817513-artwork.jpg
 youtubeID: bs4yIZryA5o
 audioDuration: 2775
