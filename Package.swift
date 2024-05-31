@@ -34,7 +34,7 @@ let package = Package(
     .package(url: "https://github.com/BrightDigit/SwiftTube.git", from: "0.2.0-beta.5"),
     .package(url: "https://github.com/BrightDigit/Spinetail.git", from: "0.3.0"),
     .package(url: "https://github.com/BrightDigit/SyndiKit", from: "0.3.7"),
-    .package(url: "https://github.com/BrightDigit/Options.git", from: "0.2.0"),
+    //.package(url: "https://github.com/BrightDigit/Options.git", from: "0.2.0"),
     .package(url: "https://github.com/brightdigit/NPMPublishPlugin.git", from: "1.0.0"),
     .package(url: "https://github.com/brightdigit/Contribute.git", from: "1.0.0-alpha.5"),
     .package(url: "https://github.com/brightdigit/ContributeWordPress.git", from: "1.0.0"),
@@ -70,7 +70,7 @@ let package = Package(
         "SplashPublishPlugin",
         "YoutubePublishPlugin",
         "ReadingTimePublishPlugin",
-        "Options",
+        //"Options",
         "PublishType",
         "TransistorPublishPlugin",
         "NPMPublishPlugin"
