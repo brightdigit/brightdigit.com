@@ -254,7 +254,7 @@ extension Scene {
 }
 ```
 
-In the code example above, not only does the `content` closure and `callAsFunction` but the `Scene` extension since `Scene` is a UI component from `SwiftUI`.
+In the code example above, not only does the `content` closure and `callAsFunction` require `@MainActor` but also the `Scene` extension since `Scene` is a UI component from `SwiftUI`.
 
 #### `@Observable` Objects
 
