@@ -83,7 +83,7 @@ Where `nonisolated` fits, is when you've created an `actor` or a type which is m
 @MainActor
 final class MachineObject {
 {
-  // this can be call syncronously from anywhere
+  // this can be called syncronously from anywhere
   nonisolated func deleteSnapshot(_ snapshot: Snapshot?, at url: URL?) {
     Task {
       await self.deletingSnapshot(snapshot, at: url)
