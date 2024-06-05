@@ -59,7 +59,7 @@ Here's a _overly simple rule of thumb:_
 * **If `class` make it `actor` or `Sendable`**
 * **If `struct` make it `Sendable`**
 
-Of course there are exceptions to this rule and it helps to think about what it means by marking types as `Sendable`. If your type is simple structure with `Sendable` properties it's perfectly fine to make it `Sendable` as well. If your type is a complex class and can be entered simultaneously in any way, it becomes more complicated. You can either mark it as an `actor` which has [repercussions](#start-a-call) or recursively follow the rules stated above for its properties.
+Of course there are exceptions to this rule and it helps to think about what it means by marking types as `Sendable`. If your type is a simple structure with `Sendable` properties it's perfectly fine to make it `Sendable` as well. If your type is a complex class and can be entered simultaneously in any way, it becomes more complicated. You can either mark it as an `actor` which has [repercussions](#start-a-call) or recursively follow the rules stated above for its properties.
 
 By moving your classes to actor there are few restrictions:
 
@@ -76,7 +76,7 @@ Most of the time you'll have code you don't have control over a Swift Package, a
 
 <a name="start-a-call"></a>
 
-Let's say you have an asynchronous method in your code base but you need to implement a synchronous method because it has to implement a protocol for instance.The solution I've taken is to __start the asynchronous call within a synchronous call__. In most cases, _I am reacting to a button tap/click which just needs to start a process._ **I don't need to wait for it to be completed.**
+Let's say you have an asynchronous method in your code base but you need to implement a synchronous method because it has to implement a protocol for instance. The solution I've taken is to __start the asynchronous call within a synchronous call__. In most cases, _I am reacting to a button tap/click which just needs to start a process._ **I don't need to wait for it to be completed.**
 
 Where `nonisolated` fits, is when you've created an `actor` or a type which is marked for a global actor such as `@MainActor`. Every call made to that object will automatically be marked as `async`, since it needs to wait for that actor to be available. By marking a method as `nonisolated` we allow it to be called from outside that actor. However this means we need to _start_ the actual method on a Task:
 ```
