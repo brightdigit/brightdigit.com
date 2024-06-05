@@ -49,7 +49,7 @@ public extension Node where Context == HTML.BodyContext {
           .li(
             .a(
               .href("https://www.patreon.com/brightdigit"),
-              .text("🎉Sponsorship")
+              .text("Sponsorship")
             )
           ),
           .li(
