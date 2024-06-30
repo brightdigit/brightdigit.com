@@ -1,0 +1,25 @@
+---
+title: WWDC Notes with Cihat Gündüz
+date: 2024-06-30 07:59
+description: Cihat Gündüz comes on to talk about how his WWDC 2024 wish list went, Multilingual Apps, and more.
+featuredImage: https://img.transistor.fm/zM31kdLvPyY97LSaaKGIQcv4X7776iF_jDo7E0OT6JI/rs:fill:3000:3000:1/q:60/aHR0cHM6Ly9pbWct/dXBsb2FkLXByb2R1/Y3Rpb24udHJhbnNp/c3Rvci5mbS9kZmRi/ZGFlN2ZiMTg2Zjgw/NWNjZjU4OWU4OTYw/YTFiMC5qcGc.jpg
+youtubeID: VaNzi3uWXZc
+audioDuration: 2787
+videoDuration: 2967
+podcastID: f769af59
+---
+<p>Cihat Gündüz comes on to talk about how his WWDC 2024 wish list went, Multilingual Apps, and more.</p><p><b>Guest</b></p><ul><li><a href="https://x.com/Jeehut">Cihat Gündüz (@Jeehut) / X</a></li><li><a href="https://iosdev.space/@Jeehut">Cihat Gündüz (@Jeehut@iosdev.space) - iOS Dev Space</a></li><li><a href="https://www.threads.net/@Jeehut">Cihat Gündüz (@jeehut) on Threads</a></li><li><a href="https://www.fline.dev/">FlineDev</a></li></ul><p><strong>Announcements</strong></p><ul><li><a href="https://brightdigit.com/contact-us/"><strong>Need help with your projects this year? BrightDigit has openings.</strong></a></li><li>Join <a href="https://testflight.apple.com/join/z8xEa2no"><strong>Bushel Beta</strong></a></li><li><a href="https://www.youtube.com/@brightdigit">LiveStreaming on YouTube </a></li><li>Join our <a href="https://patreon.com/brightdigit?utm_medium=clipboard_copy&amp;utm_source=copyLink&amp;utm_campaign=creatorshare_creator&amp;utm_content=join_link"><strong>Brand New Patreon Page!</strong></a></li></ul><p><strong>Related Links</strong></p><ul><li><a href="https://mailchi.mp/89b6467e2c67/brightdigit-96-wwdc-2024">BrightDigit #96 - From California to Keynotes: My WWDC 2024 Journey</a></li><li><a href="https://www.fline.dev/my-top-10-wishes-for-wwdc24/">My Top 10 Wishes for WWDC24</a></li><li><a href="https://developer.apple.com/documentation/swiftui/view/onscrollgeometrychange(for:of:action:)/">onScrollGeometryChange(for:of:action:) | Apple Developer Documentation</a></li><li><a href="https://wwdcnotes.com/documentation/wwdcnotes/">WWDC Notes | Documentation</a></li><li><a href="https://swiftevolution.substack.com/">Swift Evolution Monthly | Cihat Gündüz | Substack</a></li><li><a href="https://wwdcnotes.com/documentation/wwdcnotes/wwdc24-10185-build-multilingualready-apps/">Build multilingual-ready apps | Documentation</a></li><li><a href="https://wwdcnotes.com/documentation/wwdcnotes/wwdc24-10117-meet-the-translation-api/">Meet the Translation API | Documentation</a></li><li><a href="https://translatekit.app/">TranslateKit: App Localizer</a></li><li><a href="https://freemiumkit.app/documentation/index/">FreemiumKit | Documentation</a></li></ul><p><b>Related Episodes</b></p><ul><li><a href="https://brightdigit.com/episodes/178-sotu-2024-with-peter-witham/">SOTU 2024 with Peter Witham | BrightDigit</a></li><li><a href="https://brightdigit.com/episodes/172-apple-s-app-vision-with-kyle-lee/">Apple's App Vision with Kyle Lee | BrightDigit</a></li><li><a href="https://brightdigit.com/episodes/173-what-s-next-with-adam-rush/">What's Next with Adam Rush | BrightDigit</a></li><li><a href="https://brightdigit.com/episodes/163-swiftly-tooling-with-pol-piella-abadia/">Swiftly Tooling with Pol Piella Abadia | BrightDigit</a></li><li><a href="https://brightdigit.com/episodes/152-spatial-experiences-of-the-wild-with-adrian-eves/">Spatial Experiences of the Wild with Adrian Eves | BrightDigit</a></li><li><a href="https://brightdigit.com/episodes/154-supercharged-with-pedro-pinera/">Supercharged with Pedro Piñera | BrightDigit</a></li></ul><p><b>Social Media</b></p><p><strong>Email</strong><br>leo@brightdigit.com<br><a href="https://github.com/brightdigit">GitHub - @brightdigit</a></p><p><a href="https://twitter.com/brightdigit"><strong>Twitter </strong><br>BrightDigit - @brightdigit</a><br><a href="https://twitter.com/leogdion">Leo - @leogdion</a></p><p><a href="https://www.linkedin.com/company/bright-digit"><strong>LinkedIn</strong><br>BrightDigit</a><br><a href="https://www.linkedin.com/in/leogdion/">Leo</a></p><p><a href="https://patreon.com/brightdigit?utm_medium=clipboard_copy&amp;utm_source=copyLink&amp;utm_campaign=creatorshare_creator&amp;utm_content=join_link">Patreon - brightdigit</a></p><p><b>Credits</b></p><p><a href="https://filmmusic.io/">Music from https://filmmusic.io</a><br><a href="https://incompetech.com/">"Blippy Trance" by Kevin MacLeod (https://incompetech.com)</a><br><a href="http://creativecommons.org/licenses/by/4.0/">License: CC BY (http://creativecommons.org/licenses/by/4.0/)</a></p>
+<ul><li>(00:00) - WWDC In Person Thoughts</li>
+<li>(06:13) - Cihat's Wish List Evaluation</li>
+<li>(21:16) - WWDC Notes</li>
+<li>(27:17) - Swift 6 Migration</li>
+<li>(31:58) - Multilingual Apps and TranslateKit</li>
+</ul>
+<strong>Thanks to our monthly supporters</strong>
+<ul>
+  <li>Steven Lipton</li>
+</ul>
+<strong>
+  <a href="https://www.patreon.com/brightdigit" rel="payment" title="★ Support this podcast on Patreon ★">★ Support this podcast on Patreon ★</a>
+</strong>
+      
