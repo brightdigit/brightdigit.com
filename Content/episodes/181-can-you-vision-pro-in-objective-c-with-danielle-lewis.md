@@ -1,7 +1,7 @@
 ---
 title: 'Can you Vision Pro in Objective-C with Danielle Lewis '
 date: 2024-07-12 00:00
-description: I had great time chatting with Danielle Lewis about her experience becoming a Swift developer, learning to develop for the Vision Pro, and getting the <em>Magical</em> world of Objective-C.
+description: I had great time chatting with Danielle Lewis about her experience becoming a Swift developer, learning to develop for the Vision Pro, and getting the Magical world of Objective-C.
 featuredImage: https://img.transistor.fm/0QvbSbhn6Zassih4uo4jauKEvmaNiGnZBn_V1YrbICY/rs:fill:3000:3000:1/q:60/aHR0cHM6Ly9pbWct/dXBsb2FkLXByb2R1/Y3Rpb24udHJhbnNp/c3Rvci5mbS8wYzRk/N2ExYjVjOTJkYzVl/M2JkYzE5ZGZkZmVl/ODgzZi5qcGc.jpg
 youtubeID: iPLIXIbGv98
 audioDuration: 1652
