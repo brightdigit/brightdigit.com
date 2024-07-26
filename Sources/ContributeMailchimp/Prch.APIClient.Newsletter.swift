@@ -11,7 +11,7 @@ import SwiftTube
 public typealias MailchimpCampaign = Campaigns.GetCampaigns.Response.Status200.Campaigns
 
 public extension Client where APIType == Mailchimp.API {
-  func campaigns(fromRequest request: MailchimpCampaignRequest, timeout: DispatchTime = .now() + 100.0) throws -> [MailchimpCampaign] {
+  func campaigns(fromRequest request: MailchimpCampaignRequest, timeout: DispatchTime = .now() + 300.0) throws -> [MailchimpCampaign] {
     let request = Campaigns.GetCampaigns.Request(count: 1000, status: .sent, listId: request.listID, sortField: .sendTime, sortDir: .desc)
     let response = try requestSync(request, timeout: timeout)
     guard let campaigns = response.campaigns else {
