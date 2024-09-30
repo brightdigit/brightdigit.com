@@ -1,0 +1,30 @@
+---
+title: The Great SwiftUI Migration - Part 2 with Ben Scheirman
+date: 2024-09-30 07:57
+description: Ben Scheirman is back for part 2 of our interview on SwiftUI Migration. In this episode we focus on navigation, data handling and Swift packages.
+featuredImage: https://img.transistor.fm/mw5khZdL2wqSiHV8cxSL7AkCaoCdyKUAnDNE0UbmS0w/rs:fill:3000:3000:1/q:60/aHR0cHM6Ly9pbWct/dXBsb2FkLXByb2R1/Y3Rpb24udHJhbnNp/c3Rvci5mbS8zNTk5/Yzg0YjRjNmQ2NTY0/MDFmOTJiNjg0MWI2/YjRmOS5qcGc.jpg
+youtubeID: -w2l5IoQztU
+audioDuration: 1403
+videoDuration: 1675
+podcastID: b8e0abe9
+---
+<p>Ben Scheirman is back for part 2 of our interview on SwiftUI Migration. In this episode we focus on navigation, data handling and Swift packages.</p><p><b>Guest</b></p><ul><li><a href="https://benscheirman.com/">Ben Scheirman | Ben is an experienced software engineer from Houston, TX. Currently focused on Swift, iOS, Ruby, and Rust.</a></li><li><a href="https://mastodon.xyz/@bens">Ben Scheirman (@bens@mastodon.xyz) - Mastodon</a></li><li><a href="https://github.com/subdigital">subdigital (Ben Scheirman)</a></li><li><a href="https://nsscreencast.com/episodes">NSScreencast: Bite-sized Screencasts for iOS Development</a></li><li><a href="https://combineswift.com/">Combine Swift</a></li></ul><p><strong>Announcements</strong></p><ul><li><a href="https://brightdigit.com/contact-us/"><strong>Need help with your projects this year? BrightDigit has openings.</strong></a></li><li>Join <a href="https://testflight.apple.com/join/z8xEa2no"><strong>Bushel Beta</strong></a></li><li>Join our <a href="https://patreon.com/brightdigit?utm_medium=clipboard_copy&amp;utm_source=copyLink&amp;utm_campaign=creatorshare_creator&amp;utm_content=join_link"><strong>Brand New Patreon Page!</strong></a></li></ul><p><b>Links</b></p><ul><li><a href="https://www.pointfree.co/episodes/ep288-modern-uikit-stack-navigation-part-2">Episode #288: Modern UIKit: Stack Navigation, Part 2</a></li><li><a href="https://github.com/pointfreeco/swift-perception">pointfreeco/swift-perception: Observable tools, backported.</a></li><li><a href="https://github.com/brightdigit/Sublimation">brightdigit/Sublimation: Enable automatic discovery of your local development server on the fly. Turn your Server-Side Swift app from a mysterious vapor to a tangible solid server.</a></li><li><a href="https://github.com/krzysztofzablocki/LifetimeTracker">krzysztofzablocki/LifetimeTracker: Find retain cycles / memory leaks sooner.</a></li><li><a href="https://github.com/siteline/swiftui-introspect">siteline/swiftui-introspect: Introspect underlying UIKit/AppKit components from SwiftUI</a></li><li><a href="https://vimeo.com/144116310">Presenting Coordinators - Soroush Khanlou on Vimeo</a></li></ul><p><b>Related Episodes</b></p><ul><li><a href="https://brightdigit.com/episodes/185-the-great-swiftui-migration-part-1-with-ben-scheirman">The Great SwiftUI Migration - Part 1 with Ben Scheirman</a></li><li><a href="https://brightdigit.com/episodes/182-swiftui-field-guide-with-chris-eidhof/">SwiftUI Field Guide with Chris Eidhof</a></li><li><a href="https://brightdigit.com/episodes/178-sotu-2024-with-peter-witham/">SOTU 2024 with Peter Witham</a></li><li><a href="https://brightdigit.com/episodes/175-swiftui-tips-and-tricks-with-craig-clayton/">SwiftUI Tips and Tricks with Craig Clayton</a></li><li><a href="https://brightdigit.com/episodes/163-swiftly-tooling-with-pol-piella-abadia/">Swiftly Tooling with Pol Piella Abadia</a></li><li><a href="https://brightdigit.com/episodes/159-it-depends-with-brandon-williams/">It Depends with Brandon Williams</a></li><li><a href="https://brightdigit.com/episodes/150-my-taylor-deep-dish-swift-heroes-world-tour/">My Taylor Deep Dish Swift Heroes World Tour</a></li><li><a href="https://brightdigit.com/episodes/142-mobile-system-design-with-tjeerd-in-t-veen/">Mobile System Design with Tjeerd in 't Veen</a></li><li><a href="https://brightdigit.com/episodes/133-the-composable-architecture-with-zev-eisenberg/">The Composable Architecture with Zev Eisenberg</a></li><li><a href="https://brightdigit.com/episodes/135-behind-the-scenes-of-swiftui-with-aviel-gross/">Behind the Scenes of SwiftUI with Aviel Gross</a></li><li><a href="https://brightdigit.com/episodes/125-wwdc-2022-swiftui-and-uikit-with-evan-stone/">WWDC 2022 - SwiftUI and UIKit with Evan Stone</a></li></ul><p><b>Social Media</b></p><p><strong>Email</strong><br>leo@brightdigit.com<br><a href="https://github.com/brightdigit">GitHub - @brightdigit</a></p><p><a href="https://twitter.com/brightdigit"><strong>Twitter </strong><br>BrightDigit - @brightdigit</a><br><a href="https://twitter.com/leogdion">Leo - @leogdion</a></p><p><a href="https://www.linkedin.com/company/bright-digit"><strong>LinkedIn</strong><br>BrightDigit</a><br><a href="https://www.linkedin.com/in/leogdion/">Leo</a><br><a href="https://patreon.com/brightdigit?utm_medium=clipboard_copy&amp;utm_source=copyLink&amp;utm_campaign=creatorshare_creator&amp;utm_content=join_link">Patreon - brightdigit</a></p><p><b>Credits</b></p><p><a href="https://filmmusic.io/">Music from https://filmmusic.io</a><br><a href="https://incompetech.com/">"Blippy Trance" by Kevin MacLeod (https://incompetech.com)</a><br><a href="http://creativecommons.org/licenses/by/4.0/">License: CC BY (http://creativecommons.org/licenses/by/4.0/)</a></p>
+<ul><li>(00:00) - Discussing Data Handling in Swift UI</li>
+<li>(01:22) - Observable Objects and View Models</li>
+<li>(04:20) - The Power of Previews in Swift UI</li>
+<li>(06:36) - Combining Combine and Async/Await</li>
+<li>(10:29) - Interfacing Between UIKit and Swift UI</li>
+<li>(17:12) - Challenges with Swift Package Manager</li>
+</ul>
+<strong>Thanks to our monthly supporters</strong>
+<ul>
+  <li>Bertram Eber</li>
+  <li>Edward Sanchez</li>
+  <li>Satoshi Mitsumori</li>
+  <li>Danielle Lewis</li>
+  <li>Steven Lipton</li>
+</ul>
+<strong>
+  <a href="https://www.patreon.com/brightdigit" rel="payment" title="★ Support this podcast on Patreon ★">★ Support this podcast on Patreon ★</a>
+</strong>
+      
