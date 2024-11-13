@@ -8,7 +8,10 @@ subscriptionCTA: If you want to learn more about the latest features in Swift, s
 
 With [the introduction of SwiftData at WWDC 2023](https://developer.apple.com/videos/play/wwdc2023/10187/), we have seen the further _Swift-ifaction_ of older APIs. While Core Data is a tried and true technology, SwiftData allows for the use of Swift in defining models and relationships. This is as opposed to Core Data's own format just as SwiftUI eliminated the need for Storyboards and Xibs. 
 
-One of the major challenges with using SwiftData is it's introduction in a post-async-await world. This introduces its own challenges. Challenges which can be difficult to decipher since Apple has abstracted much of that away in layers of Macros and Property Wrappers.
+One of the major challenges with using SwiftData is its introduction in a post-async-await world. This introduces its own challenges. Challenges which can be difficult to decipher since Apple has abstracted much of that away in layers of Macros and Property Wrappers.
+
+1. [Using ModelActor in SwiftData](/tutorials/swiftdata-modelactor)
+2. [Being Sendable with SwiftData](/tutorials/swiftdata-sendable)
 
 > youtube https://www.youtube.com/watch?v=rN23Ygvy47E
 
@@ -22,33 +25,23 @@ This _fixed_ the problem but it was clear to me that this wasn't ideal. Moving d
 
 This is where [`@ModelActor`](https://developer.apple.com/documentation/swiftdata/modelactor) comes in. **ModelActor** introduces a way to interface with the database (i.e. `ModelContext`) in a mutually-exclusive way. **This means the database can only be accessed one at a time as required by SwiftData.** In other words I no longer require all database actions be run on the `MainActor` but a background actor shared by the application.
 
-It was unclear to me when in development ModelActor was introduced as I couldn't find a WWDC video or much documentation on the subject. However [this article from Vyacheslav Ansimov](https://medium.com/@vyacheslavansimov/swift-utilities-working-with-swiftdata-in-the-background-02e28c3b6908) helped spark the beginning of this transition.
+It was unclear to me when in development ModelActor was introduced as I couldn't find a WWDC video or much documentation on the subject. However there were a two sources which  helped spark the beginning of this transition.  
 
-The way we'll implement our ModelActor is by essentially **creating an interface into common operations we'd make to the ModelContext.** The `@ModelActor` macro adds plenty of boilerplate code for us such as an initializer. We just need to add implementations for our CRUD methods and `save`:
+[This article from Vyacheslav Ansimov](https://medium.com/@vyacheslavansimov/swift-utilities-working-with-swiftdata-in-the-background-02e28c3b6908) introduces the how a background ModelActor would work. 
+
+More importantly Franz Busch's talk at Server Side Swift 2024 showcases the important `with` pattern to structured concurrent which we'll use here:
+
+> youtube https://www.youtube.com/watch?v=JmrnE7HUaDE
+
+The way we'll implement our ModelActor is by essentially **using the `with` pattern to interface with the `ModelContext`:** 
 
 ```swift
-@ModelActor
-public actor ModelActorDatabase {
-  public func delete(_ model: some PersistentModel) async {
-    self.modelContext.delete(model)
-  }
-
-  public func insert(_ model: some PersistentModel) async {
-    self.modelContext.insert(model)
-  }
-
-  public func delete<T: PersistentModel>(
-    where predicate: Predicate<T>?
-  ) async throws {
-    try self.modelContext.delete(model: T.self, where: predicate)
-  }
-
-  public func save() async throws {
-    try self.modelContext.save()
-  }
-
-  public func fetch<T>(_ descriptor: FetchDescriptor<T>) async throws -> [T] where T: PersistentModel {
-    return try self.modelContext.fetch(descriptor)
+extension ModelActor {
+  public func withModelContext<T: Sendable>(
+    _ closure: @Sendable @escaping (ModelContext) throws -> T
+  ) async rethrows -> T {
+    let modelContext = self.modelContext
+    return try closure(modelContext)
   }
 }
 ```
@@ -60,67 +53,33 @@ This will easily work in our application however there are a few remaining thing
 
 ## Abstracting Our ModelActor
 
-There are several reason I want to abstract our `ModelActorDatabase` into a protocol. Such as *easier mocking for unit tests* as well as *removing direct references to* my particular SwiftData target [(as I use a lot)](/articles/bushel-launch-part-3/#packagedsl). If you are interested in learning more about dependency management, I highly recommend checking [this article out.](/articles/dependency-management-swift) 
+There are several reason I want to abstract our `ModelActor` extension into a protocol. Such as *easier mocking for unit tests* as well as *removing direct references* [(as I use a lot)](/articles/bushel-launch-part-3/#packagedsl). If you are interested in learning more about dependency management, I highly recommend checking [this article out.](/articles/dependency-management-swift) 
 
 So let's create a abstract `Database` protocol:
 
 ```swift
-public protocol Database {
-  func delete<T>(_ model: T) async where T: PersistentModel
-  func insert<T>(_ model: T) async where T: PersistentModel
-  func save() async throws
-  func fetch<T>(_ descriptor: FetchDescriptor<T>) async throws -> [T] where T: PersistentModel
-
-  func delete<T: PersistentModel>(
-    where predicate: Predicate<T>?
-  ) async throws
+public protocol Database: Sendable {
+  func withModelContext<T>(_ closure: @Sendable @escaping (ModelContext) throws -> T)
+    async rethrows -> T
 }
-```
 
-I want to note that **every method is async**. This is to take into account the fact that if this is implemented by an actor when the method will be called outside of the actor it will be required to be asynchronous to ensure exclusivity.
-
-Since we have a protocol we can added helper methods which will call these methods:
-
-```swift
-public extension Database {
-  func fetch<T: PersistentModel>(
-    where predicate: Predicate<T>?,
-    sortBy: [SortDescriptor<T>]
-  ) async throws -> [T] {
-    try await self.fetch(FetchDescriptor<T>(predicate: predicate, sortBy: sortBy))
-  }
-
-  func fetch<T: PersistentModel>(
-    _ predicate: Predicate<T>,
-    sortBy: [SortDescriptor<T>] = []
-  ) async throws -> [T] {
-    try await self.fetch(where: predicate, sortBy: sortBy)
-  }
-
-  func fetch<T: PersistentModel>(
-    _: T.Type,
-    predicate: Predicate<T>? = nil,
-    sortBy: [SortDescriptor<T>] = []
-  ) async throws -> [T] {
-    try await self.fetch(where: predicate, sortBy: sortBy)
-  }
-
-  func delete<T: PersistentModel>(
-    model _: T.Type,
-    where predicate: Predicate<T>? = nil
-  ) async throws {
-    try await self.delete(where: predicate)
+extension ModelActor where Self: Database {
+  public func withModelContext<T: Sendable>(
+    _ closure: @Sendable @escaping (ModelContext) throws -> T
+  ) async rethrows -> T {
+    let modelContext = self.modelContext
+    return try closure(modelContext)
   }
 }
 ```
 
-*This one of my favorite features of Swift.* I am able to provide helper methods to **all** implementations of `Database` by creating an extension. 
+I want to note that **the method is async**. This is to take into account the fact that if this is implemented by an actor when the method will be called outside of the actor it will be required to be asynchronous to ensure exclusivity.
 
 Now we can let the compiler know that `ModelActorDatabase` implements `Database`:
 
 ```swift
 @ModelActor
-public actor ModelActorDatabase: Database
+public actor ModelActorDatabase: Database {}
 ```
 
 This is a great step but now we need to make sure that our SwiftUI Views have access to this object. The best way to do this is by creating a new `EnvironmentKey`.
@@ -130,54 +89,33 @@ This is a great step but now we need to make sure that our SwiftUI Views have ac
 SwiftUI provides an API to add new values to the `@Environment property` wrapper. However we'll need to implement a [`defaultValue`](https://developer.apple.com/documentation/swiftui/environmentkey/defaultvalue) for our `Database`. What do we want if the developer (me) forgets to setup the `Database`? Taking a page from what `.modelContainer` does I'll create a `DefaultDatabase`:
 
 ```swift
-struct DefaultDatabase: Database {
-  struct NotImplmentedError: Error {
-    static let instance = NotImplmentedError()
-  }
-
+private struct DefaultDatabase: Database {
   static let instance = DefaultDatabase()
 
-  func fetch<T>(_: FetchDescriptor<T>) async throws -> [T] where T: PersistentModel {
+  // swiftlint:disable:next unavailable_function
+  func withModelContext<T>(_ closure: (ModelContext) throws -> T) async rethrows -> T {
     assertionFailure("No Database Set.")
-    throw NotImplmentedError.instance
-  }
-
-  func delete(_: some PersistentModel) async {
-    assertionFailure("No Database Set.")
-  }
-
-  func insert(_: some PersistentModel) async {
-    assertionFailure("No Database Set.")
-  }
-
-  func save() async throws {
-    assertionFailure("No Database Set.")
-    throw NotImplmentedError.instance
+    fatalError("No Database Set.")
   }
 }
 ```
 
-In this implementation each method crashes in `DEBUG` or throws an Error in the `RELEASE` configuration. This ensures the developer (me) doesn't forget to set the `Database`. Now we can setup our `Environment` value:
+In this implementation, the method crashes. This ensures the developer (me) doesn't forget to set the `Database`. Now we can setup our `Environment` value:
 
 ```swift
-private struct DatabaseKey: EnvironmentKey {
-  static var defaultValue: any Database {
-    DefaultDatabase.instance
+extension EnvironmentValues {
+  @Entry public var database: any Database = DefaultDatabase.instance
+}
+
+extension Scene {
+  public func database(_ database: any Database) -> some Scene {
+    environment(\.database, database)
   }
 }
 
-public extension EnvironmentValues {
-  var database: any Database {
-    get { self[DatabaseKey.self] }
-    set { self[DatabaseKey.self] = newValue }
-  }
-}
-
-public extension Scene {
-  func database(
-    _ database: any Database
-  ) -> some Scene {
-    self.environment(\.database, database)
+extension View {
+  public func database(_ database: any Database) -> some View {
+    environment(\.database, database)
   }
 }
 ```
@@ -221,10 +159,10 @@ public init(modelContainer: SwiftData.ModelContainer) {
 }
 ```
 
-This means if we pass SwiftData models throughout our app, we be running our models through a variety of `ModelContext` object which will result in a crash. The best approach to this is create a singleton for the `Database` and `ModelContainer` which ensures it to be shared across the `.environment` and application:
+This means if we pass SwiftData models throughout our app, we will be running our models through a variety of `ModelContext` objects which will result in a crash. The best approach to this is create a singleton for the `Database` and `ModelContainer` which ensures it to be shared across the `.environment` and application:
 
 ```swift
-  public struct SharedDatabase {
+ public struct SharedDatabase {
   public static let shared: SharedDatabase = .init()
 
   public let schemas: [any PersistentModel.Type]
@@ -250,7 +188,11 @@ Then in our SwiftUI code, we call:
 var body: some Scene {
   WindowGroup {
     RootView()
-  }.database(SharedDatabase.shared.database)
+  }
+  .database(SharedDatabase.shared.database)
+  /* if we wish to continue using @Query
+  .modelContainer(SharedDatabase.shared.modelContainer)
+  */
 }
 ```
 
@@ -303,6 +245,11 @@ public class BackgroundDatabase: Database {
   internal init(_ factory: @Sendable @escaping () -> any Database) {
     self.container = .init(factory: factory)
   }
+  
+  public func withModelContext<T>(_ closure: @Sendable @escaping (ModelContext) throws -> T)
+    async rethrows -> T
+  { try await self.database.withModelContext(closure) }
+}
 ...
 ```
 
@@ -311,41 +258,6 @@ What is this doing to ensure background execution? Firstly we create an inner ac
 > youtube https://www.youtube.com/watch?v=0VlwWhBd7pE
 
 With this update, every time the `container.database` is accessed the `ModelActorDatabase` will be on a background actor. 
-
-Next we just need to add the `Database` implementations:
-
-```swift
-public class BackgroundDatabase: Database {
-...
-  public func delete(where predicate: Predicate<some PersistentModel>?) async throws {
-    return try await self.database.delete(where: predicate)
-  }
-
-  public func fetch<T>(_ descriptor: FetchDescriptor<T>) async throws -> [T] where T: PersistentModel {
-    return try await self.database.fetch(descriptor)
-  }
-
-  public func insert(_ model: some PersistentModel) async {
-    return await self.database.insert(model)
-  }
-
-  public func save() async throws {
-    return try await self.database.save()
-  }
-}
-```
-
-Now let's add some convenience methods for using this in our application:
-
-```swift
-public class BackgroundDatabase: Database {
-  convenience init(modelContainer: ModelContainer) {
-    self.init {
-      return ModelActorDatabase(modelContainer: modelContainer)
-    }
-  }
-}
-```
 
 Then we update our `SharedDatabase` single:
 
@@ -365,22 +277,6 @@ public struct SharedDatabase {
 ```
 
 This time our new database works perfectly! 🥳
-
-## Clean Up Time
-
-The next steps in my implementation were to remove as many references to the modelContext throughout my app. This meant making respective methods async. I also replaced references with new `\.database` Database in SwiftUI from the modelContext key:
-
-```swift
-@Environment(\.modelContext) private var context
-``` 
-
-However regarding the `modelContainer` View modifier:
-
-```swift
-.modelContainer(modelContainer)
-```
-
-**I was unable to remove, since I use `@Query` in a few places throughout the application.**
 
 ## How to be a Model Actor within SwiftData
 
