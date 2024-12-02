@@ -1,0 +1,28 @@
+---
+title: Swift, Server Side, Serverless with Sébastien Stormacq
+date: 2024-12-02 00:00
+description: Sébastien Stormacq joins us to talk about AWS Lambda and Swift - what does "Serverless" mean, how deployment works, and how to get started.
+featuredImage: https://img.transistor.fm/wd0sWk4IrbYMVkMeAu-UKUJUM29jcZvq_hLJ0r9FzKg/rs:fill:3000:3000:1/q:60/aHR0cHM6Ly9pbWct/dXBsb2FkLXByb2R1/Y3Rpb24udHJhbnNp/c3Rvci5mbS81YjJj/YzIyNWRmZDE1YWNh/MDg5ZWU0NWQ1OTA2/ZjA1OS5qcGc.jpg
+youtubeID: 97AgMeaVUZs
+audioDuration: 2613
+videoDuration: 2677
+podcastID: 47ba9790
+---
+<p>Sébastien Stormacq joins us to talk about AWS Lambda and Swift - what does "Serverless" mean, how deployment works, and how to get started.</p><p><b>Guest</b></p><ul><li><a href="https://x.com/sebsto?lang=en">Sébastien ☁ Stormacq 🇺🇦 (@sebsto) / X</a></li><li><a href="https://bsky.app/profile/sebsto.bsky.social">Seb @ AWS (@sebsto.bsky.social) — Bluesky</a></li><li><a href="https://www.linkedin.com/in/sebastienstormacq/">Sébastien ☁ (Seb) Stormacq | LinkedIn</a></li><li><a href="https://github.com/sebsto">Github - sebsto (Sébastien Stormacq)</a></li><li><a href="https://www.threads.net/@sebstormacq">Sebastien Stormacq (@sebstormacq) • Threads, Say more</a></li><li><a href="https://awscommunity.social/@sebsto">Sebastien Stormacq (@sebsto@awscommunity.social) - AWSCommunity.social</a></li></ul><p><strong>Announcements</strong></p><ul><li><a href="https://mailchi.mp/dd61c343d130/brightdigit-103-black-friday">BrightDigit 103 - 🎁 Early Black Friday Deals</a><ul><li><strong>50% off first year of </strong><a href="https://getbushel.app"><strong>Bushel Pro</strong></a></li><li>25% off <a href="https://patreon.com/brightdigit?utm_medium=clipboard_copy&amp;utm_source=copyLink&amp;utm_campaign=creatorshare_creator&amp;utm_content=join_link"><strong>Patreon Membership - Use Code 64632</strong></a></li></ul></li><li>Join <a href="https://testflight.apple.com/join/z8xEa2no"><strong>Bushel Beta</strong></a></li><li>Join our <a href="https://patreon.com/brightdigit?utm_medium=clipboard_copy&amp;utm_source=copyLink&amp;utm_campaign=creatorshare_creator&amp;utm_content=join_link"><strong>Brand New Patreon Page!</strong></a></li><li><a href="https://brightdigit.com/newsletters/">Newsletters | BrightDigit</a></li></ul><p><b>Links</b></p><ul><li><a href="https://github.com/swift-server/swift-aws-lambda-runtime">swift-server/swift-aws-lambda-runtime: Swift implementation of AWS Lambda Runtime</a></li><li><a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/getting-started.html">Getting started with IAM - AWS Identity and Access Management</a></li><li><a href="https://www.youtube.com/watch?v=M1POAEPATFo&amp;t=2s">Swift, Server-Side, Serverless - Sébastien Stormacq</a></li><li><a href="https://www.youtube.com/watch?v=lHXjs3L2ads">Just Save a File, It's Easy, Right?! - Mikaela Caron</a></li></ul><p><b>Related Episodes</b></p><ul><li><a href="https://brightdigit.com/episodes/189-full-stack-lyriq-with-adegboyega-olusunmade/">Full Stack Lyriq with Adegboyega Olusunmade</a></li><li><a href="https://brightdigit.com/episodes/188-ludicrous-types-with-nick-lockwood/">Ludicrous Types with Nick Lockwood</a></li><li><a href="https://brightdigit.com/episodes/183-voice-in-a-can-with-damian-mehers/">Voice in a Can with Damian Mehers</a></li><li><a href="https://brightdigit.com/episodes/157-swift-server-workgroup-with-joannis-orlandos/">Swift Server Workgroup with Joannis Orlandos</a></li><li><a href="https://brightdigit.com/episodes/170-pixelblitz-in-public-with-martin-lasek/">PixelBlitz in Public with Martin Lasek</a></li><li><a href="https://brightdigit.com/episodes/141-swift-package-index-with-dave-verwer-and-sven-schmidt/">Swift Package Index with Dave Verwer and Sven Schmidt</a></li><li><a href="https://brightdigit.com/episodes/127-backend-decisions-with-mikaela-caron/">Backend Decisions with Mikaela Caron</a></li></ul><p><b>Social Media</b></p><p><strong>Email</strong><br>leo@brightdigit.com<br><a href="https://github.com/brightdigit">GitHub - @brightdigit</a></p><p><a href="https://twitter.com/brightdigit"><strong>Twitter </strong><br>BrightDigit - @brightdigit</a><br><a href="https://twitter.com/leogdion">Leo - @leogdion</a></p><p><a href="https://www.linkedin.com/company/bright-digit"><strong>LinkedIn</strong><br>BrightDigit</a><br><a href="https://www.linkedin.com/in/leogdion/">Leo</a><br><a href="https://patreon.com/brightdigit?utm_medium=clipboard_copy&amp;utm_source=copyLink&amp;utm_campaign=creatorshare_creator&amp;utm_content=join_link">Patreon - brightdigit</a></p><p><b>Credits</b></p><p><a href="https://filmmusic.io/">Music from https://filmmusic.io</a><br><a href="https://incompetech.com/">"Blippy Trance" by Kevin MacLeod (https://incompetech.com)</a><br><a href="http://creativecommons.org/licenses/by/4.0/">License: CC BY (http://creativecommons.org/licenses/by/4.0/)</a></p><p><br></p>
+<ul><li>(00:00) - Understanding AWS Lambda and Serverless Computin</li>
+<li>(12:07) - Getting Started with AWS Lambda in Swift</li>
+<li>(21:17) - Understanding AWS Security and Authorization</li>
+<li>(27:36) - Developing and Deploying Swift on AWS Lambda</li>
+<li>(32:42) - Testing and Integration with AWS Services</li>
+</ul>
+<strong>Thanks to our monthly supporters</strong>
+<ul>
+  <li>Bertram Eber</li>
+  <li>Edward Sanchez</li>
+  <li>Satoshi Mitsumori</li>
+  <li>Steven Lipton</li>
+</ul>
+<strong>
+  <a href="https://www.patreon.com/brightdigit" rel="payment" title="★ Support this podcast on Patreon ★">★ Support this podcast on Patreon ★</a>
+</strong>
+      
