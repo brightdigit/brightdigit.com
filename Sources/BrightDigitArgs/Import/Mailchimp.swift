@@ -41,20 +41,38 @@ public extension BrightDigitSiteCommand.ImportCommand {
     static func fileNameWithoutExtensionFromSource(_ source: ContributeMailchimp.Newsletter.Source) -> String {
       "\(source.issueNo.description.padLeft(totalWidth: 3, byString: "0"))-\(source.slug)"
     }
+    
+    static let issueNoRegexPatternString = #"(?:^|\s)#?(\d+)(?:\s|$)"#
+    
+    static let issueNoRegex = try! NSRegularExpression(pattern: issueNoRegexPatternString, options: [])
+    
+    static func parseIssueNumber(from subject: String) -> Int? {
+           // Pattern matches either a standalone number or a number with # prefix
+           //let pattern = #"(?:^|\s)#?(\d+)(?:\s|$)"#
+           
+           
+           let range = NSRange(subject.startIndex..<subject.endIndex, in: subject)
+           
+           guard let match = issueNoRegex.firstMatch(in: subject, options: [], range: range),
+                 match.numberOfRanges > 1 else {
+               return nil
+           }
+           
+           let numberRange = match.range(at: 1)
+           guard let range = Range(numberRange, in: subject),
+                 let issueNumber = Int(subject[range]) else {
+             return nil
+           }
+           
+           return issueNumber
+       }
 
     static func sourceFrom(campaign: MailchimpCampaign) throws -> Newsletter.Source.Campaign? {
       guard let subjectLine = campaign.settings?.subjectLine else {
         throw ImportError.newsletterMissingField(.subjectLine)
       }
 
-      let range = subjectLine.range(of: "#(\\d+)", options: .regularExpression)
-
-      let issueNoParsed: Int? = range.map { subjectLine[$0] }.map { substring in
-        let startIndex = substring.index(after: substring.startIndex)
-        return String(substring[startIndex...])
-      }.flatMap { Int($0) }
-
-      guard let issueNo = issueNoParsed else {
+      guard let issueNo = parseIssueNumber(from: subjectLine) else {
         return nil
       }
 
