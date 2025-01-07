@@ -1,12 +1,17 @@
 ---
-title: Querying ModelActor in SwiftData
-date: 2025-01-20 16:00
+title: SwiftData CRUD Operations with ModelActor
+date: 2025-01-09 00:00
 description: How can we add CRUD methods to SwiftData ModelActors in an safe way using actors in Swift 6.
-featuredImage: /media/tutorials/swiftdata-modelactor/robots-efficiently-sorting-hundreds-of-parcels-per-2023-11-27-05-28-19-utc.webp
+featuredImage: /media/tutorials/swiftdata-crud-operations-modelactor/student-taking-book-in-library-2023-11-27-04-53-22-utc.webp
 subscriptionCTA: If you want to learn more about the latest features in Swift, sign up for the newsletter to get notified.
 ---
 
-In my previous articles, we explored how to [use ModelActor in SwiftData](/tutorials/swiftdata-modelactor) and [handle Sendable requirements](/tutorials/swiftdata-sendable). Now let's extend our Database type with robust CRUD (Create, Read, Update, Delete) operations that maintain type safety and concurrency correctness.
+In my previous articles, we explored how to:
+
+1. [Use ModelActor in SwiftData](/tutorials/swiftdata-modelactor)
+2. [Handle Sendable Requirements with SwiftData](/tutorials/swiftdata-sendable)
+
+Now let's extend our Database type with robust CRUD (Create, Read, Update, Delete) operations that maintain type safety and concurrency correctness.
 
 ## The Problem with Raw ModelContext
 
@@ -56,7 +61,7 @@ public protocol Queryable: Sendable {
 
 This protocol defines our core CRUD operations with a few key design choices. All methods are async to support background execution or any call which may require async. Secondly we allow a return type by making it `Sendable` and giving the developer the ability to map the `PersistentModel` type to the `Sendable` return type.
 
-## Understanding Selectors
+### Understanding Selectors
 
 You might notice our protocol methods take a `Selector` type. This type provides a type-safe way to specify what data we want to operate on:
 
@@ -99,7 +104,7 @@ The `Selector` enum provides different ways to specify what we want to query:
    - `.predicate()` for items matching a condition
    - `.all` to remove everything
 
-## Implementing Database Operations
+### Implementing Database Operations
 
 Now that we understand Selectors, let's see how our Database type implements these operations:
 
@@ -208,7 +213,7 @@ extension Queryable {
 }
 ```
 
-### Important Note About Temporary IDs
+## Important Note About Temporary IDs
 
 > ⚠️ **Important**: When you insert a new model, SwiftData assigns it a temporary ID. **This temporary ID cannot be used across contexts until you explicitly save the changes.** After saving, you must re-query for the item using a field value (like a name or timestamp) rather than using the Model reference, as the ID may have changed during the save process.
 
@@ -231,7 +236,10 @@ let item = try await database.getOptional(for: .predicate(#Predicate<Item> {
 
 I highly recommend [Xu Yang's article on how identifiers work for more details.](https://fatbobman.com/en/posts/nsmanagedobjectid-and-persistentidentifier/#temporary-ids-and-permanent-ids)
 
-## Conclusion
+![open book and other multi coloured book](/media/tutorials/swiftdata-crud-operations-modelactor/the-open-book-and-other-multi-coloured-books-2024-11-01-10-38-56-utc.webp)
+
+
+## Making SwiftData Safe and Ergonomic
 
 By building on our previous work with [ModelActor](/tutorials/swiftdata-modelactor) and [Sendable types](/tutorials/swiftdata-sendable), we've created a robust, type-safe API for SwiftData operations that:
 
