@@ -89,7 +89,7 @@ Our core protocol methods are powerful but can be verbose for common operations.
 
 These methods return our `Model` type, making it easy to maintain references to database objects. However, it's crucial to understand that newly inserted models receive temporary IDs until they're saved:
 
-> ⚠️ **Important**: When you insert a new model, SwiftData assigns it a temporary ID. This temporary ID cannot be used across contexts until you explicitly save the changes. Unlike Core Data's `NSManagedObjectID.isTemporaryID`, SwiftData doesn't provide a way to check if an ID is temporary. Always call `save()` after inserting if you plan to use the model's ID for relationships or cross-context operations.
+> ⚠️ **Important**: When you insert a new model, SwiftData assigns it a temporary ID. This temporary ID cannot be used across contexts until you explicitly save the changes. Unlike Core Data's `NSManagedObjectID.isTemporaryID`, [SwiftData doesn't provide a way to check if an ID is temporary.](https://fatbobman.com/en/posts/nsmanagedobjectid-and-persistentidentifier/#temporary-ids-and-permanent-ids) Always call `save()` after inserting if you plan to use the model's ID for relationships or cross-context operations.
 
 ```swift
 extension Queryable {
