@@ -81,11 +81,15 @@ extension Database: Queryable {
 }
 ```
 
-These typically follow the pattern of calling `withModelContext` and then calling the `transform` if passed.
-
 ## Adding Convenience Methods
 
-To make our API even more ergonomic, we can add convenience methods that handle common use cases:
+Our core protocol methods are powerful but can be verbose for common operations. Let's add convenience methods that make the API more ergonomic. These methods fall into several categories based on their return types and error handling:
+
+### Model-Returning Methods
+
+These methods return our `Model` type, making it easy to maintain references to database objects. However, it's crucial to understand that newly inserted models receive temporary IDs until they're saved:
+
+> ⚠️ **Important**: When you insert a new model, SwiftData assigns it a temporary ID. This temporary ID cannot be used across contexts until you explicitly save the changes. Unlike Core Data's `NSManagedObjectID.isTemporaryID`, SwiftData doesn't provide a way to check if an ID is temporary. Always call `save()` after inserting if you plan to use the model's ID for relationships or cross-context operations.
 
 ```swift
 extension Queryable {
@@ -96,6 +100,22 @@ extension Queryable {
 		await self.insert(closure, with: Model.init)
 	}
 	
+	public func getOptional<PersistentModelType>(
+		for selector: Selector<PersistentModelType>.Get
+	) async -> Model<PersistentModelType>? {
+		await self.getOptional(for: selector) { persistentModel in
+			persistentModel.flatMap(Model.init)
+		}
+	}
+}
+```
+
+### Throwing Methods
+
+Some operations should fail if the requested item doesn't exist. These methods throw errors instead of returning optionals:
+
+```swift
+extension Queryable {
 	public func get<PersistentModelType>(
 		for selector: Selector<PersistentModelType>.Get
 	) async throws -> Model<PersistentModelType> {
@@ -105,6 +125,40 @@ extension Queryable {
 			}
 			return Model(persistentModel)
 		}
+	}
+	
+	public func get<PersistentModelType, U: Sendable>(
+		for selector: Selector<PersistentModelType>.Get,
+		with closure: @escaping @Sendable (PersistentModelType) throws -> U
+	) async throws -> U {
+		try await self.getOptional(for: selector) { persistentModel in
+			guard let persistentModel else {
+				throw QueryError<PersistentModelType>.itemNotFound(selector)
+			}
+			return try closure(persistentModel)
+		}
+	}
+}
+```
+
+### Void-Returning Update Methods
+
+For updates where we don't need the return value, we provide methods that return `Void`:
+
+```swift
+extension Queryable {
+	public func update<PersistentModelType>(
+		for selector: Selector<PersistentModelType>.Get,
+		with closure: @escaping @Sendable (PersistentModelType) throws -> Void
+	) async throws {
+		try await self.get(for: selector, with: closure)
+	}
+	
+	public func update<PersistentModelType>(
+		for selector: Selector<PersistentModelType>.List,
+		with closure: @escaping @Sendable ([PersistentModelType]) throws -> Void
+	) async throws {
+		try await self.fetch(for: selector, with: closure)
 	}
 }
 ```
@@ -140,10 +194,17 @@ Now we can perform database operations with much cleaner syntax:
 
 ```swift
 // Create
-let newItem = await database.insert { Item(name: "Test", timestamp: Date()) }
+let timestamp = Date()
+let newItem = await database.insert { Item(name: "Test", timestamp: timestamp) }
 
-// Read
-let item = try await database.get(for: .model(newItem))
+// IMPORTANT: New items have temporary IDs until saved
+try await database.save()  // Save to get permanent ID
+
+// Don't use the original Model reference after save
+// Instead, query using a unique field value
+let item = try await database.getOptional(for: .predicate(#Predicate<Item> { 
+	$0.timestamp == timestamp 
+}))
 
 // Update
 try await database.update(for: .model(newItem)) { item in
