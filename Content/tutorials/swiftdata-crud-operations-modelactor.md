@@ -248,4 +248,4 @@ By building on our previous work with [ModelActor](/tutorials/swiftdata-modelact
 - Supports complex queries through type-safe Selectors 
 - Reduces boilerplate while maintaining type safety
 
-This API makes it much easier to work with SwiftData in a concurrent environment while maintaining the safety guarantees that Swift provides. If you'd like to try this out or check out the full code, [the repo for DataThespian is here.](https://github.com/brightdigit/DataThespian) In the next article, we'll explore how DataThespian allows you to listen for updates using [`NSManagedObjectContextDidSaveObjectIDs`](https://developer.apple.com/documentation/foundation/nsnotification/name/3618797-nsmanagedobjectcontextdidsaveobj).
+This API makes it much easier to work with SwiftData in a concurrent environment while maintaining the safety guarantees that Swift provides. If you'd like to try this out or check out the full code, [the repo for DataThespian is here.](https://github.com/brightdigit/DataThespian) In the next article, we'll explore how to use own new CRUD API to syncronize complex `PersistentModel` objects.
