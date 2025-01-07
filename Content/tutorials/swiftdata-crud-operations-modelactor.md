@@ -8,8 +8,8 @@ subscriptionCTA: If you want to learn more about the latest features in Swift, s
 
 In my previous articles, we explored how to:
 
-1. [Use ModelActor in SwiftData](/tutorials/swiftdata-modelactor)
-2. [Handle Sendable Requirements with SwiftData](/tutorials/swiftdata-sendable)
+1. [Create a Background ModelActor in SwiftData](/tutorials/swiftdata-modelactor)
+2. [Handle Sendable Requirements in SwiftData using PersisentIdentifier](/tutorials/swiftdata-sendable)
 
 Now let's extend our Database type with robust CRUD (Create, Read, Update, Delete) operations that maintain type safety and concurrency correctness.
 
@@ -215,7 +215,7 @@ extension Queryable {
 
 ## Important Note About Temporary IDs
 
-> ⚠️ **Important**: When you insert a new model, SwiftData assigns it a temporary ID. **This temporary ID cannot be used across contexts until you explicitly save the changes.** After saving, you must re-query for the item using a field value (like a name or timestamp) rather than using the Model reference, as the ID may have changed during the save process.
+> ⚠️ **Important**: When you insert a new model, SwiftData assigns it a temporary ID for the PersisentIdentifier. **This temporary ID cannot be used.** After saving, you must re-query for the item using a field value (like a name or timestamp) rather than using the Model reference (which uses PersisentIdentifier), as the ID may have changed during the save process.
 
 Here's the safe pattern for inserting and retrieving:
 
