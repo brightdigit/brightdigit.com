@@ -215,6 +215,8 @@ extension Queryable {
 
 ## Important Note About Temporary IDs
 
+During the development of Bushel, I ran into an issue when I tried to link a new Library Image (ipsw) to its new library. The app would crash because the `Model` I'd use contained a temporary ID. What was happening was that the newly inserted (but not saved) PersistentModel had a temporary ID until it was saved.
+
 > ⚠️ **Important**: When you insert a new model, SwiftData assigns it a temporary ID for the PersisentIdentifier. **This temporary ID cannot be used.** After saving, you must re-query for the item using a field value (like a name or timestamp) rather than using the Model reference (which uses PersisentIdentifier), as the ID may have changed during the save process.
 
 Here's the safe pattern for inserting and retrieving:
