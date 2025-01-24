@@ -101,6 +101,8 @@ So if you're someone who can help me in my team with existing work or new work l
 
 So if that's something you're interested in reach out to me. You can email me at. leo@brightdigit.com. Send me your resume and any info regarding what you're looking for or your availability or rate, things like that please do send that to me. I'd really appreciate it. ' cause I'm definitely looking for help in that space.
 
+## Thank You
+
 Before I close out, I wanted to thank you, the audience. It has been a real inspiration for me to continue recording, sharing my thoughts. It's a great opportunity for me to talk to folks who are 10 times smarter than me, and I enjoy it. And I hope you've enjoyed listening to me as well, talking about development in the apple space and Swift development.
 
 Those are things I enjoy and that inspiration from you telling me how much you love the show will continue to guide me in 2025. I also want to especially thank my Patreon audience. I. That has been fantastic. If there's anything you would like for me, I know you've really enjoyed the early access stuff and just kind of getting insight scoop on what I've been working on, like this script here.
