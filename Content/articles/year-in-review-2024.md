@@ -1,7 +1,7 @@
 ---
-title: 2024 in Review: Apple Development, Career Changes, and What's Next
+title: 2024 in Review and What's Next in 2025
 date: 2025-02-01 00:00
-description: This year was pretty huge for me personally.
+description: This year was pretty huge for me personally. Whether it's Apple development, career changes, or big moves.
 featuredImage: /media/articles/year-in-review-2024/Moving.webp
 subscriptionCTA: Thanks for reading! If you want more, be sure to subscribe to our newsletter.
 ---
@@ -63,7 +63,7 @@ As for the podcast, I'll be more strategic with the schedule. The analytics show
 
 ## Looking for Subcontractors and Community Involvement
 
-Even with my move to full-time work, BrightDigit's work isn't stopping. I still have existing clients and new opportunities coming in, which is why I'm actively looking for subcontractors. If you're an iOS developer, especially with experience in **macOS, watchOS, HealthKit,** or Server-Side Swift, I'd love to hear from you. **Experience with VueJS or TypeScript is a plus too.** You can reach me at leo@brightdigit.com with your resume and availability.
+Even with my move to full-time work, BrightDigit's work isn't stopping. I still have existing clients and new opportunities coming in, which is why I'm actively looking for subcontractors. If you're an iOS developer, especially with experience in **macOS, watchOS, HealthKit,** or Server-Side Swift, I'd love to hear from you. **Experience with VueJS or TypeScript is a plus too.** You can <a href="mailto:leo@brightdigit.com?subject=Interested%20in%20Subcontracting&body=Hello%20Leo%0A%0A%3C%3Cbody%3E%3E%0A%0AMy%20expected%20rate%20is%20__%2Fhr.%20I%20can%20do%20about%20__%20hours%20per%20week.%20My%20time%20zone%20is%20___%20and%20I'm%20usually%20available%20from%20___am%20to%20___pm.%0A%0AThanks%2C%0ALeo">reach out to me with your resume and availability</a>.
 
 <video autoplay loop muted width="720">
   <source src="/media/articles/year-in-review-2024/moving.mov" type="video/mp4" />
