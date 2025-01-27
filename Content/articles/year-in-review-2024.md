@@ -8,6 +8,8 @@ subscriptionCTA: Thanks for reading! If you want more, be sure to subscribe to o
 
 This was a big year for me and in the Apple development world. From speaking at conferences to career shifts, let's go through what happened in 2024 and what we might see in 2025.
 
+> transistor https://share.transistor.fm/s/29a1400c
+
 ## My 2024 Journey
 
 This year was pretty huge for me personally. I got to [speak at the Server-Side Swift conference in London](https://www.youtube.com/watch?v=4iB8s2fEmYc) and even made it to a WWDC side conference. **My first time at WWDC.** But that wasn't all - my family and I decided to make a move (don't worry, we stayed in the same town), and I made some big changes in my career path too. 
