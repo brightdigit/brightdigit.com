@@ -66,12 +66,9 @@ As for the podcast, I'll be more strategic with the schedule. The analytics show
 Even with my move to full-time work, BrightDigit's work isn't stopping. I still have existing clients and new opportunities coming in, which is why I'm actively looking for subcontractors. If you're an iOS developer, especially with experience in **macOS, watchOS, HealthKit,** or Server-Side Swift, I'd love to hear from you. **Experience with VueJS or TypeScript is a plus too.** You can reach me at leo@brightdigit.com with your resume and availability.
 
 <video autoplay loop muted width="720">
-
-  <source src="/media/articles/year-in-review-2024/moving.webm" type="video/webm" />
-
   <source src="/media/articles/year-in-review-2024/moving.mov" type="video/mp4" />
-
-  <iframe width="560" height="315" src="https://www.youtube.com/embed/0yPUSz2uZJE?si=LBlKEmzmM-Rlxh6F" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+  <source src="/media/articles/year-in-review-2024/moving.webm" type="video/webm" />
+  Your browser does not support the video tag.
 </video>
 
 ## Thank You
