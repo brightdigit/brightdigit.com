@@ -3,7 +3,6 @@ title: Bushel v1.2.0 - Exciting New Features for WWDC 2024!
 date: 2024-06-05 00:00
 description: Discover the new features in Bushel v1.2.0, just in time for WWDC 2024 and macOS 15 beta.
 featuredImage: /media/articles/bushel-v120-release-wwdc2024/Bushel-v1.2-Bento@0.5x.jpg
-subscriptionCTA: 
 ---
 
 As we gear up for WWDC 2024, I'm thrilled to announce the release of **Bushel v1.2.0**! This major update brings a host of new features and improvements, just in time for the first macOS 15 beta.
