@@ -1,6 +1,6 @@
 ---
 title: 2024 in Review and What's Next in 2025
-date: 2025-02-01 00:00
+date: 2025-01-29 00:00
 description: This year was pretty huge for me personally. Whether it's Apple development, career changes, or big moves.
 featuredImage: /media/articles/year-in-review-2024/Moving.webp
 subscriptionCTA: Thanks for reading! If you want more, be sure to subscribe to our newsletter.
