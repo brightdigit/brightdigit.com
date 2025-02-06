@@ -10,29 +10,15 @@ The Apple Watch presents unique authentication challenges - the small screen mak
 * How to setup Sign In With Apple in a SwiftUI app
 * How to enable Sign In With Apple on the Apple Watch Simulator
 
-## Setting Up Sign in with Apple on the Server
-
-Before implementing Sign in with Apple, you need to:
-
-1. Configure your App ID in Apple Developer Portal:
-   - Enable Sign in with Apple capability
-   - Note your Services ID and Bundle ID
-
-2. Generate the necessary keys:
-   - Create a Sign in with Apple private key in Developer Portal
-   - Download the key and note the Key ID
-   - Store these securely (we use environment variables)
-
-3. Configure Vapor for JWT verification:
-# How Does Sign In With Apple Work in the Real World?
-
-The Apple Watch presents unique authentication challenges - the small screen makes traditional login flows impractical. Let's explore implementing Sign in with Apple for both server and client.
 
 ## Server Implementation
 
-### Vapor Implementation
+Before implementing Sign in with Apple, you need to configure your App ID in Apple Developer Portal:
+   - Enable Sign in with Apple capability
+   - Note your Services ID and Bundle ID
 
-For Vapor, we can verify Apple's JWT tokens directly:
+### Vapor 
+Verify Apple's JWT tokens directly:
 
 ```swift
 if let jwtSecret = jwtSecret {
@@ -49,9 +35,8 @@ let tokenValue = try await req.jwt.apple
     .get()
 ```
 
-### Hummingbird Implementation
-
-For Hummingbird, we need to handle both Apple's JWKs and our own HMAC keys:
+### Hummingbird 
+Handle both Apple's JWKs and HMAC keys:
 
 ```swift
 internal extension JWTKeyCollection {
@@ -87,7 +72,7 @@ internal extension JWTKeyCollection {
 }
 ```
 
-Using OpenAPI generator with Hummingbird:
+Using OpenAPI generator:
 
 ```swift
 internal func createUser(
@@ -126,57 +111,36 @@ internal func createUser(
             .init()
         )
     }
-    
-    // Handle user creation...
 }
 ```
 
 ## SwiftUI Implementation
-
 Our main authentication view conditionally renders different buttons based on the environment:
 
 ```swift
 struct AuthenticationView: View {
     @StateObject private var object: AuthenticationObject
-    @State private var service: AuthenticationService?
+    private var service: AuthenticationService
     @State private var isReady = false
     @State private var loginResponse: LoginResponse?
 
     var body: some View {
         VStack {
             Spacer()
-            Image("Wordmark")
-                .resizable()
-                .scaledToFit()
-            Spacer()
-            
             #if targetEnvironment(simulator)
             SimulatorLoginButton(
                 isReady: $isReady,
                 fileURL: FileManager.default.temporaryDirectory
                     .appending(path: "com.brightdigit.Bitness"),
                 onData: { data in
-                    guard let service = await service else {
-                        assertionFailure("Missing service.")
-                        return false
-                    }
-                    return await withCheckedContinuation { continuation in
-                        service.loginWithData(data) { result in
-                            switch result {
-                            case let .success(loginResponse):
-                                Task { @MainActor in
-                                    self.loginResponse = loginResponse
-                                }
-                                continuation.resume(returning: true)
-                            case .failure:
-                                continuation.resume(returning: false)
-                            }
-                        }
-                    }
+                    do {
+                        self.loginResponse = try await service.loginWithData(data)
+                    } catch {
+                        print("Login Error: \(error)")
+                    } 
                 },
                 action: { _ in
                     Task { @MainActor in
-                        assert(loginResponse?.token != nil)
                         guard let accessToken = loginResponse?.token else {
                             return
                         }
@@ -184,10 +148,6 @@ struct AuthenticationView: View {
                     }
                 }
             )
-            .onReceive(object.serverPublisher) { service in
-                self.service = service
-                isReady = true
-            }
             #else
             SignInWithAppleButton(.signUp,
                 onRequest: object.appleSignInWithRequest,
@@ -197,8 +157,8 @@ struct AuthenticationView: View {
             )
             .frame(height: 40, alignment: .center)
             #endif
+            Spacer()
         }
-        .background(Color.black)
     }
 }
 ```
@@ -245,9 +205,7 @@ struct SimulatorLoginButton: View {
 }
 ```
 
-## Server-Side Implementation with Vapor
-
-The server handles simulator authentication by writing tokens directly to the simulator's filesystem:
+### Server-Side Simulator Support
 
 ```swift
 extension AuthenticationController {
@@ -265,8 +223,6 @@ extension AuthenticationController {
             appBundleIdentifier: "com.brightdigit.Bitness.watchkitapp",
             type: .data
         )
-
-        request.logger.debug("Found \(containerPaths.count) paths.")
 
         let filePaths = containerPaths.map { 
             $0.appending("/" + relativePath) 
@@ -328,18 +284,14 @@ The library handles the complexities of running `simctl` commands and parsing th
 
 ## Development Workflow
 
-1. Developer authenticates through web interface
-2. Server captures authentication data
-3. Server writes data to simulator filesystem using SimulatorServices
-4. `SimulatorLoginButton` watches for file changes
-5. When file is detected, simulator app processes authentication data
-6. User is authenticated in simulator environment
-
-This approach maintains security while providing a smooth development experience.
+1. User authenticates through web interface
+2. Server writes auth data to simulator filesystem using SimulatorServices
+3. `SimulatorLoginButton` watches for file changes
+4. App processes auth data and completes login
 
 ## Security Considerations
 
-- Simulator authentication only enabled in DEBUG builds
-- Authentication data written to temporary locations
+- Simulator authentication only in DEBUG builds
+- Data written to temporary locations
 - File permissions properly managed
-- Authentication tokens validated server-side
+- Server-side token validation
