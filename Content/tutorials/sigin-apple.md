@@ -10,6 +10,16 @@ The Apple Watch presents unique authentication challenges - the small screen mak
 * How to setup Sign In With Apple in a SwiftUI app
 * How to enable Sign In With Apple on the Apple Watch Simulator
 
+## Understanding JWT Authentication
+
+Before diving into the implementation, it's important to understand JSON Web Tokens (JWT). JWTs are a secure way to transmit information between parties as a JSON object. They are commonly used in authentication systems because they are digitally signed, which ensures the data hasn't been tampered with.
+
+A JWT consists of three parts:
+- A header containing metadata
+- A payload with the actual data (claims)
+- A signature to verify authenticity
+
+For a detailed guide on working with JWTs in Swift, check out the comprehensive [JWTKit tutorial on Swift on Server](https://swiftonserver.com/jwt-kit/).
 
 ## Server Implementation
 
@@ -18,17 +28,14 @@ Before implementing Sign in with Apple, you need to configure your App ID in App
    - Note your Services ID and Bundle ID
 
 ### Vapor 
+
 Verify Apple's JWT tokens directly:
 
 ```swift
-if let jwtSecret = jwtSecret {
-    // setting up our JWT signer
-    app.jwt.signers.use(JWTSigner.hs512(key: jwtSecret))
-} else {
-    app.logger.warning("Missing `JWT_SECRET` for Sign in with Apple.")
-}
+// setting up our JWT signer
+app.jwt.signers.use(JWTSigner.hs512(key: jwtSecret))
 
-// Using the Apple JWT signer
+// On request, verify the JWT token
 let tokenValue = try await req.jwt.apple
     .verify(body.token, applicationIdentifier: nil)
     .map(\.subject.value)
@@ -48,6 +55,7 @@ internal extension JWTKeyCollection {
     ) async throws {
         try await self.init(
             jwksURL: Self.appleIDJWKSurl,
+            // your own HMAC key
             hmacKey: .init(from: configuration.secretKey),
             httpClient: httpClient
         )
@@ -59,14 +67,15 @@ internal extension JWTKeyCollection {
         httpClient: HTTPClient = .shared
     ) async throws {
         self.init()
+        // add the Apple JWKS to the JWTKeyCollection
         let request = HTTPClientRequest(url: jwksURL)
         let jwksResponse: HTTPClientResponse = try await httpClient.execute(
-            request, 
-            timeout: .seconds(20)
+            request
         )
         let jwksData = try await jwksResponse.body.collect(upTo: 1_000_000)
         let jwks = try JSONDecoder().decode(JWKS.self, from: jwksData)
         try self.add(jwks: jwks)
+        // add your own HMAC key to the JWTKeyCollection
         self.add(hmac: hmacKey, digestAlgorithm: .sha512)
     }
 }
@@ -82,19 +91,26 @@ internal func createUser(
         return .undocumented(statusCode: 400, .init())
     }
 
+    // verify the JWT token
     let jwt = try await keyCollection.verify(
         userBody.appleIdentityToken, 
         as: AppleIdentityToken.self
     )
 
+    // list of audiences to verify
     let audiences = [
+        // iPhone app
         "com.brightdigit.Bitness",
+        // Apple Watch app
         "com.brightdigit.Bitness.watchkitapp",
+        // Web Site
         "com.brightdigit.Bitness.AuthenticationServices",
     ]
+
     var verifiedAudience: String?
     var errors: [any Error] = []
     
+    // verify the audience
     for audience in audiences {
         do {
             try jwt.audience.verifyIntendedAudience(includes: audience)
@@ -105,6 +121,7 @@ internal func createUser(
         }
     }
 
+    // if the audience is not verified, return 401 Unauthorized
     guard let verifiedAudience else {
         return Operations.createUser.Output.undocumented(
             statusCode: 401, 
@@ -126,38 +143,14 @@ struct AuthenticationView: View {
 
     var body: some View {
         VStack {
-            Spacer()
-            #if targetEnvironment(simulator)
-            SimulatorLoginButton(
-                isReady: $isReady,
-                fileURL: FileManager.default.temporaryDirectory
-                    .appending(path: "com.brightdigit.Bitness"),
-                onData: { data in
-                    do {
-                        self.loginResponse = try await service.loginWithData(data)
-                    } catch {
-                        print("Login Error: \(error)")
-                    } 
-                },
-                action: { _ in
-                    Task { @MainActor in
-                        guard let accessToken = loginResponse?.token else {
-                            return
-                        }
-                        await object.simulatorSaveToken(accessToken)
-                    }
-                }
-            )
-            #else
             SignInWithAppleButton(.signUp,
+                // update the ASAuthorizationOpenIDRequest with the correct scopes
                 onRequest: object.appleSignInWithRequest,
+                // handle the failure case or send the credentials to the server
                 onCompletion: { result in
                     object.appleSignInCompletedWith(result)
                 }
             )
-            .frame(height: 40, alignment: .center)
-            #endif
-            Spacer()
         }
     }
 }
@@ -269,6 +262,57 @@ extension AuthenticationController {
         }
     }
     #endif
+}
+```
+
+Let's now add the simulator authentication to our SwiftUI app.
+
+```swift
+struct AuthenticationView: View {
+    @StateObject private var object: AuthenticationObject
+    private var service: AuthenticationService
+    @State private var isReady = false
+    @State private var loginResponse: LoginResponse?
+
+    var body: some View {
+        VStack {
+            Spacer()
+            #if os(watchOS) && targetEnvironment(simulator)
+            SimulatorLoginButton(
+                fileURL: FileManager.default.temporaryDirectory
+                .appending(path: "com.brightdigit.Bitness.watchkitapp"),
+                onData: { data in
+                guard let token = String(data: data, encoding: .utf8) else {
+                    return false
+                }
+
+                await tokenContainer.setToken(token, isTemporary: true)
+                Self.logger.debug("Testing Token: \(token)")
+                let user = try? await bitness.getUser()
+
+                return user != nil
+                },
+                action: { data in
+                guard let token = data.flatMap({ String(data: $0, encoding: .utf8) }) else {
+                    return
+                }
+                Task {
+                    await tokenContainer.setToken(token, isTemporary: false)
+                }
+                }
+            )
+            #else
+            SignInWithAppleButton(.signUp,
+                onRequest: object.appleSignInWithRequest,
+                onCompletion: { result in
+                    object.appleSignInCompletedWith(result)
+                }
+            )
+            .frame(height: 40, alignment: .center)
+            #endif
+            Spacer()
+        }
+    }
 }
 ```
 
