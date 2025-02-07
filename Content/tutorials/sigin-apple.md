@@ -163,20 +163,49 @@ Sign in with Apple provides an elegant solution, but creates development hurdles
 The simulator authentication uses a file-based approach with a custom `SimulatorLoginButton`:
 
 ```swift
+/// Protocol defining the behavior of a file observer for simulator authentication
+protocol FileObserving {
+    
+    /// The most recent data read from the observed file
+    var lastData: Data? { get }
+    
+    /// Initialize a file observer
+    /// - Parameters:
+    ///   - fileURL: The URL of the file to observe
+    ///   - shouldBeReady: Closure that determines if the data is valid for authentication
+    init(fileURL: URL, shouldBeReady: @escaping @Sendable (Data) async -> Bool)
+    
+    /// Called periodically to check for file changes
+    /// - Parameter date: The current date when the timer fires
+    func onTimer(_ date: Date)
+}
+
+extension FileObserving {
+    var isReady: Bool {
+        lastData != nil
+    }
+}
+
 struct SimulatorLoginButton: View {
-    @Binding var isReady: Bool
     let action: @Sendable (Data?) -> Void
     let timerPublisher = Timer.publish(
         every: 1.0,
         on: .main,
         in: .default
     ).autoconnect()
-    var observer: FileObserver
+    let observer: any FileObserving
 
     var body: some View {
-        Button("Login", action: {
-            action(observer.lastData)
-        })
+        Button(
+            "Login", 
+            action: {
+                action: {
+                    if let lastData = observer.lastData {
+                        self.action(lastData)
+                    }
+                }
+            }
+        )
         .disabled(!observer.isReady)
         .onReceive(timerPublisher) { input in
             observer.onTimer(input)
