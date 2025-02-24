@@ -164,7 +164,7 @@ The simulator authentication uses a file-based approach with a custom `Simulator
 
 ```swift
 /// Protocol defining the behavior of a file observer for simulator authentication
-protocol FileObserving {
+@MainActor protocol FileObserving {
     
     /// The most recent data read from the observed file
     var lastData: Data? { get }
@@ -185,6 +185,75 @@ extension FileObserving {
         lastData != nil
     }
 }
+
+/// Actor responsible for reading files and checking their readiness
+actor FileReader: Loggable {
+    let fileManager: FileManager = .default
+
+    func shouldFile(
+        at fileURL: URL,
+        beReady: @Sendable (Data) async -> Bool
+    ) async -> Data? {
+        var isDirectory: ObjCBool = false
+        let fileExists = fileManager.fileExists(atPath: fileURL.path, isDirectory: &isDirectory)
+        if !isDirectory.boolValue, fileExists {
+            let data: Data
+            do {
+                data = try Data(contentsOf: fileURL)
+            } catch {
+                assertionFailure("Unable to read \(fileURL.path()): \(error.localizedDescription)")
+                Self.logger.warning("Unable to read \(fileURL.path()): \(error.localizedDescription)")
+                return nil
+            }
+            Self.logger.debug("Testing Data at \(fileURL.path())")
+            return await beReady(data) ? data : nil
+        }
+        Self.logger.debug("File Doesn't Exist at \(fileURL.path())")
+        return nil
+    }
+}
+
+/// A concrete implementation of FileObserving that watches a file for changes
+@Observable
+@MainActor
+internal final class FileObserver: FileObserving {
+    private let shouldBeReady: @Sendable (Data) async -> Bool
+    private let fileReader: FileReader = .init()
+    private let fileURL: URL
+    internal private(set) var lastData: Data?
+
+    @ObservationIgnored internal var pendingData: Data? {
+        didSet {
+            Task { @MainActor in
+                let lastData: Data? =
+                    if let pendingData {
+                        await self.shouldBeReady(pendingData) ? pendingData : nil
+                    } else {
+                        nil
+                    }
+                self.lastData = lastData
+            }
+        }
+    }
+
+    internal var isReady: Bool {
+        lastData != nil
+    }
+
+    internal init(
+        fileURL: URL,
+        shouldBeReady: @escaping @Sendable (Data) async -> Bool
+    ) {
+        self.fileURL = fileURL
+        Self.logger.debug("Watching \(fileURL)")
+        self.shouldBeReady = shouldBeReady
+    }
+
+    internal func onTimer(_: Date) {
+        self.pendingData = try? Data(contentsOf: fileURL)
+    }
+}
+#endif
 
 struct SimulatorLoginButton: View {
     let action: @Sendable (Data?) -> Void
