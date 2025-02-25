@@ -19,21 +19,17 @@ Sign in with Apple doesn't work in the simulator environment, which creates deve
 
 ## File Observation Implementation
 
-First, let's define the protocols and classes needed for file-based authentication:
+First, let's define the protocols and classes needed for file-based authentication.  Here we created a protocol to watch the file for changes called `FileObserving`:
 
 ```swift
-  /// Protocol defining the behavior of a file observer for simulator authentication
-  protocol FileObserving {
-    var dataPublisher: AnyPublisher<Data?, Never> { get }
-  }
+/// Protocol defining the behavior of a file observer for simulator authentication
+protocol FileObserving {
+  var dataPublisher: AnyPublisher<Data?, Never> { get }
+}
 
 
-internal final class FileObserver: Loggable, FileObserving {
+internal final class FileObserver: FileObserving {
     let dataPublisher: AnyPublisher<Data?, Never>
-
-    nonisolated static var loggingCategory: BitnessLoggingSystem.Category {
-      .simulator
-    }
 
     private var timerCancellable: AnyCancellable?
     internal private(set) var lastData: Data?
@@ -66,41 +62,108 @@ internal final class FileObserver: Loggable, FileObserving {
 
     }
 
-  }
-  ```
+}
+```
 
 The method `readFile` does some Combine magic to read the file, if the data changes and it's valid for logging in, return the data. Which I broke down here:
 
-```swift
-  fileprivate struct DataWithHash: Sendable, Codable, Equatable, UniqueData {
-    let data: Data
-    let hash: UInt64
 
-    init?(contentsOf url: URL) {
-      self.init(contentsOf: url, hashBy: Self.fnv1aHash)
+
+```swift  
+
+// protocol to ensure the data is unique and can be read from a URL
+  protocol UniqueData: Equatable {
+    init?(contentsOf url: URL)
+    var data: Data { get }
+  }
+
+  extension Publisher where Output == Data {
+    // filter the data based on the closure
+    fileprivate func filterAsync(_ closure: @escaping @Sendable (Data) async -> Bool)
+      -> some Publisher<
+        Data?, Failure
+      >
+    {
+      self.map { (data: Data) in
+        SendingFuture { promise in
+          Task {
+            let bool = await closure(data)
+            promise(.success(bool ? data : nil))
+          }
+        }
+      }
+      .switchToLatest()
+    }
+  }
+
+  extension Publisher where Failure == Never {
+// read the file, filter duplicates, and return the data
+    private func readFile<T: UniqueData>(
+      at fileURL: URL,
+      with _: T.Type
+    ) -> some Publisher<Data, Never> {
+      return self.compactMap { _ -> T? in
+        T(contentsOf: fileURL)
+      }
+      .removeDuplicates()
+      .map(\.data)
     }
 
-    init?(contentsOf url: URL, hashBy hash: @escaping @Sendable (Data) -> UInt64) {
+    // read the file and filter the data based on the closure
+    internal func readFile(
+      at fileURL: URL,
+      if shouldBeReady: @escaping @Sendable (Data) async -> Bool
+    ) -> some Publisher<Data?, Never> {
+      return
+        self
+        .readFile(at: fileURL, with: DataWithHash.self)
+        .filterAsync(shouldBeReady)
+
+    }
+  }
+
+```
+
+Here we created a struct to read the file and create a hash of the data. This is used to ensure the data is unique via `removeDuplicates`:
+
+```swift
+// struct to read the file and create a hash of the data
+   
+  fileprivate struct DataWithHash<HashValue: Equatable & Codable & Sendable>: Sendable, Codable,
+    Equatable
+  {
+
+    let data: Data
+    let hash: HashValue
+
+    init?(contentsOf url: URL, hashBy hash: @escaping @Sendable (Data) -> HashValue) {
       guard let data = try? Data(contentsOf: url) else {
         return nil
       }
       self.init(data: data, hashBy: hash)
     }
 
-    init(data: Data, hashBy hash: @escaping @Sendable (Data) -> UInt64 = Self.fnv1aHash) {
+    init(data: Data, hashBy hash: @escaping @Sendable (Data) -> HashValue) {
       self.init(
         data: data,
         hash: hash(data)
       )
     }
 
-    init(data: Data, hash: UInt64) {
+    init(data: Data, hash: HashValue) {
       self.data = data
       self.hash = hash
     }
 
     static func == (lhs: Self, rhs: Self) -> Bool {
       lhs.hash == rhs.hash
+    }
+  }
+
+  extension DataWithHash: UniqueData where HashValue == UInt64 {
+
+    init?(contentsOf url: URL) {
+      self.init(contentsOf: url, hashBy: Self.fnv1aHash)
     }
   }
 
@@ -127,56 +190,9 @@ The method `readFile` does some Combine magic to read the file, if the data chan
       return hash
     }
   }
-
-  extension Publisher where Output == Data {
-    fileprivate func filterAsync(_ closure: @escaping @Sendable (Data) async -> Bool)
-      -> some Publisher<
-        Data?, Failure
-      >
-    {
-      self.map { (data: Data) in
-        SendingFuture { promise in
-          Task {
-            let bool = await closure(data)
-            promise(.success(bool ? data : nil))
-          }
-        }
-      }
-      .switchToLatest()
-    }
-  }
-
-  protocol UniqueData: Equatable {
-    init?(contentsOf url: URL)
-    var data: Data { get }
-  }
-
-  extension Publisher where Failure == Never {
-
-    private func readFile<T: UniqueData>(
-      at fileURL: URL,
-      with _: T.Type
-    ) -> some Publisher<Data, Never> {
-      return self.compactMap { _ -> T? in
-        T(contentsOf: fileURL)
-      }
-      .removeDuplicates()
-      .map(\.data)
-    }
-
-    internal func readFile(
-      at fileURL: URL,
-      if shouldBeReady: @escaping @Sendable (Data) async -> Bool
-    ) -> some Publisher<Data?, Never> {
-      return
-        self
-        .readFile(at: fileURL, with: DataWithHash.self)
-        .filterAsync(shouldBeReady)
-
-    }
-  }
-
 ```
+
+Thanks to Rob Napier for the Swift 6 implementation of the `Future` publisher:
 
 ```swift
 /// From Rob Napier https://stackoverflow.com/a/78894560/97705
@@ -225,43 +241,57 @@ The method `readFile` does some Combine magic to read the file, if the data chan
 
 ## Simulator Login Button
 
-Create a custom button for simulator authentication:
+Alright now we can create a custom button for simulator authentication:
 
 ```swift
-struct SimulatorLoginButton: View {
-    let action: @Sendable (Data?) -> Void
-    let timerPublisher = Timer.publish(
-        every: 1.0,
-        on: .main,
-        in: .default
-    ).autoconnect()
-    let observer: any FileObserving
+  internal struct SimulatorLoginButton: View {
+    private let action: @Sendable (Data) -> Void
+    private var observer: any FileObserving
+    @State private var lastData: Data?
 
-    var body: some View {
-        Button("Login") {
-            if let lastData = observer.lastData {
-                self.action(lastData)
-            }
+    internal var body: some View {
+      Button(
+        // whatever text you want
+        "Login",
+        action: {
+          // if there is data, call the action
+          if let lastData = lastData {
+            self.action(lastData)
+          }
         }
-        .disabled(!observer.isReady)
-        .onReceive(timerPublisher) { input in
-            observer.onTimer(input)
+      )
+      .onReceive(
+        // receive the data from the observer
+        self.observer.dataPublisher,
+        perform: { data in
+          Task { @MainActor in
+            self.lastData = data
+          }
         }
+      )
+      // disable the button if there is no data
+      .disabled(lastData == nil)
+
     }
 
-    init(
-        isReady: Binding<Bool>,
-        fileURL: URL,
-        onData: @escaping @Sendable (Data) async -> Bool,
-        action: @escaping @Sendable (Data?) -> Void
+    internal init(
+      fileURL: URL,
+      onData: @escaping @Sendable (Data) async -> Bool,
+      action: @escaping @Sendable (Data) -> Void
     ) {
-        self.init(
-            isReady: isReady,
-            observer: FileObserver(fileURL: fileURL, shouldBeReady: onData),
-            action: action
-        )
+      self.init(
+        observer: FileObserver(fileURL: fileURL, shouldBeReady: onData), action: action
+      )
     }
-}
+
+    internal init(
+      observer: any FileObserving, 
+      action: @escaping @Sendable (Data) -> Void
+    ) {
+      self.action = action
+      self.observer = observer
+    }
+  }
 ```
 
 ## Server-Side Implementation
@@ -287,12 +317,7 @@ extension AuthenticationController {
 
         let filePaths = containerPaths.map { 
             $0.appending("/" + relativePath) 
-        } + [
-            FileManager.default.homeDirectoryForCurrentUser
-                .appendingPathComponent("Desktop/com.brightdigit.Bitness")
-                .path
-        ]
-
+        } 
         try await withThrowingTaskGroup(of: Void.self) { taskGroup in
             for filePath in filePaths {
                 taskGroup.addTask {
