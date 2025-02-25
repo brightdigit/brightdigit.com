@@ -1,14 +1,14 @@
 ---
-title: How Does Sign-In With Apple Workout in the Real World?
+title: Setting Up Sign in with Apple with Vapor and SwiftUI
 date: 2025-05-09 00:00
-description: Lorem ipsum
+description: A comprehensive guide to implementing Sign in with Apple in your Vapor server and SwiftUI client applications
 featuredImage: /media/articles/scale-ios-app/overgrown-green-staircase-in-the-forest.jpg
 ---
 
-The Apple Watch presents unique authentication challenges - the small screen makes traditional login flows impractical. Today we'll talk about:
-* How to setup Sign In With Apple with Vapor
-* How to setup Sign In With Apple in a SwiftUI app
-* How to enable Sign In With Apple on the Apple Watch Simulator
+Sign in with Apple provides a secure and privacy-focused authentication method for your apps. This guide will show you how to:
+* Set up Sign in with Apple with Vapor
+* Implement Sign in with Apple in a SwiftUI app
+* Handle authentication tokens securely
 
 ## Understanding JWT Authentication
 
@@ -132,13 +132,12 @@ internal func createUser(
 ```
 
 ## SwiftUI Implementation
-Our main authentication view conditionally renders different buttons based on the environment:
+Our main authentication view conditionally renders the Sign in with Apple button:
 
 ```swift
 struct AuthenticationView: View {
     @StateObject private var object: AuthenticationObject
     private var service: AuthenticationService
-    @State private var isReady = false
     @State private var loginResponse: LoginResponse?
 
     var body: some View {
@@ -151,289 +150,29 @@ struct AuthenticationView: View {
                     object.appleSignInCompletedWith(result)
                 }
             )
-        }
-    }
-}
-```
-
-Sign in with Apple provides an elegant solution, but creates development hurdles since it doesn't work in the simulator.
-
-## Simulator Authentication Implementation
-
-The simulator authentication uses a file-based approach with a custom `SimulatorLoginButton`:
-
-```swift
-/// Protocol defining the behavior of a file observer for simulator authentication
-@MainActor protocol FileObserving {
-    
-    /// The most recent data read from the observed file
-    var lastData: Data? { get }
-    
-    /// Initialize a file observer
-    /// - Parameters:
-    ///   - fileURL: The URL of the file to observe
-    ///   - shouldBeReady: Closure that determines if the data is valid for authentication
-    init(fileURL: URL, shouldBeReady: @escaping @Sendable (Data) async -> Bool)
-    
-    /// Called periodically to check for file changes
-    /// - Parameter date: The current date when the timer fires
-    func onTimer(_ date: Date)
-}
-
-extension FileObserving {
-    var isReady: Bool {
-        lastData != nil
-    }
-}
-
-/// Actor responsible for reading files and checking their readiness
-actor FileReader: Loggable {
-    let fileManager: FileManager = .default
-
-    func shouldFile(
-        at fileURL: URL,
-        beReady: @Sendable (Data) async -> Bool
-    ) async -> Data? {
-        var isDirectory: ObjCBool = false
-        let fileExists = fileManager.fileExists(atPath: fileURL.path, isDirectory: &isDirectory)
-        if !isDirectory.boolValue, fileExists {
-            let data: Data
-            do {
-                data = try Data(contentsOf: fileURL)
-            } catch {
-                assertionFailure("Unable to read \(fileURL.path()): \(error.localizedDescription)")
-                Self.logger.warning("Unable to read \(fileURL.path()): \(error.localizedDescription)")
-                return nil
-            }
-            Self.logger.debug("Testing Data at \(fileURL.path())")
-            return await beReady(data) ? data : nil
-        }
-        Self.logger.debug("File Doesn't Exist at \(fileURL.path())")
-        return nil
-    }
-}
-
-/// A concrete implementation of FileObserving that watches a file for changes
-@Observable
-@MainActor
-internal final class FileObserver: FileObserving {
-    private let shouldBeReady: @Sendable (Data) async -> Bool
-    private let fileReader: FileReader = .init()
-    private let fileURL: URL
-    internal private(set) var lastData: Data?
-
-    @ObservationIgnored internal var pendingData: Data? {
-        didSet {
-            Task { @MainActor in
-                let lastData: Data? =
-                    if let pendingData {
-                        await self.shouldBeReady(pendingData) ? pendingData : nil
-                    } else {
-                        nil
-                    }
-                self.lastData = lastData
-            }
-        }
-    }
-
-    internal var isReady: Bool {
-        lastData != nil
-    }
-
-    internal init(
-        fileURL: URL,
-        shouldBeReady: @escaping @Sendable (Data) async -> Bool
-    ) {
-        self.fileURL = fileURL
-        Self.logger.debug("Watching \(fileURL)")
-        self.shouldBeReady = shouldBeReady
-    }
-
-    internal func onTimer(_: Date) {
-        self.pendingData = try? Data(contentsOf: fileURL)
-    }
-}
-#endif
-
-struct SimulatorLoginButton: View {
-    let action: @Sendable (Data?) -> Void
-    let timerPublisher = Timer.publish(
-        every: 1.0,
-        on: .main,
-        in: .default
-    ).autoconnect()
-    let observer: any FileObserving
-
-    var body: some View {
-        Button(
-            "Login", 
-            action: {
-                action: {
-                    if let lastData = observer.lastData {
-                        self.action(lastData)
-                    }
-                }
-            }
-        )
-        .disabled(!observer.isReady)
-        .onReceive(timerPublisher) { input in
-            observer.onTimer(input)
-        }
-    }
-
-    init(
-        isReady: Binding<Bool>,
-        fileURL: URL,
-        onData: @escaping @Sendable (Data) async -> Bool,
-        action: @escaping @Sendable (Data?) -> Void
-    ) {
-        self.init(
-            isReady: isReady,
-            observer: .init(fileURL: fileURL, shouldBeReady: onData),
-            action: action
-        )
-    }
-}
-```
-
-### Server-Side Simulator Support
-
-```swift
-extension AuthenticationController {
-    #if DEBUG && os(macOS)
-    static let simctl = SimCtl()
-
-    public static func saveToSimulators(_ request: Request) async throws {
-        guard let body = request.body.data else {
-            throw Abort(.noContent)
-        }
-
-        let relativePath = "tmp/com.brightdigit.Bitness"
-        
-        let containerPaths = try await simctl.fetchContainerPaths(
-            appBundleIdentifier: "com.brightdigit.Bitness.watchkitapp",
-            type: .data
-        )
-
-        let filePaths = containerPaths.map { 
-            $0.appending("/" + relativePath) 
-        } + [
-            FileManager.default.homeDirectoryForCurrentUser
-                .appendingPathComponent("Desktop/com.brightdigit.Bitness")
-                .path
-        ]
-
-        try await withThrowingTaskGroup(of: Void.self) { taskGroup in
-            for filePath in filePaths {
-                taskGroup.addTask {
-                    let fileHandle: NIOFileHandle
-                    request.logger.debug(
-                        "Simulator Authentication: \(filePath)"
-                    )
-                    
-                    try? await request.application.fileio
-                        .remove(path: filePath, eventLoop: request.eventLoop)
-                        .get()
-                        
-                    fileHandle = try await request.application.fileio
-                        .openFile(
-                            path: filePath,
-                            mode: .write,
-                            flags: .allowFileCreation(),
-                            eventLoop: request.eventLoop
-                        )
-                        .get()
-                        
-                    try await request.application.fileio
-                        .write(
-                            fileHandle: fileHandle,
-                            buffer: body,
-                            eventLoop: request.eventLoop
-                        )
-                        .get()
-                        
-                    try fileHandle.close()
-                }
-            }
-
-            return try await taskGroup.reduce(()) { _, _ in }
-        }
-    }
-    #endif
-}
-```
-
-Let's now add the simulator authentication to our SwiftUI app.
-
-```swift
-struct AuthenticationView: View {
-    @StateObject private var object: AuthenticationObject
-    private var service: AuthenticationService
-    @State private var isReady = false
-    @State private var loginResponse: LoginResponse?
-
-    var body: some View {
-        VStack {
-            Spacer()
-            #if os(watchOS) && targetEnvironment(simulator)
-            SimulatorLoginButton(
-                fileURL: FileManager.default.temporaryDirectory
-                .appending(path: "com.brightdigit.Bitness.watchkitapp"),
-                onData: { data in
-                guard let token = String(data: data, encoding: .utf8) else {
-                    return false
-                }
-
-                await tokenContainer.setToken(token, isTemporary: true)
-                Self.logger.debug("Testing Token: \(token)")
-                let user = try? await bitness.getUser()
-
-                return user != nil
-                },
-                action: { data in
-                guard let token = data.flatMap({ String(data: $0, encoding: .utf8) }) else {
-                    return
-                }
-                Task {
-                    await tokenContainer.setToken(token, isTemporary: false)
-                }
-                }
-            )
-            #else
-            SignInWithAppleButton(.signUp,
-                onRequest: object.appleSignInWithRequest,
-                onCompletion: { result in
-                    object.appleSignInCompletedWith(result)
-                }
-            )
             .frame(height: 40, alignment: .center)
-            #endif
-            Spacer()
         }
     }
 }
 ```
 
-## Using SimulatorServices
+## Security Best Practices
 
-We leverage the [SimulatorServices](https://github.com/brightdigit/SimulatorServices) library to interact with iOS simulators. This provides a clean API for:
+When implementing Sign in with Apple, follow these security best practices:
 
-- Finding active simulators
-- Accessing simulator container paths
-- Managing simulator file systems
+1. Always verify tokens on the server side
+2. Use proper JWT validation including audience and issuer checks
+3. Store tokens securely using Keychain
+4. Implement proper error handling and user feedback
+5. Follow Apple's guidelines for button styling and placement
 
-The library handles the complexities of running `simctl` commands and parsing their output, making simulator authentication development significantly easier.
+## Next Steps
 
-## Development Workflow
+Now that you have Sign in with Apple working in your app, you might want to:
 
-1. User authenticates through web interface
-2. Server writes auth data to simulator filesystem using SimulatorServices
-3. `SimulatorLoginButton` watches for file changes
-4. App processes auth data and completes login
+* Add support for other authentication methods
+* Implement token refresh logic
+* Add proper error handling and user feedback
+* Set up testing infrastructure
 
-## Security Considerations
-
-- Simulator authentication only in DEBUG builds
-- Data written to temporary locations
-- File permissions properly managed
-- Server-side token validation
+For testing Sign in with Apple in the simulator environment, especially for watchOS, check out our follow-up article on [Setting up Sign in with Apple for watchOS Simulator Testing](/tutorials/signin-apple-simulator).
