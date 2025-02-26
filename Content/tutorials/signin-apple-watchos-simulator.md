@@ -5,7 +5,15 @@ description: Learn how to implement and test Sign in with Apple functionality in
 featuredImage: /media/articles/watchos-dev/apple-watch-development.jpg
 ---
 
-Testing Sign in with Apple in the simulator environment presents unique challenges, especially for watchOS development. This guide will show you how to:
+With Sign in with Apple implemented on the server and client, we were ready to begin developing our fitness app for the Apple Watch. However we quickly ran into issues with developing for the Apple Watch:
+
+<video width="100%" controls>
+  <source src="/media/tutorials/signin-apple-watchos-simulator/Waiting-For-Apple-Watch.mov" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
+Luckily we do have the watchOS simulator. Unfortunetley the watchOS Simulator doesn't support Sign In With Apple. But if we have access to the server and the simulator on the same machine we can workaround this. In this guide we will show you how to:
+
 * Set up a simulator-specific authentication flow
 * Implement file-based authentication for testing
 * Handle simulator authentication on both client and server sides
@@ -13,6 +21,7 @@ Testing Sign in with Apple in the simulator environment presents unique challeng
 ## The Simulator Challenge
 
 Sign in with Apple doesn't work in the simulator environment, which creates development hurdles. To overcome this, we'll implement a file-based authentication system that:
+
 1. Uses a file to transfer authentication data
 2. Watches for file changes to trigger authentication
 3. Validates the authentication data before proceeding

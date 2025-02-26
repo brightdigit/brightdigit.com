@@ -1,12 +1,13 @@
 ---
-title: Setting Up Sign in with Apple with Vapor and SwiftUI
+title: Setting Up Sign in with Apple with Server Side Swift and SwiftUI
 date: 2025-05-09 00:00
-description: A comprehensive guide to implementing Sign in with Apple in your Vapor server and SwiftUI client applications
-featuredImage: /media/articles/scale-ios-app/overgrown-green-staircase-in-the-forest.jpg
+description: A comprehensive guide to implementing Sign in with Apple in your server and client applications in Swift
+featuredImage: /media/tutorials/full-stack-sign-in-with-apple/sign-in-with-apple-buttons.webp
 ---
 
-Sign in with Apple provides a secure and privacy-focused authentication method for your apps. This guide will show you how to:
-* Set up Sign in with Apple with Vapor
+When [developing a fitness app](/articles/server-side-swift-workout/), we needed an easy and efficient way for users to authenticate. The standard user name and password interface for the Apple Watch would be cumbersome and challenging. Luckily, Sign in with Apple provides an easy alternative that is both secure and privacy-focused. This guide will show you how to:
+
+* Set up Sign in with Apple on your server
 * Implement Sign in with Apple in a SwiftUI app
 * Handle authentication tokens securely
 
@@ -23,13 +24,13 @@ For a detailed guide on working with JWTs in Swift, check out the comprehensive 
 
 ## Server Implementation
 
-Before implementing Sign in with Apple, you need to configure your App ID in Apple Developer Portal:
+Before implementing Sign in with Apple, [you need to configure your App ID in Apple Developer Portal](https://developer.apple.com/documentation/AuthenticationServices/implementing-user-authentication-with-sign-in-with-apple):
    - Enable Sign in with Apple capability
    - Note your Services ID and Bundle ID
 
-### Vapor 
+### [Vapor](https://vapor.codes)
 
-Verify Apple's JWT tokens directly:
+Vapor has [great documentation](https://docs.vapor.codes/security/jwt/) on how to verify Apple's JWT tokens directly:
 
 ```swift
 // setting up our JWT signer
@@ -42,7 +43,8 @@ let tokenValue = try await req.jwt.apple
     .get()
 ```
 
-### Hummingbird 
+### [Hummingbird](https://docs.hummingbird.codes/2.0/documentation/index)
+
 Handle both Apple's JWKs and HMAC keys:
 
 ```swift
@@ -81,7 +83,7 @@ internal extension JWTKeyCollection {
 }
 ```
 
-Using OpenAPI generator:
+If you are using [the OpenAPI generator from Apple](https://swiftpackageindex.com/apple/swift-openapi-generator/), you can verify the JWT from the request body using the `JWTKeyCollection`:
 
 ```swift
 internal func createUser(
@@ -91,13 +93,13 @@ internal func createUser(
         return .undocumented(statusCode: 400, .init())
     }
 
-    // verify the JWT token
+    // verify the JWT token with our `JWTKeyCollection`
     let jwt = try await keyCollection.verify(
         userBody.appleIdentityToken, 
         as: AppleIdentityToken.self
     )
 
-    // list of audiences to verify
+    // Bundle IDs for your Audience
     let audiences = [
         // iPhone app
         "com.brightdigit.Bitness",
@@ -132,6 +134,7 @@ internal func createUser(
 ```
 
 ## SwiftUI Implementation
+
 Our main authentication view conditionally renders the Sign in with Apple button:
 
 ```swift
@@ -153,6 +156,20 @@ struct AuthenticationView: View {
             .frame(height: 40, alignment: .center)
         }
     }
+
+    internal func signInCompleted(_ result: Result<ASAuthorization, any Error>) {
+      let credential: (any ASAuthorizationAppleIDCredential)?
+      credential =
+        switch result {
+        case .failure: nil
+        case let .success(auth): auth.credential as? ASAuthorizationAppleIDCredential
+        }
+
+      guard let credential else {
+        return
+      }
+      // pass the credetial to the server createUser call
+    }
 }
 ```
 
@@ -168,11 +185,4 @@ When implementing Sign in with Apple, follow these security best practices:
 
 ## Next Steps
 
-Now that you have Sign in with Apple working in your app, you might want to:
-
-* Add support for other authentication methods
-* Implement token refresh logic
-* Add proper error handling and user feedback
-* Set up testing infrastructure
-
-For testing Sign in with Apple in the simulator environment, especially for watchOS, check out our follow-up article on [Setting up Sign in with Apple for watchOS Simulator Testing](/tutorials/signin-apple-simulator).
+With gBeat we ran into issues using Sign In With Apple specifically when running in the Apple Watch Simulator. However we did find a workaround which I'll detail in the next article.

@@ -32,6 +32,8 @@ I named this project [Heartwitch](https://heartwitch.app/#/) (a name I'd later r
 
 In early 2020, the pandemic transformed how people approach fitness. As gyms closed and home workouts became the norm, I received an interesting email from Chris, who saw potential in adapting Heartwitch's technology for fitness instruction. The idea was compelling: help instructors monitor students' heart rates during remote classes, or allow instructors to share their own metrics while teaching.
 
+> youtube https://youtu.be/dFmpD0yFP6Q
+
 ## Enter [gBeat](https://gbeat.com)
 
 This pivot led to the creation of [gBeat](https://gbeat.com), a comprehensive fitness streaming platform. The core functionality includes:
@@ -59,45 +61,18 @@ gBeat's architecture consists of several key components:
 <img src="/media/articles/server-side-swift-workout/communication-diagram.svg" class="full-size" />
 
 
-The server handles:
+**The server handles:**
 - Authentication and session management
 - Real-time data streaming via WebSockets
 - Push notification distribution
 - Workout session coordination
 
-The client side manages:
+**The client side manages:**
 - HealthKit integration
 - Local workout tracking
 - UI/UX implementation
 - Real-time data synchronization
 
-## Code Sharing Strategy
-
-We organize shared code using Swift Package Manager, with separate targets for:
-
-1. Core Models and Protocols
-2. Networking Layer
-3. Business Logic
-4. Platform-Specific Implementations
-
-This structure allows us to maintain a single source of truth while accommodating platform-specific requirements.
-
-## From Gaming to Fitness: Lessons Learned
-
-The evolution from Heartwitch to gBeat taught us several valuable lessons:
-
-1. **Start Simple**: Begin with a focused use case (gaming streams) before expanding
-2. **Listen to Users**: The pivot to fitness came from user feedback
-3. **Leverage Existing Tech**: Reusing the heart rate streaming infrastructure saved significant development time
-4. **Cross-Platform Mindset**: Design architecture with cross-platform support in mind from the start
-
 ## Looking Forward
 
-As we continue developing gBeat, we're focusing on:
-
-- Expanding platform support
-- Enhancing real-time analytics
-- Improving instructor tools
-- Building a stronger community
-
-The journey from a simple gaming stream overlay to a full-featured fitness platform shows how Server-Side Swift can scale from hobby projects to production applications. In the next post, we'll dive deeper into the technical implementation of authentication and development challenges.
+The journey from a simple gaming stream overlay to a full-featured fitness platform shows how Server-Side Swift can scale from hobby projects to production applications. In the next post, we'll dive deeper into the technical implementation of authentication using sign in with apple and development challenges.
