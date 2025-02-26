@@ -1,6 +1,6 @@
 ---
 title: Implementing Sign in with Apple in the watchOS Simulator
-date: 2025-05-09 00:00
+date: 2025-05-10 00:00
 description: Learn how to implement and test Sign in with Apple functionality in the watchOS simulator
 featuredImage: /media/tutorials/signin-apple-watchos-simulator/featured-image.webp
 ---
