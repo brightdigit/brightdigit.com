@@ -19,26 +19,38 @@ Sign in with Apple doesn't work in the simulator environment, which creates deve
 
 ## File Observation Implementation
 
-First, let's define the protocols and classes needed for file-based authentication.  Here we created a protocol to watch the file for changes called `FileObserving`:
+Let's define the name of the file which will be used to save the authentication data. We'll share this with the server and the SwiftUI view.
+
+```swift
+enum SimulatorAuthentication {  
+  static let fileName = "com.brightdigit.Bitness"
+}
+```
+
+
+Let's define the protocols and classes needed for file-based authentication.  Here we created a protocol to watch the file for changes called `FileObserving`:
 
 ```swift
 /// Protocol defining the behavior of a file observer for simulator authentication
 protocol FileObserving {
+  // publisher which returns the data when it's ready
   var dataPublisher: AnyPublisher<Data?, Never> { get }
 }
 
-
-internal final class FileObserver: FileObserving {
+/// Uses a timer to periodically reads the file if it's there
+internal final class TimerObserver: FileObserving {
+    // the data publisher which will publish the data
     let dataPublisher: AnyPublisher<Data?, Never>
 
-    private var timerCancellable: AnyCancellable?
-    internal private(set) var lastData: Data?
+    // creates the TimerObserver
     internal convenience init(
       fileURL: URL,
       checkEvery seconds: TimeInterval = 0.1,
       shouldBeReady: @escaping @Sendable (Data) async -> Bool
     ) {
+      // create the new publisher
       let timerPublisher = Timer.publish(every: seconds, on: .main, in: .default).autoconnect()
+      // initialize the object
       self.init(
         fileURL: fileURL,
         timerPublisher: timerPublisher,
@@ -51,8 +63,6 @@ internal final class FileObserver: FileObserving {
       timerPublisher: PublisherType,
       shouldBeReady: @escaping @Sendable (Data) async -> Bool
     ) where PublisherType.Failure == Never {
-      Self.logger.debug("Watching \(fileURL)")
-
       dataPublisher = timerPublisher.readFile(
         at: fileURL,
         if: shouldBeReady
@@ -71,15 +81,35 @@ The method `readFile` does some Combine magic to read the file, if the data chan
 
 ```swift  
 
-// protocol to ensure the data is unique and can be read from a URL
-  protocol UniqueData: Equatable {
-    init?(contentsOf url: URL)
-    var data: Data { get }
+
+  extension Publisher where Failure == Never {
+    // read the file, filter duplicates, and return the data
+     func readFile<T: UniqueData>(
+      at fileURL: URL
+    ) -> some Publisher<Data, Never> {
+      return self.compactMap { _ -> Data? in
+        try? Data(contentsOf: fileURL)
+      }
+      .removeDuplicates()
+      .map(\.data)
+    }
+
+    // read the file and filter the data based on the closure
+     func readFile(
+      at fileURL: URL,
+      if shouldBeReady: @escaping @Sendable (Data) async -> Bool
+    ) -> some Publisher<Data?, Never> {
+      return
+        self
+        .readFile(at: fileURL)
+        .filterAsync(shouldBeReady)
+
+    }
   }
 
   extension Publisher where Output == Data {
     // filter the data based on the closure
-    fileprivate func filterAsync(_ closure: @escaping @Sendable (Data) async -> Bool)
+     func filterAsync(_ closure: @escaping @Sendable (Data) async -> Bool)
       -> some Publisher<
         Data?, Failure
       >
@@ -93,101 +123,6 @@ The method `readFile` does some Combine magic to read the file, if the data chan
         }
       }
       .switchToLatest()
-    }
-  }
-
-  extension Publisher where Failure == Never {
-// read the file, filter duplicates, and return the data
-    private func readFile<T: UniqueData>(
-      at fileURL: URL,
-      with _: T.Type
-    ) -> some Publisher<Data, Never> {
-      return self.compactMap { _ -> T? in
-        T(contentsOf: fileURL)
-      }
-      .removeDuplicates()
-      .map(\.data)
-    }
-
-    // read the file and filter the data based on the closure
-    internal func readFile(
-      at fileURL: URL,
-      if shouldBeReady: @escaping @Sendable (Data) async -> Bool
-    ) -> some Publisher<Data?, Never> {
-      return
-        self
-        .readFile(at: fileURL, with: DataWithHash.self)
-        .filterAsync(shouldBeReady)
-
-    }
-  }
-
-```
-
-Here we created a struct to read the file and create a hash of the data. This is used to ensure the data is unique via `removeDuplicates`:
-
-```swift
-// struct to read the file and create a hash of the data
-   
-  fileprivate struct DataWithHash<HashValue: Equatable & Codable & Sendable>: Sendable, Codable,
-    Equatable
-  {
-
-    let data: Data
-    let hash: HashValue
-
-    init?(contentsOf url: URL, hashBy hash: @escaping @Sendable (Data) -> HashValue) {
-      guard let data = try? Data(contentsOf: url) else {
-        return nil
-      }
-      self.init(data: data, hashBy: hash)
-    }
-
-    init(data: Data, hashBy hash: @escaping @Sendable (Data) -> HashValue) {
-      self.init(
-        data: data,
-        hash: hash(data)
-      )
-    }
-
-    init(data: Data, hash: HashValue) {
-      self.data = data
-      self.hash = hash
-    }
-
-    static func == (lhs: Self, rhs: Self) -> Bool {
-      lhs.hash == rhs.hash
-    }
-  }
-
-  extension DataWithHash: UniqueData where HashValue == UInt64 {
-
-    init?(contentsOf url: URL) {
-      self.init(contentsOf: url, hashBy: Self.fnv1aHash)
-    }
-  }
-
-  extension Data {
-    /// Implementation of the FNV-1a (Fowler-Noll-Vo) hash algorithm
-    /// This is a non-cryptographic hash function designed for fast hash table lookup
-    fileprivate var fnv1aHash: UInt64 {
-      // FNV offset basis for 64-bit - this is a required constant
-      // that helps provide better distribution of hash values
-      var hash: UInt64 = 14_695_981_039_346_656_037
-      
-      for byte in self {
-        // XOR the current byte with the hash (FNV-1a variation)
-        // This operation helps in producing different hash values
-        // even for similar inputs
-        hash ^= UInt64(byte)
-        
-        // Multiply by the FNV prime for 64-bit - this is a required constant
-        // The prime was chosen for its multiplication properties
-        // that help in spreading the bits of the hash value
-        // &*= is used for overflow multiplication
-        hash &*= 1_099_511_628_211
-      }
-      return hash
     }
   }
 ```
@@ -244,10 +179,10 @@ Thanks to Rob Napier for the Swift 6 implementation of the `Future` publisher:
 Alright now we can create a custom button for simulator authentication:
 
 ```swift
-  internal struct SimulatorLoginButton: View {
-    private let action: @Sendable (Data) -> Void
-    private var observer: any FileObserving
-    @State private var lastData: Data?
+  struct SimulatorLoginButton: View {
+     let action: @Sendable (Data) -> Void
+     var observer: any FileObserving
+    @State  var lastData: Data?
 
     internal var body: some View {
       Button(
@@ -280,7 +215,8 @@ Alright now we can create a custom button for simulator authentication:
       action: @escaping @Sendable (Data) -> Void
     ) {
       self.init(
-        observer: FileObserver(fileURL: fileURL, shouldBeReady: onData), action: action
+        observer: FileObserver(fileURL: fileURL, shouldBeReady: onData), 
+        action: action
       )
     }
 
@@ -299,64 +235,135 @@ Alright now we can create a custom button for simulator authentication:
 The server needs to handle writing authentication data to simulator containers:
 
 ```swift
-extension AuthenticationController {
-    #if DEBUG && os(macOS)
-    static let simctl = SimCtl()
+extension SimCtl {
+  struct MissingSimulatorError: Error {
+    let appBundleIdentifier: String
+    let type: ContainerID
+  }
 
-    public static func saveToSimulators(_ request: Request) async throws {
-        guard let body = request.body.data else {
-            throw Abort(.noContent)
-        }
+  /// Saves the token to all booted simulator devices in the container directory.
+  /// - Parameters:
+  ///   - token: Authentication Token
+  ///   - relativePath: relative path inside the container.
+  ///   - appBundleIdentifier: Application Bundle Identifier.
+  ///   - type: Container Type
+  ///   - deviceState: Filter Devices by Device State
+  internal func saveToSimulators(
+    _ token: String,
+    toRelativePath relativePath: String,
+    appBundleIdentifier: String,
+    type: ContainerID = .data,
+    deviceState: DeviceState? = .booted
+  ) async throws {
+    // get container paths
+    let containerPaths = try await self.fetchContainerPaths(
+      appBundleIdentifier: appBundleIdentifier,
+      type: type
+    )
 
-        let relativePath = "tmp/com.brightdigit.Bitness"
-        
-        let containerPaths = try await simctl.fetchContainerPaths(
-            appBundleIdentifier: "com.brightdigit.Bitness.watchkitapp",
-            type: .data
-        )
+    // define file paths
+    let filePaths = containerPaths.map { $0.appending("/" + relativePath) }
 
-        let filePaths = containerPaths.map { 
-            $0.appending("/" + relativePath) 
-        } 
-        try await withThrowingTaskGroup(of: Void.self) { taskGroup in
-            for filePath in filePaths {
-                taskGroup.addTask {
-                    let fileHandle: NIOFileHandle
-                    request.logger.debug(
-                        "Simulator Authentication: \(filePath)"
-                    )
-                    
-                    try? await request.application.fileio
-                        .remove(path: filePath, eventLoop: request.eventLoop)
-                        .get()
-                        
-                    fileHandle = try await request.application.fileio
-                        .openFile(
-                            path: filePath,
-                            mode: .write,
-                            flags: .allowFileCreation(),
-                            eventLoop: request.eventLoop
-                        )
-                        .get()
-                        
-                    try await request.application.fileio
-                        .write(
-                            fileHandle: fileHandle,
-                            buffer: body,
-                            eventLoop: request.eventLoop
-                        )
-                        .get()
-                        
-                    try fileHandle.close()
-                }
-            }
-
-            return try await taskGroup.reduce(()) { _, _ in }
-        }
+    // throw error is there's simulator running
+    guard !filePaths.isEmpty else {
+      throw MissingSimulatorError(
+        appBundleIdentifier: appBundleIdentifier,
+        type: type
+      )
     }
-    #endif
+
+    // write the token to each simulator's path
+    try await withThrowingTaskGroup(of: Void.self) { taskGroup in
+      for filePath in filePaths {
+        taskGroup.addTask {
+          try token.write(
+            to: URL(fileURLWithPath: filePath),
+            atomically: true,
+            encoding: .utf8
+          )
+        }
+      }
+
+      return try await taskGroup.reduce(()) { _, _ in }
+    }
+  }
+
+  /// Fetches container paths for a specific application.
+  /// - Parameters:
+  ///   - appBundleIdentifier: Application Bundle Identifier
+  ///   - type: Container Type
+  ///   - deviceState: Filter Devices by Device State
+  /// - Returns: A list of paths to all containers based on the application identifier.
+  internal func fetchContainerPaths(
+    appBundleIdentifier: String,
+    type: ContainerID,
+    deviceState: DeviceState? = .booted
+  ) async throws -> [Path] {
+    try await withThrowingTaskGroup(of: Path?.self) { taskGroup in
+      // run `xcrun simctl list devices`
+      let list = try await self.run(List())
+      // filter the devices which match the `deviceState`
+      let devices: [Device]
+      let listDevices = list.devices.values.flatMap { $0 }
+      // if the device state is set, filter the devices
+      if let deviceState {
+        devices =
+          listDevices
+          .filter { $0.state == deviceState }
+      } else {
+        devices = listDevices
+      }
+      for device in devices {
+        // for each device run
+        //  `xcrun simctl get_app_container {device.udid} {appBundleIdentifier} {type}`
+        // example:
+        //  `xcrun simctl get_app_container E294F724-10D0-422E-894C-745791166D86 com.bpmsync.GBeat.watchkitapp data`
+        let subcommand = GetAppContainer(
+          appBundleIdentifier: appBundleIdentifier,
+          container: type,
+          simulator: .id(device.udid)
+        )
+        taskGroup.addTask {
+          // get the app container path
+          do {
+            return try await self.run(subcommand)
+          } catch GetAppContainer.Error.missingData {
+            return nil
+          }
+        }
+      }
+
+      return try await taskGroup.reduce(into: [Path]()) { paths, path in
+        // if the path is not nil, append it to the paths
+        if let path {
+          paths.append(path)
+        }
+      }
+    }
+  }
 }
 ```
+
+Now that we have the server-side implementation for saving the authentication data to the simulator, we can integrate it into our login call. Here's an example of how we can do this with a `signedToken`:
+
+```swift
+    let signedToken : String
+
+    // save the token to the simulator when we are running the server on macOS in DEBUG mode
+    #if os(macOS) && DEBUG
+      let simctl = SimCtl()
+      do {
+        try await simctl.saveToSimulators(
+          signedToken,
+          toRelativePath: "tmp/\(SimulatorAuthentication.fileName)",
+          // the app bundle identifier on the Apple Watch
+          appBundleIdentifier: "com.brightdigit.Bitness.watchkitapp"
+        )
+      } catch let error as SimCtl.MissingSimulatorError {
+        print("No simulators setup.")
+      }
+    #endif
+```    
 
 ## Integration in Your App
 
@@ -370,28 +377,29 @@ struct AuthenticationView: View {
 
     var body: some View {
         VStack {
+            // only show the login button in the watchOS simulator
             #if os(watchOS) && targetEnvironment(simulator)
             SimulatorLoginButton(
                 isReady: $isReady,
                 fileURL: FileManager.default.temporaryDirectory
-                    .appending(path: "com.brightdigit.Bitness"),
+                    .appending(path: SimulatorAuthentication.fileName),
                 onData: { data in
-                    guard let token = String(data: data, encoding: .utf8) else {
-                        return false
-                    }
-                    await tokenContainer.setToken(token, isTemporary: true)
-                    let user = try? await bitness.getUser()
-                    return user != nil
+                  // get the token from the data
+                  let token = String.init(decoding: data, as: UTF8.self)
+                  // set the token to the token container temporarily
+                  await tokenContainer.setToken(token, isTemporary: true)
+                  // see if you can login with the token
+                  let user = try? await bitness.getUser()
+                  // return whether the login was successful
+                  return user != nil
                 },
-                action: { data in
-                    guard let token = data.flatMap({ 
-                        String(data: $0, encoding: .utf8) 
-                    }) else {
-                        return
-                    }
-                    Task {
-                        await tokenContainer.setToken(token, isTemporary: false)
-                    }
+                action: { data in 
+                  // get the token from the data
+                  let token: String = .init(decoding: data, as: UTF8.self)
+                  // set the token to the token container permanently
+                  Task {
+                    await tokenContainer.setToken(token, isTemporary: false)
+                  }
                 }
             )
             #else
