@@ -25,6 +25,7 @@ For a detailed guide on working with JWTs in Swift, check out the comprehensive 
 ## Server Implementation
 
 Before implementing Sign in with Apple, [you need to configure your App ID in Apple Developer Portal](https://developer.apple.com/documentation/AuthenticationServices/implementing-user-authentication-with-sign-in-with-apple):
+
    - Enable Sign in with Apple capability
    - Note your Services ID and Bundle ID
 
