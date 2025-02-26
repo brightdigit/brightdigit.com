@@ -1,8 +1,8 @@
 ---
 title: How Does Server Side Swift Workout in the Real World?
 date: 2025-05-09 00:00
-description: Lorem ipsum
-featuredImage: /media/articles/scale-ios-app/overgrown-green-staircase-in-the-forest.jpg
+description: Discover how an app evolved from a gaming heart rate monitor to a full-stack Swift fitness platform, exploring real-world challenges in authentication, WebSockets, and deployment.
+featuredImage: /media/articles/server-side-swift-workout/featured-image.webp
 ---
 
 In 2018, I attended the [try! Swift conference in New York](https://www.tryswift.co/events/2018/nyc/), where I participated in a workshop titled "Build a Cloud Native Swift App." 
@@ -73,6 +73,8 @@ gBeat's architecture consists of several key components:
 - UI/UX implementation
 - Real-time data synchronization
 
+> youtube https://www.youtube.com/watch?v=4iB8s2fEmYc
+
 ## Looking Forward
 
-The journey from a simple gaming stream overlay to a full-featured fitness platform shows how Server-Side Swift can scale from hobby projects to production applications. In the next post, we'll dive deeper into the technical implementation of authentication using sign in with apple and development challenges.
+The journey from a simple gaming stream overlay to a full-featured fitness platform shows how Server-Side Swift can scale from hobby projects to production applications. In [the next post](/tutorials/full-stack-sign-in-with-apple/), we'll dive deeper into the technical implementation of authentication using sign in with apple and development challenges.

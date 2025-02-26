@@ -1,41 +1,43 @@
 ---
-title: Testing Sign in with Apple in the watchOS Simulator
+title: Implementing Sign in with Apple in the watchOS Simulator
 date: 2025-05-09 00:00
 description: Learn how to implement and test Sign in with Apple functionality in the watchOS simulator
-featuredImage: /media/articles/watchos-dev/apple-watch-development.jpg
+featuredImage: /media/tutorials/signin-apple-watchos-simulator/featured-image.webp
 ---
 
-With Sign in with Apple implemented on the server and client, we were ready to begin developing our fitness app for the Apple Watch. However we quickly ran into issues with developing for the Apple Watch:
+With [_Sign in with Apple_ implemented on the server and client](/tutorials/full-stack-sign-in-with-apple/), we were ready to begin developing our fitness app for the Apple Watch. However we quickly ran into issues with developing for the Apple Watch:
 
-<video width="100%" controls>
+<video width="100%" autoplay muted loop>
   <source src="/media/tutorials/signin-apple-watchos-simulator/Waiting-For-Apple-Watch.mov" type="video/mp4">
+  <source src="/media/tutorials/signin-apple-watchos-simulator/Waiting-For-Apple-Watch.webm" type="video/webm">
   Your browser does not support the video tag.
 </video>
 
-Luckily we do have the watchOS simulator. Unfortunetley the watchOS Simulator doesn't support Sign In With Apple. But if we have access to the server and the simulator on the same machine we can workaround this. In this guide we will show you how to:
+Luckily we do have the watchOS simulator. Unfortunetley **the watchOS Simulator doesn't support _Sign In With Apple_.** But if we have access to the server and the simulator on the same machine we can workaround this. In this guide we will show you how to:
 
-* Set up a simulator-specific authentication flow
-* Implement file-based authentication for testing
-* Handle simulator authentication on both client and server sides
+* Set up a **simulator-specific authentication flow**
+* Implement **file-based authentication** for testing on simulator
+* Handle simulator authentication **on both client and server sides**
 
 ## The Simulator Challenge
 
-Sign in with Apple doesn't work in the simulator environment, which creates development hurdles. To overcome this, we'll implement a file-based authentication system that:
+As stated, _Sign In With Apple_ doesn't work in the simulator environment, which creates development hurdles. To overcome this, we'll implement a file-based authentication system that:
 
-1. Uses a file to transfer authentication data
-2. Watches for file changes to trigger authentication
-3. Validates the authentication data before proceeding
+1. **Server writes a file** to the simulator to transfer authentication data
+2. **Simulator watches for file** changes to trigger authentication
+3. **Validates the authentication** data before proceeding
 
 ## File Observation Implementation
 
-Let's define the name of the file which will be used to save the authentication data. We'll share this with the server and the SwiftUI view.
+
+Let's define **the name of the file** which will be used to save the authentication data. We'll share this with the server and the SwiftUI view.
+
 
 ```swift
 enum SimulatorAuthentication {  
   static let fileName = "com.brightdigit.Bitness"
 }
 ```
-
 
 Let's define the protocols and classes needed for file-based authentication.  Here we created a protocol to watch the file for changes called `FileObserving`:
 
@@ -92,17 +94,6 @@ The method `readFile` does some Combine magic to read the file, if the data chan
 
 
   extension Publisher where Failure == Never {
-    // read the file, filter duplicates, and return the data
-     func readFile<T: UniqueData>(
-      at fileURL: URL
-    ) -> some Publisher<Data, Never> {
-      return self.compactMap { _ -> Data? in
-        try? Data(contentsOf: fileURL)
-      }
-      .removeDuplicates()
-      .map(\.data)
-    }
-
     // read the file and filter the data based on the closure
      func readFile(
       at fileURL: URL,
@@ -114,16 +105,29 @@ The method `readFile` does some Combine magic to read the file, if the data chan
         .filterAsync(shouldBeReady)
 
     }
+
+    // read the file, filter duplicates, and return the data
+     private func readFile<T: UniqueData>(
+      at fileURL: URL
+    ) -> some Publisher<Data, Never> {
+      return self.compactMap { _ -> Data? in
+        try? Data(contentsOf: fileURL)
+      }
+      .removeDuplicates()
+      .map(\.data)
+    }
+
   }
 
   extension Publisher where Output == Data {
     // filter the data based on the closure
-     func filterAsync(_ closure: @escaping @Sendable (Data) async -> Bool)
+     fileprivate func filterAsync(_ closure: @escaping @Sendable (Data) async -> Bool)
       -> some Publisher<
         Data?, Failure
       >
     {
       self.map { (data: Data) in
+      // test whether the data is valid for authentication
         SendingFuture { promise in
           Task {
             let bool = await closure(data)
@@ -136,10 +140,9 @@ The method `readFile` does some Combine magic to read the file, if the data chan
   }
 ```
 
-Thanks to Rob Napier for the Swift 6 implementation of the `Future` publisher:
+Thanks to [Rob Napier for the Swift 6 implementation of the `Future` publisher](https://stackoverflow.com/a/78894560/97705):
 
 ```swift
-/// From Rob Napier https://stackoverflow.com/a/78894560/97705
   @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
   fileprivate final class SendingFuture<Output, Failure: Error>: Publisher, Sendable {
     public typealias Promise = @Sendable (Result<Output, Failure>) -> Void
@@ -239,9 +242,16 @@ Alright now we can create a custom button for simulator authentication:
   }
 ```
 
-## Server-Side Implementation
+## Server-Side Implementation Using SimulatorServices
 
-The server needs to handle writing authentication data to simulator containers:
+The server needs to handle writing the authentication data to simulator containers. In this case, we'll use the [SimulatorServices](https://github.com/brightdigit/SimulatorServices) library to interact with watchOS simulators. This provides a clean API for:
+
+- Finding active simulators
+- Accessing simulator container paths
+
+The library handles the complexities of running `simctl` commands and parsing their output, making simulator authentication development significantly easier.
+
+In this case find the directories where the app's data directory is located on booted simulators and write our authentication data to them.
 
 ```swift
 extension SimCtl {
@@ -425,35 +435,24 @@ struct AuthenticationView: View {
 }
 ```
 
-## Development Workflow
+## Last Thoughts
 
-1. User initiates authentication through web interface or test endpoint
-2. Server writes authentication data to simulator filesystem
-3. SimulatorLoginButton detects file changes and validates data
-4. App processes authentication data and completes login
+Implementing _Sign In With Apple_ in the watchOS simulator requires careful consideration of both development workflow and security. The solution we've outlined provides a practical approach that enables efficient testing while maintaining proper security practices.
 
-## Security Considerations
+When implementing this solution, remember these critical points:
 
-Remember that this is for development only:
-1. Only enable simulator authentication in DEBUG builds
-2. Use temporary file locations
-3. Implement proper file permissions
-4. Clean up authentication files after use
+- Only enable **simulator authentication in DEBUG builds**
+- Use **temporary** file locations for authentication data
+- **Clean up** authentication files after use
 
-## Using SimulatorServices
+By following these guidelines, you can easily develop and test _Sign In With Apple_ functionality in your watchOS applications while maintaining security.
 
-We use the [SimulatorServices](https://github.com/brightdigit/SimulatorServices) library to interact with iOS simulators. This provides a clean API for:
+The workflow is straightforward: authenticate through your development interface, let the server handle the simulator file writing, and watch as the `SimulatorLoginButton` manages the authentication process in your app. This creates a development environment that closely mirrors the production experience while providing the flexibility needed for efficient testing.
 
-- Finding active simulators
-- Accessing simulator container paths
-- Managing simulator file systems
+Next steps could include:
 
-The library handles the complexities of running `simctl` commands and parsing their output, making simulator authentication development significantly easier.
+- using a hash to compare Data
+- implement file obervation using [DispatchSource](https://swiftrocks.com/dispatchsource-detecting-changes-in-files-and-folders-in-swift)
 
-## Next Steps
+For more information about watchOS development and authentication patterns, check out our [other tutorials](/tutorials) and [the official Apple documentation on _Sign In With Apple_ implementation.](https://developer.apple.com/documentation/AuthenticationServices/)
 
-With simulator authentication in place, you can:
-1. Implement automated testing
-2. Add error handling and recovery
-3. Extend the system for other authentication methods
-4. Set up CI/CD pipelines with simulator testing 
