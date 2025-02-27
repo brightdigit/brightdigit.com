@@ -5,7 +5,7 @@ description: Learn how to implement and test Sign in with Apple functionality in
 featuredImage: /media/tutorials/signin-apple-watchos-simulator/featured-image.webp
 ---
 
-With [_Sign in with Apple_ implemented on the server and client](/tutorials/full-stack-sign-in-with-apple/), we were ready to begin developing our fitness app for the Apple Watch. However we quickly ran into issues with developing for the Apple Watch:
+With [_Sign in with Apple_ implemented on the server and client](/tutorials/full-stack-sign-in-with-apple/), we were ready to begin developing our fitness app for the Apple Watch. However, we quickly ran into issues with developing for the Apple Watch:
 
 <video width="100%" autoplay muted loop>
   <source src="/media/tutorials/signin-apple-watchos-simulator/Waiting-For-Apple-Watch.mov" type="video/mp4">
@@ -13,7 +13,10 @@ With [_Sign in with Apple_ implemented on the server and client](/tutorials/full
   Your browser does not support the video tag.
 </video>
 
-Luckily we do have the watchOS simulator. Unfortunetley **the watchOS Simulator doesn't support _Sign In With Apple_.** But if we have access to the server and the simulator on the same machine we can workaround this. In this guide we will show you how to:
+Although we are able to use the watchOS simulator, unfortunately the simulator doesn't support _Sign In With Apple_.
+This basically blocked the workflow in using the app. 
+
+But if we have access to the server and the simulator on the same machine we can work around this. **We can write to the simulator directly from the server.** In this guide we will show you how to:
 
 * Set up a **simulator-specific authentication flow**
 * Implement **file-based authentication** for testing on simulator
@@ -21,7 +24,7 @@ Luckily we do have the watchOS simulator. Unfortunetley **the watchOS Simulator 
 
 ## The Simulator Challenge
 
-As stated, _Sign In With Apple_ doesn't work in the simulator environment, which creates development hurdles. To overcome this, we'll implement a file-based authentication system that:
+As stated, _Sign In With Apple_ doesn't work in the watchOS simulator environment, which creates development hurdles. To overcome this, we'll implement a file-based authentication system that:
 
 1. **Server writes a file** to the simulator to transfer authentication data
 2. **Simulator watches for file** changes to trigger authentication
@@ -283,7 +286,7 @@ extension SimCtl {
     // define file paths
     let filePaths = containerPaths.map { $0.appending("/" + relativePath) }
 
-    // throw error is there's simulator running
+    // throw error is there's no simulator running
     guard !filePaths.isEmpty else {
       throw MissingSimulatorError(
         appBundleIdentifier: appBundleIdentifier,
@@ -449,10 +452,16 @@ By following these guidelines, you can easily develop and test _Sign In With App
 
 The workflow is straightforward: authenticate through your development interface, let the server handle the simulator file writing, and watch as the `SimulatorLoginButton` manages the authentication process in your app. This creates a development environment that closely mirrors the production experience while providing the flexibility needed for efficient testing.
 
+<video width="100%" autoplay muted loop>
+  <source src="/media/tutorials/signin-apple-watchos-simulator/SignInWithApple-watchOSSimulator.mov" type="video/mp4">
+  <source src="/media/tutorials/signin-apple-watchos-simulator/SignInWithApple-watchOSSimulator.webm" type="video/webm">
+  Your browser does not support the video tag.
+</video>
+
 Next steps could include:
 
 - using a hash to compare Data
-- implement file obervation using [DispatchSource](https://swiftrocks.com/dispatchsource-detecting-changes-in-files-and-folders-in-swift)
+- implement file observation using [DispatchSource](https://swiftrocks.com/dispatchsource-detecting-changes-in-files-and-folders-in-swift)
 
 For more information about watchOS development and authentication patterns, check out our [other tutorials](/tutorials) and [the official Apple documentation on _Sign In With Apple_ implementation.](https://developer.apple.com/documentation/AuthenticationServices/)
 

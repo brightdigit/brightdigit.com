@@ -40,13 +40,13 @@ app.jwt.signers.use(JWTSigner.hs512(key: jwtSecret))
 // On request, verify the JWT token
 let tokenValue = try await req.jwt.apple
     .verify(body.token, applicationIdentifier: nil)
-    .map(\.subject.value)
-    .get()
+    .subject
+    .value
 ```
 
 ### [Hummingbird](https://docs.hummingbird.codes/2.0/documentation/index)
 
-Handle both Apple's JWKs and HMAC keys:
+Handle both Apple's JWKs and any set of HMAC keys:
 
 ```swift
 internal extension JWTKeyCollection {
@@ -134,6 +134,8 @@ internal func createUser(
 }
 ```
 
+If you are interested in learning more about JWT, JWKS, and more, definitely check out [the article at Swift on Server](https://swiftonserver.com/jwt-kit/) or [the documentation for JWTKit](https://github.com/vapor/jwt-kit).
+
 ## SwiftUI Implementation
 
 Our main authentication view conditionally renders the Sign in with Apple button:
@@ -186,4 +188,4 @@ When implementing Sign in with Apple, follow these security best practices:
 
 ## Next Steps
 
-With gBeat we ran into issues using Sign In With Apple specifically when running in the Apple Watch Simulator. However we did find a workaround which I'll detail in the next article.
+When developing gBeat, we ran into issues using Sign In With Apple, specifically when running in the Apple Watch Simulator. However, we did find a workaround, which I'll detail in the next article.

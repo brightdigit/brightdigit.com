@@ -9,7 +9,7 @@ In 2018, I attended the [try! Swift conference in New York](https://www.tryswift
 
 ![Try! Swift Kitura Workshop](/media/articles/server-side-swift-workout/tryswift-2018.webp)
 
-At the time, Swift was primarily known as an iOS development language, so the concept of using it for cloud applications seemed unusual. This workshop introduced me to Kitura, but it was when I discovered [Vapor](https://vapor.codes) that everything clicked - I found it fast, simple, and leveraging all of Swift's advantages.
+At the time, Swift was primarily known as an iOS development language, so the concept of using it for cloud applications seemed unusual. This workshop introduced me to Kitura, but it was when I discovered [Vapor](https://vapor.codes) that everything clicked - I found it was fast, simple, and leveraged all of Swift's advantages.
 
 ## The Birth of Heartwitch
 
