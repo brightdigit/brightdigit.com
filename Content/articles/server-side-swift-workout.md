@@ -1,6 +1,6 @@
 ---
 title: How Does Server Side Swift Workout in the Real World?
-date: 2025-05-09 00:00
+date: 2025-03-04 00:00
 description: Discover how an app evolved from a gaming heart rate monitor to a full-stack Swift fitness platform, exploring real-world challenges in authentication, WebSockets, and deployment.
 featuredImage: /media/articles/server-side-swift-workout/featured-image.webp
 ---

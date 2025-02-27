@@ -1,6 +1,6 @@
 ---
 title: Setting Up Sign in with Apple with Server Side Swift and SwiftUI
-date: 2025-05-09 00:00
+date: 2025-03-04 00:00
 description: A comprehensive guide to implementing Sign in with Apple in your server and client applications in Swift
 featuredImage: /media/tutorials/full-stack-sign-in-with-apple/sign-in-with-apple-buttons.webp
 ---
