@@ -32,7 +32,7 @@ I named this project [Heartwitch](https://heartwitch.app/#/) (a name I'd later r
 
 In early 2020, the pandemic transformed how people approach fitness. As gyms closed and home workouts became the norm, I received an interesting email from Chris, who saw potential in adapting Heartwitch's technology for fitness instruction. The idea was compelling: help instructors monitor students' heart rates during remote classes, or allow instructors to share their own metrics while teaching.
 
-> youtube https://youtu.be/dFmpD0yFP6Q
+> youtube https://www.youtube.com/watch?v=_Ma7jSBK-ik
 
 ## Enter [gBeat](https://gbeat.com)
 
