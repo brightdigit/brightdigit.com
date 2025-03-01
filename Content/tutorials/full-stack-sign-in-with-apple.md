@@ -3,6 +3,7 @@ title: Setting Up Sign in with Apple with Server Side Swift and SwiftUI
 date: 2025-03-04 00:00
 description: A comprehensive guide to implementing Sign in with Apple in your server and client applications in Swift
 featuredImage: /media/tutorials/full-stack-sign-in-with-apple/sign-in-with-apple-buttons.webp
+subscriptionCTA: If you want to learn more about building a Full Stack Swift application such as gBeat, sign up for the newsletter to get notified of our latest articles.
 ---
 
 When [developing a fitness app](/articles/server-side-swift-workout/), we needed an easy and efficient way for users to authenticate. The standard user name and password interface for the Apple Watch would be cumbersome and challenging. Luckily, Sign in with Apple provides an easy alternative that is both secure and privacy-focused. This guide will show you how to:

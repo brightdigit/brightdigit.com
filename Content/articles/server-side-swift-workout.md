@@ -3,6 +3,7 @@ title: How Does Server Side Swift Workout in the Real World?
 date: 2025-03-04 00:00
 description: Discover how an app evolved from a gaming heart rate monitor to a full-stack Swift fitness platform, exploring real-world challenges in authentication, WebSockets, and deployment.
 featuredImage: /media/articles/server-side-swift-workout/featured-image.webp
+subscriptionCTA: If you want to learn more about building a Full Stack Swift application such as gBeat, sign up for the newsletter to get notified of our latest articles.
 ---
 
 In 2018, I attended the [try! Swift conference in New York](https://www.tryswift.co/events/2018/nyc/), where I participated in a workshop titled "Build a Cloud Native Swift App." 

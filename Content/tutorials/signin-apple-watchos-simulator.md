@@ -3,6 +3,7 @@ title: Implementing Sign in with Apple in the watchOS Simulator
 date: 2025-03-11 00:00
 description: Learn how to implement and test Sign in with Apple functionality in the watchOS simulator
 featuredImage: /media/tutorials/signin-apple-watchos-simulator/featured-image.webp
+subscriptionCTA: If you want to learn more about building a Full Stack Swift application such as gBeat, sign up for the newsletter to get notified of our latest articles.
 ---
 
 With [_Sign in with Apple_ implemented on the server and client](/tutorials/full-stack-sign-in-with-apple/), we were ready to begin developing our fitness app for the Apple Watch. However, we quickly ran into issues with developing for the Apple Watch:
