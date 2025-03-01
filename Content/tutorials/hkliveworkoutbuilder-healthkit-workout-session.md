@@ -28,9 +28,10 @@ type](https://developer.apple.com/documentation/healthkit/hkworkoutconfiguration
 of the workout you are doing. With those you can create the
 `HKWorkoutSession` with:
 ```
-func startWorkoutWithHealthStore(_ healthStore: HKHealthStore, 
-                                 andActivityType activityType: HKWorkoutActivityType
-                                ) -> HKWorkoutSession {
+func startWorkoutWithHealthStore(
+  _ healthStore: HKHealthStore, 
+  andActivityType activityType: HKWorkoutActivityType
+) -> HKWorkoutSession {
   let configuration = HKWorkoutConfiguration()
   configuration.activityType = activityType
   
