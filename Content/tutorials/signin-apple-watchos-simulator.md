@@ -464,5 +464,5 @@ Next steps could include:
 - using a hash to compare Data
 - implement file observation using [DispatchSource](https://swiftrocks.com/dispatchsource-detecting-changes-in-files-and-folders-in-swift)
 
-For more information about watchOS development and authentication patterns, check out our [other tutorials](/tutorials) and [the official Apple documentation on _Sign In With Apple_ implementation.](https://developer.apple.com/documentation/AuthenticationServices/)
+For more information about watchOS development and authentication patterns, check out our [other tutorials](/tutorials) and [the official Apple documentation on _Sign In With Apple_ implementation.](https://developer.apple.com/documentation/AuthenticationServices/) Feel free to check out the [SimulatorServices](https://github.com/brightdigit/SimulatorServices) package for more things you can do with the simulator.
 
