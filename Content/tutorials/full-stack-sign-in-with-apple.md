@@ -189,4 +189,4 @@ When implementing Sign in with Apple, follow these security best practices:
 
 ## Next Steps
 
-When developing gBeat, we ran into issues using Sign In With Apple, specifically when running in the Apple Watch Simulator. However, we did find a workaround, which I'll detail in the next article.
+When developing gBeat, we ran into issues using Sign In With Apple, specifically when running in the Apple Watch Simulator. However, I did [find a workaround, you can read about here.](/tutorials/signin-apple-watchos-simulator/)
