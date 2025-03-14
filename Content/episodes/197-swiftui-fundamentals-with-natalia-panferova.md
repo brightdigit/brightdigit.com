@@ -1,7 +1,7 @@
 ---
 title: SwiftUI Fundamentals with Natalia Panferova
 date: 2025-03-14 09:07
-description: Natalia Panferova former Apple engineer of <a href="https://nilcoalescing.com/">Nil Coalescing</a> comes on to talk her new book SwiftUI Fundamentals.
+description: Natalia Panferova former Apple engineer of Nil Coalescing comes on to talk her new book SwiftUI Fundamentals.
 featuredImage: https://img.transistor.fm/DwLQPgWN0oIlEcvjfX6sLGAy76Dd08ETNsbl82Qq6eQ/rs:fill:3000:3000:1/q:60/aHR0cHM6Ly9pbWct/dXBsb2FkLXByb2R1/Y3Rpb24udHJhbnNp/c3Rvci5mbS9kNWIz/MjFiMjcyMDc4ZWQ1/YjJmZDI0NmFhNmU4/ZGY3ZC5qcGc.jpg
 youtubeID: VzOGc2PEpec
 audioDuration: 1505
