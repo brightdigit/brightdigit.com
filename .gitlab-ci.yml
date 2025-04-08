@@ -184,7 +184,7 @@ deploy:
     - if [ "$CI_COMMIT_REF_NAME" = "main" ]; then PROD_FLAG="--prod"; else PROD_FLAG=""; fi   
     - BIN_PATH=`swift build -c release --product brightdigitwg --show-bin-path`
     - cp $BIN_PATH/brightdigitwg brightdigitwg-`uname`-`arch`
-    - NPM_PATH=~/.nvm/versions/node/v16.20.2/bin/npm ./brightdigitwg-`uname`-`arch` --mode $PUBLISHING_MODE
+    - ./brightdigitwg-`uname`-`arch` --mode $PUBLISHING_MODE
     - netlify deploy --site $NETLIFY_PRODUCTION_SITE_ID --auth $NETLIFY_AUTH_TOKEN $PROD_FLAG
 
 code_quality:
