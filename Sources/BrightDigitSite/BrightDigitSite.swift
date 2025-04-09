@@ -8,6 +8,49 @@ import SplashPublishPlugin
 import TransistorPublishPlugin
 import YoutubePublishPlugin
 
+func copyDirectory(from sourcePath: String, to destinationPath: String) throws {
+    let fileManager = FileManager.default
+    
+    // Check if source directory exists
+    var isDirectory: ObjCBool = false
+    guard fileManager.fileExists(atPath: sourcePath, isDirectory: &isDirectory), isDirectory.boolValue else {
+        throw NSError(domain: "DirectoryCopyError", code: 1, userInfo: [NSLocalizedDescriptionKey: "Source path is not a directory or doesn't exist."])
+    }
+    
+    // Create destination directory if it doesn't exist
+    if !fileManager.fileExists(atPath: destinationPath) {
+        try fileManager.createDirectory(atPath: destinationPath, withIntermediateDirectories: true)
+    }
+    
+    // Get contents of the source directory
+    let contents = try fileManager.contentsOfDirectory(atPath: sourcePath)
+    
+    // Copy each item in the directory
+    for item in contents {
+        let sourceItemPath = (sourcePath as NSString).appendingPathComponent(item)
+        let destinationItemPath = (destinationPath as NSString).appendingPathComponent(item)
+        
+        var isDir: ObjCBool = false
+        if fileManager.fileExists(atPath: sourceItemPath, isDirectory: &isDir) {
+            if isDir.boolValue {
+                // Recursively copy subdirectories
+                try copyDirectory(from: sourceItemPath, to: destinationItemPath)
+            } else {
+                // Copy files
+              try fileManager.copyItem(atPath: sourceItemPath, toPath: destinationItemPath)
+            }
+        }
+    }
+}
+
+func copyResourcesStep() -> PublishingStep<BrightDigitSite> {
+  .step(named: "Copy Resources") { context in
+    let sourcePath = try context.folder(at: "Resources").path
+    let destinationPath = try context.outputFolder(at: "").path
+   try  copyDirectory(from: sourcePath, to: destinationPath)
+  }
+}
+
 // This type acts as the configuration for your website.
 public struct BrightDigitSite: Website, MetadataAttached {
   public init(imagePath: Path? = SiteInfo.imagePath) {
@@ -77,7 +120,7 @@ public struct BrightDigitSite: Website, MetadataAttached {
   static let now = Date()
 
   static let preMarkdownSteps: [PublishingStep<BrightDigitSite>] = [
-    .optional(.copyResources()),
+    .optional(copyResourcesStep()),
     .group([
       .installPlugin(.transistor()),
       .installPlugin(.youtube()),
