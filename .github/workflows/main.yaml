@@ -1,0 +1,24 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ main ] # Run on pushes to the main branch
+  pull_request: # Run on pull requests targeting any branch
+    branches: [ '*' ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+    automate-content:
+        runs-on: macos-latest
+        concurrency:
+            group: automate-content
+            cancel-in-progress: true
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
+              with:
+                fetch-depth: 0

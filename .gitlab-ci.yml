@@ -39,7 +39,7 @@ variables:
       changes:
         - "**/*.swift"
     
-    # To never run brightdigitwg executable is available
+    # To never run if brightdigitwg-* executable is available
     - if: $AUTOMATE_CONTENT == null && ('$CI_COMMIT_BRANCH !~ $excluded_branches')
       exists:
         - brightdigitwg-*
