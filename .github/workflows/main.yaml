@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
     automate-content:
-        runs-on: macos-latest
+        runs-on: [self-hosted, macOS]
         concurrency:
             group: automate-content
             cancel-in-progress: true
