@@ -1,7 +1,7 @@
 ---
 title: Should You SwiftData?
 date: 2025-04-08 00:00
-description: If you need local storage, Swift has its advantages and disadvantages.
+description: If you need local storage, SwiftData has its advantages and disadvantages.
 featuredImage: /media/articles/swift-considerations/smartphone-libraries.webp
 ---
 
