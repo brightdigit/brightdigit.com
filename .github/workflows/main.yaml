@@ -22,3 +22,71 @@ jobs:
               uses: actions/checkout@v3
               with:
                 fetch-depth: 0
+
+            - name: Determine Skip Build Option
+              env:
+                INPUT_SKIP_BUILD: ${{ github.event.inputs.skip_build }}
+              run: |
+                if [[ "${INPUT_SKIP_BUILD}" == "true" ]]; then
+                  echo "Build will be skipped (--skip-build option will be used)"
+                  echo "SKIP_BUILD_OPTION=--skip-build" >> $GITHUB_ENV
+                
+                  else
+                  echo "Build will NOT be skipped (--skip-build option will be empty)"
+                  echo "SKIP_BUILD_OPTION=" >> $GITHUB_ENV
+                fi
+                
+            - name: Import Mailchimp
+              env:
+                  MAILCHIMP_API_KEY: ${{ secrets.MAILCHIMP_API_KEY }}
+                  MAILCHIMP_LIST_ID: ${{ secrets.MAILCHIMP_LIST_ID }}
+              run: |
+                  echo "Importing Mailchimp..."
+
+                  swift run $SKIP_BUILD_OPTION brightdigitwg \
+                    import mailchimp \
+                      --mailchimp-api-key=$MAILCHIMP_API_KEY \
+                      --mailchimp-list-id=$MAILCHIMP_LIST_ID \
+                      --export-markdown-directory=Content/newsletters
+
+                  echo "Mailchimp import finished."
+
+            - name: Import Podcast
+              env:
+                YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+              run: |
+                  echo "Importing Podcast..."
+
+                  swift run $SKIP_BUILD_OPTION brightdigitwg \
+                    import podcast \
+                      --youtube-api-key=$YOUTUBE_API_KEY \
+                      --export-markdown-directory Content/episodes
+                  
+                      echo "Podcast import finished."
+
+            - name: Configure Git
+              run: |
+                git config user.name "github-actions[bot]"
+                git config user.email "github-actions[bot]@users.noreply.github.com"
+
+            - name: Check Changes, Commit, and Push
+              run: |
+                  # Check if there are any changes (staged or unstaged)
+                  # git status --porcelain will output lines if there are changes
+                  if [[ -n "$(git status --porcelain)" ]]; then
+                    echo "Changes detected. Proceeding with commit and push."
+        
+                    TODAY_DATE=$(date '+%y%m%d%H%M')
+                    CHANGES_COUNT=$(git status --porcelain | wc -l | xargs)
+                    COMMIT_MESSAGE="Bot:- ${TODAY_DATE} - ${CHANGES_COUNT} new changes"        
+                    git add .
+                    git commit -m "${COMMIT_MESSAGE}"
+        
+                    # Ensure your runner has credentials (PAT via checkout or SSH key) to push
+                    git push origin ${{ github.ref_name }}
+        
+                    echo "Changes pushed successfully."
+                    
+                  else
+                    echo "No changes detected. Nothing to commit or push."
+                  fi
