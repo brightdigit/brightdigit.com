@@ -83,10 +83,10 @@ jobs:
                     git commit -m "${COMMIT_MESSAGE}"
         
                     # Ensure your runner has credentials (PAT via checkout or SSH key) to push
-                    git push origin ${{ github.ref_name }}
+                    git push origin ${{ github.ref }}
         
                     echo "Changes pushed successfully."
-                    
+
                   else
                     echo "No changes detected. Nothing to commit or push."
                   fi
