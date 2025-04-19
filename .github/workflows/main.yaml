@@ -99,7 +99,6 @@ jobs:
                 fi
 
   build-linux:
-    needs: automate-content
     runs-on: ubuntu-latest
     container:
       image: brightdigit/publish-xml
