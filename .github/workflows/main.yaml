@@ -101,7 +101,7 @@ jobs:
   build-linux:
     runs-on: ubuntu-latest
     container:
-      image: ubuntu:22.04
+      image: brightdigit/publish-xml
     concurrency:
         group: build
         cancel-in-progress: true
@@ -141,7 +141,7 @@ jobs:
   package-linux:
     runs-on: ubuntu-latest
     container:
-      image: ubuntu:22.04
+      image: brightdigit/publish-xml
     concurrency:
         group: package
         cancel-in-progress: true
