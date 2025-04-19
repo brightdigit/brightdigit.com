@@ -102,6 +102,9 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: brightdigit/publish-xml
+    concurrency:
+        group: build
+        cancel-in-progress: true
 
     steps:
       - name: Checkout code
@@ -117,3 +120,21 @@ jobs:
 
       - name: Run Tests with Swift
         run: swift test
+  
+  build-macos:
+    runs-on: [self-hosted, macOS]
+    concurrency:
+        group: build
+        cancel-in-progress: true
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Build with Swift
+        run: swift build
+
+      - name: Run Tests with Swift
+        run: swift test
+
+  
