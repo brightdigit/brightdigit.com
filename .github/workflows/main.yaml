@@ -101,7 +101,7 @@ jobs:
   build-linux:
     runs-on: ubuntu-latest
     container:
-      image: brightdigit/publish-xml
+      image: ubuntu:22.04
     concurrency:
         group: build
         cancel-in-progress: true
@@ -121,20 +121,71 @@ jobs:
       - name: Run Tests with Swift
         run: swift test
   
-  build-macos:
-    runs-on: [self-hosted, macOS]
+        
+  # build-macos:
+  #   runs-on: [self-hosted, macOS]
+  #   concurrency:
+  #       group: build
+  #       cancel-in-progress: true
+
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v3
+
+  #     - name: Build with Swift
+  #       run: swift build
+
+  #     - name: Run Tests with Swift
+  #       run: swift test
+  
+  package-linux:
+    runs-on: ubuntu-latest
+    container:
+      image: ubuntu:22.04
     concurrency:
-        group: build
+        group: package
         cancel-in-progress: true
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Build with Swift
-        run: swift build
+      - name: Cache SwiftPM Dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            .build/
+            ~/.swiftpm
+          key: ${{ runner.os }}-swiftpm-${{ hashFiles('**/Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-swiftpm-
 
-      - name: Run Tests with Swift
-        run: swift test
+      - name: Build Release Product
+        run: |
+          swift build -c release --product brightdigitwg
+          BIN_PATH=$(swift build -c release --product brightdigitwg --show-bin-path)
+          cp "$BIN_PATH/brightdigitwg" "brightdigitwg-$(uname)-$(arch)"
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: brightdigitwg-binaries
+          path: brightdigitwg-*
+  
+  # package-macos:
+  #   runs-on: [self-hosted, macOS]
+  #   concurrency:
+  #       group: build
+  #       cancel-in-progress: true
+
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v3
+
+  #     - name: Build with Swift
+  #       run: swift build
+
+  #     - name: Run Tests with Swift
+  #       run: swift test
 
   
