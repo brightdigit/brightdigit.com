@@ -99,6 +99,7 @@ jobs:
                 fi
 
   build-linux:
+    needs: automate-content
     runs-on: ubuntu-latest
     container:
       image: brightdigit/publish-xml
@@ -139,6 +140,7 @@ jobs:
   #       run: swift test
   
   package-linux:
+    needs: build-linux
     runs-on: ubuntu-latest
     container:
       image: brightdigit/publish-xml
