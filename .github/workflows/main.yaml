@@ -109,6 +109,16 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+      
+      - name: Cache SwiftPM Dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            .build/
+            ~/.swiftpm
+          key: ${{ runner.os }}-swiftpm-${{ hashFiles('**/Package.resolved') || 'initial-build' }}
+          restore-keys: |
+            ${{ runner.os }}-swiftpm-
 
       - name: Configure Architecture Prefix
         run: |
@@ -157,7 +167,7 @@ jobs:
           path: |
             .build/
             ~/.swiftpm
-          key: ${{ runner.os }}-swiftpm-${{ hashFiles('**/Package.resolved') }}
+          key: ${{ runner.os }}-swiftpm-${{ hashFiles('**/Package.resolved') || 'initial-build' }}
           restore-keys: |
             ${{ runner.os }}-swiftpm-
 
