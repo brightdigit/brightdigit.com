@@ -5,6 +5,12 @@ on:
     branches: [ main ] # Run on pushes to the main branch
   pull_request: # Run on pull requests targeting any branch
     branches: [ '*' ]
+  workflow_dispatch:
+    inputs:
+      AUTOMATE_CONTENT:
+        description: "Set AUTOMATE_CONTENT to trigger automate-content job"
+        required: false
+        default: ""
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -12,6 +18,7 @@ concurrency:
 
 jobs:
     automate-content:
+        if: ${{ inputs.automate_content != '' }}
         runs-on: [self-hosted, macOS]
         concurrency:
             group: automate-content
@@ -83,7 +90,7 @@ jobs:
                     git commit -m "${COMMIT_MESSAGE}"
         
                     # Ensure your runner has credentials (PAT via checkout or SSH key) to push
-                    git push origin ${{ github.ref }}
+                    git push origin ${{ github.head_ref }}
         
                     echo "Changes pushed successfully."
 
