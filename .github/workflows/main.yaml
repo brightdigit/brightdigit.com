@@ -113,13 +113,7 @@ jobs:
         run: |
           export ARCH_PREFIX=$(uname -i)
           echo "ARCH_PREFIX=${ARCH_PREFIX}" >> $GITHUB_ENV
-
-      - name: Build with Swift
-        run: swift build
-
-      - name: Run Tests with Swift
-        run: swift test
-
+      
       - name: Cache SwiftPM Dependencies
         uses: actions/cache@v3
         with:
@@ -129,6 +123,12 @@ jobs:
           key: ${{ runner.os }}-swiftpm-${{ hashFiles('**/Package.resolved') || 'initial-build' }}
           restore-keys: |
             ${{ runner.os }}-swiftpm-
+
+      - name: Build with Swift
+        run: swift build
+
+      - name: Run Tests with Swift
+        run: swift test
   
         
   # build-macos:
