@@ -110,6 +110,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Debug file structure
+        run: ls -R .github/actions
+
       - name: Cache SwiftPM Dependencies
         uses: ./.github/actions/cache
 
