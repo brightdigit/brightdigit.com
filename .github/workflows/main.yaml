@@ -109,14 +109,15 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Cache SwiftPM Dependencies
+        uses: brightdigit/brightdigit.com/.github/actions/cache.yaml@${{ github.head_ref }}
+
       - name: Configure Architecture Prefix
         run: |
           export ARCH_PREFIX=$(uname -i)
           echo "ARCH_PREFIX=${ARCH_PREFIX}" >> $GITHUB_ENV
       
-      - name: Cache SwiftPM Dependencies
-        uses: brightdigit/brightdigit.com/.github/actions/cache@${{ github.head_ref }}
-
       - name: Build with Swift
         run: swift build
 
@@ -137,7 +138,7 @@ jobs:
         uses: actions/checkout@v3
       
       - name: Cache SwiftPM Dependencies
-        uses: brightdigit/brightdigit.com/.github/actions/cache@${{ github.head_ref }}
+        uses: brightdigit/brightdigit.com/.github/actions/cache.yaml@${{ github.head_ref }}
 
       - name: Build Release Product
         run: |
