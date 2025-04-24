@@ -111,7 +111,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Cache SwiftPM Dependencies
-        uses: ../actions/cache.yaml@${{ github.head_ref }}
+        uses: ../actions/cache.yaml@${{ github.ref_name }}
 
       - name: Configure Architecture Prefix
         run: |
@@ -138,7 +138,7 @@ jobs:
         uses: actions/checkout@v3
       
       - name: Cache SwiftPM Dependencies
-        uses: ../actions/cache.yaml@${{ github.head_ref }}
+        uses: ../actions/cache.yaml@${{ github.ref_name }}
 
       - name: Build Release Product
         run: |
