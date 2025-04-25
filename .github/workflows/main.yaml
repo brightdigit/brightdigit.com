@@ -216,7 +216,7 @@ jobs:
       - name: Set Publishing Mode and Flags
         id: set-publishing
         run: |
-          if [ "${{ github.ref_name }}" = "main" ]; then
+          if [ "${{ github.ref_name }}" = "main" && false ]; then
             echo "PUBLISHING_MODE=production" >> $GITHUB_ENV
             echo "PROD_FLAG=--prod" >> $GITHUB_ENV
           else
