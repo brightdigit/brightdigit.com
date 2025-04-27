@@ -113,12 +113,8 @@ jobs:
       - name: Cache SwiftPM Dependencies
         uses: actions/cache@v4
         with:
-          path: |
-            .build/
-            ~/.swiftpm
-          key: ${{ runner.os }}-swiftpm-${{ hashFiles('Package.resolved') }}
-          restore-keys: |
-            ${{ runner.os }}-swiftpm-
+          path: .build/
+          key: ${{ runner.os }}-${{ hashFiles('Package.resolved') }}
 
       - name: Configure Architecture Prefix
         run: |
@@ -147,24 +143,14 @@ jobs:
       - name: Cache SwiftPM Dependencies
         uses: actions/cache@v4
         with:
-          path: |
-            .build/
-            ~/.swiftpm
-          key: ${{ runner.os }}-swiftpm-${{ hashFiles('Package.resolved') }}
-          restore-keys: |
-            ${{ runner.os }}-swiftpm-
+          path: .build/
+          key: ${{ runner.os }}-${{ hashFiles('Package.resolved') }}
 
       - name: Build Release Product
         run: |
           swift build -c release --product brightdigitwg
           BIN_PATH=$(swift build -c release --product brightdigitwg --show-bin-path)
-          echo "Binary path: $BIN_PATH"
-          if [ -f "$BIN_PATH/brightdigitwg" ]; then
-            cp "$BIN_PATH/brightdigitwg" "brightdigitwg-$(uname)-$(arch)"
-          else
-            echo "Error: brightdigitwg binary not found at $BIN_PATH"
-            exit 1
-          fi
+          cp "$BIN_PATH/brightdigitwg" "brightdigitwg-$(uname)-$(arch)"
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
@@ -185,12 +171,8 @@ jobs:
   #     - name: Cache SwiftPM Dependencies
   #       uses: actions/cache@v4
   #       with:
-  #         path: |
-  #           .build/
-  #           ~/.swiftpm
-  #         key: ${{ runner.os }}-swiftpm-${{ hashFiles('Package.resolved') }}
-  #         restore-keys: |
-  #           ${{ runner.os }}-swiftpm-
+  #         path: .build/
+  #         key: ${{ runner.os }}-${{ hashFiles('Package.resolved') }}
       
   #     - name: Build with Swift
   #       run: swift build
@@ -212,12 +194,8 @@ jobs:
   #     - name: Cache SwiftPM Dependencies
   #       uses: actions/cache@v4
   #       with:
-  #         path: |
-  #           .build/
-  #           ~/.swiftpm
-  #         key: ${{ runner.os }}-swiftpm-${{ hashFiles('Package.resolved') }}
-  #         restore-keys: |
-  #           ${{ runner.os }}-swiftpm-
+  #         path: .build/
+  #         key: ${{ runner.os }}-${{ hashFiles('Package.resolved') }}
 
   #     - name: Build Release Product
   #       run: |
@@ -244,10 +222,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Download Artifacts
-        uses: actions/download-artifact@v4
+      - name: Cache SwiftPM Dependencies
+        uses: actions/cache@v4
         with:
-          name: brightdigitwg-binaries
+          path: .build/
+          key: ${{ runner.os }}-${{ hashFiles('Package.resolved') }}
 
       - name: Set Publishing Mode and Flags
         id: set-publishing
@@ -262,9 +241,9 @@ jobs:
 
       - name: Run Brightdigitwg
         run: |
-          BIN_PATH=`swift build -c release --product brightdigitwg --show-bin-path`
-          cp $BIN_PATH/brightdigitwg brightdigitwg-`uname`-`arch`
-          chmod +x ./brightdigitwg-$(uname)-$(arch)
+          BIN_PATH=$(swift build -c release --product brightdigitwg --show-bin-path)
+          cp "$BIN_PATH/brightdigitwg" "brightdigitwg-$(uname)-$(arch)"
+          chmod +x "brightdigitwg-$(uname)-$(arch)"
           ./brightdigitwg-$(uname)-$(arch) --mode $PUBLISHING_MODE
 
       - name: Deploy to Netlify
