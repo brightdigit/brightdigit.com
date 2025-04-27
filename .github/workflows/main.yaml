@@ -231,6 +231,9 @@ jobs:
           path: .build/
           key: ${{ runner.os }}-${{ hashFiles('Package.resolved') }}
 
+      - name: Debug Build Contents
+        run: ls -R .build/
+        
       - name: Set Publishing Mode and Flags
         id: set-publishing
         run: |
