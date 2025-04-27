@@ -152,6 +152,9 @@ jobs:
           BIN_PATH=$(swift build -c release --product brightdigitwg --show-bin-path)
           cp "$BIN_PATH/brightdigitwg" "brightdigitwg-$(uname)-$(arch)"
 
+      - name: Debug Build Contents
+        run: ls -R .build/
+        
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
@@ -241,7 +244,11 @@ jobs:
 
       - name: Run Brightdigitwg
         run: |
-          BIN_PATH=$(swift build -c release --product brightdigitwg --show-bin-path)
+          BIN_PATH=.build/x86_64-unknown-linux-gnu/release
+          if [ ! -f "$BIN_PATH/brightdigitwg" ]; then
+            echo "Error: Binary not found at $BIN_PATH/brightdigitwg"
+            exit 1
+          fi
           cp "$BIN_PATH/brightdigitwg" "brightdigitwg-$(uname)-$(arch)"
           chmod +x "brightdigitwg-$(uname)-$(arch)"
           ./brightdigitwg-$(uname)-$(arch) --mode $PUBLISHING_MODE
