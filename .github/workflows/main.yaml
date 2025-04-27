@@ -203,11 +203,11 @@ jobs:
   #         BIN_PATH=$(swift build -c release --product brightdigitwg --show-bin-path)
   #         cp "$BIN_PATH/brightdigitwg" "brightdigitwg-$(uname)-$(arch)"
 
-  #     - name: Upload Artifact
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: brightdigitwg-binaries
-  #         path: brightdigitwg-*
+      # - name: Upload Artifact
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: brightdigitwg-binaries
+      #     path: brightdigitwg-*
 
   deploy:
     needs: package-linux
@@ -252,3 +252,9 @@ jobs:
           NETLIFY_PRODUCTION_SITE_ID: ${{ secrets.NETLIFY_PRODUCTION_SITE_ID }}
         run: |
           netlify deploy --site $NETLIFY_PRODUCTION_SITE_ID --auth $NETLIFY_AUTH_TOKEN $PROD_FLAG
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: brightdigitwg-binaries
+          path: brightdigitwg-*
