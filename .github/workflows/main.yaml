@@ -26,7 +26,7 @@ jobs:
 
       steps:
           - name: Checkout code
-            uses: actions/checkout@v3
+            uses: actions/checkout@v4
             with:
               fetch-depth: 0
 
@@ -98,92 +98,61 @@ jobs:
                   echo "No changes detected. Nothing to commit or push."
                 fi
 
-  # build-linux:
-  #   runs-on: ubuntu-latest
-  #   container:
-  #     image: brightdigit/publish-xml
-  #   concurrency:
-  #       group: build
-  #       cancel-in-progress: true
-
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v3
-
-  #     - name: Cache SwiftPM Dependencies
-  #       uses: ./.github/actions/cache
-
-  #     - name: Configure Architecture Prefix
-  #       run: |
-  #         export ARCH_PREFIX=$(uname -i)
-  #         echo "ARCH_PREFIX=${ARCH_PREFIX}" >> $GITHUB_ENV
-      
-  #     - name: Build with Swift
-  #       run: swift build
-
-  #     - name: Run Tests with Swift
-  #       run: swift test
-  
-  # package-linux:
-  #   needs: build-linux
-  #   runs-on: ubuntu-latest
-  #   container:
-  #     image: brightdigit/publish-xml
-  #   concurrency:
-  #       group: package
-  #       cancel-in-progress: true
-
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v3
-      
-  #     - name: Cache SwiftPM Dependencies
-  #       uses: ./.github/actions/cache
-
-  #     - name: Build Release Product
-  #       run: |
-  #         swift build -c release --product brightdigitwg
-  #         BIN_PATH=$(swift build -c release --product brightdigitwg --show-bin-path)
-  #         cp "$BIN_PATH/brightdigitwg" "brightdigitwg-$(uname)-$(arch)"
-
-  #     - name: Upload Artifact
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: brightdigitwg-binaries
-  #         path: brightdigitwg-*
-  
-  build-macos:
-    runs-on: [self-hosted, macOS]
-    concurrency:
-        group: build-macos
-        cancel-in-progress: true
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Cache SwiftPM Dependencies
-        uses: ./.github/actions/cache
-      
-      - name: Build with Swift
-        run: swift build
-
-      - name: Run Tests with Swift
-        run: swift test
-
-  package-macos:
-    needs: build-macos
-    runs-on: [self-hosted, macOS]
+  build-linux:
+    runs-on: ubuntu-latest
+    container:
+      image: brightdigit/publish-xml
     concurrency:
         group: build
         cancel-in-progress: true
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
+      - name: Cache SwiftPM Dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            .build/
+            ~/.swiftpm
+          key: ${{ runner.os }}-swiftpm-${{ hashFiles('Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-swiftpm-
+
+      - name: Configure Architecture Prefix
+        run: |
+          export ARCH_PREFIX=$(uname -i)
+          echo "ARCH_PREFIX=${ARCH_PREFIX}" >> $GITHUB_ENV
+      
+      - name: Build with Swift
+        run: swift build
+
+      - name: Run Tests with Swift
+        run: swift test
+  
+  package-linux:
+    needs: build-linux
+    runs-on: ubuntu-latest
+    container:
+      image: brightdigit/publish-xml
+    concurrency:
+        group: package
+        cancel-in-progress: true
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
       
       - name: Cache SwiftPM Dependencies
-        uses: ./.github/actions/cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            .build/
+            ~/.swiftpm
+          key: ${{ runner.os }}-swiftpm-${{ hashFiles('Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-swiftpm-
 
       - name: Build Release Product
         run: |
@@ -196,17 +165,78 @@ jobs:
         with:
           name: brightdigitwg-binaries
           path: brightdigitwg-*
+  
+  # build-macos:
+  #   runs-on: [self-hosted, macOS]
+  #   concurrency:
+  #       group: build-macos
+  #       cancel-in-progress: true
+
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
+
+  #     - name: Cache SwiftPM Dependencies
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: |
+  #           .build/
+  #           ~/.swiftpm
+  #         key: ${{ runner.os }}-swiftpm-${{ hashFiles('Package.resolved') }}
+  #         restore-keys: |
+  #           ${{ runner.os }}-swiftpm-
+      
+  #     - name: Build with Swift
+  #       run: swift build
+
+  #     - name: Run Tests with Swift
+  #       run: swift test
+
+  # package-macos:
+  #   needs: build-macos
+  #   runs-on: [self-hosted, macOS]
+  #   concurrency:
+  #       group: build
+  #       cancel-in-progress: true
+
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
+      
+  #     - name: Cache SwiftPM Dependencies
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: |
+  #           .build/
+  #           ~/.swiftpm
+  #         key: ${{ runner.os }}-swiftpm-${{ hashFiles('Package.resolved') }}
+  #         restore-keys: |
+  #           ${{ runner.os }}-swiftpm-
+
+  #     - name: Build Release Product
+  #       run: |
+  #         swift build -c release --product brightdigitwg
+  #         BIN_PATH=$(swift build -c release --product brightdigitwg --show-bin-path)
+  #         cp "$BIN_PATH/brightdigitwg" "brightdigitwg-$(uname)-$(arch)"
+
+  #     - name: Upload Artifact
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: brightdigitwg-binaries
+  #         path: brightdigitwg-*
 
   deploy:
-    needs: package-macos
-    runs-on: [self-hosted, macOS]
+    needs: package-linux
+    runs-on: ubuntu-latest
+    container:
+      image: brightdigit/publish-xml
     concurrency:
         group: deploy
         cancel-in-progress: true
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Download Artifacts
         uses: actions/download-artifact@v4
@@ -216,13 +246,13 @@ jobs:
       - name: Set Publishing Mode and Flags
         id: set-publishing
         run: |
-          if [ "${{ github.ref_name }}" = "main" && false ]; then
-            echo "PUBLISHING_MODE=production" >> $GITHUB_ENV
-            echo "PROD_FLAG=--prod" >> $GITHUB_ENV
-          else
+          # if [ "${{ github.ref_name }}" = "main" ]; then
+          #   echo "PUBLISHING_MODE=production" >> $GITHUB_ENV
+          #   echo "PROD_FLAG=--prod" >> $GITHUB_ENV
+          # else
             echo "PUBLISHING_MODE=drafts" >> $GITHUB_ENV
             echo "PROD_FLAG=" >> $GITHUB_ENV
-          fi
+          # fi
 
       - name: Run Brightdigitwg
         run: |
