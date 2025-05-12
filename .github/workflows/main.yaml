@@ -144,12 +144,12 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .build/
-          key: ${{ runner.os }}-release-${{ hashFiles('Package.resolved') }}
+          key: ${{ runner.os }}-debug-${{ hashFiles('Package.resolved') }}
 
-      - name: Build Release Product
+      - name: Build debug Product
         run: |
-          swift build -c release --product brightdigitwg
-          BIN_PATH=$(swift build -c release --product brightdigitwg --show-bin-path)
+          swift build -c debug --product brightdigitwg
+          BIN_PATH=$(swift build -c debug --product brightdigitwg --show-bin-path)
           cp "$BIN_PATH/brightdigitwg" "brightdigitwg-$(uname)-$(arch)"
 
       - name: Upload Artifact
@@ -197,10 +197,10 @@ jobs:
   #         path: .build/
   #         key: ${{ runner.os }}-${{ hashFiles('Package.resolved') }}
 
-  #     - name: Build Release Product
+  #     - name: Build debug Product
   #       run: |
-  #         swift build -c release --product brightdigitwg
-  #         BIN_PATH=$(swift build -c release --product brightdigitwg --show-bin-path)
+  #         swift build -c debug --product brightdigitwg
+  #         BIN_PATH=$(swift build -c debug --product brightdigitwg --show-bin-path)
   #         cp "$BIN_PATH/brightdigitwg" "brightdigitwg-$(uname)-$(arch)"
 
       # - name: Upload Artifact
@@ -226,7 +226,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .build/
-          key: ${{ runner.os }}-release-${{ hashFiles('Package.resolved') }}
+          key: ${{ runner.os }}-debug-${{ hashFiles('Package.resolved') }}
 
       - name: Set Publishing Mode and Flags
         id: set-publishing
@@ -241,7 +241,7 @@ jobs:
 
       - name: Run Brightdigitwg
         run: |
-          BIN_PATH=$(swift build -c release --product brightdigitwg --show-bin-path)
+          BIN_PATH=$(swift build -c debug --product brightdigitwg --show-bin-path)
           cp "$BIN_PATH/brightdigitwg" "brightdigitwg-$(uname)-$(arch)"
           chmod +x "brightdigitwg-$(uname)-$(arch)"
           ./brightdigitwg-$(uname)-$(arch) --mode $PUBLISHING_MODE
