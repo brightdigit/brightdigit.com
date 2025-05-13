@@ -17,146 +17,146 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  automate-content:
-      if: ${{ inputs.automate_content != '' }}
-      runs-on: [self-hosted, macOS]
-      concurrency:
-          group: automate-content
-          cancel-in-progress: true
+  # automate-content:
+  #     if: ${{ inputs.automate_content != '' }}
+  #     runs-on: [self-hosted, macOS]
+  #     concurrency:
+  #         group: automate-content
+  #         cancel-in-progress: true
 
-      steps:
-          - name: Checkout code
-            uses: actions/checkout@v4
-            with:
-              fetch-depth: 0
+  #     steps:
+  #         - name: Checkout code
+  #           uses: actions/checkout@v4
+  #           with:
+  #             fetch-depth: 0
 
-          - name: Determine Skip Build Option
-            env:
-              INPUT_SKIP_BUILD: ${{ github.event.inputs.skip_build }}
-            run: |
-              if [[ "${INPUT_SKIP_BUILD}" == "true" ]]; then
-                echo "Build will be skipped (--skip-build option will be used)"
-                echo "SKIP_BUILD_OPTION=--skip-build" >> $GITHUB_ENV
+  #         - name: Determine Skip Build Option
+  #           env:
+  #             INPUT_SKIP_BUILD: ${{ github.event.inputs.skip_build }}
+  #           run: |
+  #             if [[ "${INPUT_SKIP_BUILD}" == "true" ]]; then
+  #               echo "Build will be skipped (--skip-build option will be used)"
+  #               echo "SKIP_BUILD_OPTION=--skip-build" >> $GITHUB_ENV
               
-                else
-                echo "Build will NOT be skipped (--skip-build option will be empty)"
-                echo "SKIP_BUILD_OPTION=" >> $GITHUB_ENV
-              fi
+  #               else
+  #               echo "Build will NOT be skipped (--skip-build option will be empty)"
+  #               echo "SKIP_BUILD_OPTION=" >> $GITHUB_ENV
+  #             fi
               
-          - name: Import Mailchimp
-            env:
-                MAILCHIMP_API_KEY: ${{ secrets.MAILCHIMP_API_KEY }}
-                MAILCHIMP_LIST_ID: ${{ secrets.MAILCHIMP_LIST_ID }}
-            run: |
-                echo "Importing Mailchimp..."
+  #         - name: Import Mailchimp
+  #           env:
+  #               MAILCHIMP_API_KEY: ${{ secrets.MAILCHIMP_API_KEY }}
+  #               MAILCHIMP_LIST_ID: ${{ secrets.MAILCHIMP_LIST_ID }}
+  #           run: |
+  #               echo "Importing Mailchimp..."
 
-                swift run $SKIP_BUILD_OPTION brightdigitwg \
-                  import mailchimp \
-                    --mailchimp-api-key=$MAILCHIMP_API_KEY \
-                    --mailchimp-list-id=$MAILCHIMP_LIST_ID \
-                    --export-markdown-directory=Content/newsletters
+  #               swift run $SKIP_BUILD_OPTION brightdigitwg \
+  #                 import mailchimp \
+  #                   --mailchimp-api-key=$MAILCHIMP_API_KEY \
+  #                   --mailchimp-list-id=$MAILCHIMP_LIST_ID \
+  #                   --export-markdown-directory=Content/newsletters
 
-                echo "Mailchimp import finished."
+  #               echo "Mailchimp import finished."
 
-          - name: Import Podcast
-            env:
-              YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
-            run: |
-                echo "Importing Podcast..."
+  #         - name: Import Podcast
+  #           env:
+  #             YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+  #           run: |
+  #               echo "Importing Podcast..."
 
-                swift run $SKIP_BUILD_OPTION brightdigitwg \
-                  import podcast \
-                    --youtube-api-key=$YOUTUBE_API_KEY \
-                    --export-markdown-directory Content/episodes
+  #               swift run $SKIP_BUILD_OPTION brightdigitwg \
+  #                 import podcast \
+  #                   --youtube-api-key=$YOUTUBE_API_KEY \
+  #                   --export-markdown-directory Content/episodes
                 
-                    echo "Podcast import finished."
+  #                   echo "Podcast import finished."
 
-          - name: Configure Git
-            run: |
-              git config user.name "github-actions[bot]"
-              git config user.email "github-actions[bot]@users.noreply.github.com"
+  #         - name: Configure Git
+  #           run: |
+  #             git config user.name "github-actions[bot]"
+  #             git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          - name: Check Changes, Commit, and Push
-            run: |
-                # Check if there are any changes (staged or unstaged)
-                # git status --porcelain will output lines if there are changes
-                if [[ -n "$(git status --porcelain)" ]]; then
-                  echo "Changes detected. Proceeding with commit and push."
+  #         - name: Check Changes, Commit, and Push
+  #           run: |
+  #               # Check if there are any changes (staged or unstaged)
+  #               # git status --porcelain will output lines if there are changes
+  #               if [[ -n "$(git status --porcelain)" ]]; then
+  #                 echo "Changes detected. Proceeding with commit and push."
       
-                  TODAY_DATE=$(date '+%y%m%d%H%M')
-                  CHANGES_COUNT=$(git status --porcelain | wc -l | xargs)
-                  COMMIT_MESSAGE="Bot:- ${TODAY_DATE} - ${CHANGES_COUNT} new changes"        
-                  git add .
-                  git commit -m "${COMMIT_MESSAGE}"
+  #                 TODAY_DATE=$(date '+%y%m%d%H%M')
+  #                 CHANGES_COUNT=$(git status --porcelain | wc -l | xargs)
+  #                 COMMIT_MESSAGE="Bot:- ${TODAY_DATE} - ${CHANGES_COUNT} new changes"        
+  #                 git add .
+  #                 git commit -m "${COMMIT_MESSAGE}"
       
-                  # Ensure your runner has credentials (PAT via checkout or SSH key) to push
-                  git push origin ${{ github.head_ref }}
+  #                 # Ensure your runner has credentials (PAT via checkout or SSH key) to push
+  #                 git push origin ${{ github.head_ref }}
       
-                  echo "Changes pushed successfully."
+  #                 echo "Changes pushed successfully."
 
-                else
-                  echo "No changes detected. Nothing to commit or push."
-                fi
+  #               else
+  #                 echo "No changes detected. Nothing to commit or push."
+  #               fi
 
-  build-linux:
-    runs-on: ubuntu-latest
-    container:
-      image: brightdigit/publish-xml
-    concurrency:
-        group: build
-        cancel-in-progress: true
+  # build-linux:
+  #   runs-on: ubuntu-latest
+  #   container:
+  #     image: brightdigit/publish-xml
+  #   concurrency:
+  #       group: build
+  #       cancel-in-progress: true
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
 
-      - name: Cache SwiftPM Dependencies
-        uses: actions/cache@v4
-        with:
-          path: .build/
-          key: ${{ runner.os }}-build-${{ hashFiles('Package.resolved') }}
+  #     - name: Cache SwiftPM Dependencies
+  #       uses: actions/cache@v4
+  #       with:
+  #         path: .build/
+  #         key: ${{ runner.os }}-build-${{ hashFiles('Package.resolved') }}
 
-      - name: Configure Architecture Prefix
-        run: |
-          export ARCH_PREFIX=$(uname -i)
-          echo "ARCH_PREFIX=${ARCH_PREFIX}" >> $GITHUB_ENV
+  #     - name: Configure Architecture Prefix
+  #       run: |
+  #         export ARCH_PREFIX=$(uname -i)
+  #         echo "ARCH_PREFIX=${ARCH_PREFIX}" >> $GITHUB_ENV
       
-      - name: Build with Swift
-        run: swift build
+  #     - name: Build with Swift
+  #       run: swift build
 
-      - name: Run Tests with Swift
-        run: swift test
+  #     - name: Run Tests with Swift
+  #       run: swift test
   
-  package-linux:
-    needs: build-linux
-    runs-on: ubuntu-latest
-    container:
-      image: brightdigit/publish-xml
-    concurrency:
-        group: package
-        cancel-in-progress: true
+  # package-linux:
+  #   needs: build-linux
+  #   runs-on: ubuntu-latest
+  #   container:
+  #     image: brightdigit/publish-xml
+  #   concurrency:
+  #       group: package
+  #       cancel-in-progress: true
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
       
-      - name: Cache SwiftPM Dependencies
-        uses: actions/cache@v4
-        with:
-          path: .build/
-          key: ${{ runner.os }}-debug-${{ hashFiles('Package.resolved') }}
+  #     - name: Cache SwiftPM Dependencies
+  #       uses: actions/cache@v4
+  #       with:
+  #         path: .build/
+  #         key: ${{ runner.os }}-debug-${{ hashFiles('Package.resolved') }}
 
-      - name: Build debug Product
-        run: |
-          swift build -c debug --product brightdigitwg
-          BIN_PATH=$(swift build -c debug --product brightdigitwg --show-bin-path)
-          cp "$BIN_PATH/brightdigitwg" "brightdigitwg-$(uname)-$(arch)"
+  #     - name: Build debug Product
+  #       run: |
+  #         swift build -c debug --product brightdigitwg
+  #         BIN_PATH=$(swift build -c debug --product brightdigitwg --show-bin-path)
+  #         cp "$BIN_PATH/brightdigitwg" "brightdigitwg-$(uname)-$(arch)"
 
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: brightdigitwg-binaries
-          path: brightdigitwg-*
+  #     - name: Upload Artifact
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: brightdigitwg-binaries
+  #         path: brightdigitwg-*
   
   # build-macos:
   #   runs-on: [self-hosted, macOS]
@@ -210,7 +210,7 @@ jobs:
       #     path: brightdigitwg-*
 
   deploy:
-    needs: package-linux
+    # needs: package-linux
     runs-on: ubuntu-latest
     container:
       image: brightdigit/publish-xml
@@ -239,12 +239,18 @@ jobs:
             echo "PROD_FLAG=" >> $GITHUB_ENV
           # fi
 
-      - name: Run Brightdigitwg
+      # - name: Run Brightdigitwg
+      #   run: |
+      #     BIN_PATH=$(swift build -c debug --product brightdigitwg --show-bin-path)
+      #     cp "$BIN_PATH/brightdigitwg" "brightdigitwg-$(uname)-$(arch)"
+      #     chmod +x "brightdigitwg-$(uname)-$(arch)"
+      #     ./brightdigitwg-$(uname)-$(arch) --mode $PUBLISHING_MODE
+
+      - name: Run NPM
         run: |
-          BIN_PATH=$(swift build -c debug --product brightdigitwg --show-bin-path)
-          cp "$BIN_PATH/brightdigitwg" "brightdigitwg-$(uname)-$(arch)"
-          chmod +x "brightdigitwg-$(uname)-$(arch)"
-          ./brightdigitwg-$(uname)-$(arch) --mode $PUBLISHING_MODE
+          cd Styling
+          npm ci
+          npm run publish -- --output-filename js/main.js
 
       - name: Deploy to Netlify
         env:
