@@ -252,9 +252,3 @@ jobs:
           NETLIFY_PRODUCTION_SITE_ID: ${{ secrets.NETLIFY_PRODUCTION_SITE_ID }}
         run: |
           netlify deploy --site $NETLIFY_PRODUCTION_SITE_ID --auth $NETLIFY_AUTH_TOKEN $PROD_FLAG
-
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: brightdigitwg-binaries
-          path: brightdigitwg-*
