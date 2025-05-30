@@ -71,26 +71,36 @@ jobs:
             git status --porcelain
 
         - name: Check Changes, Commit, and Push
-          run: |
-              # Check if there are any changes (staged or unstaged)
-              # git status --porcelain will output lines if there are changes
-              if [[ -n "$(git status --porcelain)" ]]; then
-                echo "Changes detected. Proceeding with commit and push."
+          uses: stefanzweifel/git-auto-commit-action@v5
+          with:
+            file_pattern: 'Content/**'
+            run: |
+              CHANGES_COUNT=$(git status --porcelain | wc -l)
+              TODAY_DATE=$(date '+%y%m%d%H%M')
+              COMMIT_MESSAGE="Bot:- ${TODAY_DATE} - ${CHANGES_COUNT} new changes"
+              echo "COMMIT_MESSAGE=${COMMIT_MESSAGE}" >> $GITHUB_ENV
+            commit_message: "${COMMIT_MESSAGE}"
+          
+          # run: |
+          #     # Check if there are any changes (staged or unstaged)
+          #     # git status --porcelain will output lines if there are changes
+          #     if [[ -n "$(git status --porcelain)" ]]; then
+          #       echo "Changes detected. Proceeding with commit and push."
     
-                TODAY_DATE=$(date '+%y%m%d%H%M')
-                CHANGES_COUNT=$(git status --porcelain | wc -l | xargs)
-                COMMIT_MESSAGE="Bot:- ${TODAY_DATE} - ${CHANGES_COUNT} new changes"        
-                git add .
-                git commit -m "${COMMIT_MESSAGE}"
+          #       TODAY_DATE=$(date '+%y%m%d%H%M')
+          #       CHANGES_COUNT=$(git status --porcelain | wc -l | xargs)
+          #       COMMIT_MESSAGE="Bot:- ${TODAY_DATE} - ${CHANGES_COUNT} new changes"        
+          #       git add .
+          #       git commit -m "${COMMIT_MESSAGE}"
     
-                # Ensure your runner has credentials (PAT via checkout or SSH key) to push
-                git push origin ${{ github.head_ref }}
+          #       # Ensure your runner has credentials (PAT via checkout or SSH key) to push
+          #       git push origin ${{ github.head_ref }}
     
-                echo "Changes pushed successfully."
+          #       echo "Changes pushed successfully."
 
-              else
-                echo "No changes detected. Nothing to commit or push."
-                fi
+          #     else
+          #       echo "No changes detected. Nothing to commit or push."
+          #       fi
 
   build-linux:
     runs-on: ubuntu-latest
