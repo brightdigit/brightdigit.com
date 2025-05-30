@@ -19,7 +19,7 @@ concurrency:
 jobs:
   automate-content:
       if: ${{ inputs.automate_content != '' }}
-      runs-on: [self-hosted, macOS]
+      runs-on: ubuntu-latest
       concurrency:
           group: automate-content
           cancel-in-progress: true
