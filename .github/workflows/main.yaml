@@ -43,25 +43,25 @@ jobs:
                 echo "SKIP_BUILD_OPTION=" >> $GITHUB_ENV
               fi
               
-          - name: Import Mailchimp
-            env:
-                MAILCHIMP_API_KEY: ${{ secrets.MAILCHIMP_API_KEY }}
-                MAILCHIMP_LIST_ID: ${{ secrets.MAILCHIMP_LIST_ID }}
-            run: |
-                swift run ${SKIP_BUILD_OPTION:-} brightdigitwg \
-                  import mailchimp \
-                    --mailchimp-api-key=$MAILCHIMP_API_KEY \
-                    --mailchimp-list-id=$MAILCHIMP_LIST_ID \
-                    --export-markdown-directory=Content/newsletters
-
-          # - name: Import Podcast
+          # - name: Import Mailchimp
           #   env:
-          #     YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          #       MAILCHIMP_API_KEY: ${{ secrets.MAILCHIMP_API_KEY }}
+          #       MAILCHIMP_LIST_ID: ${{ secrets.MAILCHIMP_LIST_ID }}
           #   run: |
           #       swift run ${SKIP_BUILD_OPTION:-} brightdigitwg \
-          #         import podcast \
-          #           --youtube-api-key=$YOUTUBE_API_KEY \
-          #           --export-markdown-directory Content/episodes
+          #         import mailchimp \
+          #           --mailchimp-api-key=$MAILCHIMP_API_KEY \
+          #           --mailchimp-list-id=$MAILCHIMP_LIST_ID \
+          #           --export-markdown-directory=Content/newsletters
+
+          - name: Import Podcast
+            env:
+              YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+            run: |
+                swift run ${SKIP_BUILD_OPTION:-} brightdigitwg \
+                  import podcast \
+                    --youtube-api-key=$YOUTUBE_API_KEY \
+                    --export-markdown-directory Content/episodes
 
           - name: Configure Git
             run: |
