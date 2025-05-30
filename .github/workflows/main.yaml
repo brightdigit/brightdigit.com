@@ -48,33 +48,27 @@ jobs:
                 MAILCHIMP_API_KEY: ${{ secrets.MAILCHIMP_API_KEY }}
                 MAILCHIMP_LIST_ID: ${{ secrets.MAILCHIMP_LIST_ID }}
             run: |
-                echo "Importing Mailchimp..."
-
                 swift run $SKIP_BUILD_OPTION brightdigitwg \
                   import mailchimp \
                     --mailchimp-api-key=$MAILCHIMP_API_KEY \
                     --mailchimp-list-id=$MAILCHIMP_LIST_ID \
                     --export-markdown-directory=Content/newsletters
 
-                echo "Mailchimp import finished."
-
           - name: Import Podcast
             env:
               YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
             run: |
-                echo "Importing Podcast..."
-
                 swift run $SKIP_BUILD_OPTION brightdigitwg \
                   import podcast \
                     --youtube-api-key=$YOUTUBE_API_KEY \
                     --export-markdown-directory Content/episodes
-                
-                    echo "Podcast import finished."
 
           - name: Configure Git
             run: |
               git config user.name "github-actions[bot]"
               git config user.email "github-actions[bot]@users.noreply.github.com"
+              echo "Current git status (porcelain):"
+              git status --porcelain
 
           - name: Check Changes, Commit, and Push
             run: |
