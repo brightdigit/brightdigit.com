@@ -18,80 +18,78 @@ concurrency:
 
 jobs:
   automate-content:
-      if: ${{ inputs.automate_content != '' }}
-      runs-on: ubuntu-latest
-      container:
-        image: brightdigit/publish-xml
-      concurrency:
-          group: automate-content
-          cancel-in-progress: true
+    if: ${{ inputs.automate_content != '' }}
+    runs-on: [self-hosted, macOS]
+    concurrency:
+        group: automate-content
+        cancel-in-progress: true
 
-      steps:
-          - name: Checkout code
-            uses: actions/checkout@v4
-            with:
-              fetch-depth: 0
+    steps:
+        - name: Checkout code
+          uses: actions/checkout@v4
+          with:
+            fetch-depth: 0
 
-          - name: Determine Skip Build Option
-            env:
-              INPUT_SKIP_BUILD: ${{ github.event.inputs.skip_build }}
-            run: |
-              if [[ "${INPUT_SKIP_BUILD}" == "true" ]]; then
-                echo "Build will be skipped (--skip-build option will be used)"
-                echo "SKIP_BUILD_OPTION=--skip-build" >> $GITHUB_ENV
-              
-                else
-                echo "Build will NOT be skipped (--skip-build option will be empty)"
-                echo "SKIP_BUILD_OPTION=" >> $GITHUB_ENV
-              fi
-              
-          - name: Import Mailchimp
-            env:
-                MAILCHIMP_API_KEY: ${{ secrets.MAILCHIMP_API_KEY }}
-                MAILCHIMP_LIST_ID: ${{ secrets.MAILCHIMP_LIST_ID }}
-            run: |
-                swift run $SKIP_BUILD_OPTION brightdigitwg \
-                  import mailchimp \
-                    --mailchimp-api-key=$MAILCHIMP_API_KEY \
-                    --mailchimp-list-id=$MAILCHIMP_LIST_ID \
-                    --export-markdown-directory=Content/newsletters
+        - name: Determine Skip Build Option
+          env:
+            INPUT_SKIP_BUILD: ${{ github.event.inputs.skip_build }}
+          run: |
+            if [[ "${INPUT_SKIP_BUILD}" == "true" ]]; then
+              echo "Build will be skipped (--skip-build option will be used)"
+              echo "SKIP_BUILD_OPTION=--skip-build" >> $GITHUB_ENV
+            
+              else
+              echo "Build will NOT be skipped (--skip-build option will be empty)"
+              echo "SKIP_BUILD_OPTION=" >> $GITHUB_ENV
+            fi
+            
+        - name: Import Mailchimp
+          env:
+              MAILCHIMP_API_KEY: ${{ secrets.MAILCHIMP_API_KEY }}
+              MAILCHIMP_LIST_ID: ${{ secrets.MAILCHIMP_LIST_ID }}
+          run: |
+              swift run $SKIP_BUILD_OPTION brightdigitwg \
+                import mailchimp \
+                  --mailchimp-api-key=$MAILCHIMP_API_KEY \
+                  --mailchimp-list-id=$MAILCHIMP_LIST_ID \
+                  --export-markdown-directory=Content/newsletters
 
-          - name: Import Podcast
-            env:
-              YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
-            run: |
-                swift run $SKIP_BUILD_OPTION brightdigitwg \
-                  import podcast \
-                    --youtube-api-key=$YOUTUBE_API_KEY \
-                    --export-markdown-directory Content/episodes
+        - name: Import Podcast
+          env:
+            YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          run: |
+              swift run $SKIP_BUILD_OPTION brightdigitwg \
+                import podcast \
+                  --youtube-api-key=$YOUTUBE_API_KEY \
+                  --export-markdown-directory Content/episodes
 
-          - name: Configure Git
-            run: |
-              git config user.name "github-actions[bot]"
-              git config user.email "github-actions[bot]@users.noreply.github.com"
-              echo "Current git status (porcelain):"
-              git status --porcelain
+        - name: Configure Git
+          run: |
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            echo "Current git status (porcelain):"
+            git status --porcelain
 
-          - name: Check Changes, Commit, and Push
-            run: |
-                # Check if there are any changes (staged or unstaged)
-                # git status --porcelain will output lines if there are changes
-                if [[ -n "$(git status --porcelain)" ]]; then
-                  echo "Changes detected. Proceeding with commit and push."
-      
-                  TODAY_DATE=$(date '+%y%m%d%H%M')
-                  CHANGES_COUNT=$(git status --porcelain | wc -l | xargs)
-                  COMMIT_MESSAGE="Bot:- ${TODAY_DATE} - ${CHANGES_COUNT} new changes"        
-                  git add .
-                  git commit -m "${COMMIT_MESSAGE}"
-      
-                  # Ensure your runner has credentials (PAT via checkout or SSH key) to push
-                  git push origin ${{ github.head_ref }}
-      
-                  echo "Changes pushed successfully."
+        - name: Check Changes, Commit, and Push
+          run: |
+              # Check if there are any changes (staged or unstaged)
+              # git status --porcelain will output lines if there are changes
+              if [[ -n "$(git status --porcelain)" ]]; then
+                echo "Changes detected. Proceeding with commit and push."
+    
+                TODAY_DATE=$(date '+%y%m%d%H%M')
+                CHANGES_COUNT=$(git status --porcelain | wc -l | xargs)
+                COMMIT_MESSAGE="Bot:- ${TODAY_DATE} - ${CHANGES_COUNT} new changes"        
+                git add .
+                git commit -m "${COMMIT_MESSAGE}"
+    
+                # Ensure your runner has credentials (PAT via checkout or SSH key) to push
+                git push origin ${{ github.head_ref }}
+    
+                echo "Changes pushed successfully."
 
-                else
-                  echo "No changes detected. Nothing to commit or push."
+              else
+                echo "No changes detected. Nothing to commit or push."
                 fi
 
   build-linux:
