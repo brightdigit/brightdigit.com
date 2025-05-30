@@ -70,16 +70,18 @@ jobs:
             echo "Current git status (porcelain):"
             git status --porcelain
 
-        - name: Check Changes, Commit, and Push
+        - name: Prepare Commit Message
+          run: |
+            CHANGES_COUNT=$(git status --porcelain | wc -l)
+            TODAY_DATE=$(date '+%y%m%d%H%M')
+            COMMIT_MESSAGE="Bot:- ${TODAY_DATE} - ${CHANGES_COUNT} new changes"
+            echo "COMMIT_MESSAGE=${COMMIT_MESSAGE}" >> $GITHUB_ENV
+        
+        - name: Commit Changes When Found
           uses: stefanzweifel/git-auto-commit-action@v5
           with:
             file_pattern: 'Content/**'
-            run: |
-              CHANGES_COUNT=$(git status --porcelain | wc -l)
-              TODAY_DATE=$(date '+%y%m%d%H%M')
-              COMMIT_MESSAGE="Bot:- ${TODAY_DATE} - ${CHANGES_COUNT} new changes"
-              echo "COMMIT_MESSAGE=${COMMIT_MESSAGE}" >> $GITHUB_ENV
-            commit_message: "${COMMIT_MESSAGE}"
+            commit_message: "${{ env.COMMIT_MESSAGE }}"
           
           # run: |
           #     # Check if there are any changes (staged or unstaged)
