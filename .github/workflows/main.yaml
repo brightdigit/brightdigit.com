@@ -237,7 +237,7 @@ jobs:
           else
             echo "PUBLISHING_MODE=drafts" >> $GITHUB_ENV
             echo "PROD_FLAG=" >> $GITHUB_ENV
-          # fi
+          fi
 
       - name: Run Brightdigitwg
         run: |
