@@ -138,5 +138,4 @@ let package = Package(
         "swift run swiftlint"
       ]
     ]
-  ]).write()
-#endif
+)
