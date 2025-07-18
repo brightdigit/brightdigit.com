@@ -161,7 +161,7 @@ If you want to learn more about Firebase and Google Cloud Platform, I highly rec
 
 ## Final Tips
 
-We know we're leaving you with a lot of information, so as a final tip: **When considering any solution, check to see if there are any big companies using them.** The best backend for your iOS app needs to be something that's rock-solid and stable and gets a lot of support, so it’s worth checking out what the big players are doing. **You can be sure companies with a lot of money to spend will have taken the time to research and vet these solutions, so as a general rule their choices will be a little bit safer than an under-researched option.**
+We know we're leaving you with a lot of information, luckily **[we've created a cheat sheet based on this article to help you get a summary.](https://github.com/brightdigit/iOS-backend-cheat-sheet)** As a final tip: **When considering any solution, check to see if there are any big companies using them.** The best backend for your iOS app needs to be something that's rock-solid and stable and gets a lot of support, so it’s worth checking out what the big players are doing. **You can be sure companies with a lot of money to spend will have taken the time to research and vet these solutions, so as a general rule their choices will be a little bit safer than an under-researched option.**
 
 Typically, large companies will go with one of the big cloud service providers: [AWS](https://aws.amazon.com) or [Microsoft Azure](https://azure.microsoft.com); Smaller companies will go with [Firebase](https://firebase.google.com), [CloudKit](https://developer.apple.com/icloud/cloudkit/) or host on [Linode](https://www.linode.com) or [DigitalOcean](https://www.digitalocean.com). 
 
