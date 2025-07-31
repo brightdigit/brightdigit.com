@@ -1,7 +1,7 @@
 ---
 title: Milk Diary with Kaya Thomas
 date: 2025-07-31 19:07
-description: 'Kaya Thomas (<a href="https://kayathomas.is/">kayathomas.is</a>) comes back after half a decade to tell us about how motherhood inspired her new app Milk Diary (<a href="https://milkdiary.com/">milkdiary.com</a>). She talks about using new APIs like Foundation Models, SpeechAnalyzer, and AlarmKit to handle the complex stuff other  feeding apps miss: intelligent scheduling and reminders, combo feeding that''s actually easy to track, hassle-free tracking for twins and smart milk management.'
+description: 'Kaya Thomas comes back after half a decade to tell us about how motherhood inspired her new app Milk Diary. She talks about using new APIs like Foundation Models, SpeechAnalyzer, and AlarmKit to handle the complex stuff other  feeding apps miss: intelligent scheduling and reminders, combo feeding that''s actually easy to track, hassle-free tracking for twins and smart milk management.'
 featuredImage: https://img.transistor.fm/16jpeOmzDYrRG-NgyVS5Cof63Kdx_GoMrTvscKq5RGY/rs:fill:0:0:1/w:1400/h:1400/q:60/mb:500000/aHR0cHM6Ly9pbWct/dXBsb2FkLXByb2R1/Y3Rpb24udHJhbnNp/c3Rvci5mbS8yMDk5/YjNjOTk3ZjI2NWNk/ZDZjMTVmMGZiMTBl/MDAzNi5qcGc.jpg
 youtubeID: yGtSQzb4yqM
 audioDuration: 2018
