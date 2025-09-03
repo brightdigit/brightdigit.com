@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:brightdigit.com}",
+            "name": "Debug brightdigitwg",
+            "program": "${workspaceFolder:brightdigit.com}/.build/debug/brightdigitwg",
+            "preLaunchTask": "swift: Build Debug brightdigitwg"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:brightdigit.com}",
+            "name": "Release brightdigitwg",
+            "program": "${workspaceFolder:brightdigit.com}/.build/release/brightdigitwg",
+            "preLaunchTask": "swift: Build Release brightdigitwg"
+        }
+    ]
+}
