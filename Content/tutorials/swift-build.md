@@ -1,13 +1,15 @@
 ---
-title: Introducing swift-build: A GitHub Action for Swift
+title: Introducing [swift-build](https://github.com/brightdigit/swift-build): A GitHub Action for Swift
 date: 2025-09-03 00:00
-description: Learn how swift-build simplifies Swift CI/CD with little configuration, intelligent caching, and comprehensive platform support. A step-by-step breakdown of the composite GitHub Action that eliminates CI/CD complexity for Swift developers.
+description: Learn how [swift-build](https://github.com/brightdigit/swift-build) simplifies Swift CI/CD with little configuration, intelligent caching, and comprehensive platform support. A step-by-step breakdown of the composite GitHub Action that eliminates CI/CD complexity for Swift developers.
 tags: swift, github-actions, ci-cd, swift-package-manager, xcode, testing
-featuredImage: /media/tutorials/swift-build/swift-build-github-action-hero.png
+featuredImage: /media/tutorials/swift-build/swift-build-github-action-hero.webp
 subscriptionCTA: Want to stay up-to-date with the latest Swift development tools and CI/CD best practices? Sign up for our newsletter to get notified about new tutorials and tools.
 ---
 
-I love continuous integration. It verifies every commit and pull request passes every check you put to it. Over the years I've used a combination of commands to ensure by Full Stack Swift packages work on a variety of platforms and OSes - whether it's a new Ubuntu distribution for hosting a server application or ensuring the last package won't break on a new Apple Vision Pro. I want my Swift code to work everywhere.
+I love [continuous integration](https://brightdigit.com/blog/2020/03/02/ios-continuous-integration-avoid-merge-hell/). It verifies every commit and pull request passes every check you put to it. Over the years I've used a combination of commands to ensure by Full Stack Swift packages work on a variety of platforms and OSes - whether it's a new Ubuntu distribution for hosting a server application or ensuring the last package won't break on a new Apple Vision Pro. I want my Swift code to work everywhere.
+
+> transistor https://share.transistor.fm/s/a14f868f
 
 Over the years I've found manually setting up different commands and checks for different platforms tedious. I've also found ways to take advantage of caching where I can. After dealing with these challenges repeatedly across multiple projects, I decided to build something any one can use: [`swift-build`](https://github.com/brightdigit/swift-build) - a comprehensive GitHub Action that handles all the complexity for you.
 
@@ -26,7 +28,7 @@ Over the years I've found manually setting up different commands and checks for 
 
 ## The Problem with Existing Swift CI/CD Solutions <a id="the-problem-with-existing-swift-cicd-solutions"></a>
 
-Before `swift-build`, I've found issues when setting up continuous integration:
+Before [`swift-build`](https://github.com/brightdigit/swift-build), I've found issues when setting up continuous integration:
 
 1. **Platform fragmentation**: Testing on Ubuntu requires different setup than macOS/iOS testing
 2. **Caching complexity**: Each platform needs different caching strategies for optimal performance
@@ -34,9 +36,9 @@ Before `swift-build`, I've found issues when setting up continuous integration:
 4. **Version management**: Supporting multiple Swift versions across different platforms
 5. **Repetitive setup**: Copy-pasting similar workflows across multiple repositories
 
-## What Makes swift-build Different <a id="what-makes-swift-build-different"></a>
+## What Makes [swift-build](https://github.com/brightdigit/swift-build) Different <a id="what-makes-swift-build-different"></a>
 
-`swift-build` basically needs little configuration and provides:
+[`swift-build`](https://github.com/brightdigit/swift-build) basically needs little configuration and provides:
 
 - **Complete platform coverage**: Ubuntu, iOS, watchOS, tvOS, visionOS, and macOS
 - **Intelligent caching**: Platform-specific strategies that actually improve build times
@@ -46,7 +48,7 @@ Before `swift-build`, I've found issues when setting up continuous integration:
 
 ### Example: Real-World Matrix Testing
 
-Here's the actual workflow from [SyntaxKit](https://github.com/brightdigit/SyntaxKit) showing how `swift-build` handles comprehensive matrix testing:
+Here's the actual workflow from [SyntaxKit](https://github.com/brightdigit/SyntaxKit) showing how [`swift-build`](https://github.com/brightdigit/swift-build) handles comprehensive matrix testing:
 
 ```yaml
 name: SyntaxKit
@@ -143,11 +145,11 @@ This real-world configuration tests across:
 
 All running in parallel with intelligent caching for maximum efficiency.
 
-But the most powerful feature of `swift-build` is its matrix testing capabilities.
+But the most powerful feature of [`swift-build`](https://github.com/brightdigit/swift-build) is its matrix testing capabilities.
 
 ## 🚀 Matrix Testing: The Game Changer <a id="-matrix-testing-the-game-changer"></a>
 
-**Matrix testing is where `swift-build` truly shines.** `swift-build` makes it incredibly simple to test your Swift packages across multiple platforms simultaneously.
+**Matrix testing is where [`swift-build`](https://github.com/brightdigit/swift-build) truly shines.** [`swift-build`](https://github.com/brightdigit/swift-build) makes it incredibly simple to test your Swift packages across multiple platforms simultaneously.
 
 ### Why Matrix Testing Matters
 
@@ -157,7 +159,7 @@ Modern Swift development requires testing across multiple platforms:
 - **Version compatibility** requires testing against multiple Swift and Xcode versions
 - **Device diversity** demands testing on different simulators and devices
 
-### The swift-build Matrix Advantage
+### The [swift-build](https://github.com/brightdigit/swift-build) Matrix Advantage
 
 ```yaml
 name: Comprehensive Testing
@@ -205,9 +207,9 @@ This approach transforms what used to be hundreds of lines of complex YAML confi
 
 A [composite action](https://docs.github.com/en/actions/creating-actions/creating-a-composite-action) is a GitHub Actions feature that allows you to combine multiple workflow steps into a single, reusable action. Think of it as a "workflow within a workflow" - instead of writing the same sequence of steps repeatedly across different repositories, you can package them into a composite action that others can use with a single line.
 
-`swift-build` is built as a composite action, which means it encapsulates all the complexity of Swift CI/CD setup - from platform detection and caching strategies to build execution - into a single, easy-to-use action that you can drop into any workflow.
+[`swift-build`](https://github.com/brightdigit/swift-build) is built as a composite action, which means it encapsulates all the complexity of Swift CI/CD setup - from platform detection and caching strategies to build execution - into a single, easy-to-use action that you can drop into any workflow.
 
-Let's walk through each step of the `swift-build` composite action to understand how it works under the hood.
+Let's walk through each step of the [`swift-build`](https://github.com/brightdigit/swift-build) composite action to understand how it works under the hood.
 
 ### Step 1: Environment Detection and Setup
 
@@ -250,7 +252,7 @@ This step is crucial because different Apple platforms require different SDK con
 
 ### Step 3: Intelligent Caching Strategy
 
-This is where `swift-build` really shines. It implements a two-tier caching strategy:
+This is where [`swift-build`](https://github.com/brightdigit/swift-build) really shines. It implements a two-tier caching strategy:
 
 #### Tier 1: Xcode Derived Data Caching (xcodebuild)
 
@@ -432,16 +434,16 @@ runs-on: ${{ matrix.os }}
 
 ### Getting More Help
 
-For detailed troubleshooting guides, configuration options, and community support, check out the [swift-build README](https://github.com/brightdigit/swift-build#readme) on GitHub. The repository includes:
+For detailed troubleshooting guides, configuration options, and community support, check out the [[swift-build](https://github.com/brightdigit/swift-build) README](https://github.com/brightdigit/swift-build#readme) on GitHub. The repository includes:
 
 - Complete parameter reference
 - Advanced configuration examples
 - Known issues and workarounds
 - Community discussions and bug reports
 
-## Real-World Usage: How I Use swift-build <a id="real-world-usage-how-i-use-swift-build"></a>
+## Real-World Usage: How I Use [swift-build](https://github.com/brightdigit/swift-build) <a id="real-world-usage-how-i-use-swift-build"></a>
 
-I use `swift-build` across all my Swift packages and repositories. It's not just a tool I built for others—it's the foundation of my own development workflow. Here are some examples of how it's implemented in my projects:
+I use [`swift-build`](https://github.com/brightdigit/swift-build) across all my Swift packages and repositories. It's not just a tool I built for others—it's the foundation of my own development workflow. Here are some examples of how it's implemented in my projects:
 
 ### BrightDigit Swift Packages
 - **[ThirtyTo](https://github.com/brightdigit/ThirtyTo)** - Encode, Decode and Generate Random String in Base32Crockford Format
@@ -450,18 +452,18 @@ I use `swift-build` across all my Swift packages and repositories. It's not just
 - **[Sublimation](https://github.com/brightdigit/Sublimation)** - Enable automatic discovery of your local development server on the fly. Turn your Server-Side Swift app from a mysterious vapor to a tangible solid server
 - **[Bushel](https://apps.apple.com/app/bushel/id1234567890)** - Available on the Mac App Store
 
-Each of these repositories uses `swift-build` with matrix testing to ensure compatibility across:
+Each of these repositories uses [`swift-build`](https://github.com/brightdigit/swift-build) with matrix testing to ensure compatibility across:
 - **Ubuntu** (for server-side Swift compatibility)
 - **macOS** (for Apple platform development)
 - **iOS** (for mobile app integration)
 - **watchOS** (for Apple Watch support)
 
 ### The Result
-By using `swift-build` consistently across all my projects, I've eliminated the CI/CD maintenance burden while ensuring comprehensive testing coverage. Every package gets the same high-quality testing pipeline with zero additional configuration.
+By using [`swift-build`](https://github.com/brightdigit/swift-build) consistently across all my projects, I've eliminated the CI/CD maintenance burden while ensuring comprehensive testing coverage. Every package gets the same high-quality testing pipeline with zero additional configuration.
 
-## The Power of swift-build <a id="the-power-of-swift-build"></a>
+## The Power of [swift-build](https://github.com/brightdigit/swift-build) <a id="the-power-of-swift-build"></a>
 
-`swift-build` represents a new approach to Swift CI/CD: **convention over configuration**. By encoding best practices into a reusable action, it eliminates the cognitive overhead of managing complex build pipelines.
+[`swift-build`](https://github.com/brightdigit/swift-build) represents a new approach to Swift CI/CD: **convention over configuration**. By encoding best practices into a reusable action, it eliminates the cognitive overhead of managing complex build pipelines.
 
 The goal is simple: let developers focus on writing great Swift code, not wrestling with CI/CD configuration.
 
@@ -471,9 +473,9 @@ Continuous integration is a fundamental practice in modern software development.
 
 ### Articles on Continuous Integration
 
-- **[iOS Continuous Integration: How To Avoid Merge Hell](https://brightdigit.com/blog/2020/03/02/ios-continuous-integration-avoid-merge-hell/)** - A comprehensive introduction to continuous integration for iOS development, covering the benefits, challenges, and best practices for avoiding "merge hell"
+- **[iOS Continuous Integration: How To Avoid Merge Hell](https://brightdigit.com/articles/ios-continuous-integration-avoid-merge-hell/)** - A comprehensive introduction to continuous integration for iOS development, covering the benefits, challenges, and best practices for avoiding "merge hell"
 
-- **[Swift Package Continuous Integration Guide](https://learningswift.brightdigit.com/swift-package-continuous-integration-guide/)** - A detailed guide covering Travis CI, GitHub Actions, Linux support, code coverage, and code quality tools for Swift packages
+- **[How to automate iOS development](https://brightdigit.com/articles/ios-automation/)** - Learn about 5 automation tools you can use right now to automate your iOS development, saving time and making your code more efficient and less repetitive
 
 ### Podcast Episodes on CI/CD and Automation
 
@@ -483,17 +485,11 @@ Continuous integration is a fundamental practice in modern software development.
 
 - **[Episode 84: Automation Fun with Jared Sorge](https://share.transistor.fm/s/bab83e8a)** - Exploring automation tools and practices that can streamline your development workflow
 
-- **[Episode 6: Project Estimation](https://share.transistor.fm/s/00603d96)** - Includes discussion of continuous integration options for iOS projects and how CI fits into project planning
-
-### Related Topics
-
-- **[Episode 15: Test-Driven Development with Joshua Greene and Michael Katz](https://share.transistor.fm/s/00603d96)** - Understanding how testing practices integrate with continuous integration
-
 - **[Episode 80: A Tour of Software Testing with Christina Moulton](https://share.transistor.fm/s/00603d96)** - Comprehensive look at testing strategies that work well with CI/CD pipelines
 
-These resources provide the foundation for understanding why `swift-build` was created and how it fits into the broader ecosystem of Swift development tools and practices.
+These resources provide the foundation for understanding why [`swift-build`](https://github.com/brightdigit/swift-build) was created and how it fits into the broader ecosystem of Swift development tools and practices.
 
 ---
 
-Ready to simplify your Swift CI/CD? Check out [`swift-build` on GitHub](https://github.com/brightdigit/swift-build) and see how it can streamline your development workflow.
+Ready to simplify your Swift CI/CD? Check out [[`swift-build`](https://github.com/brightdigit/swift-build) on GitHub](https://github.com/brightdigit/swift-build) and see how it can streamline your development workflow.
 

@@ -66,7 +66,7 @@
 /wwdc-2019-roundup-podcast-episode	/tutorials/wwdc-2019-roundup-podcast-episode
 /independent-watch-app-healthkit-permissions	/tutorials/independent-watch-app-healthkit-permissions
 /asynchronous-multi-threaded-parallel-world-of-swift	/tutorials/asynchronous-multi-threaded-parallel-world-of-swift
-/swift-package-continuous-integration-guide	/tutorials/swift-package-continuous-integration-guide
+/swift-package-continuous-integration-guide	/tutorials/swift-build
 /flatmap-double-optionals-functional-programming	/tutorials/flatmap-double-optionals-functional-programming
 /swift-on-arm-supporting-arm-in-swift-package-ci	/tutorials/swift-on-arm-supporting-arm-in-swift-package-ci
 /combine-corelocation-swiftui-delegates	/tutorials/combine-corelocation-swiftui-delegates
@@ -77,3 +77,4 @@
 /articles/hire-an-ios-developer /articles/want-to-hire-ios-developer
 /episodes/173-now-what-with-adam-rush /episodes/173-what-s-next-with-adam-rush/
 /episodes/197-swiftui-essentials-with-natalia-panferova/ /episodes/197-swiftui-fundamentals-with-natalia-panferova/
+/tutorials/swift-package-continuous-integration-guide /tutorials/swift-build
