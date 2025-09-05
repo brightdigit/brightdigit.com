@@ -1,10 +1,15 @@
 ---
-title: Introducing [swift-build](https://github.com/brightdigit/swift-build): A GitHub Action for Swift
+title: "Introducing swift-build: A GitHub Action for Swift"
 date: 2025-09-05 00:00
-description: Learn how [swift-build](https://github.com/brightdigit/swift-build) simplifies Swift CI/CD with little configuration, intelligent caching, and comprehensive platform support. A step-by-step breakdown of the composite GitHub Action that eliminates CI/CD complexity for Swift developers.
+description: Learn how swift-build simplifies Swift CI/CD with little
+  configuration, intelligent caching, and comprehensive platform support. A
+  step-by-step breakdown of the composite GitHub Action that eliminates CI/CD
+  complexity for Swift developers.
 tags: swift, github-actions, ci-cd, swift-package-manager, xcode, testing
 featuredImage: /media/tutorials/swift-build/swift-build-github-action-hero.webp
-subscriptionCTA: Want to stay up-to-date with the latest Swift development tools and CI/CD best practices? Sign up for our newsletter to get notified about new tutorials and tools.
+subscriptionCTA: Want to stay up-to-date with the latest Swift development tools
+  and CI/CD best practices? Sign up for our newsletter to get notified about new
+  tutorials and tools.
 ---
 
 I love [continuous integration](https://brightdigit.com/blog/2020/03/02/ios-continuous-integration-avoid-merge-hell/). It verifies every commit and pull request passes every check you put to it. Over the years I've used a combination of commands to ensure by Full Stack Swift packages work on a variety of platforms and OSes - whether it's a new Ubuntu distribution for hosting a server application or ensuring the last package won't break on a new Apple Vision Pro. I want my Swift code to work everywhere.
