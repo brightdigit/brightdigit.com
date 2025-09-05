@@ -1,6 +1,6 @@
 ---
 title: Introducing [swift-build](https://github.com/brightdigit/swift-build): A GitHub Action for Swift
-date: 2025-09-03 00:00
+date: 2025-09-05 00:00
 description: Learn how [swift-build](https://github.com/brightdigit/swift-build) simplifies Swift CI/CD with little configuration, intelligent caching, and comprehensive platform support. A step-by-step breakdown of the composite GitHub Action that eliminates CI/CD complexity for Swift developers.
 tags: swift, github-actions, ci-cd, swift-package-manager, xcode, testing
 featuredImage: /media/tutorials/swift-build/swift-build-github-action-hero.webp
