@@ -1,17 +1,18 @@
 ---
-title: "Announcing SyntaxKit: From SwiftSyntax Frustration to AI-Assisted Development"
+title: "Building SyntaxKit with AI: Swift Code Generation Made Simple"
 date: 2025-09-29 00:00
 description: Learn how SyntaxKit simplifies Swift code generation with a declarative, type-safe approach. Discover the journey from SwiftSyntax frustration to AI-assisted development, including lessons learned about working with AI tools and building better developer experiences.
 tags: swift, swift-syntax, macros, ai-assisted-development, dsl, code-generation, swift-package-manager
-featuredImage: /media/tutorials/syntaxkit/syntaxkit-hero.webp
+featuredImage: /media/tutorials/syntaxkit-swift-code-generation/syntaxkit-hero.webp
 subscriptionCTA: Want to stay up-to-date with the latest Swift development tools and AI-assisted development techniques? Sign up for our newsletter to get notified about new tutorials and tools.
 ---
 
-# Announcing SyntaxKit: From SwiftSyntax Frustration to AI-Assisted Development
 
-When Swift Macros were released in 2023, I thought it would be a great opportunity to augment existing Swift code effectively. However, working with SwiftSyntax quickly made me realize the challenge I was going to face. I had encountered SwiftSyntax before and knew exactly how difficult it was to use its various patterns for programmatic Swift code generation. In many ways, [those of us not on the Apple payroll aren't the target audience for creating Macros](https://youtu.be/MroBR2ProT0?si=ZaT77u2hj8fpgjIi). If only there were an easier way to create Swift code that was simpler than SwiftSyntax but more type-safe than creating mere strings.
+**[SyntaxKit](https://github.com/brightdigit/SyntaxKit)** is a Swift package that provides a declarative, type-safe approach to programmatic Swift code generation. Instead of wrestling with SwiftSyntax's AST manipulation, SyntaxKit uses result builders to make code generation feel natural and Swift-like.
 
-That's where **SyntaxKit** comes in - a Swift package I built to provide a declarative, type-safe approach to programmatic Swift code generation. Instead of wrestling with SwiftSyntax's verbose AST manipulation or risking string concatenation errors, SyntaxKit uses result builders to make code generation feel natural and Swift-like.
+📚 **[View Documentation](https://swiftpackageindex.com/brightdigit/SyntaxKit/main/documentation/syntaxkit)** | 🐙 **[GitHub Repository](https://github.com/brightdigit/SyntaxKit)**
+
+When [Swift Macros](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/macros/) were released in 2023, I thought it would be a great opportunity to augment existing Swift code effectively. However, working with SwiftSyntax quickly made me realize the challenge I was going to face. I had encountered SwiftSyntax before and knew exactly how difficult it was to use its various patterns for programmatic Swift code generation. In many ways, [those of us not on the Apple payroll aren't the target audience for creating Macros](https://youtu.be/MroBR2ProT0?si=ZaT77u2hj8fpgjIi). If only there were an easier way to create Swift code that was simpler than SwiftSyntax but more type-safe than creating mere strings.
 
 ## The SwiftSyntax Challenge
 
@@ -52,7 +53,7 @@ That's just for creating a single property! The SwiftSyntax AST for even a simpl
 
 ## My Fascination with DSLs
 
-Before diving into the solution, I should mention my fascination with Domain Specific Languages (DSLs). Ever since I saw Zach's presentation on DeckUI, I've been captivated by the power of Swift's result builders. SwiftUI itself is a perfect example - it makes UI creation feel natural and declarative. I've previously built PackageDSL to simplify creating large Swift packages using a similar approach.
+Before diving into the solution, I should mention my fascination with Domain Specific Languages (DSLs). Ever since I saw [Zach's presentation on DeckUI](https://www.youtube.com/watch?v=8Qo8zPWdwek), I've been captivated by the power of Swift's [result builders](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/resultbuilders/). [SwiftUI](https://developer.apple.com/xcode/swiftui/) itself is a perfect example - it makes UI creation feel natural and declarative. I've previously built [PackageDSL](https://github.com/brightdigit/PackageDSL) to simplify creating large Swift packages using a similar approach.
 
 The elegance of these DSLs inspired me: what if we could bring that same declarative simplicity to Swift code generation?
 
@@ -60,7 +61,7 @@ The elegance of these DSLs inspired me: what if we could bring that same declara
 
 Like many developers, I was initially skeptical of AI tools. I'd been burnt by trending technologies before - VR, Bitcoin, NFTs, and countless failed startups built on questionable foundations. So when AI development tools started gaining traction, I approached them with healthy skepticism.
 
-However, after experiencing ChatGPT's capabilities firsthand, and later working with tools like Cursor and Claude Code, I began to see their potential. These weren't just fancy autocomplete tools - they were capable coding partners that could understand context, generate complex implementations, and iterate on solutions.
+However, after experiencing [ChatGPT](https://chat.openai.com/)'s capabilities firsthand, and later working with tools like [Cursor](https://cursor.sh/) and [Claude Code](https://claude.ai/), I began to see their potential. These weren't just fancy autocomplete tools - they were capable coding partners that could understand context, generate complex implementations, and iterate on solutions.
 
 The turning point came when I realized I had a perfect use case: building SyntaxKit. I had three clear pieces:
 
@@ -74,7 +75,7 @@ This was a perfect scenario for AI-assisted development.
 
 ### The Failed LLM Approach
 
-My first instinct was ambitious: create a custom LLM specifically trained to generate Swift Macro code. I was inspired by the [Swift AST Explorer](https://swift-ast-explorer.com) - a fantastic tool that visualizes Swift code as Abstract Syntax Trees. I spent considerable time researching fine-tuning approaches, mapping out training pipelines, and even discussing comprehensive training strategies with Claude.
+My first instinct was ambitious: create a custom LLM specifically trained to generate Swift Macro code. I was inspired by the [Swift AST Explorer](https://swift-ast-explorer.com) - a fantastic tool that visualizes Swift code as Abstract Syntax Trees. I spent considerable time researching fine-tuning approaches, mapping out training pipelines, and even discussing comprehensive training strategies with [Claude](https://claude.ai/).
 
 The Swift AST Explorer became crucial for understanding the relationship between Swift code and its SwiftSyntax representation. I could input simple Swift constructs and immediately see the corresponding AST structure, which seemed perfect for generating training data.
 
@@ -87,7 +88,7 @@ This failure taught me an important lesson: sometimes the "AI solution" isn't th
 
 ### Success with Cursor
 
-My breakthrough came with Cursor. Instead of training a custom model, I used Cursor's interactive LLM capabilities to iteratively build SyntaxKit components.
+My breakthrough came with [Cursor](https://cursor.sh/). Instead of training a custom model, I used Cursor's interactive LLM capabilities to iteratively build SyntaxKit components.
 
 The process was surprisingly effective:
 
@@ -105,7 +106,7 @@ These tests became crucial for validating that the generated SwiftSyntax code co
 
 ### Transitioning to Claude Code
 
-As SyntaxKit grew more complex, I transitioned from Cursor to Claude Code for more sophisticated project management and planning capabilities. Claude Code's ability to understand project context and maintain consistency across multiple components proved invaluable for the larger architectural decisions.
+As SyntaxKit grew more complex, I transitioned from [Cursor](https://cursor.sh/) to [Claude Code](https://claude.ai/) for more sophisticated project management and planning capabilities. Claude Code's ability to understand project context and maintain consistency across multiple components proved invaluable for the larger architectural decisions.
 
 ## What is SyntaxKit?
 
@@ -140,7 +141,7 @@ Working with AI tools to build SyntaxKit taught me several important lessons:
 ### Plan and Break Down Projects
 One of the most crucial lessons is the importance of planning and breaking projects into smaller, manageable pieces. AI tools work best when given specific, focused tasks rather than trying to generate entire systems at once. Taking time to plan the overall architecture and then breaking it down into discrete components makes AI assistance much more effective.
 
-This is why tools like Cursor and Claude Code include built-in todo list functionality - they recognize that breaking work into smaller, trackable pieces is essential for effective AI-assisted development. There are even specialized tools like [Task Master](https://www.task-master.dev) that focus specifically on creating detailed task breakdowns from Product Requirements Documents (PRDs), making the planning process more systematic and comprehensive.
+This is why tools like [Cursor](https://cursor.sh/) and [Claude Code](https://claude.ai/) include built-in todo list functionality - they recognize that breaking work into smaller, trackable pieces is essential for effective AI-assisted development. There are even specialized tools like [Task Master](https://www.task-master.dev) that focus specifically on creating detailed task breakdowns from Product Requirements Documents (PRDs), making the planning process more systematic and comprehensive.
 
 ### Hold Your AI's Hand
 While AI can build entire applications, unless you're creating a quick prototype, you're best served by guiding the AI through each step of implementation. AI-generated code often lacks the architectural decisions and patterns that make code maintainable and extensible over time. The iterative approach works much better than trying to generate everything at once - think of AI as a coding partner that needs clear direction and regular feedback to produce code you'll actually want to build upon.
@@ -158,15 +159,14 @@ AI-generated code still needs human review. While the tools are incredibly capab
 
 SyntaxKit is just the beginning. I'm already exploring similar DSL approaches for other Swift development challenges:
 
-- **PackageDSL improvements**: Building on the success of SyntaxKit's patterns
-- **MistKit revival**: Using AI tools to enhance CloudKit development workflows
-- **Advanced macro capabilities**: Expanding SyntaxKit to handle more complex Swift constructs
+- **[PackageDSL](https://github.com/brightdigit/PackageDSL) improvements**: Building on the success of SyntaxKit's patterns
+- **[MistKit](https://github.com/brightdigit/MistKit) revival**: Using AI tools to enhance [CloudKit](https://developer.apple.com/documentation/cloudkit) development workflows
 
 The combination of thoughtful API design and AI-assisted implementation opens up exciting possibilities for developer tooling.
 
 ## Getting Started with SyntaxKit
 
-SyntaxKit is available as a Swift package and can be integrated into your macro projects today. The documentation includes examples for common use cases, from simple data structures to complex generic types with protocol conformances.
+SyntaxKit is available as a [Swift package](https://swift.org/package-manager/) and can be integrated into your macro projects today. The [documentation](https://swiftpackageindex.com/brightdigit/SyntaxKit/main/documentation/syntaxkit) includes examples for common use cases, from simple data structures to complex generic types with protocol conformances.
 
 Whether you're building your first Swift macro or looking to simplify existing SwiftSyntax code, SyntaxKit provides a more approachable path to programmatic Swift code generation.
 
