@@ -13,8 +13,6 @@ This is the story of how I used AI tools like [Cursor](https://cursor.sh/) and [
 
 📚 **[View Documentation](https://swiftpackageindex.com/brightdigit/SyntaxKit/main/documentation/syntaxkit)** | 🐙 **[GitHub Repository](https://github.com/brightdigit/SyntaxKit)**
 
-> youtube https://www.youtube.com/watch?v=MroBR2ProT0
-
 - [The SwiftSyntax Challenge](#the-swiftsyntax-challenge)
 - [My Fascination with DSLs](#my-fascination-with-dsls)
 - [Discovering AI as a Development Tool](#discovering-ai-as-a-development-tool)
@@ -47,6 +45,8 @@ This is the story of how I used AI tools like [Cursor](https://cursor.sh/) and [
 ### Swift Macros: The Primary Use Case
 
 Swift macros are the biggest use case for SwiftSyntax, using it as their foundation to generate code at compile time. When [Swift Macros](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/macros/) were released in 2023, they opened up new possibilities for augmenting existing Swift code effectively. However, working with SwiftSyntax quickly revealed the challenges developers would face.
+
+> youtube https://www.youtube.com/watch?v=MroBR2ProT0
 
 **Swift Macros Documentation:**
 - **[Swift Macros Documentation](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/macros/)**
