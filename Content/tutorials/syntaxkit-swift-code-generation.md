@@ -1,6 +1,6 @@
 ---
 title: "Building SyntaxKit with AI: A Developer's Journey"
-date: 2025-09-29 00:00
+date: 2025-09-27 00:00
 description: Follow the journey of building SyntaxKit using AI tools like Cursor and Claude. Learn practical lessons about AI-assisted development, from failed LLM approaches to successful iterative workflows, and discover how AI can help create better developer tools.
 tags: swift, swift-syntax, macros, ai-assisted-development, dsl, code-generation, swift-package-manager
 featuredImage: /media/tutorials/syntaxkit-swift-code-generation/syntaxkit-hero.webp
@@ -233,9 +233,11 @@ AI-generated code still needs human review. While the tools are incredibly capab
 
 <a id="a-healthy-continuous-integration-system-is-critical"></a>
 ### A Healthy Continuous Integration System Is Critical
-When building with AI, having a robust continuous integration system becomes even more important. AI-generated code can introduce subtle issues that only surface during compilation or testing across different platforms. A healthy CI system acts as a safety net, catching problems early and ensuring that AI-assisted code changes don't break existing functionality. This is especially crucial when iterating quickly with AI tools, as the rapid pace of development can easily introduce regressions. 
+When building with AI, having a robust continuous integration system becomes even more important. AI-generated code can introduce subtle issues that only surface during compilation or testing across different platforms. A healthy CI system acts as a safety net, catching problems early and ensuring that AI-assisted code changes don't break existing functionality. This is especially crucial when iterating quickly with AI tools, as the rapid pace of development can easily introduce regressions.
 
-You can also integrate AI-powered code review tools like [Claude Code](https://claude.ai/) or [CodeRabbit](https://coderabbit.ai/) into your CI pipeline for automated PR reviews. These tools can catch common issues, suggest improvements, and provide feedback on code quality. However, it's always important to have a human check your code - AI review tools are excellent supplements but should never replace human judgment and domain expertise. For Swift development specifically, tools like [swift-build](https://brightdigit.com/tutorials/swift-build/) can simplify CI setup, while understanding the fundamentals of [continuous integration](https://brightdigit.com/articles/ios-continuous-integration-avoid-merge-hell/) helps establish the right practices from the start.
+For Swift development specifically, I've created [swift-build](https://github.com/brightdigit/swift-build) - a comprehensive GitHub Action that simplifies CI setup for Swift packages across multiple platforms, which I've detailed in my latest article on [building Swift CI/CD with swift-build](https://brightdigit.com/tutorials/swift-build/).
+
+You can also integrate AI-powered code review tools like [Claude Code](https://claude.ai/) or [CodeRabbit](https://coderabbit.ai/) into your CI pipeline for automated PR reviews. These tools can catch common issues, suggest improvements, and provide feedback on code quality. However, it's always important to have a human check your code - AI review tools are excellent supplements but should never replace human judgment and domain expertise. Understanding the fundamentals of [continuous integration](https://brightdigit.com/articles/ios-continuous-integration-avoid-merge-hell/) helps establish the right practices from the start.
 
 <a id="future-plans"></a>
 ## Future Plans
