@@ -1,6 +1,6 @@
 ---
 title: "Rebuilding MistKit with Claude Code: Real-World Lessons and Collaboration Patterns (Part 2)"
-date: 2025-11-26 00:00
+date: 2025-12-10 00:00
 description: After building MistKit's type-safe CloudKit client, we put it to the test with real applications. Discover what happened when theory met practice—the unexpected discoveries, hard-earned lessons, and collaboration patterns that emerged from 428 Claude Code sessions over three months.
 tags: swift, cloudkit, openapi, ai-assisted-development, claude-code, lessons-learned, best-practices, software-architecture
 featuredImage: /media/tutorials/rebuilding-mistkit-claude-code/mistkit-rebuild-part2-hero.webp

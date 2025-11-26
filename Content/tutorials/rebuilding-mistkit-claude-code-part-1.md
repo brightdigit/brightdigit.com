@@ -1,6 +1,6 @@
 ---
 title: "Rebuilding MistKit with Claude Code: From CloudKit Docs to Type-Safe Swift (Part 1)"
-date: 2025-11-26 00:00
+date: 2025-11-03 00:00
 description: Follow the journey of rebuilding MistKit v1.0 using Claude Code and swift-openapi-generator. Learn how OpenAPI specifications transformed Apple's CloudKit documentation into a type-safe Swift client, and discover the challenges of mapping CloudKit's quirky REST API to modern Swift patterns.
 tags: swift, cloudkit, openapi, code-generation, ai-assisted-development, swift-6, claude-code, server-side-swift, async-await
 featuredImage: /media/tutorials/rebuilding-mistkit-claude-code/mistkit-rebuild-part1-hero.webp
