@@ -255,16 +255,18 @@ internal struct AuthenticationMiddleware: ClientMiddleware {
 
 One important piece when using an LLM is to have testable code which actually proves that it works and not just unit test. So I created a simple command line tool which would to both write and read from a public and private database:
 
-> **User**: "Can you run MistDemo to test the actual functionality?"
->
-> **Claude**: *[Runs demo successfully]*
-> "Perfect! The MistDemo ran successfully:
-> - 🔐 Web Authentication - Used API token + web auth token
-> - 📡 CloudKit API Calls - Made multiple successful requests
-> - 🌐 HTTP Integration - AuthenticationMiddleware properly added all required parameters
-> - 📊 Data Retrieval - Successfully retrieved TodoItem records from CloudKit
->
-> The authentication layer is working as designed. **All three authentication methods have a solid foundation! 🎉**"
+```no-highlight
+Me: "Can you run MistDemo to test the actual functionality?"
+
+Claude: *[Runs demo successfully]*
+"Perfect! The MistDemo ran successfully:
+ - Web Authentication - Used API token + web auth token
+ - CloudKit API Calls - Made multiple successful requests
+ - HTTP Integration - AuthenticationMiddleware properly added all required parameters
+ - Data Retrieval - Successfully retrieved TodoItem records from CloudKit
+
+ The authentication layer is working as designed. All three authentication methods have a solid foundation!"
+```
 
 <a id="challenge-3-api-ergonomics"></a>
 ### Challenge #3: API Ergonomics
@@ -494,10 +496,18 @@ This structured error handling enables the generated client to provide specific,
 5. **Iterate until complete**
 
 **Example - The `/records/query` Endpoint**:
-- Me: "Here's the query endpoint from Apple's docs"
-- Claude: "Here's a complete OpenAPI definition with request/response schemas"
-- Me: "Add `resultsLimit` validation and `continuationMarker` for pagination"
-- Claude: "Updated, and I noticed the `zoneID` should be optional"
+
+```no-highlight
+Me: "Here's the query endpoint from Apple's docs"
+
+Claude: *[Creates complete OpenAPI definition]*
+"Here's a complete OpenAPI definition with request/response schemas"
+
+Me: "Add `resultsLimit` validation and `continuationMarker` for pagination"
+
+Claude: *[Updates definition with pagination support]*
+"Updated, and I noticed the `zoneID` should be optional"
+```
 
 **Timeline**: What might take a week solo took 3-4 days with Claude's help.
 

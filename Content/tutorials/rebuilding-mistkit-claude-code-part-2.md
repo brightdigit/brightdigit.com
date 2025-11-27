@@ -311,15 +311,15 @@ Here's what I learned.
 ```no-highlight
 Me: "Generate tests for all CustomFieldValue types"
 
-Claude: [Creates tests covering:
-         - All 10 field types (STRING, INT64, DOUBLE, TIMESTAMP, BYTES,
-           REFERENCE, ASSET, ASSETID, LOCATION, LIST)
-         - Edge cases: empty lists, nil values, malformed data
-         - Encoding/decoding round-trips
-         - Nested LIST types
-         - Invalid type/value combinations]
+Claude: *[Creates tests covering all 10 field types with edge cases]*
+"I've generated comprehensive tests covering:
+ - All 10 field types (STRING, INT64, DOUBLE, TIMESTAMP, BYTES, REFERENCE, ASSET, ASSETID, LOCATION, LIST)
+ - Edge cases: empty lists, nil values, malformed data
+ - Encoding/decoding round-trips
+ - Nested LIST types
+ - Invalid type/value combinations
 
-         "I also added tests for the ASSET vs ASSETID quirk"
+ I also added tests for the ASSET vs ASSETID quirk"
 ```
 
 Result: 47 test files in 1 week instead of estimated 2-3 weeks solo. Claude found edge cases I hadn't considered.
@@ -388,48 +388,68 @@ When authentication middleware architecture changed, Claude updated:
 <!-- ORIGINAL [CONTENT] BLOCK - PRESERVED AS-IS -->
 **The Workflow That Emerged**:
 
-**Step 1: I Define Architecture and Constraints**
 ```no-highlight
-"I need three-layer architecture with generated code internal.
-Security requirement: never log full credentials."
-```
+Me: "I need three-layer architecture with generated code internal.
+     Security requirement: never log full credentials."
 
-**Step 2: Claude Drafts Implementation or Suggests Patterns**
-```no-highlight
+Claude: *[Drafts three-layer design with middleware chain]*
 "Here's a three-layer design with middleware chain:
-[detailed proposal with code examples]"
-```
+ [detailed proposal with code examples]"
 
-**Step 3: I Review for Security, Performance, Design**
-```no-highlight
-"Good architecture. Add credential masking in SecureLogging.
-Make TokenManager an Actor for thread safety."
-```
+Me: "Good architecture. Add credential masking in SecureLogging.
+     Make TokenManager an Actor for thread safety."
 
-**Step 4: Claude Generates Tests and Edge Cases**
-```no-highlight
+Claude: *[Updates implementation with security and actor isolation]*
+"I've added:
+ - Credential masking in SecureLogging for all token operations
+ - Actor isolation for TokenManager to ensure thread-safe token access
+ - Updated all three implementations to conform to the actor protocol"
+
+Me: "Generate comprehensive tests and edge cases"
+
+Claude: *[Generates test cases covering all scenarios]*
 "Here are tests for all auth methods:
-[30+ test cases covering happy paths, errors, edge cases]"
-```
+ [30+ test cases covering happy paths, errors, edge cases]"
 
-**Step 5: Iterate Until Complete**
-```no-highlight
-Multiple rounds of refinement until production-ready
+Me: "Iterate and refine until production-ready"
+
+Claude: *[Continues refinement through multiple rounds]*
+"Working through multiple iterations to ensure:
+ - All edge cases handled
+ - Security requirements met
+ - Performance optimized
+ - Code follows best practices"
 ```
 
 **Real Example - TokenManager Protocol Design**:
 
-**Round 1**:
-- Me: "Actor for thread safety, three implementations"
-- Claude: Drafts protocol + three implementations
+```no-highlight
+Me: "I need TokenManager as an Actor for thread safety, with three implementations"
 
-**Round 2**:
-- Me: "Add security (credential masking in logs)"
-- Claude: Updates with SecureLogging integration
+Claude: *[Drafts protocol and three implementations]*
+"I've created:
+ - TokenManager protocol with actor isolation
+ - APITokenManager implementation for API token auth
+ - WebAuthTokenManager for web authentication
+ - ServerToServerTokenManager with ECDSA signing"
 
-**Round 3**:
-- Me: "Generate comprehensive tests"
-- Claude: 30+ test cases covering all scenarios
+Me: "Add security - we need credential masking in logs"
+
+Claude: *[Updates with SecureLogging integration]*
+"Updated all three implementations to:
+ - Integrate with SecureLogging for credential masking
+ - Never log private keys or full tokens in any output
+ - Mask sensitive data in error messages"
+
+Me: "Generate comprehensive tests covering all scenarios"
+
+Claude: *[Generates 30+ test cases]*
+"Created comprehensive test coverage:
+ - 30+ test cases across all three TokenManager implementations
+ - Happy path scenarios for each auth method
+ - Error handling (invalid credentials, network failures)
+ - Edge cases (token expiration, concurrent access, actor isolation)"
+```
 
 **Result**: Production-ready in 2 days vs estimated 1 week solo.
 <!-- END ORIGINAL [CONTENT] -->
