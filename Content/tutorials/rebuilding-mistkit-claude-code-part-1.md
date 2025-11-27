@@ -29,10 +29,11 @@ That's when I decided to export the idea of updating MistKit for several use cas
 <a id="the-decision-to-rebuild"></a>
 ## The Decision to Rebuild
 
+I had a couple of use cases where MistKit running in the cloud would allow me to store data in a public database. However I hadn't touched the library in a while.
+
 <a id="the-need-for-change"></a>
 ### The Need for Change
 
-<!-- ORIGINAL [CONTENT] BLOCK - PRESERVED AS-IS -->
 Swift had transformed while MistKit stood still:
 - **Swift 6** with strict concurrency checking
 - **async/await** as standard (not experimental)
@@ -40,50 +41,35 @@ Swift had transformed while MistKit stood still:
 - **Modern patterns** expected (Result types, AsyncSequence, property wrappers)
 
 MistKit v0.2, frozen in 2021, couldn't take advantage of any of this.
-<!-- END ORIGINAL [CONTENT] -->
 
 <a id="the-game-changer-swift-openapi-generator"></a>
 ### The Game Changer: swift-openapi-generator
 
-<!-- ORIGINAL [CONTENT] BLOCK - PRESERVED AS-IS -->
 At WWDC 2023, Apple announced `swift-openapi-generator`—a tool that reads OpenAPI specifications and automatically generates type-safe Swift client code. This single tool made the MistKit rebuild feasible. If I had an OpenAPI spec, I could easily create a library which made the necessary calls to CloudKit as needed, as well as compatibility with server-side (AsyncHTTP) or client-side APIs (URLSession).
 
 What I needed was a way to easily create that spec, since Apple only provides documentation for the CloudKit REST API.
-<!-- END ORIGINAL [CONTENT] -->
 
 <a id="learning-from-syntaxkits-pattern"></a>
 ### Learning from SyntaxKit's Pattern
 
-<!-- ORIGINAL [CONTENT] BLOCK - PRESERVED AS-IS -->
 With my work on SyntaxKit, I could see that if I fed sufficient documentation on an API to an LLM, it can understand how to develop against it. Even so, any failures come with the ability to learn and adapt either with internal documentation or writing sufficient tests.
 
 Just as I was able to simplify SwiftSyntax into a simpler API, I can have an LLM create an OpenAPI spec for CloudKit and build an API on top of the generated code.
-<!-- END ORIGINAL [CONTENT] -->
 
-<!-- CLAUDE-WRITTEN PROSE - REVIEW AND EDIT AS NEEDED -->
-<!-- Theme: Connecting SyntaxKit lessons to MistKit approach, pattern recognition -->
-<!-- Target: ~100-150 words -->
+---
 
 The pattern was clear: **give Claude the right context, and it could translate Apple's prose documentation into machine-readable OpenAPI**. SyntaxKit taught me that code generation works best when you have a clear source of truth—for SyntaxKit it was SwiftSyntax ASTs, for MistKit it would be CloudKit's REST API documentation. The abstraction layer would come later.
 
 The rebuild was ready to begin.
-<!-- END CLAUDE-WRITTEN -->
-
-<!-- WRITING GUIDANCE FOR THIS SECTION -->
-<!-- Key phrases: "pattern was clear", "source of truth", "abstraction layer would come later" -->
-<!-- Voice notes: Makes explicit connection between SyntaxKit and MistKit approaches -->
-<!-- Connect to: Reinforces "generate for precision, abstract for ergonomics" from opening -->
-<!-- Transition: Sets up "Building with Claude Code" section about actual implementation -->
-<!-- END GUIDANCE -->
 
 <a id="building-with-claude-code"></a>
 ## Building with Claude Code
 
-<!-- ORIGINAL [CONTENT] BLOCK - PRESERVED AS-IS -->
 I needed a way for Claude Code to understand how the CloudKit REST API worked. There was one main document I used—the [CloudKit Web Services Documentation Site](https://developer.apple.com/library/archive/documentation/DataManagement/Conceptual/CloudKitWebServicesReference/). The CloudKit Web Services Documentation Site, which hasn't been updated since June of 2016, contains the most thorough documentation on how the REST API works and hopefully can provide enough for Claude to start crafting the OpenAPI spec.
 
-By running the site (as well as the swift-openapi-generator documentation) through llm.codes, and saving the exported markdown documentation in the `.claude` directory and letting Claude Code know about it (i.e. add a reference to it in Claude.md), I could now start having Claude Code translate the documentation into a usable API.
-<!-- END ORIGINAL [CONTENT] -->
+By running the site (as well as the swift-openapi-generator documentation) through llm.codes, saving the exported markdown documentation in the `.claude/docs` directory and letting Claude Code know about it (i.e. add a reference to it in Claude.md), I could now start having Claude Code translate the documentation into a usable API.
+
+<!-- add diagram or image for the folder structure for claude and its docs -->
 
 <a id="why-openapi--swift-openapi-generator"></a>
 ### Why OpenAPI + swift-openapi-generator?
@@ -106,11 +92,13 @@ With swift-openapi-generator available (announced WWDC 2023), the path forward b
    - Add TokenManager for authentication
    - CustomFieldValue for CloudKit's polymorphic types
 
+<!-- add diagram of how this works -->
+
 This had many benefits:
 
 - Type safety (if it compiles, it's valid CloudKit usage)
 - Completeness (every endpoint defined)
-- Maintainability (spec changes = regenerate code)
+- Maintainability (spec changes = regenerate code) <!-- add link to openapi generator spec driven dev -->
 - No manual JSON parsing or networking boilerplate
 - Cross-platform (macOS, iOS, Linux, server-side Swift)
 
@@ -147,21 +135,11 @@ Claude: "Here are test cases for STRING, INT64, DOUBLE, TIMESTAMP,
          BYTES, REFERENCE, ASSET, ASSETID, LOCATION, and LIST..."
 ```
 
-<!-- ORIGINAL [CONTENT] BLOCK - PRESERVED AS-IS -->
-Having developed MistKit previously, I understood the challenge of various field types and the difficulty in expressing that in Swift.
-<!-- END ORIGINAL [CONTENT] -->
+Having developed MistKit previously, I understood the challenge of various field types and the difficulty in expressing that in Swift. This is a common challenge in Swift with JSON data.
 
-<!-- CLAUDE-WRITTEN PROSE - REVIEW AND EDIT AS NEEDED -->
-<!-- Theme: Reflection on Claude collaboration for polymorphism -->
-<!-- Target: ~40 words -->
+<!-- add link to typeOverrides documentation --> 
+
 Claude's suggestion of `typeOverrides` was the breakthrough—instead of fighting OpenAPI's type system, we'd let the generator create basic types, then override with our custom implementation that handles CloudKit's quirks.
-<!-- END CLAUDE-WRITTEN -->
-
-<!-- WRITING GUIDANCE FOR THIS SECTION -->
-<!-- Key phrases: "breakthrough", "instead of fighting", "handles CloudKit's quirks" -->
-<!-- Voice notes: Shows how Claude provided the pattern, not just code -->
-<!-- Connect to: Shows first successful Claude collaboration, sets pattern for other challenges -->
-<!-- END GUIDANCE -->
 
 **Understanding ASSET vs ASSETID:**
 
@@ -177,7 +155,7 @@ CloudKit uses two different type discriminators for asset fields:
 - Contains: Same structure as ASSET, but typically only `downloadURL` populated
 - Use case: When you're referencing an already-uploaded asset
 
-**The Quirk**: Both decode to the same `AssetValue` structure, but CloudKit distinguishes them with different type strings (`"ASSET"` vs `"ASSETID"`). Our custom implementation handles this elegantly:
+At the end of the day, both decode to the same `AssetValue` structure, but CloudKit distinguishes them with different type strings (`"ASSET"` vs `"ASSETID"`). Our custom implementation handles this elegantly:
 
 ```swift
 internal struct CustomFieldValue: Codable, Hashable, Sendable {
@@ -203,10 +181,8 @@ internal struct CustomFieldValue: Codable, Hashable, Sendable {
 <!-- Theme: Authentication challenge introduction -->
 <!-- Target: ~40 words -->
 <!-- ORIGINAL [CONTENT] BLOCK - PRESERVED AS-IS -->
-The most difficult challenge was dealing with the 3 different methods of authentication:
 <!-- END ORIGINAL [CONTENT] -->
 
-This became a complexity problem when trying to model it in OpenAPI.
 <!-- END CLAUDE-WRITTEN -->
 
 <!-- WRITING GUIDANCE FOR THIS SECTION -->
@@ -215,7 +191,7 @@ This became a complexity problem when trying to model it in OpenAPI.
 <!-- Connect to: Introduction to authentication methods -->
 <!-- END GUIDANCE -->
 
-**The Three CloudKit Authentication Methods:**
+The most difficult challenge was dealing with the 3 different methods of authentication:
 
 1. **API Token** - Container-level access
    - Query parameter: `ckAPIToken`
@@ -229,22 +205,19 @@ This became a complexity problem when trying to model it in OpenAPI.
    - ECDSA P-256 signature in Authorization header
    - Most complex, most secure
 
-**The Generator Limitation:**
 
-<!-- ORIGINAL [CONTENT] BLOCK - PRESERVED AS-IS -->
-While we can model these in OpenAPI yaml, this isn't helpful to the developer using MistKit. Specifically if you intend to use the **Web Auth Token** method. To acquire a **Web Auth Token**, you need to start with just your service's **API Token** and then authenticate (typically through the web) to get the **Web Auth Token**. At this point you'd need to switch to using the **Web Auth Token** authentication method. Switching between different authentication methods aren't supported necessarily via the swift-openapi-generator.
-<!-- END ORIGINAL [CONTENT] -->
+This became a complexity problem when trying to model it in OpenAPI.
 
 **The Claude Insight - Middleware Pattern:**
 
-Claude suggested: "Use middleware to handle authentication dynamically rather than relying on generator's built-in auth."
-
-**The Solution:**
+What Claude suggested was to use the middleware API to handle authentication dynamically rather than relying on generator's built-in auth. The meant we used:
 
 1. **OpenAPI**: Define all three `securitySchemes` but make endpoint security optional (`security: []`)
 2. **Middleware**: Implement `AuthenticationMiddleware` that inspects `TokenManager` at runtime
 3. **TokenManager Protocol**: Three implementations (API, WebAuth, ServerToServer)
 4. **Runtime Selection**: Client chooses auth method via TokenManager injection
+
+Here's what it looks like:
 
 ```swift
 internal struct AuthenticationMiddleware: ClientMiddleware {
@@ -279,10 +252,9 @@ internal struct AuthenticationMiddleware: ClientMiddleware {
 - ✅ Supports all three methods seamlessly
 - ✅ Can switch auth methods without code changes
 
-**The Breakthrough - September 20, 2025:**
 
-> From conversation after completing the auth layer:
->
+One important piece when using an LLM is to have testable code which actually proves that it works and not just unit test. So I created a simple command line tool which would to both write and read from a public and private database:
+
 > **User**: "Can you run MistDemo to test the actual functionality?"
 >
 > **Claude**: *[Runs demo successfully]*
