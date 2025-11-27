@@ -172,14 +172,12 @@ internal struct CustomFieldValue: Codable, Hashable, Sendable {
 }
 ```
 
-#### The Result
-
-Type-safe field values with CloudKit-specific quirks baked into the implementation. If it compiles, the field values are valid.
+Using the `CustomFieldValue` with the power of openapi-generator `typeOverides` allows us to implement the specific quirks of CloudKit field values.
 
 <a id="challenge-2-authentication-complexity"></a>
 ### Challenge #2: Authentication Complexity
 
-The most difficult challenge was dealing with the 3 different methods of authentication:
+The next challenge was dealing with the 3 different methods of authentication:
 
 1. **API Token** - Container-level access
    - Query parameter: `ckAPIToken`
@@ -194,11 +192,7 @@ The most difficult challenge was dealing with the 3 different methods of authent
    - Most complex, most secure
 
 
-This became a complexity problem when trying to model it in OpenAPI.
-
-#### The Claude Insight - Middleware Pattern
-
-What Claude suggested was to use the middleware API to handle authentication dynamically rather than relying on generator's built-in auth. The meant we used:
+This became a complexity problem when trying to model it in OpenAPI. What Claude suggested was to use the middleware API to handle authentication dynamically rather than relying on generator's built-in auth. The meant we used:
 
 1. **OpenAPI**: Define all three `securitySchemes` but make endpoint security optional (`security: []`)
 2. **Middleware**: Implement `AuthenticationMiddleware` that inspects `TokenManager` at runtime
@@ -233,7 +227,7 @@ internal struct AuthenticationMiddleware: ClientMiddleware {
 }
 ```
 
-#### Why This Works
+Why this helps is because:
 
 - ✅ Generator doesn't need to handle auth complexity
 - ✅ We control authentication at runtime
@@ -241,8 +235,7 @@ internal struct AuthenticationMiddleware: ClientMiddleware {
 - ✅ Supports all three methods seamlessly
 - ✅ Can switch auth methods without code changes
 
-
-One important piece when using an LLM is to have testable code which actually proves that it works and not just unit test. So I created a simple command line tool which would to both write and read from a public and private database:
+While this looks like it will work I wanted to make absolute sure. When using an LLM it's important to have code which actually proves that it works and not just unit test. So I created a simple command line tool which would to both write and read from a public and private database:
 
 ```no-highlight
 Me: "Can you run MistDemo to test the actual functionality?"
@@ -257,12 +250,14 @@ Claude: *[Runs demo successfully]*
  The authentication layer is working as designed. All three authentication methods have a solid foundation!"
 ```
 
+We'll touch more on this approach in the next blog post.
+
 <a id="challenge-3-error-handling"></a>
 ### Challenge #3: Error Handling
 
-CloudKit returns 9+ HTTP status codes (400, 401, 403, 404, 409, 412, 413, 421, 429, 500, 503), each with nested error details including `serverErrorCode`, `reason`, `uuid`, and sometimes `redirectURL` or `retryAfter`. How do we model this complexity in OpenAPI while making it type-safe and actionable in Swift?
+CloudKit returns 9+ HTTP status codes (400, 401, 403, 404, 409, 412, 413, 421, 429, 500, 503), each with nested error details including `serverErrorCode`, `reason`, `uuid`, and sometimes `redirectURL` or `retryAfter`. What would be nice is if we can parse these in a Swift-y way and take advantage of ?typed throws_.
 
-#### Before: Apple's Prose Documentation
+According to Apple's Documentation: 
 
 > **Record Fetch Error Dictionary**
 >
@@ -275,7 +270,7 @@ CloudKit returns 9+ HTTP status codes (400, 401, 403, 404, 409, 412, 413, 421, 4
 > - `uuid`: A unique identifier for this error.
 > - `redirectURL`: A redirect URL for the user to securely sign in.
 
-#### After: OpenAPI Specification
+Based on this, I had Claude create an openapi entry on this:
 
 ```yaml
 components:
@@ -327,7 +322,7 @@ components:
     # ... additional error responses for 403, 404, 409, 412, 413, 421, 429, 500, 503
 ```
 
-#### Translation Decisions
+Claude was able to translate the documentation into:
 
 1. **Error Code Enum**: Converted prose list of error codes to explicit enum
 2. **HTTP Status Mapping**: Created reusable response components for each HTTP status
@@ -339,7 +334,7 @@ This enables:
 - **Automatic Deserialization**: Errors automatically parsed to correct type
 - **Centralized Definitions**: Define once, reference everywhere
 
-#### HTTP Status Code to CloudKit Error Mapping
+Here's how it's mapped:
 
 | HTTP Status | CloudKit Error Codes | Client Action |
 |-------------|---------------------|---------------|
@@ -354,16 +349,13 @@ This enables:
 | **500 Internal Error** | `INTERNAL_ERROR` | Retry with backoff |
 | **503 Service Unavailable** | `TRY_AGAIN_LATER` | Temporary issue, retry later |
 
-#### The Result
-
 This structured error handling enables the generated client to provide specific, actionable error messages rather than generic HTTP failures. Developers get type-safe error codes, HTTP status mapping, and clear guidance on how to handle each error condition.
 
 <a id="challenge-4-api-ergonomics"></a>
 ### Challenge #4: API Ergonomics
 
-#### The Problem - Generated Code is Verbose
-
-Using swift-openapi-generator's output directly:
+The last and perhaps most complex piece is to create a safe abstraction layer for the developer. This is create an much more usable interface. 
+For example here's what creating a record would look like based on the openapi-generator:
 
 ```swift
 // Painful verbose usage
@@ -391,14 +383,7 @@ default:
 }
 ```
 
-#### Problems
-
-- 🔴 Too much boilerplate
-- 🔴 Nested type references
-- 🔴 Manual response unwrapping
-- 🔴 Not idiomatic Swift
-
-#### The Design Session with Claude
+The problem is that there a lot of manual work to be done which isn't really Swift-y.
 
 ```no-highlight
 Me: "I need the generated code hidden, but a friendly public API.
