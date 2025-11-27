@@ -1,8 +1,7 @@
 ---
-title: "Rebuilding MistKit with Claude Code: Real-World Lessons and Collaboration Patterns (Part 2)"
+title: Rebuilding MistKit with Claude Code - Real-World Lessons and Collaboration Patterns (Part 2)
 date: 2025-12-10 00:00
 description: After building MistKit's type-safe CloudKit client, we put it to the test with real applications. Discover what happened when theory met practice—the unexpected discoveries, hard-earned lessons, and collaboration patterns that emerged from 428 Claude Code sessions over three months.
-tags: swift, cloudkit, openapi, ai-assisted-development, claude-code, lessons-learned, best-practices, software-architecture
 featuredImage: /media/tutorials/rebuilding-mistkit-claude-code/mistkit-rebuild-part2-hero.webp
 subscriptionCTA: Want to learn more about AI-assisted Swift development and modern API design patterns? Sign up for our newsletter to get notified about the rest of the Modern Swift Patterns series and future tutorials on building production-ready Swift applications.
 ---
@@ -309,7 +308,7 @@ Here's what I learned.
 
 161 tests across 47 files, most drafted by Claude. Week 2 example:
 
-```
+```no-highlight
 Me: "Generate tests for all CustomFieldValue types"
 
 Claude: [Creates tests covering:
@@ -390,31 +389,31 @@ When authentication middleware architecture changed, Claude updated:
 **The Workflow That Emerged**:
 
 **Step 1: I Define Architecture and Constraints**
-```
+```no-highlight
 "I need three-layer architecture with generated code internal.
 Security requirement: never log full credentials."
 ```
 
 **Step 2: Claude Drafts Implementation or Suggests Patterns**
-```
+```no-highlight
 "Here's a three-layer design with middleware chain:
 [detailed proposal with code examples]"
 ```
 
 **Step 3: I Review for Security, Performance, Design**
-```
+```no-highlight
 "Good architecture. Add credential masking in SecureLogging.
 Make TokenManager an Actor for thread safety."
 ```
 
 **Step 4: Claude Generates Tests and Edge Cases**
-```
+```no-highlight
 "Here are tests for all auth methods:
 [30+ test cases covering happy paths, errors, edge cases]"
 ```
 
 **Step 5: Iterate Until Complete**
-```
+```no-highlight
 Multiple rounds of refinement until production-ready
 ```
 
@@ -653,7 +652,7 @@ Let me show you what emerged from this collaboration.
 
 **The Common Philosophy**:
 
-```
+```no-highlight
 Source of Truth → Code Generation → Thoughtful Abstraction → AI Acceleration
 = Sustainable Development
 ```

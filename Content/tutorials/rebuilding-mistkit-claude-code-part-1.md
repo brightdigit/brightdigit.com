@@ -1,8 +1,7 @@
 ---
-title: "Rebuilding MistKit with Claude Code: From CloudKit Docs to Type-Safe Swift (Part 1)"
+title: Rebuilding MistKit with Claude Code - From CloudKit Docs to Type-Safe Swift (Part 1)
 date: 2025-11-03 00:00
 description: Follow the journey of rebuilding MistKit v1.0 using Claude Code and swift-openapi-generator. Learn how OpenAPI specifications transformed Apple's CloudKit documentation into a type-safe Swift client, and discover the challenges of mapping CloudKit's quirky REST API to modern Swift patterns.
-tags: swift, cloudkit, openapi, code-generation, ai-assisted-development, swift-6, claude-code, server-side-swift, async-await
 featuredImage: /media/tutorials/rebuilding-mistkit-claude-code/mistkit-rebuild-part1-hero.webp
 subscriptionCTA: Want to learn more about AI-assisted Swift development and modern API design patterns? Sign up for our newsletter to get notified when Part 2 drops, covering real-world MistKit applications and lessons learned from AI collaboration.
 ---
@@ -124,7 +123,7 @@ CloudKit fields are dynamically typed—one field can be STRING, INT64, DOUBLE, 
 
 **The Claude Code Conversation:**
 
-```
+```no-highlight
 Me: "Here's CloudKit's field value structure from Apple's docs.
      A field can have value of type STRING, INT64, DOUBLE, TIMESTAMP,
      BYTES, REFERENCE, ASSET, LOCATION, LIST..."
@@ -336,7 +335,7 @@ default:
 
 **The Design Session with Claude:**
 
-```
+```no-highlight
 Me: "I need the generated code hidden, but a friendly public API.
      Users shouldn't know OpenAPI exists."
 
@@ -367,7 +366,7 @@ Claude: "Make it an Actor for thread safety:
 
 **The Three-Layer Architecture:**
 
-```
+```no-highlight
 ┌─────────────────────────────────────────┐
 │  User Code (Public API)                 │
 │  • CloudKitService wrapper              │
