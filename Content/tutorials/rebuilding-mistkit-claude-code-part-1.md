@@ -354,11 +354,10 @@ This structured error handling enables the generated client to provide specific,
 <a id="challenge-4-api-ergonomics"></a>
 ### Challenge #4: API Ergonomics
 
-The last and perhaps most complex piece is to create a safe abstraction layer for the developer. This is create an much more usable interface. 
-For example here's what creating a record would look like based on the openapi-generator:
+The generated OpenAPI client works, but it's not exactly ergonomic. Here's what a simple query looks like with the raw generated code:
 
 ```swift
-// Painful verbose usage
+// Verbose generated API
 let input = Operations.queryRecords.Input(
     path: .init(
         version: "1",
@@ -383,44 +382,18 @@ default:
 }
 ```
 
-The problem is that there a lot of manual work to be done which isn't really Swift-y.
-
-```no-highlight
-Me: "I need the generated code hidden, but a friendly public API.
-     Users shouldn't know OpenAPI exists."
-
-Claude: "Three layers:
-         1. Generated (internal only)
-         2. Middleware + protocols (internal)
-         3. Simple public API
-
-         Here's a protocol sketch for CloudKitService..."
-
-Me: "I want clean, idiomatic Swift. What should the public API look like?"
-
-Claude: "Hide all the OpenAPI types:
-         - Internal generated client
-         - Public CloudKitService wrapper
-         - Simple async methods
-         - Clean error types"
-
-Me: "What about TokenManager?"
-
-Claude: "Make it an Actor for thread safety:
-         protocol TokenManager: Actor {
-             var hasCredentials: Bool { get async }
-             func getCurrentCredentials() async throws -> TokenCredentials?
-         }
-         This gives you actor isolation for all token operations."
-```
+The problem: too much boilerplate for simple operations. This needed a cleaner abstraction.
 
 #### The Three-Layer Architecture
+
+The solution was to build a three-layer architecture that keeps the generated code internal and exposes a clean public API:
 
 ```no-highlight
 ┌─────────────────────────────────────────┐
 │  User Code (Public API)                 │
 │  • CloudKitService wrapper              │
-│  • Simple, intuitive methods            │
+│  • Simple async methods                 │
+│  • Clean Swift types                    │
 └─────────────────────────────────────────┘
                     ↓
 ┌─────────────────────────────────────────┐
@@ -438,9 +411,37 @@ Claude: "Make it an Actor for thread safety:
 └─────────────────────────────────────────┘
 ```
 
-#### The Result
+**Initial Public API** (read operations):
 
-A clean public API that hides all OpenAPI complexity. Generated code stays internal, users interact with idiomatic Swift. Type safety maintained throughout, but ergonomics dramatically improved.
+```swift
+// Clean, idiomatic Swift
+let service = try CloudKitService(
+    container: "iCloud.com.example.MyApp",
+    environment: .production,
+    database: .private,
+    tokenManager: tokenManager
+)
+
+let records = try await service.queryRecords(
+    recordType: "User",
+    filter: .equals("status", .string("active"))
+)
+
+// Type-safe field access
+for record in records {
+    if let name = record.fields["name"]?.stringValue {
+        print("User: \(name)")
+    }
+}
+```
+
+**Key Abstractions Built**:
+- `FieldValue` enum for type-safe field access
+- `RecordInfo` struct for read operations
+- `QueryFilter` for building queries
+- `CloudKitService` wrapper hiding OpenAPI complexity
+
+The generated code stays internal. Users interact with idiomatic Swift. Type safety maintained throughout, but ergonomics dramatically improved.
 
 <a id="the-iterative-workflow-with-claude"></a>
 ### The Iterative Workflow with Claude

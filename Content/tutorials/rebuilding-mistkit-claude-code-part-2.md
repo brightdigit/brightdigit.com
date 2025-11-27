@@ -248,11 +248,64 @@ Debugging these issues required understanding CloudKit's development toolchain:
 MistKit isn't academic—it's battle-tested by building actual software.
 <!-- END ORIGINAL [CONTENT] -->
 
+**API Ergonomics: Discovering Missing Write Operations**
+
+Building Bushel revealed the most significant gap: MistKit had **read** operations with clean abstractions (`FieldValue`, `RecordInfo`), but **write** operations were missing. The demo couldn't create records without reaching into internal OpenAPI types.
+
+**The Discovery**:
+
+```no-highlight
+Me: "OpenAPI types shouldn't be available. We need those abstractions built."
+
+Claude: "You're absolutely right! We shouldn't expose OpenAPI-generated types
+         directly - that's poor API design and creates tight coupling.
+         We need to build proper abstractions."
+
+Me: "Why are using the OpenAPI types instead of the available types in MistKit?
+     What is missing?"
+
+Claude: "Excellent question! Let me investigate what MistKit actually provides
+         publicly. I've been assuming we need OpenAPI types, but MistKit should
+         have its own abstractions."
+```
+
+**The Fix**: Added the public write API to MistKit:
+1. **`RecordOperation`** - Public type for create/update/delete operations
+2. **`CloudKitService.modifyRecords()`** - Batch write operations
+3. **Bidirectional conversion** - `FieldValue` ↔ internal OpenAPI types
+
+**The Complete Three-Layer Architecture**:
+
+```no-highlight
+┌─────────────────────────────────────────┐
+│  User Code (Public API)                 │
+│  • CloudKitService wrapper              │
+│  • Simple, intuitive methods            │
+│  • RecordOperation, FieldValue          │
+└─────────────────────────────────────────┘
+                    ↓
+┌─────────────────────────────────────────┐
+│  MistKit Abstraction (Internal)         │
+│  • MistKitClient                        │
+│  • TokenManager implementations (3)     │
+│  • Middleware (Auth, Logging)           │
+│  • Type conversion layer                │
+└─────────────────────────────────────────┘
+                    ↓
+┌─────────────────────────────────────────┐
+│  Generated OpenAPI Client (Internal)    │
+│  • Client.swift (3,268 lines)           │
+│  • Types.swift (7,208 lines)            │
+└─────────────────────────────────────────┘
+```
+
+**Result**: A clean public API that hides all OpenAPI complexity. Generated code stays internal, users interact with idiomatic Swift. Type safety maintained throughout, ergonomics dramatically improved—and **gaps discovered through real-world usage got fixed immediately**.
+
 <!-- CLAUDE-WRITTEN PROSE - REVIEW AND EDIT AS NEEDED -->
 <!-- Theme: Unexpected discoveries, validation of design decisions -->
 <!-- Target: ~25-50 words -->
 
-Every discovery—from schema validation quirks to batch limits—made MistKit stronger. The API evolved from "it works in tests" to "it works in production." Real applications don't lie.
+Every discovery—from schema validation quirks to batch limits to missing write operations—made MistKit stronger. The API evolved from "it works in tests" to "it works in production." Real applications don't lie.
 <!-- END CLAUDE-WRITTEN -->
 
 <!-- WRITING GUIDANCE FOR THIS SECTION -->
