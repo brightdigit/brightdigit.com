@@ -21,8 +21,8 @@ That's when I decided to export the idea of updating MistKit for several use cas
   - [Why OpenAPI + swift-openapi-generator?](#why-openapi--swift-openapi-generator)
   - [Challenge #1: Type System Polymorphism](#challenge-1-type-system-polymorphism)
   - [Challenge #2: Authentication Complexity](#challenge-2-authentication-complexity)
-  - [Challenge #3: API Ergonomics](#challenge-3-api-ergonomics)
-  - [Challenge #4: Error Handling](#challenge-4-error-handling)
+  - [Challenge #3: Error Handling](#challenge-3-error-handling)
+  - [Challenge #4: API Ergonomics](#challenge-4-api-ergonomics)
   - [The Iterative Workflow with Claude](#the-iterative-workflow-with-claude)
 - [What's Next](#whats-next)
 
@@ -105,11 +105,11 @@ This had many benefits:
 <a id="challenge-1-type-system-polymorphism"></a>
 ### Challenge #1: Type System Polymorphism
 
-**The Core Problem:**
+#### The Core Problem
 
 CloudKit fields are dynamically typed—one field can be STRING, INT64, DOUBLE, TIMESTAMP, BYTES, REFERENCE, ASSET, LOCATION, or LIST. But OpenAPI is statically typed. How do we model this polymorphism?
 
-**The Claude Code Conversation:**
+#### The Claude Code Conversation
 
 ```no-highlight
 Me: "Here's CloudKit's field value structure from Apple's docs.
@@ -141,7 +141,7 @@ Having developed MistKit previously, I understood the challenge of various field
 
 Claude's suggestion of `typeOverrides` was the breakthrough—instead of fighting OpenAPI's type system, we'd let the generator create basic types, then override with our custom implementation that handles CloudKit's quirks.
 
-**Understanding ASSET vs ASSETID:**
+#### Understanding ASSET vs ASSETID
 
 CloudKit uses two different type discriminators for asset fields:
 
@@ -172,24 +172,12 @@ internal struct CustomFieldValue: Codable, Hashable, Sendable {
 }
 ```
 
-**The Result:** Type-safe field values with CloudKit-specific quirks baked into the implementation. If it compiles, the field values are valid.
+#### The Result
+
+Type-safe field values with CloudKit-specific quirks baked into the implementation. If it compiles, the field values are valid.
 
 <a id="challenge-2-authentication-complexity"></a>
 ### Challenge #2: Authentication Complexity
-
-<!-- CLAUDE-WRITTEN PROSE - REVIEW AND EDIT AS NEEDED -->
-<!-- Theme: Authentication challenge introduction -->
-<!-- Target: ~40 words -->
-<!-- ORIGINAL [CONTENT] BLOCK - PRESERVED AS-IS -->
-<!-- END ORIGINAL [CONTENT] -->
-
-<!-- END CLAUDE-WRITTEN -->
-
-<!-- WRITING GUIDANCE FOR THIS SECTION -->
-<!-- Key phrases: "flexibility became a complexity problem" -->
-<!-- Voice notes: Sets up the technical challenge -->
-<!-- Connect to: Introduction to authentication methods -->
-<!-- END GUIDANCE -->
 
 The most difficult challenge was dealing with the 3 different methods of authentication:
 
@@ -208,7 +196,7 @@ The most difficult challenge was dealing with the 3 different methods of authent
 
 This became a complexity problem when trying to model it in OpenAPI.
 
-**The Claude Insight - Middleware Pattern:**
+#### The Claude Insight - Middleware Pattern
 
 What Claude suggested was to use the middleware API to handle authentication dynamically rather than relying on generator's built-in auth. The meant we used:
 
@@ -245,7 +233,8 @@ internal struct AuthenticationMiddleware: ClientMiddleware {
 }
 ```
 
-**Why This Works:**
+#### Why This Works
+
 - ✅ Generator doesn't need to handle auth complexity
 - ✅ We control authentication at runtime
 - ✅ Easy to test (inject mock TokenManager)
@@ -268,111 +257,12 @@ Claude: *[Runs demo successfully]*
  The authentication layer is working as designed. All three authentication methods have a solid foundation!"
 ```
 
-<a id="challenge-3-api-ergonomics"></a>
-### Challenge #3: API Ergonomics
-
-**The Problem - Generated Code is Verbose:**
-
-Using swift-openapi-generator's output directly:
-
-```swift
-// Painful verbose usage
-let input = Operations.queryRecords.Input(
-    path: .init(
-        version: "1",
-        container: "iCloud.com.example.MyApp",
-        environment: Components.Parameters.environment.production,
-        database: Components.Parameters.database._private
-    ),
-    headers: .init(accept: [.json]),
-    body: .json(.init(
-        query: .init(recordType: "User")
-    ))
-)
-
-let response = try await client.queryRecords(input)
-
-switch response {
-case .ok(let okResponse):
-    let queryResponse = try okResponse.body.json
-    // Process records...
-default:
-    // Handle errors...
-}
-```
-
-**Problems:**
-- 🔴 Too much boilerplate
-- 🔴 Nested type references
-- 🔴 Manual response unwrapping
-- 🔴 Not idiomatic Swift
-
-**The Design Session with Claude:**
-
-```no-highlight
-Me: "I need the generated code hidden, but a friendly public API.
-     Users shouldn't know OpenAPI exists."
-
-Claude: "Three layers:
-         1. Generated (internal only)
-         2. Middleware + protocols (internal)
-         3. Simple public API
-
-         Here's a protocol sketch for CloudKitService..."
-
-Me: "I want clean, idiomatic Swift. What should the public API look like?"
-
-Claude: "Hide all the OpenAPI types:
-         - Internal generated client
-         - Public CloudKitService wrapper
-         - Simple async methods
-         - Clean error types"
-
-Me: "What about TokenManager?"
-
-Claude: "Make it an Actor for thread safety:
-         protocol TokenManager: Actor {
-             var hasCredentials: Bool { get async }
-             func getCurrentCredentials() async throws -> TokenCredentials?
-         }
-         This gives you actor isolation for all token operations."
-```
-
-**The Three-Layer Architecture:**
-
-```no-highlight
-┌─────────────────────────────────────────┐
-│  User Code (Public API)                 │
-│  • CloudKitService wrapper              │
-│  • Simple, intuitive methods            │
-└─────────────────────────────────────────┘
-                    ↓
-┌─────────────────────────────────────────┐
-│  MistKit Abstraction (Internal)         │
-│  • MistKitClient                        │
-│  • TokenManager implementations (3)     │
-│  • Middleware (Auth, Logging)           │
-│  • CustomFieldValue                     │
-└─────────────────────────────────────────┘
-                    ↓
-┌─────────────────────────────────────────┐
-│  Generated OpenAPI Client (Internal)    │
-│  • Client.swift (3,268 lines)           │
-│  • Types.swift (7,208 lines)            │
-└─────────────────────────────────────────┘
-```
-
-**The Result:** A clean public API that hides all OpenAPI complexity. Generated code stays internal, users interact with idiomatic Swift. Type safety maintained throughout, but ergonomics dramatically improved.
-
-<a id="challenge-4-error-handling"></a>
-### Challenge #4: Error Handling
-
-<!-- ORIGINAL [CONTENT] BLOCK - PRESERVED AS-IS -->
-**The Problem - CloudKit's Complex Error Model:**
+<a id="challenge-3-error-handling"></a>
+### Challenge #3: Error Handling
 
 CloudKit returns 9+ HTTP status codes (400, 401, 403, 404, 409, 412, 413, 421, 429, 500, 503), each with nested error details including `serverErrorCode`, `reason`, `uuid`, and sometimes `redirectURL` or `retryAfter`. How do we model this complexity in OpenAPI while making it type-safe and actionable in Swift?
 
-**Before: Apple's Prose Documentation**
+#### Before: Apple's Prose Documentation
 
 > **Record Fetch Error Dictionary**
 >
@@ -385,7 +275,7 @@ CloudKit returns 9+ HTTP status codes (400, 401, 403, 404, 409, 412, 413, 421, 4
 > - `uuid`: A unique identifier for this error.
 > - `redirectURL`: A redirect URL for the user to securely sign in.
 
-**After: OpenAPI Specification**
+#### After: OpenAPI Specification
 
 ```yaml
 components:
@@ -437,7 +327,7 @@ components:
     # ... additional error responses for 403, 404, 409, 412, 413, 421, 429, 500, 503
 ```
 
-**Translation Decisions**:
+#### Translation Decisions
 
 1. **Error Code Enum**: Converted prose list of error codes to explicit enum
 2. **HTTP Status Mapping**: Created reusable response components for each HTTP status
@@ -449,7 +339,7 @@ This enables:
 - **Automatic Deserialization**: Errors automatically parsed to correct type
 - **Centralized Definitions**: Define once, reference everywhere
 
-**HTTP Status Code to CloudKit Error Mapping**:
+#### HTTP Status Code to CloudKit Error Mapping
 
 | HTTP Status | CloudKit Error Codes | Client Action |
 |-------------|---------------------|---------------|
@@ -464,15 +354,113 @@ This enables:
 | **500 Internal Error** | `INTERNAL_ERROR` | Retry with backoff |
 | **503 Service Unavailable** | `TRY_AGAIN_LATER` | Temporary issue, retry later |
 
-**The Result**:
+#### The Result
 
 This structured error handling enables the generated client to provide specific, actionable error messages rather than generic HTTP failures. Developers get type-safe error codes, HTTP status mapping, and clear guidance on how to handle each error condition.
-<!-- END ORIGINAL [CONTENT] -->
+
+<a id="challenge-4-api-ergonomics"></a>
+### Challenge #4: API Ergonomics
+
+#### The Problem - Generated Code is Verbose
+
+Using swift-openapi-generator's output directly:
+
+```swift
+// Painful verbose usage
+let input = Operations.queryRecords.Input(
+    path: .init(
+        version: "1",
+        container: "iCloud.com.example.MyApp",
+        environment: Components.Parameters.environment.production,
+        database: Components.Parameters.database._private
+    ),
+    headers: .init(accept: [.json]),
+    body: .json(.init(
+        query: .init(recordType: "User")
+    ))
+)
+
+let response = try await client.queryRecords(input)
+
+switch response {
+case .ok(let okResponse):
+    let queryResponse = try okResponse.body.json
+    // Process records...
+default:
+    // Handle errors...
+}
+```
+
+#### Problems
+
+- 🔴 Too much boilerplate
+- 🔴 Nested type references
+- 🔴 Manual response unwrapping
+- 🔴 Not idiomatic Swift
+
+#### The Design Session with Claude
+
+```no-highlight
+Me: "I need the generated code hidden, but a friendly public API.
+     Users shouldn't know OpenAPI exists."
+
+Claude: "Three layers:
+         1. Generated (internal only)
+         2. Middleware + protocols (internal)
+         3. Simple public API
+
+         Here's a protocol sketch for CloudKitService..."
+
+Me: "I want clean, idiomatic Swift. What should the public API look like?"
+
+Claude: "Hide all the OpenAPI types:
+         - Internal generated client
+         - Public CloudKitService wrapper
+         - Simple async methods
+         - Clean error types"
+
+Me: "What about TokenManager?"
+
+Claude: "Make it an Actor for thread safety:
+         protocol TokenManager: Actor {
+             var hasCredentials: Bool { get async }
+             func getCurrentCredentials() async throws -> TokenCredentials?
+         }
+         This gives you actor isolation for all token operations."
+```
+
+#### The Three-Layer Architecture
+
+```no-highlight
+┌─────────────────────────────────────────┐
+│  User Code (Public API)                 │
+│  • CloudKitService wrapper              │
+│  • Simple, intuitive methods            │
+└─────────────────────────────────────────┘
+                    ↓
+┌─────────────────────────────────────────┐
+│  MistKit Abstraction (Internal)         │
+│  • MistKitClient                        │
+│  • TokenManager implementations (3)     │
+│  • Middleware (Auth, Logging)           │
+│  • CustomFieldValue                     │
+└─────────────────────────────────────────┘
+                    ↓
+┌─────────────────────────────────────────┐
+│  Generated OpenAPI Client (Internal)    │
+│  • Client.swift (3,268 lines)           │
+│  • Types.swift (7,208 lines)            │
+└─────────────────────────────────────────┘
+```
+
+#### The Result
+
+A clean public API that hides all OpenAPI complexity. Generated code stays internal, users interact with idiomatic Swift. Type safety maintained throughout, but ergonomics dramatically improved.
 
 <a id="the-iterative-workflow-with-claude"></a>
 ### The Iterative Workflow with Claude
 
-**The Pattern That Emerged:**
+#### The Pattern That Emerged
 
 1. **I draft the structure**
    - Sketch endpoints, major types, auth flow
@@ -495,7 +483,7 @@ This structured error handling enables the generated client to provide specific,
 
 5. **Iterate until complete**
 
-**Example - The `/records/query` Endpoint**:
+#### Example - The /records/query Endpoint
 
 ```no-highlight
 Me: "Here's the query endpoint from Apple's docs"
@@ -509,11 +497,15 @@ Claude: *[Updates definition with pagination support]*
 "Updated, and I noticed the `zoneID` should be optional"
 ```
 
-**Timeline**: What might take a week solo took 3-4 days with Claude's help.
+#### Timeline
 
-**Key Message**: Claude Code shines at iterative refinement of structured data.
+What might take a week solo took 3-4 days with Claude's help.
 
-**The OpenAPI Creation Sprint - July 2024:**
+#### Key Message
+
+Claude Code shines at iterative refinement of structured data.
+
+#### The OpenAPI Creation Sprint - July 2024
 
 The actual work of creating the OpenAPI specification took 4 days. I started with Apple's CloudKit Web Services documentation and worked through iterative refinement with Claude: sketch → expand → review → refine. We solved Field Value polymorphism with the oneOf pattern (handling the ASSETID quirk), completed authentication modeling with three security schemes, and Claude suggested the middleware pattern for auth early. The impact was clear—accelerated spec creation (4 days vs estimated 1 week solo) and consistent endpoint patterns across 15 operations.
 
