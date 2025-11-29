@@ -123,8 +123,6 @@ With swift-openapi-generator available (announced WWDC 2023), the path forward b
    - Add TokenManager for authentication
    - CustomFieldValue for CloudKit's polymorphic types
 
-<img class="full-size" src="/media/tutorials/rebuilding-mistkit-claude-code/mistkit-development-flow.svg" alt="OpenAPI workflow showing transformation from CloudKit documentation through OpenAPI specification and swift-openapi-generator to MistKit abstraction layer" />
-
 By following [spec-driven development](https://swiftpackageindex.com/apple/swift-openapi-generator/1.10.3/documentation/swift-openapi-generator/practicing-spec-driven-api-development), we had many benefits:
 
 - Type safety (if it compiles, it's valid CloudKit usage)
@@ -468,8 +466,6 @@ This process of building and refining was iterative when working with Claude Cod
    - Suggests improvements
 
 5. **Iterate until complete**
-
-<img class="full-size" src="/media/tutorials/rebuilding-mistkit-claude-code/iterative-process.svg" alt="Iterative workflow diagram showing the cycle between drafting structure, Claude expanding, reviewing accuracy, Claude validating, and deciding to iterate or complete" />
 
 Let's take for instance, this conversation I had with Claude:
 
