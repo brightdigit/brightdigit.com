@@ -11,6 +11,16 @@ When [Swift Macros](https://docs.swift.org/swift-book/documentation/the-swift-pr
 
 This is the story of how I used AI tools like [Cursor](https://cursor.sh/) and [Claude Code](https://claude.ai/) to build **[SyntaxKit](https://github.com/brightdigit/SyntaxKit)** - a Swift package that transforms SwiftSyntax's verbose approach into something that feels like writing Swift code.
 
+---
+
+**In this series:**
+
+* _Building SyntaxKit with AI_
+* [Rebuilding MistKit with Claude Code (Part 1)](https://brightdigit.com/tutorials/rebuilding-mistkit-claude-code-part-1/)
+* Coming soon: Rebuilding MistKit with Claude Code (Part 2)
+
+---
+
 📚 **[View Documentation](https://swiftpackageindex.com/brightdigit/SyntaxKit/main/documentation/syntaxkit)** | 🐙 **[GitHub Repository](https://github.com/brightdigit/SyntaxKit)**
 
 - [The SwiftSyntax Challenge](#the-swiftsyntax-challenge)

@@ -8,19 +8,21 @@ subscriptionCTA: Want to learn more about AI-assisted Swift development? Sign up
 
 In my previous article about [Building SyntaxKit with AI](https://brightdigit.com/tutorials/syntaxkit-swift-code-generation/), I explored how with the help of Claude code I could transform SwiftSyntax's 80+ lines of verbose API calls into 10 lines of elegant, declarative Swift.
 
-<!-- move the series to the top -->
-
-<!-- copy the series to the top of the SyntaxKit article -->
-
 I saw how Claude Code could easily replace and understand patterns. That's when I decided to explore the idea of updating MistKit, my library for server-side CloudKit application and see how Claude Code can help.
 
+---
 
-<!-- fix table of contents -->
+**In this series:**
+
+* [Building SyntaxKit with AI](https://brightdigit.com/tutorials/syntaxkit-swift-code-generation/)
+* _Rebuilding MistKit with Claude Code (Part 1)_
+* Coming soon: Rebuilding MistKit with Claude Code (Part 2)
+
+---
+
 📚 **[View Documentation](https://swiftpackageindex.com/brightdigit/MistKit/documentation)** | 🐙 **[GitHub Repository](https://github.com/brightdigit/MistKit)**
 
 - [The Decision to Rebuild](#the-decision-to-rebuild)
-  - [The State of MistKit v0.2](#the-state-of-mistkit-v02)
-  - [The Need for Change](#the-need-for-change)
   - [The Game Changer: swift-openapi-generator](#the-game-changer-swift-openapi-generator)
   - [Learning from SyntaxKit's Pattern](#learning-from-syntaxkits-pattern)
 - [Building with Claude Code](#building-with-claude-code)
@@ -57,7 +59,7 @@ That's where Claude Code came in.
 
 With my work on SyntaxKit, I could see that if I fed sufficient documentation on an API to an LLM, it can understand how to develop against it. There may be issues along the way. However, any failures come with the ability to learn and adapt either with internal documentation or writing sufficient tests.
 
-Just as I was able to simplify SwiftSyntax into a simpler API, I can have an LLM create an OpenAPI spec for CloudKit/
+Just as I was able to simplify SwiftSyntax into a simpler API, I can have an LLM create an OpenAPI spec for CloudKit.
 
 ---
 
@@ -121,8 +123,7 @@ With swift-openapi-generator available (announced WWDC 2023), the path forward b
    - Add TokenManager for authentication
    - CustomFieldValue for CloudKit's polymorphic types
 
-<!-- add diagram of how this works -->
-![diagram of how this works](https://placehold.co/600x400/EEE/31343C)
+<img class="full-size" src="/media/tutorials/rebuilding-mistkit-claude-code/mistkit-development-flow.svg" alt="OpenAPI workflow showing transformation from CloudKit documentation through OpenAPI specification and swift-openapi-generator to MistKit abstraction layer" />
 
 By following [spec-driven development](https://swiftpackageindex.com/apple/swift-openapi-generator/1.10.3/documentation/swift-openapi-generator/practicing-spec-driven-api-development), we had many benefits:
 
@@ -408,30 +409,7 @@ default:
 
 The problem is there's too much boilerplate for simple operations when we can clean this up with a nicer abstraction. The solution was to build a three-layer architecture that keeps the generated code internal and exposes a clean public API:
 
-<!-- turn this into a mermaid image -->
-
-```no-highlight
-┌─────────────────────────────────────────┐
-│  User Code (Public API)                 │
-│  • CloudKitService wrapper              │
-│  • Simple async methods                 │
-│  • Clean Swift types                    │
-└─────────────────────────────────────────┘
-                    ↓
-┌─────────────────────────────────────────┐
-│  MistKit Abstraction (Internal)         │
-│  • MistKitClient                        │
-│  • TokenManager implementations (3)     │
-│  • Middleware (Auth, Logging)           │
-│  • CustomFieldValue                     │
-└─────────────────────────────────────────┘
-                    ↓
-┌─────────────────────────────────────────┐
-│  Generated OpenAPI Client (Internal)    │
-│  • Client.swift (3,268 lines)           │
-│  • Types.swift (7,208 lines)            │
-└─────────────────────────────────────────┘
-```
+<img class="full-size" src="/media/tutorials/rebuilding-mistkit-claude-code/mistkit-development-layers.svg" alt="Three-layer architecture showing User Code (public API), MistKit Abstraction (internal), and Generated OpenAPI Client (internal)" />
 
 So now it can look something like this:
 
@@ -491,6 +469,8 @@ This process of building and refining was iterative when working with Claude Cod
 
 5. **Iterate until complete**
 
+<img class="full-size" src="/media/tutorials/rebuilding-mistkit-claude-code/iterative-process.svg" alt="Iterative workflow diagram showing the cycle between drafting structure, Claude expanding, reviewing accuracy, Claude validating, and deciding to iterate or complete" />
+
 Let's take for instance, this conversation I had with Claude:
 
 ```no-highlight
@@ -528,12 +508,4 @@ After three months of collaboration with Claude, I had:
 
 The OpenAPI spec was complete. The generated client compiled. The abstraction layer was elegant. Unit tests passed.
 
-However I really needed to put it the test in my actual uses. In the next post, I'll talk about find flaws in MistKit by actually consuming my library with help from Claude Code. I'll be building a couple of command line tools for easily uploading data for Bushel and a future RSS Reader to the public database. By doing this I'll understand Claude's limitation, benefits and how to workaround those. 
-
-<!-- move the series to the top -->
----
-
-**In this series:**
-1. [Building SyntaxKit with AI](https://brightdigit.com/tutorials/syntaxkit-swift-code-generation/) - Elegant code generation with SwiftSyntax
-2. **Rebuilding MistKit with Claude Code (Part 1)** ← You are here
-3. Coming soon: Rebuilding MistKit with Claude Code (Part 2) - Real-world validation and lessons learned
+However I really needed to put it the test in my actual uses. In the next post, I'll talk about find flaws in MistKit by actually consuming my library with help from Claude Code. I'll be building a couple of command line tools for easily uploading data for Bushel and a future RSS Reader to the public database. By doing this I'll understand Claude's limitation, benefits and how to workaround those.
