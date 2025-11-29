@@ -3,13 +3,20 @@ title: Rebuilding MistKit with Claude Code - From CloudKit Docs to Type-Safe Swi
 date: 2025-11-03 00:00
 description: Follow the journey of rebuilding MistKit v1.0 using Claude Code and swift-openapi-generator. Learn how OpenAPI specifications transformed Apple's CloudKit documentation into a type-safe Swift client, and discover the challenges of mapping CloudKit's quirky REST API to modern Swift patterns.
 featuredImage: /media/tutorials/rebuilding-mistkit-claude-code/mistkit-rebuild-part1-hero.webp
-subscriptionCTA: Want to learn more about AI-assisted Swift development and modern API design patterns? Sign up for our newsletter to get notified when Part 2 drops, covering real-world MistKit applications and lessons learned from AI collaboration.
+subscriptionCTA: Want to learn more about AI-assisted Swift development? Sign up for our newsletter to get notified when Part 2 drops.
 ---
+<!-- fix the featuredImage -->
 
-In my previous article about [Building SyntaxKit with AI](https://brightdigit.com/tutorials/syntaxkit-swift-code-generation/), I explored how code generation could transform SwiftSyntax's 80+ lines of verbose API calls into 10 lines of elegant, declarative Swift.
+In my previous article about [Building SyntaxKit with AI](https://brightdigit.com/tutorials/syntaxkit-swift-code-generation/), I explored how with the help of Claude code I could transform SwiftSyntax's 80+ lines of verbose API calls into 10 lines of elegant, declarative Swift.
 
-That's when I decided to export the idea of updating MistKit for several use cases and how Claude Code can help.
+<!-- move the series to the top -->
 
+<!-- copy the series to the top of the SyntaxKit article -->
+
+I saw how Claude Code could easily replace and understand patterns. That's when I decided to explore the idea of updating MistKit, my library for server-side CloudKit application and see how Claude Code can help.
+
+
+<!-- fix table of contents -->
 📚 **[View Documentation](https://swiftpackageindex.com/brightdigit/MistKit/documentation)** | 🐙 **[GitHub Repository](https://github.com/brightdigit/MistKit)**
 
 - [The Decision to Rebuild](#the-decision-to-rebuild)
@@ -31,45 +38,45 @@ That's when I decided to export the idea of updating MistKit for several use cas
 
 I had a couple of use cases where MistKit running in the cloud would allow me to store data in a public database. However I hadn't touched the library in a while.
 
-<a id="the-need-for-change"></a>
-### The Need for Change
-
-Swift had transformed while MistKit stood still:
+By now, Swift had transformed while MistKit stood still:
 - **Swift 6** with strict concurrency checking
 - **async/await** as standard (not experimental)
 - **Server-side Swift maturity** (Vapor 4, swift-nio, AWS Lambda)
 - **Modern patterns** expected (Result types, AsyncSequence, property wrappers)
 
-MistKit v0.2, frozen in 2021, couldn't take advantage of any of this.
+MistKit, frozen in 2021, couldn't take advantage of any of this.
 
 <a id="the-game-changer-swift-openapi-generator"></a>
 ### The Game Changer: swift-openapi-generator
 
-At WWDC 2023, Apple announced `swift-openapi-generator`—a tool that reads OpenAPI specifications and automatically generates type-safe Swift client code. This single tool made the MistKit rebuild feasible. If I had an OpenAPI spec, I could easily create a library which made the necessary calls to CloudKit as needed, as well as compatibility with server-side (AsyncHTTP) or client-side APIs (URLSession).
+At WWDC 2023, Apple announced `swift-openapi-generator`—a tool that reads OpenAPI specifications and automatically generates type-safe Swift client code. This single tool made the MistKit rebuild feasible. What was missing was an OpenAPI spec. If I had that I could easily create a library which made the necessary calls to CloudKit as needed, as well as compatibility with server-side (AsyncHTTP) or client-side APIs (URLSession).
 
-What I needed was a way to easily create that spec, since Apple only provides documentation for the CloudKit REST API.
+That's where Claude Code came in.
 
 <a id="learning-from-syntaxkits-pattern"></a>
 ### Learning from SyntaxKit's Pattern
 
-With my work on SyntaxKit, I could see that if I fed sufficient documentation on an API to an LLM, it can understand how to develop against it. Even so, any failures come with the ability to learn and adapt either with internal documentation or writing sufficient tests.
+With my work on SyntaxKit, I could see that if I fed sufficient documentation on an API to an LLM, it can understand how to develop against it. There may be issues along the way. However, any failures come with the ability to learn and adapt either with internal documentation or writing sufficient tests.
 
-Just as I was able to simplify SwiftSyntax into a simpler API, I can have an LLM create an OpenAPI spec for CloudKit and build an API on top of the generated code.
+Just as I was able to simplify SwiftSyntax into a simpler API, I can have an LLM create an OpenAPI spec for CloudKit/
 
 ---
 
-The pattern was clear: **give Claude the right context, and it could translate Apple's prose documentation into machine-readable OpenAPI**. SyntaxKit taught me that code generation works best when you have a clear source of truth—for SyntaxKit it was SwiftSyntax ASTs, for MistKit it would be CloudKit's REST API documentation. The abstraction layer would come later.
+The pattern was clear: **give Claude the right context, and it could translate Apple's documentation into a usable OpenAPI spc**. SyntaxKit taught me that code generation works best when you have a clear source of truth—for SyntaxKit it was SwiftSyntax ASTs, for MistKit it would be CloudKit's REST API documentation. The abstraction layer would come later.
 
 The rebuild was ready to begin.
+
+![CloudKit Web Services Documentation Site](https://placehold.co/600x400/EEE/31343C)
 
 <a id="building-with-claude-code"></a>
 ## Building with Claude Code
 
-I needed a way for Claude Code to understand how the CloudKit REST API worked. There was one main document I used—the [CloudKit Web Services Documentation Site](https://developer.apple.com/library/archive/documentation/DataManagement/Conceptual/CloudKitWebServicesReference/). The CloudKit Web Services Documentation Site, which hasn't been updated since June of 2016, contains the most thorough documentation on how the REST API works and hopefully can provide enough for Claude to start crafting the OpenAPI spec.
+I needed a way for Claude Code to understand how the CloudKit REST API worked. There was one main document I used—the [CloudKit Web Services Documentation Site](https://developer.apple.com/library/archive/documentation/DataManagement/Conceptual/CloudKitWebServicesReference/). The CloudKit Web Services Documentation Site, **which hasn't been updated since June of 2016**, contains the most thorough documentation on how the REST API works and hopefully can provide enough for Claude to start crafting the OpenAPI spec.
 
 By running the site (as well as the swift-openapi-generator documentation) through llm.codes, saving the exported markdown documentation in the `.claude/docs` directory and letting Claude Code know about it (i.e. add a reference to it in Claude.md), I could now start having Claude Code translate the documentation into a usable API.
 
 <!-- add diagram or image for the folder structure for claude and its docs -->
+![Claude Docs Folder for MistKit](https://placehold.co/600x400/EEE/31343C)
 
 <a id="why-openapi--swift-openapi-generator"></a>
 ### Why OpenAPI + swift-openapi-generator?
@@ -93,23 +100,19 @@ With swift-openapi-generator available (announced WWDC 2023), the path forward b
    - CustomFieldValue for CloudKit's polymorphic types
 
 <!-- add diagram of how this works -->
+![diagram of how this works](https://placehold.co/600x400/EEE/31343C)
 
-This had many benefits:
+By following [spec-driven development](https://swiftpackageindex.com/apple/swift-openapi-generator/1.10.3/documentation/swift-openapi-generator/practicing-spec-driven-api-development), we had many benefits:
 
 - Type safety (if it compiles, it's valid CloudKit usage)
 - Completeness (every endpoint defined)
-- Maintainability (spec changes = regenerate code) <!-- add link to openapi generator spec driven dev -->
+- Maintainability (spec changes = regenerate code) 
 - No manual JSON parsing or networking boilerplate
 - Cross-platform (macOS, iOS, Linux, server-side Swift)
 
 <a id="challenge-1-type-system-polymorphism"></a>
 ### Challenge #1: Type System Polymorphism
-
-#### The Core Problem
-
 CloudKit fields are dynamically typed—one field can be STRING, INT64, DOUBLE, TIMESTAMP, BYTES, REFERENCE, ASSET, LOCATION, or LIST. But OpenAPI is statically typed. How do we model this polymorphism?
-
-#### The Claude Code Conversation
 
 ```no-highlight
 Me: "Here's CloudKit's field value structure from Apple's docs.
@@ -137,9 +140,7 @@ Claude: "Here are test cases for STRING, INT64, DOUBLE, TIMESTAMP,
 
 Having developed MistKit previously, I understood the challenge of various field types and the difficulty in expressing that in Swift. This is a common challenge in Swift with JSON data.
 
-<!-- add link to typeOverrides documentation --> 
-
-Claude's suggestion of `typeOverrides` was the breakthrough—instead of fighting OpenAPI's type system, we'd let the generator create basic types, then override with our custom implementation that handles CloudKit's quirks.
+Claude's suggestion of [`typeOverrides`](https://swiftpackageindex.com/apple/swift-openapi-generator/1.10.3/documentation/swift-openapi-generator/configuring-the-generator#Type-overrides) was the breakthrough—instead of fighting OpenAPI's type system, we'd let the generator create basic types, then override with our custom implementation that handles CloudKit's quirks.
 
 #### Understanding ASSET vs ASSETID
 
@@ -182,17 +183,18 @@ The next challenge was dealing with the 3 different methods of authentication:
 1. **API Token** - Container-level access
    - Query parameter: `ckAPIToken`
    - Simplest method
+   - A starting point for **Web Auth Token** 
 
 2. **Web Auth Token** - User-specific access
    - Two query parameters: `ckAPIToken` + `ckWebAuthToken`
-   - For web applications
+   - For private database access
 
-3. **Server-to-Server** - Enterprise access
+3. **Server-to-Server** - Public Database Access
    - ECDSA P-256 signature in Authorization header
    - Most complex, most secure
 
 
-This became a complexity problem when trying to model it in OpenAPI. What Claude suggested was to use the middleware API to handle authentication dynamically rather than relying on generator's built-in auth. The meant we used:
+This became a complexity problem when trying to model it in OpenAPI. What Claude suggested was to use the [ClientMiddleware API](https://swiftpackageindex.com/apple/swift-openapi-runtime/1.8.3/documentation/openapiruntime/clientmiddleware) to handle authentication dynamically rather than relying on generator's built-in auth. The meant we used:
 
 1. **OpenAPI**: Define all three `securitySchemes` but make endpoint security optional (`security: []`)
 2. **Middleware**: Implement `AuthenticationMiddleware` that inspects `TokenManager` at runtime
@@ -227,7 +229,7 @@ internal struct AuthenticationMiddleware: ClientMiddleware {
 }
 ```
 
-Why this helps is because:
+This helps because:
 
 - ✅ Generator doesn't need to handle auth complexity
 - ✅ We control authentication at runtime
@@ -235,7 +237,7 @@ Why this helps is because:
 - ✅ Supports all three methods seamlessly
 - ✅ Can switch auth methods without code changes
 
-While this looks like it will work I wanted to make absolute sure. When using an LLM it's important to have code which actually proves that it works and not just unit test. So I created a simple command line tool which would to both write and read from a public and private database:
+While this looks like it will work I wanted to make absolute sure. When using an LLM **it's important to have code which actually proves that it works and not just unit test.** So I created a simple command line tool which would to both write and read from a public and private database:
 
 ```no-highlight
 Me: "Can you run MistDemo to test the actual functionality?"
@@ -382,11 +384,9 @@ default:
 }
 ```
 
-The problem: too much boilerplate for simple operations. This needed a cleaner abstraction.
+The problem is there's too much boilerplate for simple operations when we can clean this up with a nicer abstraction. The solution was to build a three-layer architecture that keeps the generated code internal and exposes a clean public API:
 
-#### The Three-Layer Architecture
-
-The solution was to build a three-layer architecture that keeps the generated code internal and exposes a clean public API:
+<!-- turn this into a mermaid image -->
 
 ```no-highlight
 ┌─────────────────────────────────────────┐
@@ -411,7 +411,7 @@ The solution was to build a three-layer architecture that keeps the generated co
 └─────────────────────────────────────────┘
 ```
 
-**Initial Public API** (read operations):
+So now it can look something like this:
 
 ```swift
 // Clean, idiomatic Swift
@@ -435,22 +435,22 @@ for record in records {
 }
 ```
 
-**Key Abstractions Built**:
+In this case, we create a few abstraction to help:
+
 - `FieldValue` enum for type-safe field access
 - `RecordInfo` struct for read operations
 - `QueryFilter` for building queries
 - `CloudKitService` wrapper hiding OpenAPI complexity
 
-The generated code stays internal. Users interact with idiomatic Swift. Type safety maintained throughout, but ergonomics dramatically improved.
+This means the generated code stays internal while users interact with the more friendly API.
 
 <a id="the-iterative-workflow-with-claude"></a>
 ### The Iterative Workflow with Claude
 
-#### The Pattern That Emerged
+This process of building and refining was iterative when working with Claude Code:
 
 1. **I draft the structure**
-   - Sketch endpoints, major types, auth flow
-   - Provide CloudKit domain knowledge
+   - Provide CloudKit domain knowledge and desired API
 
 2. **Claude expands**
    - Fills in request/response schemas
@@ -461,15 +461,15 @@ The generated code stays internal. Users interact with idiomatic Swift. Type saf
    - Check against Apple docs
    - Add edge cases and CloudKit quirks
    - Refine error responses
+   - Define integration and unit tests for verification
 
 4. **Claude validates consistency**
    - Catches schema mismatches
-   - Finds missing `$ref` references
    - Suggests improvements
 
 5. **Iterate until complete**
 
-#### Example - The /records/query Endpoint
+Let's take for instance, this conversation I had with Claude:
 
 ```no-highlight
 Me: "Here's the query endpoint from Apple's docs"
@@ -483,26 +483,19 @@ Claude: *[Updates definition with pagination support]*
 "Updated, and I noticed the `zoneID` should be optional"
 ```
 
-#### Timeline
+By providing my own experience with great Swift APIs and Claude's ability at applying patterns, I quickly build a library that's friendly to use.
 
-What might take a week solo took 3-4 days with Claude's help.
+#### Building MistKit from Scratch with Claude Code
 
-#### Key Message
+With Claude Code, I could easily create an openapi document based on the Apple's documentation. With my guidance and understanding with the REST API and good Swift design, I could guide Claude through issues like:
 
-Claude Code shines at iterative refinement of structured data.
+* Field Value with the oneOf pattern and handling the ASSETID quirk)
+* completed authentication modeling with three security schemes
 
-#### The OpenAPI Creation Sprint - July 2024
-
-The actual work of creating the OpenAPI specification took 4 days. I started with Apple's CloudKit Web Services documentation and worked through iterative refinement with Claude: sketch → expand → review → refine. We solved Field Value polymorphism with the oneOf pattern (handling the ASSETID quirk), completed authentication modeling with three security schemes, and Claude suggested the middleware pattern for auth early. The impact was clear—accelerated spec creation (4 days vs estimated 1 week solo) and consistent endpoint patterns across 15 operations.
-
-The foundation was set. But would it actually work in production?
+This will make it much easier to continue future features with MistKit and enabling me to create some server-side application for my apps.
 
 <a id="whats-next"></a>
 ## What's Next
-
-<!-- CLAUDE-WRITTEN PROSE - REVIEW AND EDIT AS NEEDED -->
-<!-- Theme: Cliffhanger leading to Part 2 - real-world validation -->
-<!-- Target: ~150 words -->
 
 After three months of collaboration with Claude, I had:
 - ✅ 10,476 lines of generated, type-safe Swift code
@@ -513,23 +506,9 @@ After three months of collaboration with Claude, I had:
 
 The OpenAPI spec was complete. The generated client compiled. The abstraction layer was elegant. Unit tests passed.
 
-**But unit tests prove correctness—real applications prove usability.**
+However I really needed to put it the test in my actual uses. In the next post, I'll talk about find flaws in MistKit by actually consuming my library with help from Claude Code. I'll be building a couple of command line tools for easily uploading data for Bushel and a future RSS Reader to the public database. By doing this I'll understand Claude's limitation, benefits and how to workaround those. 
 
-Would MistKit's abstractions actually work when building production software? Could the type-safe API handle CloudKit's quirks at scale? Would developers find it intuitive, or would they hit walls the unit tests never revealed?
-
-I needed to find out. Not with toy examples or mock data, but with real applications solving real problems. So I built two: **Celestra**, an RSS aggregator syncing thousands of articles to CloudKit, and **Bushel**, a macOS version tracker managing complex software relationships.
-
-What I discovered changed how I think about API design, AI collaboration, and the gap between "it compiles" and "it works."
-
-**[Continue to Part 2: Real-World Lessons →](https://brightdigit.com/tutorials/rebuilding-mistkit-claude-code-part-2/)**
-<!-- END CLAUDE-WRITTEN -->
-
-<!-- WRITING GUIDANCE FOR THIS SECTION -->
-<!-- Key phrases: "unit tests prove correctness—real applications prove usability", "changed how I think" -->
-<!-- Voice notes: Creates tension between theory and practice, concrete examples (Celestra, Bushel) -->
-<!-- Connect to: Sets up Part 2's focus on real-world validation and lessons learned -->
-<!-- END GUIDANCE -->
-
+<!-- move the series to the top -->
 ---
 
 **In this series:**
