@@ -5,7 +5,6 @@ description: Follow the journey of rebuilding MistKit v1.0 using Claude Code and
 featuredImage: /media/tutorials/rebuilding-mistkit-claude-code/mistkit-rebuild-part1-hero.webp
 subscriptionCTA: Want to learn more about AI-assisted Swift development? Sign up for our newsletter to get notified when Part 2 drops.
 ---
-<!-- fix the featuredImage -->
 
 In my previous article about [Building SyntaxKit with AI](https://brightdigit.com/tutorials/syntaxkit-swift-code-generation/), I explored how with the help of Claude code I could transform SwiftSyntax's 80+ lines of verbose API calls into 10 lines of elegant, declarative Swift.
 
@@ -66,7 +65,7 @@ The pattern was clear: **give Claude the right context, and it could translate A
 
 The rebuild was ready to begin.
 
-![CloudKit Web Services Documentation Site](https://placehold.co/600x400/EEE/31343C)
+![CloudKit Web Services Documentation Site](/media/tutorials/rebuilding-mistkit-claude-code/cloudkit-documentation.webp)
 
 <a id="building-with-claude-code"></a>
 ## Building with Claude Code
@@ -75,8 +74,31 @@ I needed a way for Claude Code to understand how the CloudKit REST API worked. T
 
 By running the site (as well as the swift-openapi-generator documentation) through llm.codes, saving the exported markdown documentation in the `.claude/docs` directory and letting Claude Code know about it (i.e. add a reference to it in Claude.md), I could now start having Claude Code translate the documentation into a usable API.
 
-<!-- add diagram or image for the folder structure for claude and its docs -->
-![Claude Docs Folder for MistKit](https://placehold.co/600x400/EEE/31343C)
+```
+.claude/docs
+├── cktool-full.md
+├── cktool.md
+├── cktooljs-full.md
+├── cktooljs.md
+├── cloudkit-public-database-architecture.md
+├── cloudkit-schema-plan.md
+├── cloudkit-schema-reference.md
+├── cloudkitjs.md
+├── data-sources-api-research.md
+├── firmware-wiki.md
+├── https_-swiftpackageindex.com-apple-swift-log-main-documentation-logging.md
+├── https_-swiftpackageindex.com-apple-swift-openapi-generator-1.10.3-documentation-swift-openapi-generator.md
+├── https_-swiftpackageindex.com-brightdigit-SyndiKit-0.6.1-documentation-syndikit.md
+├── mobileasset-wiki.md
+├── protocol-extraction-continuation.md
+├── QUICK_REFERENCE.md
+├── README.md
+├── schema-design-workflow.md
+├── sosumi-cloudkit-schema-source.md
+├── SUMMARY.md
+├── testing-enablinganddisabling.md
+└── webservices.md
+```
 
 <a id="why-openapi--swift-openapi-generator"></a>
 ### Why OpenAPI + swift-openapi-generator?
