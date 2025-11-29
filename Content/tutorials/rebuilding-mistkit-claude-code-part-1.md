@@ -5,7 +5,6 @@ description: Follow the journey of rebuilding MistKit using Claude Code and swif
 featuredImage: /media/tutorials/rebuilding-mistkit-claude-code/mistkit-rebuild-part1-hero.webp
 subscriptionCTA: Want to learn more about AI-assisted Swift development? Sign up for our newsletter to get notified when Part 2 drops.
 ---
-<!-- fix the featuredImage -->
 
 In my previous article about [Building SyntaxKit with AI](https://brightdigit.com/tutorials/syntaxkit-swift-code-generation/), I explored how with the help of [Claude Code](https://claude.ai/claude-code) I could transform SwiftSyntax's 80+ lines of verbose API calls into 10 lines of elegant, declarative Swift.
 
