@@ -497,8 +497,6 @@ This process of building and refining was iterative when working with Claude Cod
 
 5. **Iterate until complete**
 
-<img class="full-size" src="/media/tutorials/rebuilding-mistkit-claude-code/iterative-process.svg" alt="Iterative workflow diagram showing the cycle between drafting structure, Claude expanding, reviewing accuracy, Claude validating, and deciding to iterate or complete" />
-
 Let's take for instance, this conversation I had with Claude:
 
 ```no-highlight
