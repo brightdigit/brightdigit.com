@@ -6,9 +6,7 @@ featuredImage: /media/tutorials/rebuilding-mistkit-claude-code/mistkit-rebuild-p
 subscriptionCTA: Want to learn more about AI-assisted Swift development and modern API design patterns? Sign up for our newsletter to get notified about the rest of the Modern Swift Patterns series and future tutorials on building production-ready Swift applications.
 ---
 
-In [Part 1](https://brightdigit.com/tutorials/rebuilding-mistkit-claude-code-part-1/), I showed how Claude Code and swift-openapi-generator transformed CloudKit's REST documentation into a type-safe Swift client. The OpenAPI spec was complete. The generated code compiled. The abstraction layer was elegant. 161 tests passed.
-
-But unit tests prove correctness—real applications prove usability.
+In [Part 1](https://brightdigit.com/tutorials/rebuilding-mistkit-claude-code-part-1/), I showed how Claude Code and swift-openapi-generator transformed CloudKit's REST documentation into a type-safe Swift client. We has 161 unit tests which passed but would it actually work in the real world.
 
 📚 **[View Documentation](https://swiftpackageindex.com/brightdigit/MistKit/documentation)** | 🐙 **[GitHub Repository](https://github.com/brightdigit/MistKit)**
 
@@ -36,24 +34,21 @@ But unit tests prove correctness—real applications prove usability.
 <!-- Theme: Unit tests prove correctness, real apps prove usability -->
 <!-- Target: ~100 words -->
 
-Would MistKit's abstractions actually work when building production software? Could the type-safe API handle CloudKit's quirks at scale? Would developers find it intuitive, or would they hit walls the unit tests never revealed?
+Would MistKit's abstractions actually work when building an application? Could the type-safe API handle CloudKit's quirks at scale?
 
-I needed to find out. Not with toy examples or mock data, but with real applications solving real problems. So I built two: **Celestra**, an RSS aggregator syncing thousands of articles to CloudKit, and **Bushel**, a macOS version tracker managing complex software relationships.
+I needed to find out. 
 
-What I discovered changed how I think about API design.
-<!-- END CLAUDE-WRITTEN -->
 
-<!-- WRITING GUIDANCE FOR THIS SECTION -->
-<!-- Key phrases: "real applications prove usability", "walls the unit tests never revealed" -->
-<!-- Voice notes: Creates stakes and sets up real-world validation -->
-<!-- Connect to: Introduction paragraph about theory vs practice -->
-<!-- END GUIDANCE -->
+I had 2 real-world application for MistKit to try it out: 
+- an RSS aggregator syncing thousands of articles to CloudKit using SyndiKit for an app codenamed **Celestra**
+- For **Bushel**, I wanted to track restore images and various metadata for macOS and developer software versions. 
+
 
 <a id="the-celestra-and-bushel-examples"></a>
 ### The Celestra and Bushel Examples
 
 <!-- ORIGINAL [CONTENT] BLOCK - PRESERVED AS-IS -->
-Tests validate correctness, but real applications validate design. MistKit needed to prove it could power production software, not just pass unit tests. Enter **Celestra** and **Bushel**—two command-line tools built to stress-test MistKit's API in real-world scenarios.
+Tests validate correctness, but real applications validate design. MistKit needed to prove it could power actual software and not just pass unit tests. Enter **Celestra** and **Bushel**—two command-line tools built to stress-test MistKit's API in real-world scenarios.
 
 **Celestra: Automated RSS Feed Sync for a Reader App**
 
@@ -91,32 +86,6 @@ let operations = articles.map { article in
 }
 service.modifyRecords(operations, atomic: false)
 ```
-
-**Design Choice - String-Based vs CloudKit References**:
-
-Celestra uses string-based relationships, storing the related record's `recordName` as a String field:
-```swift
-fields["feedID"] = .string("feed-123")  // Store recordName as string
-```
-
-**Why strings work for Celestra:**
-- ✅ **Simple one-way relationships**: Articles → Feeds (just need to display feed name)
-- ✅ **Read-heavy pattern**: Fetch article, show feed name—no need to load full Feed record
-- ✅ **No cascade delete complexity**: Deleting a feed doesn't need to auto-delete articles
-- ❌ **Manual relationship management**: You query related records yourself
-
-**CloudKit References (what Bushel uses):**
-```swift
-fields["feedID"] = .reference(Reference(recordName: "feed-123"))  // Type-safe reference
-```
-
-**Why Bushel uses References:**
-- ✅ **Referential integrity**: CloudKit validates relationships exist
-- ✅ **Cascade delete options**: Delete parent → optionally delete children
-- ✅ **Type-safe**: Compiler catches invalid relationships
-- ❌ **More complex**: Need to manage reference semantics
-
-**The Trade-Off**: Use strings for simple display relationships; use References for complex data models with referential integrity requirements.
 
 **Bushel: Powering a macOS VM App with CloudKit**
 
