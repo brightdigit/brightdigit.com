@@ -20,20 +20,6 @@ I saw how Claude Code could easily replace and understand patterns. That's when 
 
 ---
 
-<!-- copy the series to the top of the SyntaxKit article -->
-
-I saw how Claude Code could easily replace and understand patterns. That's when I decided to explore the idea of updating MistKit, my library for server-side CloudKit application and see how Claude Code can help.
-
----
-
-**In this series:**
-
-* [Building SyntaxKit with AI](https://brightdigit.com/tutorials/syntaxkit-swift-code-generation/)
-* _Rebuilding MistKit with Claude Code (Part 1)_
-* Coming soon: Rebuilding MistKit with Claude Code (Part 2)
-
----
-
 📚 **[View Documentation](https://swiftpackageindex.com/brightdigit/MistKit/documentation)** | 🐙 **[GitHub Repository](https://github.com/brightdigit/MistKit)**
 
 - [The Decision to Rebuild](#the-decision-to-rebuild)
