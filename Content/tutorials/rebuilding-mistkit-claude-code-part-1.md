@@ -291,18 +291,6 @@ Claude: *[Runs demo successfully]*
 
 We'll touch more on this approach in the next blog post.
 
-#### Why Real Testing Matters with AI
-
-While Claude generated the authentication code and unit tests passed, I created `MistDemo` to verify it works with the actual CloudKit API. This is a crucial distinction when working with AI tools:
-
-**Unit tests validate logic** - They ensure your code follows expected patterns and handles edge cases correctly. AI excels at generating comprehensive unit tests.
-
-**Integration tests prove it works** - They verify your code actually communicates with external systems correctly. Real API calls catch assumptions AI might make about how protocols work.
-
-For MistKit, the authentication middleware looked correct and passed tests, but only by running it against CloudKit's servers could I be certain the signature generation, header formatting, and query parameter handling were exactly right.
-
-**We'll dive deeper into this testing philosophy and real-world validation in Part 2**, where we build actual command-line tools that consume MistKit and discover edge cases that tests alone wouldn't catch.
-
 <a id="challenge-3-error-handling"></a>
 ### Challenge #3: Error Handling
 
@@ -538,6 +526,6 @@ The OpenAPI spec was complete. The generated client compiled. The abstraction la
 - **Pattern Application**: Once I established patterns (like `CustomFieldValue` for polymorphic types), Claude consistently applied them across the codebase.
 - **Iteration Speed**: When authentication approaches needed refactoring, Claude could update dozens of files in minutes vs. hours of manual editing.
 
-What would have likely taken 6-12 months of solo development was compressed into 3 months of focused collaboration, with Claude handling repetitive tasks while I focused on architecture, CloudKit-specific quirks, and real-world testing.
+What would have likely taken 6-12 months of solo development was compressed into 3 months of _side-project_ collaboration, with Claude handling repetitive tasks while I focused on architecture, CloudKit-specific quirks, and real-world testing.
 
 However I really needed to put it the test in my actual uses. In the next post, I'll talk about find flaws in MistKit by actually consuming my library with help from Claude Code. I'll be building a couple of command line tools for easily uploading data for [Bushel](https://getbushel.app) and a future RSS Reader to the public database. By doing this I'll understand Claude's limitation, benefits and how to workaround those.
