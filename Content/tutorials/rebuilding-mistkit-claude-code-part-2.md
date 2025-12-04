@@ -52,30 +52,22 @@ Tests validate correctness, but real applications validate design. MistKit neede
 
 **Celestra: Automated RSS Feed Sync for a Reader App**
 
-[Celestra](https://github.com/brightdigit/Celestra) is an RSS reader app in development—and its CLI backend demonstrates how MistKit enables scheduled, automated CloudKit updates.
+<!-- TODO replace with new site -->
+[Celestra](https://github.com/brightdigit/Celestra) is an RSS reader app in development—and its CLI backend demonstrates how MistKit enables scheduled, automated CloudKit updates. I would love to setup reader app for its RSS feed data kept current without requiring the app to be open. Especially if I want to push notifications on updated articles. The CLI tool (built with MistKit) would run on a schedule to fetch new articles and sync them to CloudKit's public database, making fresh content available to all users instantly.
 
-**The Big Picture**:
-The Celestra reader app needs its RSS feed data kept current without requiring the app to be open. The CLI tool (built with MistKit) runs on a schedule to fetch new articles and sync them to CloudKit's public database, making fresh content available to all users instantly.
+The CLI tool would run periodically (cron job, cloud function, github action) to fetch RSS feeds. All the actual feed content (i.e. articles) would be accessed via a public database.
 
-**How CloudKit Powers Celestra**:
-- **Scheduled Updates**: CLI tool runs periodically (cron job, cloud function) to fetch RSS feeds
-- **Public Database**: All users access the same synced articles—no duplicate fetching
-- **Automatic Sync**: Reader app queries CloudKit for new articles since last launch
-- **Offline-First**: Articles cached locally but synchronized across devices via CloudKit
-- **Duplicate Detection**: GUID-based + SHA256 fallback ensures clean data
+This means that fresh content would be available even when app isn't running and MistKit's batch operations can efficiently handle hundreds of content updates.
 
-**Why This Architecture Works**:
-- Reader app stays lightweight (no background RSS parsing)
-- Fresh content available even when app isn't running
-- CloudKit handles sync complexity across all user devices
-- MistKit's batch operations efficiently handle hundreds of articles
-
-**MistKit APIs in Action**:
+For instance if I want to filter feed based that should be updated, I could do:
 ```swift
 // Query filtering - find stale feeds
 QueryFilter.lessThan("lastAttempted", .date(cutoff))
 QueryFilter.greaterThanOrEquals("usageCount", .int64(minPop))
+```
 
+And if I want to update a bunch of new article, I could:
+```swift
 // Batch operations
 let operations = articles.map { article in
     RecordOperation.create(
@@ -89,16 +81,13 @@ service.modifyRecords(operations, atomic: false)
 
 **Bushel: Powering a macOS VM App with CloudKit**
 
-[Bushel](https://getbushel.app) is a macOS virtualization app for developers—and [its data backend](https://github.com/brightdigit/Bushel) demonstrates how MistKit powers real-world CloudKit applications at scale.
+[Bushel](https://getbushel.app) is a macOS virtualization app for developers. It currently uses the idea of a hub to get a list of restore images, their download url, and their status. However since the data is universal, I needed a comprehensive, queryable central database of macOS restore images and various metadata about them, the operating system versions and various developer tools. What I wanted was something that could query a CloudKit public database in the app while a CLI tool would use MistKit to populate the data.
 
-**The Big Picture**:
-The Bushel VM app needs a comprehensive, queryable database of macOS restore images and Xcode versions to create VMs. Rather than embedding static data, it queries CloudKit's public database—populated and maintained by the Bushel CLI tool built with MistKit.
-
-**How CloudKit Powers Bushel**:
+This means I'd use:
 - **Public Database**: Worldwide access to version history without embedding static JSON
 - **Automated Updates**: CLI tool syncs latest restore images, Xcode, and Swift versions daily
 - **Queryable**: VM app queries for "macOS 15.2 restore images" → gets latest metadata
-- **Scalable**: 6 data sources (ipsw.me, AppleDB.dev, xcodereleases.com, swift.org, MESU, Mr. Macintosh) aggregated automatically
+- **Scalable**: I can use various data sources and aggregate them automatically
 - **Deduplication**: buildNumber-based deduplication ensures clean data
 
 **Why This Architecture Works**:
@@ -121,8 +110,6 @@ fields["minimumMacOS"] = .reference(
 )
 ```
 
-**Design Choice**: Bushel uses CloudKit References for type-safe relationships and automatic referential integrity—essential when managing interconnected software version metadata.
-
 **Educational Value**:
 
 Both tools serve as copy-paste starting points for new MistKit projects:
@@ -136,7 +123,7 @@ Both tools serve as copy-paste starting points for new MistKit projects:
 <!-- Theme: The satisfaction of seeing MistKit power actual applications -->
 <!-- Target: ~25-50 words -->
 
-Watching MistKit power real applications was validating—no more hypothetical "what ifs." Celestra synced thousands of RSS articles. Bushel tracked complex version relationships. The abstractions worked. But they also revealed what unit tests couldn't.
+Watching MistKit power real applications was helpful because I can see the generated code work. I was able to have the Celestra CLI synced thousands of RSS articles and the Bushel CLI tool track complex version relationships. The abstractions worked but they also revealed what unit tests couldn't.
 <!-- END CLAUDE-WRITTEN -->
 
 <!-- WRITING GUIDANCE FOR THIS SECTION -->
