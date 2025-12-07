@@ -138,16 +138,6 @@ Watching MistKit power real applications was helpful because I can see the gener
 <!-- ORIGINAL [CONTENT] BLOCK - PRESERVED AS-IS -->
 Building real applications exposed issues no unit test could catch. Here's what Celestra and Bushel revealed:
 
-**Schema Validation Gotchas**
-
-**Problem**: CloudKit schema files failed validation with cryptic parsing errors.
-
-**Root Cause**: Two critical issues affecting MistKit's API design:
-1. Missing `DEFINE SCHEMA` header in .ckdb files
-2. Accidental inclusion of system fields (`__recordID`, `___createTime`, `___modTime`) in schema definitions
-
-**Solution**: System fields are automatically managed by CloudKit and must never be defined manually. This discovery led to MistKit's `RecordOperation` API explicitly excluding system fields from user-provided field dictionaries
-
 **Batch Operation Limits**
 
 **Discovery**: CloudKit enforces 200-operation-per-request limit (not documented clearly).
