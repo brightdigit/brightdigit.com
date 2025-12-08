@@ -5,22 +5,31 @@
 ### Migration Goals
 
 Modernize the BrightDigit static site generator infrastructure by:
-1. Creating a unified Publish framework package under BrightDigit ownership
+1. Consolidating 17 external packages into monorepo using git-subrepo (Publish ecosystem + BrightDigit packages + forked plugins)
 2. Migrating API client generation from SwagGen to Apple's swift-openapi-generator
-3. Upgrading to Swift 6 with strict concurrency compliance
+3. Replacing legacy dependencies (Ink, ShellOut) with official Apple frameworks (swift-markdown, swift-subprocess)
+4. Upgrading to Swift 6 with strict concurrency compliance
+5. Adding mermaid diagram support for enhanced documentation
 
 This three-phase approach ensures dependency stability before tackling the Swift 6 language migration.
 
 **Primary Objectives:**
-1. **Dependency Consolidation** - Fork Publish ecosystem (10 packages) into single unified BrightDigit-owned package
-2. **API Modernization** - Migrate SwiftTube and Spinetail from SwagGen to swift-openapi-generator
-3. **Swift 6 Compliance** - Achieve strict concurrency checking and eliminate data race violations
-4. **Maintain Compatibility** - Zero functional regressions, byte-for-byte identical site output
+1. **Monorepo Consolidation** - Consolidate 17 packages into monorepo using git-subrepo (Publish ecosystem [8] + BrightDigit packages [7] + forked plugins [2])
+2. **Apple Framework Migration** - Replace Ink with swift-markdown, ShellOut with swift-subprocess
+3. **API Modernization** - Migrate SwiftTube and Spinetail from SwagGen to swift-openapi-generator
+4. **Swift 6 Compliance** - Achieve strict concurrency checking and eliminate data race violations
+5. **Enhanced Features** - Add mermaid diagram support for documentation
+6. **Maintain Compatibility** - Zero functional regressions, byte-for-byte identical site output
 
 **Success Criteria:**
-- Unified Publish package builds successfully with all 10 dependencies integrated
+- All 17 packages managed as git-subrepos in Packages/ directory (organized by source/purpose)
+- swift-markdown (SPM) successfully replaces Ink with identical markdown output
+- swift-subprocess (SPM) successfully replaces ShellOut with identical functionality
 - SwiftTube and Spinetail generate from OpenAPI specs using swift-openapi-generator
 - Prch framework successfully replaced with swift-openapi-runtime
+- Mermaid diagrams render correctly in generated site via mermaid.js
+- YoutubePublishPlugin and ReadingTimePublishPlugin forked to BrightDigit organization
+- All subrepos can pull upstream changes with `git subrepo pull`
 - Project compiles with Swift 6 language mode enabled
 - Zero concurrency warnings or errors
 - All tests pass on macOS and Ubuntu
@@ -29,10 +38,13 @@ This three-phase approach ensures dependency stability before tackling the Swift
 
 ### Timeline Expectations
 
-**Phase 1: Publish Unification** (2-3 weeks)
-- Fork 10 Publish ecosystem packages into unified repository
-- Create BrightDigitPublish package with all dependencies
-- Update brightdigit.com to use unified package
+**Phase 1: Monorepo Consolidation** (3-4 weeks)
+- Set up git-subrepo for 17 external packages (Publish ecosystem + BrightDigit + forked plugins)
+- Organize packages into Packages/Publish/, Packages/BrightDigit/, Packages/Plugins/ directories
+- Fork YoutubePublishPlugin and ReadingTimePublishPlugin to BrightDigit organization
+- Replace Ink with swift-markdown (SPM dependency)
+- Replace ShellOut with swift-subprocess (SPM dependency)
+- Update Package.swift to reference local subrepos
 - Validate site generation produces identical output
 
 **Phase 2: OpenAPI Generator Migration** (4-6 weeks)
@@ -42,69 +54,229 @@ This three-phase approach ensures dependency stability before tackling the Swift
 - Update ContributeYouTube and ContributeMailchimp client code
 - Comprehensive API integration testing
 
-**Phase 3: Swift 6 Migration** (4-6 weeks)
-- Update to Swift 6 language mode
+**Phase 3: Swift 6 Migration + Mermaid Support** (5-7 weeks)
+- Update to Swift 6 language mode across all 17 subrepos
 - Fix concurrency violations (Testimonial.swift, async/await patterns)
 - Add Sendable conformances
+- Integrate mermaid.js for diagram rendering
 - Expand test coverage
 - Performance benchmarking and validation
 
-**Total Estimated Duration:** 10-15 weeks
+**Total Estimated Duration:** 12-17 weeks
 
 ---
 
 ## Technical Requirements
 
-### Phase 1 Requirements: Publish Unification
+### Phase 1 Requirements: Monorepo Consolidation
 
-**Objective:** Create BrightDigitPublish - a unified package containing the entire Publish ecosystem
+**Objective:** Consolidate 17 external packages into monorepo using git-subrepo, organized by source/purpose
 
-**Packages to Consolidate (10 total):**
+**Packages to Consolidate (17 total via git-subrepo):**
 
+**Publish Ecosystem (8 packages from johnsundell) → Packages/Publish/**
 1. **Publish** (0.9.0) - Core static site generator
 2. **Plot** (0.14.0) - HTML DSL
-3. **Ink** (0.6.0) - Markdown parser
-4. **Files** (4.2.0) - File system abstraction
-5. **Codextended** (0.3.0) - Swift extensions
-6. **Sweep** (0.4.0) - String utilities
-7. **ShellOut** (2.3.0) - Shell command execution
-8. **CollectionConcurrencyKit** (0.2.0) - Async collection operations
-9. **Splash** (0.16.0) - Syntax highlighting
-10. **SplashPublishPlugin** (0.2.0) - Syntax highlighting plugin
+3. **Files** (4.2.0) - File system abstraction
+4. **Codextended** (0.3.0) - Swift extensions
+5. **Sweep** (0.4.0) - String utilities
+6. **CollectionConcurrencyKit** (0.2.0) - Async collection operations
+7. **Splash** (0.16.0) - Syntax highlighting
+8. **SplashPublishPlugin** (0.2.0) - Syntax highlighting plugin
+
+**BrightDigit Packages (7 packages) → Packages/BrightDigit/**
+9. **SwiftTube** (0.2.0-beta.5) - YouTube API client
+10. **Spinetail** (0.3.0) - Mailchimp API client
+11. **SyndiKit** (0.3.7) - RSS/Atom feed parsing
+12. **NPMPublishPlugin** (1.0.0) - NPM build integration
+13. **Contribute** (1.0.0-alpha.5) - Content contribution framework
+14. **ContributeWordPress** (1.0.0) - WordPress content import
+15. **TransistorPublishPlugin** (1.0.0) - Transistor podcast integration
+
+**Third-party Plugins (2 packages, forked to BrightDigit) → Packages/Plugins/**
+16. **YoutubePublishPlugin** (1.0.1) - YouTube embed plugin (forked from tanabe1478)
+17. **ReadingTimePublishPlugin** (0.3.0) - Reading time calculator (forked from alexito4)
+
+**Apple Framework Replacements (SPM dependencies, NOT subrepos):**
+- **swift-markdown** - Replaces Ink (0.6.0) for markdown parsing
+- **swift-subprocess** - Replaces ShellOut (2.3.0) for shell command execution
 
 **Package Structure:**
 ```
-BrightDigitPublish/
-├── Sources/
-│   ├── Publish/          (from johnsundell/Publish)
-│   ├── Plot/             (from johnsundell/Plot)
-│   ├── Ink/              (from johnsundell/Ink)
-│   ├── Files/            (from johnsundell/Files)
-│   ├── Codextended/      (from johnsundell/Codextended)
-│   ├── Sweep/            (from johnsundell/Sweep)
-│   ├── ShellOut/         (from johnsundell/ShellOut)
-│   ├── CollectionConcurrencyKit/ (from johnsundell/CollectionConcurrencyKit)
-│   ├── Splash/           (from johnsundell/Splash)
-│   └── SplashPublishPlugin/ (from johnsundell/SplashPublishPlugin)
-├── Tests/                (consolidated tests)
-├── Package.swift         (unified manifest with 10 targets)
-└── README.md
+brightdigit.com/  (monorepo with subrepos)
+├── Packages/                         # External dependencies as git-subrepos
+│   ├── Publish/                      # Publish ecosystem (8 packages)
+│   │   ├── Publish/                  # git-subrepo from johnsundell/Publish
+│   │   ├── Plot/                     # git-subrepo from johnsundell/Plot
+│   │   ├── Files/                    # git-subrepo from johnsundell/Files
+│   │   ├── Codextended/              # git-subrepo from johnsundell/Codextended
+│   │   ├── Sweep/                    # git-subrepo from johnsundell/Sweep
+│   │   ├── CollectionConcurrencyKit/ # git-subrepo from johnsundell/CollectionConcurrencyKit
+│   │   ├── Splash/                   # git-subrepo from johnsundell/Splash
+│   │   └── SplashPublishPlugin/      # git-subrepo from johnsundell/SplashPublishPlugin
+│   ├── BrightDigit/                  # BrightDigit packages (7 packages)
+│   │   ├── SwiftTube/                # git-subrepo from brightdigit/SwiftTube
+│   │   ├── Spinetail/                # git-subrepo from brightdigit/Spinetail
+│   │   ├── SyndiKit/                 # git-subrepo from brightdigit/SyndiKit
+│   │   ├── NPMPublishPlugin/         # git-subrepo from brightdigit/NPMPublishPlugin
+│   │   ├── Contribute/               # git-subrepo from brightdigit/Contribute
+│   │   ├── ContributeWordPress/      # git-subrepo from brightdigit/ContributeWordPress
+│   │   └── TransistorPublishPlugin/  # git-subrepo from brightdigit/TransistorPublishPlugin
+│   └── Plugins/                      # Third-party plugins (2 packages, forked)
+│       ├── YoutubePublishPlugin/     # git-subrepo from brightdigit/YoutubePublishPlugin
+│       └── ReadingTimePublishPlugin/ # git-subrepo from brightdigit/ReadingTimePublishPlugin
+├── Sources/                          # Local site-specific code
+│   ├── brightdigitwg/                # Main executable
+│   ├── BrightDigitArgs/              # CLI argument parsing
+│   ├── BrightDigitSite/              # Site generation logic
+│   ├── BrightDigitPodcast/           # Podcast integration
+│   ├── ContributeMailchimp/          # Mailchimp content import
+│   ├── ContributeYouTube/            # YouTube content import
+│   ├── ContributeRSS/                # RSS feed import
+│   ├── Tagscriber/                   # Web content extraction
+│   └── PublishType/                  # Type-safe Publish abstractions
+├── Tests/
+├── Content/                          # Markdown source files
+└── Package.swift                     # References all packages
 ```
 
 **brightdigit.com Package.swift Changes:**
 ```swift
 dependencies: [
-  // Replace all these:
-  // .package(url: "https://github.com/johnsundell/Publish.git", from: "0.9.0"),
-  // .package(url: "https://github.com/johnsundell/SplashPublishPlugin.git", from: "0.2.0"),
-  // ... etc
+  // Packages/* as local path dependencies
+  .package(path: "Packages/Publish/Publish"),
+  .package(path: "Packages/Publish/Plot"),
+  .package(path: "Packages/Publish/Files"),
+  // ... all 17 subrepos
 
-  // With single dependency:
-  .package(url: "https://github.com/brightdigit/BrightDigitPublish.git", from: "1.0.0"),
+  // Apple frameworks as SPM dependencies
+  .package(url: "https://github.com/swiftlang/swift-markdown.git", from: "0.4.0"),
+  .package(url: "https://github.com/swiftlang/swift-subprocess.git", from: "0.1.0"),
+
+  // Utilities as SPM dependencies
+  .package(url: "https://github.com/jpsim/Yams.git", from: "4.0.4"),
+  .package(url: "https://github.com/apple/swift-argument-parser", from: "1.1.3"),
+  .package(url: "https://github.com/tid-kijyun/Kanna.git", from: "5.2.2"),
+  .package(url: "https://github.com/eneko/MarkdownGenerator.git", from: "0.4.0")
 ]
 ```
 
-**PublishType Module:** Remains in brightdigit.com repository as separate target (not merged into BrightDigitPublish)
+**Note:** Hybrid strategy allows future extraction of Packages/* to separate BrightDigitPublish v2.0 repository
+
+---
+
+## Subrepo Management Strategy
+
+### What is git-subrepo?
+
+Git-subrepo is a tool that allows embedding external repositories as subdirectories without using git submodules. It provides a simpler workflow for managing dependencies while keeping the repository history clean.
+
+**Advantages over git submodules:**
+- No `.gitmodules` complexity or configuration files
+- Easier for contributors (no `git submodule init/update` required)
+- Full history embedded in the main repository
+- Easy upstream syncing with simple commands
+- Works transparently with standard git commands
+
+**Advantages over SPM dependencies:**
+- Unified development workflow across all packages
+- Test changes across multiple packages in single commit
+- No need to wait for package releases during development
+- Easier debugging and code navigation
+- Single CI/CD pipeline for all code
+
+### Installation
+
+```bash
+# macOS via Homebrew
+brew install git-subrepo
+
+# Or via git clone
+git clone https://github.com/ingydotnet/git-subrepo ~/.git-subrepo
+echo 'source ~/.git-subrepo/.rc' >> ~/.bashrc
+```
+
+### Initial Setup Commands
+
+For each of the 17 external packages:
+
+```bash
+# Publish ecosystem packages (8 packages)
+git subrepo clone https://github.com/johnsundell/Publish.git Packages/Publish/Publish --branch=main
+git subrepo clone https://github.com/johnsundell/Plot.git Packages/Publish/Plot --branch=main
+git subrepo clone https://github.com/johnsundell/Files.git Packages/Publish/Files --branch=main
+git subrepo clone https://github.com/johnsundell/Codextended.git Packages/Publish/Codextended --branch=main
+git subrepo clone https://github.com/johnsundell/Sweep.git Packages/Publish/Sweep --branch=main
+git subrepo clone https://github.com/johnsundell/CollectionConcurrencyKit.git Packages/Publish/CollectionConcurrencyKit --branch=main
+git subrepo clone https://github.com/johnsundell/Splash.git Packages/Publish/Splash --branch=main
+git subrepo clone https://github.com/johnsundell/SplashPublishPlugin.git Packages/Publish/SplashPublishPlugin --branch=main
+
+# BrightDigit packages (7 packages)
+git subrepo clone https://github.com/brightdigit/SwiftTube.git Packages/BrightDigit/SwiftTube --branch=main
+git subrepo clone https://github.com/brightdigit/Spinetail.git Packages/BrightDigit/Spinetail --branch=main
+git subrepo clone https://github.com/brightdigit/SyndiKit.git Packages/BrightDigit/SyndiKit --branch=main
+git subrepo clone https://github.com/brightdigit/NPMPublishPlugin.git Packages/BrightDigit/NPMPublishPlugin --branch=main
+git subrepo clone https://github.com/brightdigit/Contribute.git Packages/BrightDigit/Contribute --branch=main
+git subrepo clone https://github.com/brightdigit/ContributeWordPress.git Packages/BrightDigit/ContributeWordPress --branch=main
+git subrepo clone https://github.com/brightdigit/TransistorPublishPlugin.git Packages/BrightDigit/TransistorPublishPlugin --branch=main
+
+# Forked third-party plugins (2 packages) - fork first, then clone
+# Step 1: Fork tanabe1478/YoutubePublishPlugin to brightdigit/YoutubePublishPlugin on GitHub
+# Step 2: Fork alexito4/ReadingTimePublishPlugin to brightdigit/ReadingTimePublishPlugin on GitHub
+git subrepo clone https://github.com/brightdigit/YoutubePublishPlugin.git Packages/Plugins/YoutubePublishPlugin --branch=main
+git subrepo clone https://github.com/brightdigit/ReadingTimePublishPlugin.git Packages/Plugins/ReadingTimePublishPlugin --branch=main
+```
+
+### Updating from Upstream
+
+Pull the latest changes from upstream repositories:
+
+```bash
+# Update a specific subrepo
+git subrepo pull Packages/Publish/Publish
+
+# Update all subrepos (from project root)
+find Packages -type d -name ".git" -prune -o -type f -name ".gitrepo" -exec dirname {} \; | xargs -I {} git subrepo pull {}
+```
+
+### Contributing Changes Back
+
+Push changes made in the monorepo back to upstream:
+
+```bash
+# Push changes to upstream repo
+git subrepo push Packages/BrightDigit/SwiftTube
+
+# Push to specific branch
+git subrepo push Packages/BrightDigit/SwiftTube --branch=feature/swift-6
+```
+
+### Development Workflow
+
+1. **Clone subrepos** - Pull all 17 external repos into Packages/ directory
+2. **Develop locally** - Modify code directly in Packages/* subdirectories
+3. **Test in context** - Run tests across all packages in monorepo
+4. **Commit to monorepo** - Commit changes to main brightdigit.com repository
+5. **Push to upstream** - Use `git subrepo push` to contribute changes back to original repos
+6. **Tag releases** - Tag releases in monorepo, individual packages can follow
+
+### Subrepo Status
+
+View status of all subrepos:
+
+```bash
+git subrepo status
+```
+
+### Migration Benefits
+
+- **Unified development**: Work on Publish, SwiftTube, and site code simultaneously
+- **Cross-package changes**: Refactor across multiple packages in single PR
+- **Simplified CI/CD**: One pipeline tests all packages together
+- **Easy onboarding**: New contributors just clone one repo
+- **Future flexibility**: Can extract Packages/* to BrightDigitPublish v2.0 later
+
+---
 
 ### Phase 2 Requirements: OpenAPI Generator Migration
 
@@ -205,86 +377,103 @@ swiftSettings: [
 
 ## Migration Phases
 
-### Phase 1: Publish Ecosystem Unification (2-3 weeks)
+### Phase 1: Monorepo Consolidation (3-4 weeks)
 
-**Objective:** Create BrightDigitPublish package and migrate brightdigit.com to use it
+**Objective:** Consolidate 17 external packages into monorepo using git-subrepo, organized by source/purpose
 
-**Week 1: Repository Setup and Package Creation**
+**Week 1: Subrepo Setup and Fork Preparation**
 
-1. **Create BrightDigitPublish Repository**
-   - Create new repo: `https://github.com/brightdigit/BrightDigitPublish`
-   - Initialize with Package.swift
-   - Add README with migration rationale
+1. **Install git-subrepo**
+   - Install on macOS via Homebrew or git clone
+   - Verify installation: `git subrepo version`
+   - Configure git-subrepo settings if needed
 
-2. **Fork and Consolidate Source Code**
-   - Clone all 10 source repositories from johnsundell
-   - Copy source code into respective targets
-   - Preserve original LICENSE files (all MIT)
-   - Update imports to use unified module names
+2. **Fork Third-party Plugins**
+   - Fork `tanabe1478/YoutubePublishPlugin` to `brightdigit/YoutubePublishPlugin`
+   - Fork `alexito4/ReadingTimePublishPlugin` to `brightdigit/ReadingTimePublishPlugin`
+   - Set up branch protection rules on forked repos
 
-3. **Create Unified Package.swift**
-   ```swift
-   // swift-tools-version: 5.8
-   let package = Package(
-     name: "BrightDigitPublish",
-     platforms: [.macOS(.v12)],
-     products: [
-       .library(name: "Publish", targets: ["Publish"]),
-       .library(name: "Plot", targets: ["Plot"]),
-       .library(name: "Ink", targets: ["Ink"]),
-       // ... all 10 products
-     ],
-     targets: [
-       .target(name: "Publish", dependencies: ["Ink", "Plot", "Files", ...]),
-       .target(name: "Plot", dependencies: []),
-       .target(name: "Ink", dependencies: []),
-       // ... all 10 targets with proper dependencies
-     ]
-   )
-   ```
+3. **Clone Publish Ecosystem Packages (8 subrepos)**
+   - Clone johnsundell/Publish, Plot, Files, Codextended, Sweep, CollectionConcurrencyKit, Splash, SplashPublishPlugin
+   - Organize into `Packages/Publish/` directory
+   - Preserve `.gitrepo` metadata files
 
-4. **Consolidate Tests**
-   - Merge test suites from all packages
-   - Ensure all tests pass
+4. **Clone BrightDigit Packages (7 subrepos)**
+   - Clone SwiftTube, Spinetail, SyndiKit, NPMPublishPlugin, Contribute, ContributeWordPress, TransistorPublishPlugin
+   - Organize into `Packages/BrightDigit/` directory
 
-**Week 2: Integration and Validation**
+5. **Clone Forked Plugins (2 subrepos)**
+   - Clone YoutubePublishPlugin and ReadingTimePublishPlugin from BrightDigit forks
+   - Organize into `Packages/Plugins/` directory
 
-5. **Update brightdigit.com Package.swift**
-   - Replace 10 separate dependencies with single BrightDigitPublish
-   - Update imports if module names changed
-   - Verify build succeeds
+**Week 2: Package.swift Migration**
 
-6. **Validation Testing**
-   - Run full site generation
-   - Compare output with baseline (byte-for-byte)
-   - Verify all 113 newsletters render correctly
-   - Verify all podcast episodes render correctly
-   - Test GitLab CI/CD on both macOS and Ubuntu
+6. **Update Package.swift Dependencies**
+   - Replace SPM URLs with local `.package(path: "Packages/...")` references for all 17 subrepos
+   - Remove `Ink` dependency completely
+   - Remove `ShellOut` dependency completely
+   - Add `swift-markdown` as SPM dependency
+   - Add `swift-subprocess` as SPM dependency
+   - Update target dependencies to reference local packages
 
-7. **Documentation**
-   - Document package structure
-   - Create migration guide for external consumers
-   - Update CLAUDE.md with new dependency architecture
+7. **Migrate from Ink to swift-markdown**
+   - Update Publish package to use swift-markdown instead of Ink
+   - Update markdown parsing code in `Publish/Sources/Publish/`
+   - Ensure markdown output is byte-for-byte identical
+   - Run tests to validate markdown rendering
 
-**Week 3: Stabilization**
+8. **Migrate from ShellOut to swift-subprocess**
+   - Update Tagscriber module (currently uses ShellOut)
+   - Replace `shellOut(to:)` calls with swift-subprocess Process API
+   - Test shell command execution functionality
 
-8. **Release BrightDigitPublish 1.0.0**
-   - Tag release
-   - Publish to GitHub
-   - Update Package.resolved in brightdigit.com
+**Week 3: Integration and Validation**
 
-9. **Deploy to Staging**
-   - Test full deployment pipeline
-   - Performance benchmarking
-   - Visual regression testing
+9. **Build and Test**
+   - Run `swift build` to compile all packages
+   - Run `swift test` to validate all tests pass
+   - Fix any compilation errors from local path dependencies
+
+10. **Validation Testing**
+    - Run full site generation with `swift run brightdigitwg publish --mode production`
+    - Compare output with baseline (byte-for-byte HTML comparison)
+    - Verify all 113 newsletters render correctly
+    - Verify all podcast episodes render correctly
+    - Test GitLab CI/CD pipeline on both macOS and Ubuntu
+
+11. **Documentation**
+    - Document subrepo management workflow in README
+    - Update CLAUDE.md with new monorepo architecture
+    - Create developer onboarding guide
+
+**Week 4: Stabilization and Tagging**
+
+12. **Subrepo Status Verification**
+    - Run `git subrepo status` to verify all subrepos
+    - Test `git subrepo pull` on sample package
+    - Test `git subrepo push` workflow (dry run)
+
+13. **Tag Monorepo Release**
+    - Create git tag: `v1.0.0-monorepo`
+    - Document all 17 package versions included
+    - Update CHANGELOG.md
+
+14. **Deploy to Staging**
+    - Test full deployment pipeline
+    - Performance benchmarking (compare with baseline)
+    - Visual regression testing
+    - Rollback testing
 
 **Deliverables:**
-- [ ] BrightDigitPublish repository created with all 10 packages
-- [ ] All tests passing in unified package
-- [ ] brightdigit.com using BrightDigitPublish dependency
-- [ ] Site generation produces identical output
+- [ ] All 17 packages cloned as git-subrepos in Packages/ directory
+- [ ] YoutubePublishPlugin and ReadingTimePublishPlugin forked to BrightDigit
+- [ ] Ink successfully replaced with swift-markdown (identical output)
+- [ ] ShellOut successfully replaced with swift-subprocess
+- [ ] Package.swift using local path dependencies for all subrepos
+- [ ] All tests passing on macOS and Ubuntu
+- [ ] Site generation produces byte-for-byte identical output
 - [ ] GitLab CI/CD pipeline passing
-- [ ] BrightDigitPublish 1.0.0 released
+- [ ] Monorepo v1.0.0 tagged and documented
 
 ---
 
@@ -389,20 +578,20 @@ swiftSettings: [
 
 ---
 
-### Phase 3: Swift 6 + Component Migration (4-6 weeks)
+### Phase 3: Swift 6 + Component Migration + Mermaid Support (5-7 weeks)
 
-**Objective:** Upgrade to Swift 6, enforce component-based HTML generation, eliminate concurrency violations
+**Objective:** Upgrade to Swift 6 across all 17 subrepos, enforce component-based HTML generation, eliminate concurrency violations, add mermaid diagram support
 
 **Note:** Async/await patterns already in place from Phase 2 OpenAPI migration
 
-**Week 1: BrightDigitPublish Swift 6 Upgrade**
+**Week 1: Subrepo Swift 6 Upgrades (Publish Ecosystem)**
 
-1. **Update BrightDigitPublish to Swift 6**
-   - Update Package.swift: `// swift-tools-version: 6.0`
-   - Platform requirement: `.macOS(.v13)`
-   - Add strict concurrency checking to all 10 targets
-   - Fix any concurrency warnings in Publish/Plot/Ink code
-   - Test all modules compile
+1. **Update Publish Ecosystem Packages to Swift 6 (8 subrepos)**
+   - Update Package.swift in each: `// swift-tools-version: 6.0`
+   - Platform requirement: `.macOS(.v13)` for all
+   - Add strict concurrency checking to Publish, Plot, Files, Codextended, Sweep, CollectionConcurrencyKit, Splash, SplashPublishPlugin
+   - Fix any concurrency warnings in Publish/Plot/swift-markdown integration
+   - Test all modules compile independently
 
 2. **Enforce Component-Based Plot API**
    - Mark direct Node HTML creation as `internal` (currently `public`)
@@ -410,26 +599,37 @@ swiftSettings: [
    - Update Plot documentation to emphasize components
    - This deprecates direct `.element()`, `.div()`, etc. usage
 
-3. **Release BrightDigitPublish 2.0.0**
-   - Swift 6 compatible
-   - Component-only public API
+3. **Push Updates to Upstream (if applicable)**
+   - Use `git subrepo push` for BrightDigit-owned packages
+   - Create PRs for johnsundell packages (optional, for community contribution)
+   - Tag releases in monorepo
 
-**Week 2: API Client Swift 6 Upgrades**
+**Week 2: BrightDigit Packages Swift 6 Upgrades (7 subrepos)**
 
 4. **Update SwiftTube 2.0.0**
+   - Update Package.swift: `// swift-tools-version: 6.0`
    - swift-openapi-generator produces Swift 6 code
    - Add Sendable conformances
    - Enable strict concurrency
    - Test with Swift 6
 
 5. **Update Spinetail 2.0.0**
-   - Same process
+   - Same process as SwiftTube
    - Add Sendable conformances
    - Swift 6 compatibility
 
-6. **Update Supporting Packages**
+6. **Update Remaining BrightDigit Packages**
    - SyndiKit 1.0.0 (Swift 6)
    - Contribute 2.0.0 (Swift 6 - promote from alpha)
+   - NPMPublishPlugin, ContributeWordPress, TransistorPublishPlugin
+   - Update Package.swift in each subrepo
+   - Add strict concurrency checking
+   - Push updates to upstream repos using `git subrepo push`
+
+7. **Update Forked Third-party Plugins**
+   - YoutubePublishPlugin (Swift 6)
+   - ReadingTimePublishPlugin (Swift 6)
+   - Push updates to forked repos on BrightDigit organization
 
 **Week 3-4: Component Migration in brightdigit.com**
 
@@ -505,37 +705,85 @@ swiftSettings: [
     - `String.swift:4` - NSRegularExpression lazy closure
     - `RSSContent.swift:21` - Explicit error handling instead of try?
 
-**Week 6: Testing and Deployment**
+**Week 6: Mermaid Diagram Support**
 
-14. **Comprehensive Testing**
+14. **Add Mermaid.js Integration**
+    - Include mermaid.js library in HTML templates (`Sources/BrightDigitSite/PiHTMLFactory.HTML.swift`)
+    - Add mermaid.js CDN link to `<head>` section
+    - Configure mermaid initialization script
+    - ```html
+      <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+      <script>mermaid.initialize({ startOnLoad: true, theme: 'neutral' });</script>
+      ```
+
+15. **Detect Mermaid Code Blocks**
+    - Update markdown processing in Publish/swift-markdown integration
+    - Detect code blocks with `mermaid` language identifier
+    - Wrap mermaid code blocks in `<div class="mermaid">` instead of `<pre><code>`
+    - Example transformation:
+      ```markdown
+      ```mermaid
+      graph TD
+          A[Start] --> B[Process]
+      ```
+      ```
+      becomes:
+      ```html
+      <div class="mermaid">
+      graph TD
+          A[Start] --> B[Process]
+      </div>
+      ```
+
+16. **Test Mermaid Rendering**
+    - Create test markdown file with sample mermaid diagrams (flowcharts, sequence diagrams, class diagrams)
+    - Verify diagrams render correctly in generated site
+    - Test different mermaid diagram types
+    - Validate accessibility and responsive design
+
+17. **Document Mermaid Usage**
+    - Add documentation for content authors on how to use mermaid in markdown
+    - Provide examples of different diagram types
+    - Update CLAUDE.md with mermaid support
+
+**Week 7: Testing and Deployment**
+
+18. **Comprehensive Testing**
     - All 113 newsletters render correctly
     - All podcast episodes render correctly
     - Components produce identical HTML
     - GitLab CI passes (macOS + Ubuntu)
     - Performance within 10% baseline
 
-15. **Expand Test Coverage**
+19. **Expand Test Coverage**
     - Component unit tests
     - Concurrency safety tests
     - Integration tests
+    - Mermaid rendering tests
     - Target: >50% coverage (from ~5%)
 
-16. **Production Deployment**
+20. **Production Deployment**
     - Deploy to staging
-    - Byte-for-byte HTML comparison
+    - Byte-for-byte HTML comparison (excluding mermaid diagrams - visual verification)
     - Visual regression testing
+    - Test mermaid diagrams in production environment
     - Deploy to production
 
 **Deliverables:**
-- [ ] BrightDigitPublish 2.0.0 with Swift 6 and component-only API
-- [ ] All API clients upgraded to Swift 6
+- [ ] All 17 subrepos upgraded to Swift 6
+- [ ] Publish ecosystem packages (8) support swift-markdown
+- [ ] BrightDigit packages (7) upgraded to Swift 6
+- [ ] Forked plugins (2) upgraded to Swift 6
 - [ ] brightdigit.com using components exclusively
 - [ ] Zero direct Plot HTML creation in codebase
-- [ ] Zero concurrency warnings
+- [ ] Zero concurrency warnings across all 17 subrepos
 - [ ] Testimonial data race fixed
 - [ ] All Sendable conformances added
+- [ ] Mermaid diagram support integrated (client-side mermaid.js)
+- [ ] Mermaid diagrams render correctly in test content
 - [ ] Test coverage >50%
-- [ ] Production deployment successful
+- [ ] All subrepo updates pushed to upstream repos
+- [ ] Production deployment successful with mermaid support
 
 ---
 
@@ -913,11 +1161,13 @@ Based on analysis, the most critical files requiring changes:
 
 This PRD documents a comprehensive modernization of the BrightDigit static site generator infrastructure through three sequential phases:
 
-### Phase 1: Publish Unification (2-3 weeks)
-- Fork 10 Publish ecosystem packages into BrightDigitPublish
-- Create unified package under BrightDigit ownership
-- Eliminate dependency on johnsundell repositories
-- **Deliverable:** BrightDigitPublish 1.0.0
+### Phase 1: Monorepo Consolidation (3-4 weeks)
+- Consolidate 17 external packages into monorepo using git-subrepo
+- Organize into Packages/Publish/ (8), Packages/BrightDigit/ (7), Packages/Plugins/ (2)
+- Fork YoutubePublishPlugin and ReadingTimePublishPlugin to BrightDigit organization
+- Replace Ink with swift-markdown (SPM dependency)
+- Replace ShellOut with swift-subprocess (SPM dependency)
+- **Deliverable:** Monorepo v1.0.0 with all 17 subrepos
 
 ### Phase 2: OpenAPI Generator Migration (4-6 weeks)
 - Migrate SwiftTube from SwagGen to swift-openapi-generator
@@ -926,27 +1176,34 @@ This PRD documents a comprehensive modernization of the BrightDigit static site 
 - Modernize all API client code to async/await
 - **Deliverable:** SwiftTube 1.0.0, Spinetail 1.0.0 (with Apple's OpenAPI generator)
 
-### Phase 3: Swift 6 + Component Migration (4-6 weeks)
-- Upgrade all packages to Swift 6
+### Phase 3: Swift 6 + Component Migration + Mermaid Support (5-7 weeks)
+- Upgrade all 17 subrepos to Swift 6
 - Enforce component-based HTML generation (deprecate direct Plot API)
 - Create SwiftUI-like component library for site
 - Fix concurrency violations (Testimonial.swift data race)
 - Add Sendable conformances
+- Integrate mermaid.js for diagram rendering
 - Expand test coverage from ~5% to >50%
-- **Deliverable:** Full Swift 6 compliance with component-only architecture
+- **Deliverable:** Full Swift 6 compliance with component-only architecture and mermaid support
 
-**Total Duration:** 10-15 weeks
+**Total Duration:** 12-17 weeks
 
 **Key Architectural Changes:**
-1. **Dependency Consolidation** - 10 packages → 1 BrightDigitPublish package
-2. **API Client Modernization** - SwagGen/Prch → Apple's swift-openapi-generator
-3. **HTML Generation** - Direct Plot calls → SwiftUI-like components
-4. **Concurrency** - Callbacks/semaphores → async/await/TaskGroup
-5. **Language** - Swift 5.8 → Swift 6 with strict concurrency
+1. **Monorepo Consolidation** - 17 packages managed as git-subrepos (Publish ecosystem + BrightDigit + forked plugins)
+2. **Apple Framework Migration** - Ink → swift-markdown, ShellOut → swift-subprocess (SPM dependencies)
+3. **API Client Modernization** - SwagGen/Prch → Apple's swift-openapi-generator
+4. **HTML Generation** - Direct Plot calls → SwiftUI-like components
+5. **Concurrency** - Callbacks/semaphores → async/await/TaskGroup
+6. **Language** - Swift 5.8 → Swift 6 with strict concurrency across all 17 subrepos
+7. **Documentation** - Added mermaid.js support for diagrams in markdown
 
 **Success Criteria:**
-- Zero concurrency warnings
-- Site output byte-for-byte identical to current production
+- All 17 packages managed as git-subrepos in organized structure
+- swift-markdown and swift-subprocess integrated successfully
+- Zero concurrency warnings across all 17 subrepos
+- Site output byte-for-byte identical to current production (excluding mermaid diagrams)
 - All 113 newsletters and podcast episodes render correctly
+- Mermaid diagrams render correctly via client-side mermaid.js
 - CI/CD pipeline passes on macOS and Ubuntu
 - Component-only HTML generation throughout codebase
+- All subrepo updates pushed to upstream repositories
