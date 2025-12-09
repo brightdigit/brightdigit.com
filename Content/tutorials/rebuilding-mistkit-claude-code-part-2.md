@@ -36,34 +36,41 @@ In [Part 1](https://brightdigit.com/tutorials/rebuilding-mistkit-claude-code-par
 
 Would MistKit's abstractions actually work when building an application? Could the type-safe API handle CloudKit's quirks at scale?
 
-I had 2 real-world application for MistKit to try it out: 
-- an RSS aggregator syncing thousands of articles to CloudKit using SyndiKit for an app codenamed **Celestra**
-- For **Bushel**, I wanted to track restore images and various metadata for macOS and developer software versions. 
+I had 2 real-world application for MistKit to try it out:
+- an RSS aggregator syncing thousands of articles to CloudKit using SyndiKit for an app codenamed **[Celestra](https://celestr.app)**
+- For **[Bushel](https://getbushel.app)**, I wanted to track restore images and various metadata for macOS and developer software versions. 
 
 
 <a id="the-celestra-and-bushel-examples"></a>
 ### The Celestra and Bushel Examples
 
 <!-- ORIGINAL [CONTENT] BLOCK - PRESERVED AS-IS -->
-Tests validate correctness, but real applications validate design. MistKit needed to prove it could power actual software and not just pass unit tests. Enter **Celestra** and **Bushel**—two command-line tools built to stress-test MistKit's API in real-world scenarios.
+Tests validate correctness, but real applications validate design. MistKit needed to prove it could power actual software and not just pass unit tests. Enter two real-world applications—**[the Celestra app](https://celestr.app)** (an RSS reader) and **[the Bushel app](https://getbushel.app)** (a macOS virtualization tool)—each powered by MistKit-driven CLI backends that populate CloudKit public databases. These CLI tools, running on scheduled cloud infrastructure, proved MistKit works in production.
+
+The architecture for both follows the same pattern:
+- **Consumer apps** ([the Celestra app](https://celestr.app), [the Bushel app](https://getbushel.app)) - iOS/macOS apps that read from CloudKit
+- **CLI tools** - Built with MistKit, run on cloud infrastructure (cron jobs, cloud functions, scheduled tasks)
+- **CloudKit public database** - Central data layer connecting CLI tools to apps
+
+This pattern enables:
+- **Automated updates**: CLI tools run on schedules without user devices being online
+- **Separation of concerns**: Data population (CLI) vs data consumption (app)
+- **Scalability**: Cloud infrastructure handles data aggregation, apps stay lightweight
 
 #### Celestra: Automated RSS Feed Sync for a Reader App
 
-<!-- TODO replace with new site -->
-[Celestra](https://github.com/brightdigit/Celestra) is an RSS reader app in development—and its CLI backend demonstrates how MistKit enables scheduled, automated CloudKit updates. I would love to setup reader app for its RSS feed data kept current without requiring the app to be open. Especially if I want to push notifications on updated articles. The CLI tool (built with MistKit) would run on a schedule to fetch new articles and sync them to CloudKit's public database, making fresh content available to all users instantly.
+The [Celestra app](https://celestr.app) is an RSS reader in development for iOS and macOS. To keep content fresh without requiring the app to be open, I built a [CLI tool with MistKit](https://github.com/brightdigit/MistKit/tree/main/Examples/Celestra) that runs on scheduled cloud infrastructure. The CLI tool runs periodically (cron job, cloud function, scheduled task) to fetch RSS feeds and sync them to CloudKit's public database, making fresh content available to all users instantly—even when their devices are offline.
 
-The CLI tool would run periodically (cron job, cloud function, github action) to fetch RSS feeds. All the actual feed content (i.e. articles) would be accessed via a public database.
+This architecture enables push notifications on updated articles without the app running, and MistKit's batch operations can efficiently handle hundreds of content updates. The [CLI tool example](https://github.com/brightdigit/MistKit/tree/main/Examples/Celestra) demonstrates key MistKit patterns:
 
-This means that fresh content would be available even when app isn't running and MistKit's batch operations can efficiently handle hundreds of content updates.
-
-For instance if I want to filter feed based that should be updated, I could do:
+**Query filtering** - Find feeds that need updating:
 ```swift
 // Query filtering - find stale feeds
 QueryFilter.lessThan("lastAttempted", .date(cutoff))
 QueryFilter.greaterThanOrEquals("usageCount", .int64(minPop))
 ```
 
-And if I want to update a bunch of new article, I could:
+**Batch operations** - Efficiently sync hundreds of articles:
 ```swift
 // Batch operations
 let operations = articles.map { article in
@@ -78,16 +85,16 @@ service.modifyRecords(operations, atomic: false)
 
 #### Bushel: Powering a macOS VM App with CloudKit
 
-[Bushel](https://getbushel.app) is a macOS virtualization app for developers. It currently uses the idea of a hub to get a list of restore images, their download url, and their status. However since the data is universal, I needed a comprehensive, queryable central database of macOS restore images and various metadata about them, the operating system versions and various developer tools. What I wanted was something that could query a CloudKit public database in the app while a CLI tool would use MistKit to populate the data.
+The [Bushel app](https://getbushel.app) is a macOS virtualization tool for developers. It currently uses a static hub to get a list of restore images, their download URLs, and their status. However, since the data is universal, I needed a comprehensive, queryable central database of macOS restore images and various metadata about operating system versions and developer tools. I built a [CLI tool with MistKit](https://github.com/brightdigit/MistKit/tree/main/Examples/Bushel) that runs on scheduled cloud infrastructure (cron jobs, cloud functions, scheduled tasks) to populate a CloudKit public database that the Bushel app queries.
 
-This means I'd use:
-- **Public Database**: Worldwide access to version history without embedding static JSON
+This architecture provides:
+- **Public Database**: Worldwide access to version history without embedding static JSON in the app
 - **Automated Updates**: CLI tool syncs latest restore images, Xcode, and Swift versions daily
-- **Queryable**: VM app queries for "macOS 15.2 restore images" → gets latest metadata
-- **Scalable**: I can use various data sources and aggregate them automatically
+- **Queryable**: [Bushel app](https://getbushel.app) queries for "macOS 15.2 restore images" → gets latest metadata
+- **Scalable**: CLI tool aggregates data from various sources automatically
 - **Deduplication**: buildNumber-based deduplication ensures clean data
 
-Here's what some of the code might look like:
+The [CLI tool example](https://github.com/brightdigit/MistKit/tree/main/Examples/Bushel) demonstrates advanced MistKit patterns:
 
 ```swift
 // Protocol-based record conversion
@@ -104,9 +111,9 @@ fields["minimumMacOS"] = .reference(
 
 #### Educational Value
 
-Both tools serve as copy-paste starting points for new MistKit projects:
-- Celestra demonstrates simple patterns (string relationships, basic queries)
-- Bushel demonstrates advanced patterns (protocol-oriented design, batch chunking, References)
+Both CLI tool examples serve as copy-paste starting points for new MistKit projects:
+- Celestra CLI demonstrates simple patterns (string relationships, basic queries)
+- Bushel CLI demonstrates advanced patterns (protocol-oriented design, batch chunking, References)
 - Verbose logging modes teach CloudKit concepts as you learn
 - Implementation notes capture design trade-offs and lessons learned
 <!-- END ORIGINAL [CONTENT] -->
@@ -115,7 +122,7 @@ Both tools serve as copy-paste starting points for new MistKit projects:
 <!-- Theme: The satisfaction of seeing MistKit power actual applications -->
 <!-- Target: ~25-50 words -->
 
-Watching MistKit power real applications was helpful because I can see the generated code work. I was able to have the Celestra CLI synced thousands of RSS articles and the Bushel CLI tool track complex version relationships. The abstractions worked but they also revealed what unit tests couldn't.
+Watching MistKit power real applications was helpful because I can see the generated code work. The CLI tools synced thousands of RSS articles (Celestra) and tracked complex version relationships (Bushel). The abstractions worked but they also revealed what unit tests couldn't.
 <!-- END CLAUDE-WRITTEN -->
 
 <!-- WRITING GUIDANCE FOR THIS SECTION -->
@@ -738,9 +745,9 @@ Source of Truth → Code Generation → Thoughtful Abstraction → AI Accelerati
 
 This concludes the MistKit rebuild series. We've covered the full arc: from CloudKit's REST documentation to type-safe Swift client (Part 1), through real-world validation and AI collaboration lessons (Part 2).
 
-**Bushel** and **Celestra** served their purpose—they validated MistKit's API design and revealed integration issues that made the library production-ready. Both projects are available as open-source examples demonstrating MistKit in practice:
-- [Bushel](https://github.com/brightdigit/Bushel) - macOS version tracking with complex CloudKit relationships
-- [Celestra](https://github.com/brightdigit/Celestra) - RSS aggregation with batch operations
+The **Celestra** and **Bushel** CLI tools served their purpose—they validated MistKit's API design and revealed integration issues that made the library production-ready. Both CLI tool examples are available as open-source demonstrations of MistKit in practice:
+- [Bushel CLI Example](https://github.com/brightdigit/MistKit/tree/main/Examples/Bushel) - CLI tool powering the [Bushel app](https://getbushel.app), demonstrating complex CloudKit relationships and batch operations
+- [Celestra CLI Example](https://github.com/brightdigit/MistKit/tree/main/Examples/Celestra) - CLI tool powering the [Celestra app](https://celestr.app), demonstrating public database patterns and automated sync
 
 #### The Pattern Continues
 
@@ -803,8 +810,8 @@ dependencies: [
 - 📚 [Documentation](https://swiftpackageindex.com/brightdigit/MistKit/documentation)
 - 🐙 [GitHub Repository](https://github.com/brightdigit/MistKit)
 - 💬 [Discussions](https://github.com/brightdigit/MistKit/discussions)
-- 🎯 [Celestra Example](https://github.com/brightdigit/Celestra) - RSS reader CLI backend
-- 🍎 [Bushel Example](https://github.com/brightdigit/Bushel) - macOS version tracker
+- 🎯 [Celestra Example](https://github.com/brightdigit/MistKit/tree/main/Examples/Celestra) - CLI tool for [Celestra app](https://celestr.app) demonstrating batch operations and public database sync
+- 🍎 [Bushel Example](https://github.com/brightdigit/MistKit/tree/main/Examples/Bushel) - CLI tool for [Bushel app](https://getbushel.app) demonstrating complex relationships and automated versioning
 
 ---
 
@@ -817,5 +824,5 @@ dependencies: [
 
 #### MistKit in Practice (Open Source Examples)
 
-- [Bushel](https://github.com/brightdigit/Bushel) - macOS version tracking demonstrating complex CloudKit relationships
-- [Celestra](https://github.com/brightdigit/Celestra) - RSS aggregation showcasing batch operations and public database patterns
+- [Bushel CLI Example](https://github.com/brightdigit/MistKit/tree/main/Examples/Bushel) - CLI tool powering the [Bushel app](https://getbushel.app), demonstrating complex CloudKit relationships and batch operations
+- [Celestra CLI Example](https://github.com/brightdigit/MistKit/tree/main/Examples/Celestra) - CLI tool powering the [Celestra app](https://celestr.app), demonstrating public database patterns and automated sync
