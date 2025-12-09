@@ -36,9 +36,6 @@ In [Part 1](https://brightdigit.com/tutorials/rebuilding-mistkit-claude-code-par
 
 Would MistKit's abstractions actually work when building an application? Could the type-safe API handle CloudKit's quirks at scale?
 
-I needed to find out. 
-
-
 I had 2 real-world application for MistKit to try it out: 
 - an RSS aggregator syncing thousands of articles to CloudKit using SyndiKit for an app codenamed **Celestra**
 - For **Bushel**, I wanted to track restore images and various metadata for macOS and developer software versions. 
@@ -50,7 +47,7 @@ I had 2 real-world application for MistKit to try it out:
 <!-- ORIGINAL [CONTENT] BLOCK - PRESERVED AS-IS -->
 Tests validate correctness, but real applications validate design. MistKit needed to prove it could power actual software and not just pass unit tests. Enter **Celestra** and **Bushel**—two command-line tools built to stress-test MistKit's API in real-world scenarios.
 
-**Celestra: Automated RSS Feed Sync for a Reader App**
+#### Celestra: Automated RSS Feed Sync for a Reader App
 
 <!-- TODO replace with new site -->
 [Celestra](https://github.com/brightdigit/Celestra) is an RSS reader app in development—and its CLI backend demonstrates how MistKit enables scheduled, automated CloudKit updates. I would love to setup reader app for its RSS feed data kept current without requiring the app to be open. Especially if I want to push notifications on updated articles. The CLI tool (built with MistKit) would run on a schedule to fetch new articles and sync them to CloudKit's public database, making fresh content available to all users instantly.
@@ -79,7 +76,7 @@ let operations = articles.map { article in
 service.modifyRecords(operations, atomic: false)
 ```
 
-**Bushel: Powering a macOS VM App with CloudKit**
+#### Bushel: Powering a macOS VM App with CloudKit
 
 [Bushel](https://getbushel.app) is a macOS virtualization app for developers. It currently uses the idea of a hub to get a list of restore images, their download url, and their status. However since the data is universal, I needed a comprehensive, queryable central database of macOS restore images and various metadata about them, the operating system versions and various developer tools. What I wanted was something that could query a CloudKit public database in the app while a CLI tool would use MistKit to populate the data.
 
@@ -90,13 +87,8 @@ This means I'd use:
 - **Scalable**: I can use various data sources and aggregate them automatically
 - **Deduplication**: buildNumber-based deduplication ensures clean data
 
-**Why This Architecture Works**:
-- VM app stays lightweight (no embedded version database)
-- Data stays current (CLI syncs new releases automatically)
-- Community benefit (public CloudKit database = shared resource)
-- MistKit handles all CloudKit complexity (authentication, batching, relationships)
+Here's what some of the code might look like:
 
-**MistKit APIs in Action**:
 ```swift
 // Protocol-based record conversion
 protocol CloudKitRecord {
@@ -110,7 +102,7 @@ fields["minimumMacOS"] = .reference(
 )
 ```
 
-**Educational Value**:
+#### Educational Value
 
 Both tools serve as copy-paste starting points for new MistKit projects:
 - Celestra demonstrates simple patterns (string relationships, basic queries)
@@ -138,26 +130,26 @@ Watching MistKit power real applications was helpful because I can see the gener
 <!-- ORIGINAL [CONTENT] BLOCK - PRESERVED AS-IS -->
 Building real applications exposed issues no unit test could catch. Here's what Celestra and Bushel revealed:
 
-**Batch Operation Limits**
+#### Batch Operation Limits
 
 **Discovery**: CloudKit enforces 200-operation-per-request limit (not documented clearly).
 
 **Impact**: Bushel's initial implementation tried uploading 500+ records at once and failed mysteriously. Added chunking logic—now both examples chunk correctly (Bushel: 200 records, Celestra: 10 records for RSS content size management).
 
-**Boolean Field Handling**
+#### Boolean Field Handling
 
 **Discovery**: CloudKit has no native boolean type.
 
 **Solution**: Standardized INT64 representation (0 = false, 1 = true) across both examples and MistKit's type system.
 
-**API Improvements Driven by Real Use**:
+#### API Improvements Driven by Real Use
 
 - **`FieldValue` enum design**: Validated through diverse record types (RSS feeds, software versions, metadata)
 - **`QueryFilter` API**: Refined through Celestra's filtered update command (date ranges, numeric comparisons)
 - **Non-atomic batch operations**: Essential for partial failure handling in both examples
 - **Protocol-oriented patterns**: `CloudKitRecord` protocol proven reusable across projects
 
-**The Validation**:
+#### The Validation
 
 ✅ Public API successfully hides OpenAPI complexity
 ✅ Swift 6 strict concurrency compliance proven in production
@@ -168,11 +160,11 @@ Building real applications exposed issues no unit test could catch. Here's what 
 MistKit isn't academic—it's battle-tested by building actual software.
 <!-- END ORIGINAL [CONTENT] -->
 
-**API Ergonomics: Discovering Missing Write Operations**
+#### API Ergonomics: Discovering Missing Write Operations
 
 Building Bushel revealed the most significant gap: MistKit had **read** operations with clean abstractions (`FieldValue`, `RecordInfo`), but **write** operations were missing. The demo couldn't create records without reaching into internal OpenAPI types.
 
-**The Discovery**:
+##### The Discovery
 
 ```no-highlight
 Me: "OpenAPI types shouldn't be available. We need those abstractions built."
@@ -189,12 +181,14 @@ Claude: "Excellent question! Let me investigate what MistKit actually provides
          have its own abstractions."
 ```
 
-**The Fix**: Added the public write API to MistKit:
+##### The Fix
+
+Added the public write API to MistKit:
 1. **`RecordOperation`** - Public type for create/update/delete operations
 2. **`CloudKitService.modifyRecords()`** - Batch write operations
 3. **Bidirectional conversion** - `FieldValue` ↔ internal OpenAPI types
 
-**The Complete Three-Layer Architecture**:
+##### The Complete Three-Layer Architecture
 
 ```no-highlight
 ┌─────────────────────────────────────────┐
@@ -219,7 +213,9 @@ Claude: "Excellent question! Let me investigate what MistKit actually provides
 └─────────────────────────────────────────┘
 ```
 
-**Result**: A clean public API that hides all OpenAPI complexity. Generated code stays internal, users interact with idiomatic Swift. Type safety maintained throughout, ergonomics dramatically improved—and **gaps discovered through real-world usage got fixed immediately**.
+##### Result
+
+A clean public API that hides all OpenAPI complexity. Generated code stays internal, users interact with idiomatic Swift. Type safety maintained throughout, ergonomics dramatically improved—and **gaps discovered through real-world usage got fixed immediately**.
 
 <!-- CLAUDE-WRITTEN PROSE - REVIEW AND EDIT AS NEEDED -->
 <!-- Theme: Unexpected discoveries, validation of design decisions -->
@@ -277,7 +273,7 @@ Here's what I learned.
 ### What Claude Code Excelled At
 
 <!-- ORIGINAL [CONTENT] BLOCK - PRESERVED AS-IS -->
-**✅ Test Generation** - Pattern Recognition at Scale
+#### ✅ Test Generation - Pattern Recognition at Scale
 
 161 tests across 47 files, most drafted by Claude. Week 2 example:
 
@@ -299,7 +295,7 @@ Result: 47 test files in 1 week instead of estimated 2-3 weeks solo. Claude foun
 
 **Why This Worked**: Test generation is ideal for LLMs because it leverages **pattern recognition** from vast training data. Claude has seen thousands of Swift test files and can apply those structural patterns to new domains. The task requires **extrapolation from examples**, not novel reasoning—Claude recognizes "if testing STRING type, also test empty string, Unicode, and nil" because that pattern appears frequently in its training corpus.
 
-**✅ OpenAPI Schema Validation** - Structural Consistency Detection
+#### ✅ OpenAPI Schema Validation - Structural Consistency Detection
 
 - Caught missing `$ref` references before generator errors
 - Suggested error response schemas I'd forgotten
@@ -308,7 +304,7 @@ Result: 47 test files in 1 week instead of estimated 2-3 weeks solo. Claude foun
 
 **Why This Worked**: JSON schema validation is **mechanical pattern matching**—exactly what transformer models excel at. Claude's training on OpenAPI specifications means it can spot structural inconsistencies (missing required fields, incorrect reference syntax) through **statistical likelihood** rather than semantic understanding. It doesn't "understand" what a schema means, but it recognizes valid patterns.
 
-**✅ Boilerplate & Repetitive Code** - Template Instantiation
+#### ✅ Boilerplate & Repetitive Code - Template Instantiation
 
 The TokenManager sprint: 3 implementations in 2 days instead of estimated week:
 - Day 1: Claude drafts all three with actor isolation
@@ -317,7 +313,7 @@ The TokenManager sprint: 3 implementations in 2 days instead of estimated week:
 
 **Why This Worked**: Boilerplate generation is **template instantiation with variation**—a task that doesn't require deep reasoning. Once I provided the pattern (Actor-based TokenManager with secure logging), Claude applied it across three implementations by varying the authentication details. This is **next-token prediction** applied to code structure: "given this protocol, predict the conforming implementation."
 
-**✅ Refactoring at Scale** - Consistent Transformation
+#### ✅ Refactoring at Scale - Consistent Transformation
 
 When authentication middleware architecture changed, Claude updated:
 - All three TokenManager implementations
@@ -332,7 +328,7 @@ When authentication middleware architecture changed, Claude updated:
 ### What Required Human Judgment
 
 <!-- ORIGINAL [CONTENT] BLOCK - PRESERVED AS-IS -->
-**❌ Architecture Decisions** - Beyond Pattern Matching
+#### ❌ Architecture Decisions - Beyond Pattern Matching
 
 - Three-layer design choice
 - Middleware vs built-in auth approach
@@ -342,7 +338,7 @@ When authentication middleware architecture changed, Claude updated:
 
 **Why Claude Struggled**: Architectural decisions require **holistic system reasoning** that extends beyond pattern recognition. LLMs excel at local optimization (making this function better) but struggle with global optimization (is this the right architectural approach?). Training data shows *what* developers built, not *why* they chose one architecture over another. Claude can suggest architectures it's seen before (**retrieval from training**), but evaluating trade-offs requires **domain expertise** and **long-term consequence modeling** that current LLMs don't possess.
 
-**❌ Security Patterns** - Domain Expertise Required
+#### ❌ Security Patterns - Domain Expertise Required
 
 - Credential masking requirements
 - Secure logging implementation details
@@ -352,7 +348,7 @@ When authentication middleware architecture changed, Claude updated:
 
 **Why Claude Struggled**: Security is adversarial—you must anticipate attacks not present in training data. While Claude recognizes common security patterns (hashing passwords, using HTTPS), it can't reason about **threat models** or **attack vectors** that emerge from specific architectural choices. Security decisions also carry **asymmetric risk**: getting it wrong once can compromise an entire system. LLMs trained on **averaged behavior** from public code don't internalize security-critical thinking—they're prone to **plausible but insecure suggestions** (hallucination applied to security).
 
-**❌ Authentication Strategy** - Conceptual Trade-off Analysis
+#### ❌ Authentication Strategy - Conceptual Trade-off Analysis
 
 - Runtime selection vs compile-time approach
 - TokenManager protocol design philosophy
@@ -361,7 +357,7 @@ When authentication middleware architecture changed, Claude updated:
 
 **Why Claude Struggled**: This required evaluating **second-order effects**: "If I choose runtime selection, what happens to compile-time safety? What's the testing burden? How does it affect documentation?" LLMs process **first-order patterns** (this looks like that example) but struggle with **causal chains** and **emergent properties**. Claude could suggest "use a protocol" (pattern recognition) but not reason through "protocol vs enum: what are the maintenance implications over 3 years?"
 
-**❌ Performance Trade-offs** - Empirical Measurement Required
+#### ❌ Performance Trade-offs - Empirical Measurement Required
 
 - Pre-generation vs build plugin choice
 - Middleware chain order (auth before logging)
@@ -370,7 +366,7 @@ When authentication middleware architecture changed, Claude updated:
 
 **Why Claude Struggled**: Performance optimization requires **profiling**, **benchmarking**, and **empirical measurement**—tools LLMs can't use directly. While Claude can suggest "caching improves performance" (pattern from training), it can't measure whether caching *this specific data structure* in *this specific context* actually helps. Performance is **workload-dependent** and requires **measurement-driven decisions**, not pattern matching. The risk: **premature optimization** based on general heuristics rather than specific profiling data.
 
-**❌ Developer Experience** - Aesthetic and Subjective Judgment
+#### ❌ Developer Experience - Aesthetic and Subjective Judgment
 
 - Public API naming conventions
 - Error message clarity and helpfulness
@@ -384,7 +380,7 @@ When authentication middleware architecture changed, Claude updated:
 ### The Effective Collaboration Pattern
 
 <!-- ORIGINAL [CONTENT] BLOCK - PRESERVED AS-IS -->
-**The Workflow That Emerged**:
+#### The Workflow That Emerged
 
 ```no-highlight
 Me: "I need three-layer architecture with generated code internal.
@@ -419,7 +415,7 @@ Claude: *[Continues refinement through multiple rounds]*
  - Code follows best practices"
 ```
 
-**Real Example - TokenManager Protocol Design**:
+#### Real Example - TokenManager Protocol Design
 
 ```no-highlight
 Me: "I need TokenManager as an Actor for thread safety, with three implementations"
@@ -453,30 +449,35 @@ Claude: *[Generates 30+ test cases]*
 <!-- END ORIGINAL [CONTENT] -->
 
 <!-- ORIGINAL [CONTENT] BLOCK - PRESERVED AS-IS FROM SECTION 4.9 -->
-**What Claude Provided**:
+#### What Claude Provided
+
 - Fast boilerplate generation (protocols, models, middleware)
 - Comprehensive test coverage (161 tests across 47 files)
 - Pattern consistency (uniform error handling, logging)
 
-**What I Provided**:
+#### What I Provided
+
 - Domain knowledge (CloudKit quirks like ASSET vs ASSETID)
 - Architectural decisions (public vs internal APIs)
 - Quality gates (must test with real CloudKit)
 
-**The Collaboration Worked When I**:
+#### The Collaboration Worked When I
+
 1. **Set Clear Boundaries**: "Use only public API—no internal types"
 2. **Validated Assumptions Early**: Test with real CloudKit immediately, not just mocks
 3. **Extracted Patterns Immediately**: Prevent duplication before it spreads
 4. **Rejected Workarounds**: Internal types are not acceptable in public API
 
-**Key Insight**: Without these guardrails, demos would "work" locally but fail in production. Claude accelerated mechanical work (4x speed increase); human judgment ensured correctness and maintainability.
+#### Key Insight
+
+Without these guardrails, demos would "work" locally but fail in production. Claude accelerated mechanical work (4x speed increase); human judgment ensured correctness and maintainability.
 <!-- END ORIGINAL [CONTENT] -->
 
 <a id="common-mistakes-how-to-avoid-them"></a>
 ### Common Mistakes & How to Avoid Them
 
 <!-- ORIGINAL [CONTENT] BLOCK - PRESERVED AS-IS -->
-**Mistake 1: Using Internal OpenAPI Types**
+#### Mistake 1: Using Internal OpenAPI Types
 
 Claude generated code that referenced `Components.Schemas.RecordOperation` directly—an internal type, not part of the public API.
 
@@ -494,7 +495,7 @@ let operation = Components.Schemas.RecordOperation(
 
 ---
 
-**Mistake 2: Hardcoded Create Operations**
+#### Mistake 2: Hardcoded Create Operations
 
 ```swift
 // WRONG: Always create, never update
@@ -525,9 +526,12 @@ func upsertRecordOperation() -> RecordOperation {
 
 ---
 
-**Pattern Recognition**: All mistakes share common traits—Claude follows patterns from training data or generated code literally without questioning ergonomics or existence. The fix is always the same: **explicit guidance** in prompts and **immediate verification** of suggestions.
+#### Pattern Recognition
 
-**Prevention Strategy**:
+All mistakes share common traits—Claude follows patterns from training data or generated code literally without questioning ergonomics or existence. The fix is always the same: **explicit guidance** in prompts and **immediate verification** of suggestions.
+
+#### Prevention Strategy
+
 1. Verify APIs exist before using
 2. Specify frameworks explicitly ("Swift Testing", "swift-log")
 3. Request clean abstractions over generated types
@@ -539,19 +543,22 @@ func upsertRecordOperation() -> RecordOperation {
 ### Lessons Applied from SyntaxKit
 
 <!-- ORIGINAL [CONTENT] BLOCK - PRESERVED AS-IS -->
-**SyntaxKit Taught Me**:
+#### SyntaxKit Taught Me
+
 1. Break projects into manageable phases
 2. Use AI for targeted tasks with clear boundaries
 3. Human oversight critical for architecture
 4. Comprehensive CI essential to catch issues
 
-**Applied to MistKit**:
+#### Applied to MistKit
+
 1. ✅ Three phases: Foundation → Implementation → Testing
 2. ✅ Claude for tests, boilerplate, refactoring (bounded tasks)
 3. ✅ I designed architecture, security, public API (judgment)
 4. ✅ CI caught issues in Claude-generated code (safety net)
 
-**Reinforced Lessons**:
+#### Reinforced Lessons
+
 - AI excels at specific, well-defined tasks
 - Architecture requires human vision and experience
 - Testing is essential—and AI accelerates it dramatically
@@ -566,15 +573,19 @@ func upsertRecordOperation() -> RecordOperation {
 <!-- ORIGINAL [CONTENT] BLOCK - PRESERVED AS-IS (CONDENSED) -->
 One of the biggest challenges working with Claude Code is managing its knowledge cutoffs and lack of familiarity with newer or niche APIs.
 
-**The Problem**: Claude's training predates Swift Testing, CloudKit Web Services REST API details, and swift-openapi-generator specifics.
+#### The Problem
 
-**The Solution**: Provide documentation upfront. We added to `.claude/docs/`:
+Claude's training predates Swift Testing, CloudKit Web Services REST API details, and swift-openapi-generator specifics.
+
+#### The Solution
+
+Provide documentation upfront. We added to `.claude/docs/`:
 - `testing-enablinganddisabling.md` (126KB) - Swift Testing patterns
 - `webservices.md` (289KB) - CloudKit Web Services REST API reference
 - `cloudkitjs.md` (188KB) - CloudKit operation patterns and data types
 - `swift-openapi-generator.md` (235KB) - Code generation configuration
 
-**Key Insight: CLAUDE.md as a Knowledge Router**
+#### Key Insight: CLAUDE.md as a Knowledge Router
 
 Our `CLAUDE.md` file acts as a table of contents, telling Claude where to look for specific information. Claude doesn't need to memorize everything—it needs to know **where to look**.
 
@@ -587,20 +598,23 @@ Our `CLAUDE.md` file acts as a table of contents, telling Claude where to look f
 <!-- ORIGINAL [CONTENT] BLOCK - PRESERVED AS-IS (CONDENSED) -->
 Code generated or assisted by AI needs extra scrutiny. We found that combining automated AI reviews with human expertise catches different classes of issues.
 
-**Automated AI Reviews** catch:
+#### Automated AI Reviews
+
 - Style violations consistently
 - Potential nil crashes
 - Missing documentation
 - Unused imports
 
-**Human Code Reviews** catch:
+#### Human Code Reviews
+
 - Performance anti-patterns (N+1 queries)
 - CloudKit API misuse (create vs forceReplace semantics)
 - Security concerns (token exposure in logs)
 - Architecture violations (using internal types)
 - Missing error cases
 
-**Our Review Process**:
+#### Our Review Process
+
 1. Claude generates code → Initial implementation
 2. Automated linting → Style consistency
 3. Claude self-review → "Review this code for potential issues"
@@ -655,7 +669,7 @@ Let me show you what emerged from this collaboration.
 ### The Pattern Emerges
 
 <!-- ORIGINAL [CONTENT] BLOCK - PRESERVED AS-IS -->
-**From SyntaxKit to MistKit - A Philosophy**:
+#### From SyntaxKit to MistKit - A Philosophy
 
 | Aspect | SyntaxKit | MistKit |
 |--------|-----------|---------|
@@ -668,7 +682,7 @@ Let me show you what emerged from this collaboration.
 | **Timeline** | Weeks | 3 months |
 | **Code Reduction** | 80+ lines → ~10 lines | Verbose → clean async calls |
 
-**The Common Philosophy**:
+#### The Common Philosophy
 
 ```no-highlight
 Source of Truth → Code Generation → Thoughtful Abstraction → AI Acceleration
@@ -685,7 +699,8 @@ Source of Truth → Code Generation → Thoughtful Abstraction → AI Accelerati
 ### What v1.0 Alpha Delivers
 
 <!-- ORIGINAL [CONTENT] BLOCK - PRESERVED AS-IS -->
-**MistKit v1.0 Alpha**:
+#### MistKit v1.0 Alpha
+
 - ✅ Three authentication methods (API Token, Web Auth, Server-to-Server)
 - ✅ Type-safe CloudKit operations (15 operations fully implemented)
 - ✅ Cross-platform support (macOS, iOS, Linux, server-side Swift)
@@ -695,7 +710,8 @@ Source of Truth → Code Generation → Thoughtful Abstraction → AI Accelerati
 - ✅ 10,476 lines of generated type-safe code
 - ✅ Zero manual JSON parsing
 
-**What This Means**:
+#### What This Means
+
 - CloudKit Web Services accessible from any Swift platform
 - Type-safe API catches errors at compile-time
 - Maintainable codebase (update spec → regenerate)
@@ -707,7 +723,7 @@ Source of Truth → Code Generation → Thoughtful Abstraction → AI Accelerati
 ### Series Continuity
 
 <!-- ORIGINAL [CONTENT] BLOCK - PRESERVED AS-IS -->
-**Modern Swift Patterns Series**:
+#### Modern Swift Patterns Series
 
 **Part 1**: [SyntaxKit](https://brightdigit.com/tutorials/syntaxkit-swift-code-generation/)
 - Wrapping SwiftSyntax with result builder DSL
@@ -718,7 +734,7 @@ Source of Truth → Code Generation → Thoughtful Abstraction → AI Accelerati
 - Lesson: Code generation for runtime API accuracy + AI collaboration patterns
 - Real-world validation through Bushel and Celestra applications
 
-**The MistKit Journey Complete**:
+#### The MistKit Journey Complete
 
 This concludes the MistKit rebuild series. We've covered the full arc: from CloudKit's REST documentation to type-safe Swift client (Part 1), through real-world validation and AI collaboration lessons (Part 2).
 
@@ -726,7 +742,7 @@ This concludes the MistKit rebuild series. We've covered the full arc: from Clou
 - [Bushel](https://github.com/brightdigit/Bushel) - macOS version tracking with complex CloudKit relationships
 - [Celestra](https://github.com/brightdigit/Celestra) - RSS aggregation with batch operations
 
-**The Pattern Continues**:
+#### The Pattern Continues
 
 The collaboration patterns and code generation techniques explored here apply beyond MistKit. Future articles in the Modern Swift Patterns series will explore other domains where specification-driven development and AI collaboration create sustainable, maintainable Swift code.
 <!-- END ORIGINAL [CONTENT] -->
@@ -735,7 +751,7 @@ The collaboration patterns and code generation techniques explored here apply be
 ### The Bigger Philosophy
 
 <!-- ORIGINAL [CONTENT] BLOCK - PRESERVED AS-IS -->
-**Sustainable Development Through Collaboration**:
+#### Sustainable Development Through Collaboration
 
 | Element | Role |
 |---------|------|
@@ -745,24 +761,28 @@ The collaboration patterns and code generation techniques explored here apply be
 | **Human Judgment** | Architecture, security, developer experience |
 | **Modern Swift** | Features that make it all possible |
 
-**Why This Matters**:
+#### Why This Matters
 
-**OpenAPI eliminates maintenance burden**:
+##### OpenAPI eliminates maintenance burden
 - CloudKit adds endpoint? Update spec, regenerate. Done.
 - Apple changes response format? Update spec, regenerate. Done.
 
-**Claude eliminates development tedium**:
+##### Claude eliminates development tedium
+
 - 161 tests? Claude drafted most based on patterns.
 - Refactoring? Claude handles mechanical parts.
 - Edge cases? Claude suggests them.
 
-**You provide irreplaceable judgment**:
+##### You provide irreplaceable judgment
+
 - Security patterns
 - Architecture decisions
 - Developer experience
 - Trade-offs and priorities
 
-**Together**: Type-safe code that matches the API perfectly + tests written quickly + thoughtful architecture + sustainable codebase.
+##### Together
+
+Type-safe code that matches the API perfectly + tests written quickly + thoughtful architecture + sustainable codebase.
 <!-- END ORIGINAL [CONTENT] -->
 
 ---
@@ -778,7 +798,8 @@ dependencies: [
 ]
 ```
 
-**Resources**:
+#### Resources
+
 - 📚 [Documentation](https://swiftpackageindex.com/brightdigit/MistKit/documentation)
 - 🐙 [GitHub Repository](https://github.com/brightdigit/MistKit)
 - 💬 [Discussions](https://github.com/brightdigit/MistKit/discussions)
@@ -787,12 +808,14 @@ dependencies: [
 
 ---
 
-**In this series**:
+#### In this series
+
 1. [Building SyntaxKit with AI](https://brightdigit.com/tutorials/syntaxkit-swift-code-generation/) - Elegant code generation with SwiftSyntax
 2. **Rebuilding MistKit with Claude Code** (Complete)
    - [Part 1: From CloudKit Docs to Type-Safe Swift](https://brightdigit.com/tutorials/rebuilding-mistkit-claude-code-part-1/)
    - **Part 2: Real-World Lessons and Collaboration Patterns** ← You are here
 
-**MistKit in Practice** (Open Source Examples):
+#### MistKit in Practice (Open Source Examples)
+
 - [Bushel](https://github.com/brightdigit/Bushel) - macOS version tracking demonstrating complex CloudKit relationships
 - [Celestra](https://github.com/brightdigit/Celestra) - RSS aggregation showcasing batch operations and public database patterns
