@@ -6,7 +6,7 @@ featuredImage: /media/tutorials/rebuilding-mistkit-claude-code/mistkit-rebuild-p
 subscriptionCTA: Want to learn more about AI-assisted Swift development and modern API design patterns? Sign up for our newsletter to get notified about the rest of the Modern Swift Patterns series and future tutorials on building production-ready Swift applications.
 ---
 
-In [Part 1](https://brightdigit.com/tutorials/rebuilding-mistkit-claude-code-part-1/), I showed how Claude Code and swift-openapi-generator transformed CloudKit's REST documentation into a type-safe Swift client. We has 161 unit tests which passed but would it actually work in the real world.
+In [Part 1](https://brightdigit.com/tutorials/rebuilding-mistkit-claude-code-part-1/), I showed how [Claude Code](https://claude.ai/claude-code) and [swift-openapi-generator](https://github.com/apple/swift-openapi-generator) transformed [CloudKit's REST documentation](https://developer.apple.com/documentation/cloudkitjs/cloudkit/cloudkit_web_services) into a type-safe Swift client. We has 161 unit tests which passed but would it actually work in the real world.
 
 📚 **[View Documentation](https://swiftpackageindex.com/brightdigit/MistKit/documentation)** | 🐙 **[GitHub Repository](https://github.com/brightdigit/MistKit)**
 
@@ -37,7 +37,7 @@ In [Part 1](https://brightdigit.com/tutorials/rebuilding-mistkit-claude-code-par
 Would MistKit's abstractions actually work when building an application? Could the type-safe API handle CloudKit's quirks at scale?
 
 I had 2 real-world application for MistKit to try it out:
-- an RSS aggregator syncing thousands of articles to CloudKit using SyndiKit for an app codenamed **[Celestra](https://celestr.app)**
+- an RSS aggregator syncing thousands of articles to CloudKit using [SyndiKit](https://github.com/brightdigit/SyndiKit) for an app codenamed **[Celestra](https://celestr.app)**
 - For **[Bushel](https://getbushel.app)**, I wanted to track restore images and various metadata for macOS and developer software versions. 
 
 
@@ -85,12 +85,12 @@ service.modifyRecords(operations, atomic: false)
 
 #### Bushel: Powering a macOS VM App with CloudKit
 
-The [Bushel app](https://getbushel.app) is a macOS virtualization tool for developers. It currently uses a static hub to get a list of restore images, their download URLs, and their status. However, since the data is universal, I needed a comprehensive, queryable central database of macOS restore images and various metadata about operating system versions and developer tools. I built a [CLI tool with MistKit](https://github.com/brightdigit/MistKit/tree/main/Examples/Bushel) that runs on scheduled cloud infrastructure (cron jobs, cloud functions, scheduled tasks) to populate a CloudKit public database that the Bushel app queries.
+The [Bushel app](https://getbushel.app) is a macOS virtualization tool for developers. It currently allows pluggable _hubs_ to get a list of restore images, their download URLs, and their status. However, since the data is universal, I wanted a comprehensive, queryable central database of macOS restore images and various metadata about operating system versions and developer tools. Therefore I wanted a [CLI tool with MistKit](https://github.com/brightdigit/MistKit/tree/main/Examples/Bushel) that runs on scheduled cloud infrastructure (cron jobs, cloud functions, scheduled tasks) to populate a CloudKit public database with various metadata about macOS versions and thier restore images.
 
 This architecture provides:
 - **Public Database**: Worldwide access to version history without embedding static JSON in the app
-- **Automated Updates**: CLI tool syncs latest restore images, Xcode, and Swift versions daily
-- **Queryable**: [Bushel app](https://getbushel.app) queries for "macOS 15.2 restore images" → gets latest metadata
+- **Automated Updates**: CLI tool syncs latest info on restore images, Xcode, and Swift versions
+- **Queryable**: [Bushel app](https://getbushel.app) can easily query for restore images such as _macOS 15.2_
 - **Scalable**: CLI tool aggregates data from various sources automatically
 - **Deduplication**: buildNumber-based deduplication ensures clean data
 
@@ -109,20 +109,16 @@ fields["minimumMacOS"] = .reference(
 )
 ```
 
-#### Educational Value
+---
 
-Both CLI tool examples serve as copy-paste starting points for new MistKit projects:
-- Celestra CLI demonstrates simple patterns (string relationships, basic queries)
-- Bushel CLI demonstrates advanced patterns (protocol-oriented design, batch chunking, References)
-- Verbose logging modes teach CloudKit concepts as you learn
-- Implementation notes capture design trade-offs and lessons learned
+Both CLI tool examples serve as copy-paste starting points for new MistKit projects.
 <!-- END ORIGINAL [CONTENT] -->
 
 <!-- CLAUDE-WRITTEN PROSE - REVIEW AND EDIT AS NEEDED -->
 <!-- Theme: The satisfaction of seeing MistKit power actual applications -->
 <!-- Target: ~25-50 words -->
 
-Watching MistKit power real applications was helpful because I can see the generated code work. The CLI tools synced thousands of RSS articles (Celestra) and tracked complex version relationships (Bushel). The abstractions worked but they also revealed what unit tests couldn't.
+Watching MistKit power real applications was helpful because I can see the generated code work. The CLI tools synced RSS articles (Celestra) and tracked complex version relationships (Bushel). And we can build on top of the abstractions and see them work while revealing what unit tests couldn't.
 <!-- END CLAUDE-WRITTEN -->
 
 <!-- WRITING GUIDANCE FOR THIS SECTION -->
@@ -134,155 +130,27 @@ Watching MistKit power real applications was helpful because I can see the gener
 <a id="integration-testing-through-real-applications"></a>
 ### Integration Testing Through Real Applications
 
-<!-- ORIGINAL [CONTENT] BLOCK - PRESERVED AS-IS -->
 Building real applications exposed issues no unit test could catch. Here's what Celestra and Bushel revealed:
 
-#### Batch Operation Limits
+- **Batch Operation Limits**: CloudKit enforces 200-operation-per-request limit (not documented clearly) therefore we added chunking logic.
+- **Boolean Field Handling**: CloudKit has no native boolean type but we wanted the developer to safely use Swift Boolean types so we created a safe and easy way use the standardized INT64 representation.
 
-**Discovery**: CloudKit enforces 200-operation-per-request limit (not documented clearly).
+I was able to verify that the API design and pieces such as the Server-to-Server authentication was working.
 
-**Impact**: Bushel's initial implementation tried uploading 500+ records at once and failed mysteriously. Added chunking logic—now both examples chunk correctly (Bushel: 200 records, Celestra: 10 records for RSS content size management).
-
-#### Boolean Field Handling
-
-**Discovery**: CloudKit has no native boolean type.
-
-**Solution**: Standardized INT64 representation (0 = false, 1 = true) across both examples and MistKit's type system.
-
-#### API Improvements Driven by Real Use
-
-- **`FieldValue` enum design**: Validated through diverse record types (RSS feeds, software versions, metadata)
-- **`QueryFilter` API**: Refined through Celestra's filtered update command (date ranges, numeric comparisons)
-- **Non-atomic batch operations**: Essential for partial failure handling in both examples
-- **Protocol-oriented patterns**: `CloudKitRecord` protocol proven reusable across projects
-
-#### The Validation
-
-✅ Public API successfully hides OpenAPI complexity
-✅ Swift 6 strict concurrency compliance proven in production
-✅ Server-to-Server authentication works for command-line tools
-✅ Type-safe field mapping prevents runtime errors
-✅ Real-world usage patterns documented for future developers
-
-MistKit isn't academic—it's battle-tested by building actual software.
-<!-- END ORIGINAL [CONTENT] -->
-
-#### API Ergonomics: Discovering Missing Write Operations
-
-Building Bushel revealed the most significant gap: MistKit had **read** operations with clean abstractions (`FieldValue`, `RecordInfo`), but **write** operations were missing. The demo couldn't create records without reaching into internal OpenAPI types.
-
-##### The Discovery
-
-```no-highlight
-Me: "OpenAPI types shouldn't be available. We need those abstractions built."
-
-Claude: "You're absolutely right! We shouldn't expose OpenAPI-generated types
-         directly - that's poor API design and creates tight coupling.
-         We need to build proper abstractions."
-
-Me: "Why are using the OpenAPI types instead of the available types in MistKit?
-     What is missing?"
-
-Claude: "Excellent question! Let me investigate what MistKit actually provides
-         publicly. I've been assuming we need OpenAPI types, but MistKit should
-         have its own abstractions."
-```
-
-##### The Fix
-
-Added the public write API to MistKit:
-1. **`RecordOperation`** - Public type for create/update/delete operations
-2. **`CloudKitService.modifyRecords()`** - Batch write operations
-3. **Bidirectional conversion** - `FieldValue` ↔ internal OpenAPI types
-
-##### The Complete Three-Layer Architecture
-
-```no-highlight
-┌─────────────────────────────────────────┐
-│  User Code (Public API)                 │
-│  • CloudKitService wrapper              │
-│  • Simple, intuitive methods            │
-│  • RecordOperation, FieldValue          │
-└─────────────────────────────────────────┘
-                    ↓
-┌─────────────────────────────────────────┐
-│  MistKit Abstraction (Internal)         │
-│  • MistKitClient                        │
-│  • TokenManager implementations (3)     │
-│  • Middleware (Auth, Logging)           │
-│  • Type conversion layer                │
-└─────────────────────────────────────────┘
-                    ↓
-┌─────────────────────────────────────────┐
-│  Generated OpenAPI Client (Internal)    │
-│  • Client.swift (3,268 lines)           │
-│  • Types.swift (7,208 lines)            │
-└─────────────────────────────────────────┘
-```
-
-##### Result
-
-A clean public API that hides all OpenAPI complexity. Generated code stays internal, users interact with idiomatic Swift. Type safety maintained throughout, ergonomics dramatically improved—and **gaps discovered through real-world usage got fixed immediately**.
-
-<!-- CLAUDE-WRITTEN PROSE - REVIEW AND EDIT AS NEEDED -->
-<!-- Theme: Unexpected discoveries, validation of design decisions -->
-<!-- Target: ~25-50 words -->
-
-Every discovery—from schema validation quirks to batch limits to missing write operations—made MistKit stronger. The API evolved from "it works in tests" to "it works in production." Real applications don't lie.
-<!-- END CLAUDE-WRITTEN -->
-
-<!-- WRITING GUIDANCE FOR THIS SECTION -->
-<!-- Key phrases: "real applications don't lie", "it works in production" -->
-<!-- Voice notes: Emphasizes the value of real-world testing -->
-<!-- Connect to: Transition to lessons learned from the journey -->
-<!-- END GUIDANCE -->
-
-<!-- CLAUDE-WRITTEN PROSE - REVIEW AND EDIT AS NEEDED -->
-<!-- Theme: Stepping back to reflect on the journey -->
-<!-- Target: ~50-100 words -->
-
-Real apps validated the design. But building MistKit over three months with Claude Code taught me something bigger than CloudKit APIs or type-safe abstractions. It revealed patterns about AI collaboration that apply far beyond this project.
-
-So let me step back from the code and share what I learned—what worked, what didn't, and what surprised me most about working with AI on a production library.
-<!-- END CLAUDE-WRITTEN -->
-
-<!-- WRITING GUIDANCE FOR THIS SECTION -->
-<!-- Key phrases: "patterns about AI collaboration", "far beyond this project" -->
-<!-- Voice notes: Creates bridge from technical details to bigger lessons -->
-<!-- Connect to: Transitions to Lessons Learned section -->
-<!-- END GUIDANCE -->
 
 <a id="lessons-learned"></a>
 ## Lessons Learned
 
-<!-- CLAUDE-WRITTEN PROSE - REVIEW AND EDIT AS NEEDED -->
-<!-- Theme: Reflecting on three months and 428 Claude sessions -->
-<!-- Target: ~100-150 words -->
-
-Three months. 428 Claude Code sessions. One complete library rebuild from scratch.
-
-What surprised me most wasn't what Claude could do—I'd worked with AI before on SyntaxKit. It was discovering where the collaboration worked best and where it broke down. The patterns that emerged weren't what I expected.
-
-Claude excelled at tasks I thought would be hard (comprehensive test generation). It struggled with things I assumed would be easy (knowing which APIs exist). Sometimes it saved me a week of work. Sometimes I had to correct the same mistake three times.
-
-But through iteration, a collaboration pattern emerged. One that I'll use on every future project. One that makes AI a genuine productivity multiplier, not just a fancy autocomplete.
-
-Here's what I learned.
-<!-- END CLAUDE-WRITTEN -->
-
-<!-- WRITING GUIDANCE FOR THIS SECTION -->
-<!-- Key phrases: "what surprised me most", "collaboration pattern emerged", "genuine productivity multiplier" -->
-<!-- Voice notes: Personal reflection setting up specific lessons -->
-<!-- Connect to: Introduction to detailed lessons sections -->
-<!-- END GUIDANCE -->
+There were few things which surprised as far as what Claude Code was good and not good at and where collaboration worked best. Claude excelled at tasks I thought would be hard (comprehensive test generation). It struggled with things I assumed would be easy (knowing which APIs exist). Through iteration, a collaboration pattern emerged. Here's what I learned.
 
 <a id="what-claude-code-excelled-at"></a>
-### What Claude Code Excelled At
+### What [Claude Code](https://claude.ai/claude-code) Excelled At
 
 <!-- ORIGINAL [CONTENT] BLOCK - PRESERVED AS-IS -->
 #### ✅ Test Generation - Pattern Recognition at Scale
 
-161 tests across 47 files, most drafted by Claude. Week 2 example:
+Test generation is ideal for LLMs because it leverages **pattern recognition** from vast training data. Claude has seen thousands of Swift test files and can apply those structural patterns to new domains. The task requires **extrapolation from examples**, not novel reasoning—Claude recognizes "if testing STRING type, also test empty string, Unicode, and nil" because that pattern appears frequently in its training corpus.
+
 
 ```no-highlight
 Me: "Generate tests for all CustomFieldValue types"
@@ -298,9 +166,7 @@ Claude: *[Creates tests covering all 10 field types with edge cases]*
  I also added tests for the ASSET vs ASSETID quirk"
 ```
 
-Result: 47 test files in 1 week instead of estimated 2-3 weeks solo. Claude found edge cases I hadn't considered.
-
-**Why This Worked**: Test generation is ideal for LLMs because it leverages **pattern recognition** from vast training data. Claude has seen thousands of Swift test files and can apply those structural patterns to new domains. The task requires **extrapolation from examples**, not novel reasoning—Claude recognizes "if testing STRING type, also test empty string, Unicode, and nil" because that pattern appears frequently in its training corpus.
+It was able to product 4161 tests across 47 files including edge cases I hadn't considered. The only quirk I found was that it favored XCTest over Swift Testing at first. This makes sense since there's probably more training material in XCTest. I've primarily switched to Swift Testing for my new work. If you are in the same place then be sure to make a note of that in your CLAUDE.md when you start your project.
 
 #### ✅ OpenAPI Schema Validation - Structural Consistency Detection
 
