@@ -2,7 +2,7 @@
 title: Rebuilding MistKit with Claude Code - Real-World Lessons and Collaboration Patterns (Part 2)
 date: 2025-12-10 00:00
 description: After building MistKit's type-safe CloudKit client, we put it to the test with real applications. Discover what happened when theory met practice—the unexpected discoveries, hard-earned lessons, and collaboration patterns that emerged from 428 Claude Code sessions over three months.
-featuredImage: /media/tutorials/rebuilding-mistkit-claude-code/mistkit-rebuild-part2-hero.webp
+featuredImage: /media/tutorials/rebuilding-mistkit-claude-code/mistkit-rebuild-part1-hero.webp
 subscriptionCTA: Want to learn more about AI-assisted Swift development and modern API design patterns? Sign up for our newsletter to get notified about the rest of the Modern Swift Patterns series and future tutorials on building production-ready Swift applications.
 ---
 
@@ -11,14 +11,14 @@ In [Part 1](https://brightdigit.com/tutorials/rebuilding-mistkit-claude-code-par
 📚 **[View Documentation](https://swiftpackageindex.com/brightdigit/MistKit/documentation)** | 🐙 **[GitHub Repository](https://github.com/brightdigit/MistKit)**
 
 - [Real-World Proof](#real-world-proof)
-  - [The Celestra and Bushel Examples](#the-celestra-and-bushel-examples)
-  - [Integration Testing Through Real Applications](#integration-testing-through-real-applications)
+    - [The Celestra and Bushel Examples](#the-celestra-and-bushel-examples)
+    - [Integration Testing Through Real Applications](#integration-testing-through-real-applications)
 - [Lessons Learned](#lessons-learned)
-  - [Unit Test Generation](#unit-test-generation)
-  - [Human Guided Architecture](#human-guided-architecture)
-  - [Grabby AI](#grabby-ai)
-  - [Context Management](#context-management)
-  - [Human + AI Code Reviews](#human--ai-code-reviews)
+    - [Unit Test Generation](#unit-test-generation)
+    - [Human Guided Architecture](#human-guided-architecture)
+    - [Grabby AI](#grabby-ai)
+    - [Context Management](#context-management)
+    - [Human + AI Code Reviews](#human--ai-code-reviews)
 - [Multiplier, not a Replacement](#multiplier-not-a-replacement)
 
 <a id="real-world-proof"></a>
@@ -105,6 +105,8 @@ fields["minimumMacOS"] = .reference(
 
 ---
 
+> transistor https://share.transistor.fm/s/ffcb9fc1
+
 Both CLI tool examples serve as copy-paste starting points for new MistKit projects.
 <!-- END ORIGINAL [CONTENT] -->
 
@@ -124,7 +126,7 @@ I was able to verify that the API design and critical pieces like Server-to-Serv
 <a id="lessons-learned"></a>
 ## Lessons Learned
 
-There were few things which surprised as far as what Claude Code was good and not good at and where collaboration worked best. Claude excelled at tasks I thought would be hard (comprehensive test generation). It struggled with things I assumed would be easy (knowing which APIs exist). Through iteration, a collaboration pattern emerged. Here's what I learned.
+There were few things which surprised as far as what Claude Code was good and not good at and where [collaboration worked best](https://brightdigit.com/tutorials/syntaxkit-swift-code-generation/). Claude excelled at tasks I thought would be hard (comprehensive test generation). It struggled with things I assumed would be easy (knowing which APIs exist). Through iteration, a collaboration pattern emerged. Here's what I learned.
 
 ### Unit Test Generation
 
@@ -172,11 +174,15 @@ Managing these challenges required strategic context management. One of the bigg
 - `cloudkitjs.md` (188KB) - CloudKit operation patterns and data types
 - `swift-openapi-generator.md` (235KB) - Code generation configuration
 
+> youtube https://youtu.be/gH3QnVHsUAc
+
 At the root of this is the `CLAUDE.md` file which acts as a table of contents, telling Claude where to look for specific information. Claude doesn't need to memorize everything—it needs to know where to look.
 
 ### Human + AI Code Reviews
 
-Whatever your AI writes should be understood by you fairly well. Don't skip this step.
+Whatever your AI writes should be understood by you fairly well. Don't skip this step. This is especially important in the context of [humane code](https://brightdigit.com/articles/humane-code/)—code that is empathetic to future developers who need to understand and maintain it. AI-generated code still needs to communicate clearly with the humans who will work with it later.
+
+> transistor https://share.transistor.fm/s/99f236b1
 
 These patterns and practices reflect a deeper truth about AI-assisted development: Claude Code is a force multiplier, not a replacement for developer judgment. I provided architectural vision; Claude generated comprehensive implementations. I identified edge cases from domain knowledge; Claude translated them into exhaustive test suites. I steered strategic decisions; Claude handled mechanical transformations at scale. Together, we built something neither could have built alone—a production-ready CloudKit client that balances type safety with developer ergonomics.
 

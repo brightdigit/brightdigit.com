@@ -14,9 +14,9 @@ I saw how Claude Code could easily replace and understand patterns. That's when 
 
 **In this series:**
 
-* [Building SyntaxKit with AI](https://brightdigit.com/tutorials/syntaxkit-swift-code-generation/)
+* [Building SyntaxKit with AI](/tutorials/syntaxkit-swift-code-generation/)
 * _Rebuilding MistKit with Claude Code (Part 1)_
-* Coming soon: Rebuilding MistKit with Claude Code (Part 2)
+* [Rebuilding MistKit with Claude Code (Part 2)](/tutorials/rebuilding-mistkit-claude-code-part-2/)
 
 ---
 
@@ -39,13 +39,15 @@ I saw how Claude Code could easily replace and understand patterns. That's when 
 
 I had a couple of use cases where MistKit running in the cloud would allow me to store data in a public database. However I hadn't touched the library in a while.
 
-By now, Swift had transformed while MistKit stood still:
+By now, [Swift had transformed](https://brightdigit.com/tutorials/swift-6-async-await-actors-fixes/) while MistKit stood still:
 - **Swift 6** with strict concurrency checking
 - **async/await** as standard (not experimental)
 - **Server-side Swift maturity** (Vapor 4, swift-nio, AWS Lambda)
 - **Modern patterns** expected (Result types, AsyncSequence, property wrappers)
 
 MistKit, frozen in 2021, couldn't take advantage of any of this.
+
+> youtube https://youtu.be/_-k97s1ZPzE
 
 <a id="the-game-changer-swift-openapi-generator"></a>
 ### The Game Changer: [swift-openapi-generator](https://github.com/apple/swift-openapi-generator)
@@ -139,7 +141,7 @@ With [`swift-openapi-generator`](https://github.com/apple/swift-openapi-generato
    - Add TokenManager for authentication
    - CustomFieldValue for CloudKit's polymorphic types
 
-By following [spec-driven development](https://swiftpackageindex.com/apple/swift-openapi-generator/1.10.3/documentation/swift-openapi-generator/practicing-spec-driven-api-development), we had many benefits:
+By following [spec-driven development](https://brightdigit.com/tutorials/swift-openapi-generator/), we had many benefits:
 
 - Type safety (if it compiles, it's valid CloudKit usage)
 - Completeness (every endpoint defined)
@@ -289,7 +291,7 @@ Claude: *[Runs demo successfully]*
  The authentication layer is working as designed. All three authentication methods have a solid foundation!"
 ```
 
-We'll touch more on this approach in the next blog post.
+We'll touch more on this approach in [the next blog post.](/tutorials/rebuilding-mistkit-claude-code-part-2/)
 
 <a id="challenge-3-error-handling"></a>
 ### Challenge #3: Error Handling
@@ -388,7 +390,7 @@ Here's how it's mapped:
 | **500 Internal Error** | `INTERNAL_ERROR` | Retry with backoff |
 | **503 Service Unavailable** | `TRY_AGAIN_LATER` | Temporary issue, retry later |
 
-This structured error handling enables the generated client to provide specific, actionable error messages rather than generic HTTP failures. Developers get type-safe error codes, HTTP status mapping, and clear guidance on how to handle each error condition.
+This structured [error handling](https://brightdigit.com/articles/swift-error-handling/) enables the generated client to provide specific, actionable error messages rather than generic HTTP failures. Developers get type-safe error codes, HTTP status mapping, and clear guidance on how to handle each error condition.
 
 <a id="challenge-4-api-ergonomics"></a>
 ### Challenge #4: API Ergonomics
@@ -497,6 +499,8 @@ Claude: *[Updates definition with pagination support]*
 "Updated, and I noticed the `zoneID` should be optional"
 ```
 
+> youtube https://youtu.be/gH3QnVHsUAc
+
 By providing my own experience with great Swift APIs and Claude's ability at applying patterns, I quickly build a library that's friendly to use.
 
 #### Building MistKit from Scratch with Claude Code
@@ -528,4 +532,4 @@ The OpenAPI spec was complete. The generated client compiled. The abstraction la
 
 What would have likely taken 6-12 months of solo development was compressed into 3 months of _side-project_ collaboration, with Claude handling repetitive tasks while I focused on architecture, CloudKit-specific quirks, and real-world testing.
 
-However I really needed to put it the test in my actual uses. In the next post, I'll talk about find flaws in MistKit by actually consuming my library with help from Claude Code. I'll be building a couple of command line tools for easily uploading data for [Bushel](https://getbushel.app) and a future RSS Reader to the public database. By doing this I'll understand Claude's limitation, benefits and how to workaround those.
+However I really needed to put it the test in my actual uses. In the next post, I'll talk about find flaws in MistKit by actually consuming my library with help from Claude Code. I'll be building a couple of command line tools for easily uploading data for [Bushel](https://getbushel.app) and a future RSS Reader to the public database. By doing this I'll understand [Claude's limitation, benefits and how to workaround those.](/tutorials/rebuilding-mistkit-claude-code-part-2/)
