@@ -14,7 +14,12 @@ In [Part 1](https://brightdigit.com/tutorials/rebuilding-mistkit-claude-code-par
   - [The Celestra and Bushel Examples](#the-celestra-and-bushel-examples)
   - [Integration Testing Through Real Applications](#integration-testing-through-real-applications)
 - [Lessons Learned](#lessons-learned)
-- [Conclusion](#conclusion)
+  - [Unit Test Generation](#unit-test-generation)
+  - [Human Guided Architecture](#human-guided-architecture)
+  - [Grabby AI](#grabby-ai)
+  - [Context Management](#context-management)
+  - [Human + AI Code Reviews](#human--ai-code-reviews)
+- [Multiplier, not a Replacement](#multiplier-not-a-replacement)
 
 <a id="real-world-proof"></a>
 ## Real-World Proof
@@ -175,8 +180,8 @@ Whatever your AI writes should be understood by you fairly well. Don't skip this
 
 These patterns and practices reflect a deeper truth about AI-assisted development: Claude Code is a force multiplier, not a replacement for developer judgment. I provided architectural vision; Claude generated comprehensive implementations. I identified edge cases from domain knowledge; Claude translated them into exhaustive test suites. I steered strategic decisions; Claude handled mechanical transformations at scale. Together, we built something neither could have built alone—a production-ready CloudKit client that balances type safety with developer ergonomics.
 
-<a id="conclusion"></a>
-## Conclusion
+<a id="multiplier-not-a-replacement"></a>
+## Multiplier, not a Replacement
 
 These lessons crystallized into a philosophy: **AI is a force multiplier, not a replacement**. Claude generated thousands of lines of code, but I architected what those lines should accomplish. It drafted comprehensive tests, but I knew which edge cases mattered. It refactored at scale, but I chose the patterns worth preserving. Where I lacked expertise translating CloudKit's REST API into an OpenAPI spec, Claude filled those gaps.
 
