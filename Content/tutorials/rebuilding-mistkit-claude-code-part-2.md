@@ -139,7 +139,7 @@ Claude: *[Creates tests covering all 10 field types with edge cases]*
  I also added tests for the ASSET vs ASSETID quirk"
 ```
 
-It was able to produce 4161 tests across 47 files including edge cases I hadn't considered. The only quirk I found was that it favored XCTest over Swift Testing at first. This makes sense since there's probably more training material in XCTest. I've primarily switched to Swift Testing for my new work. If you are in the same place then be sure to make a note of that in your CLAUDE.md when you start your project. 
+It was able to produce 4161 tests across 47 files including edge cases I hadn't considered. The only quirk I found was that it favored [XCTest](https://developer.apple.com/documentation/xctest) over [Swift Testing](https://developer.apple.com/documentation/testing) at first. This makes sense since there's probably more training material in XCTest. I've primarily switched to Swift Testing for my new work. If you are in the same place then be sure to make a note of that in your `CLAUDE.md` when you start your project. 
 
 ### Human Guided Architecture
 
@@ -147,7 +147,7 @@ While Claude excelled at pattern-based tasks, architectural decisions consistent
 
 ### Grabby AI
 
-These limitations manifested in predictable patterns throughout the project. As we were implementing the CLI tools for Bushel and Celestra, Claude would often try to implement features using the direct OpenAPI code as opposed to the abstracted API we had built:
+These limitations manifested in predictable patterns throughout the project. As we were implementing the CLI tools for Bushel and Celestra, Claude would often try to implement features using the direct [OpenAPI](https://www.openapis.org/) code as opposed to the abstracted API we had built:
 
 ```swift
 // WRONG: Internal type reference
@@ -161,7 +161,7 @@ Even going so far as to make those methods and properties `public`. Often referr
 
 ### Context Management
 
-Managing these challenges required strategic context management. One of the biggest challenges working with Claude Code is managing its knowledge cutoffs and lack of familiarity with newer or niche APIs. In the world of Swift, Claude's training often predates Swift Testing or swift-openapi-generator specifics. This is where providing documentation upfront in `.claude/docs/` helps. With tools like [Sosumi.ai](https://sosumi.ai) for Apple API exploration and [llm.codes](https://llm.codes) I can provide documentation like:
+Managing these challenges required strategic context management. One of the biggest challenges working with Claude Code is managing its knowledge cutoffs and lack of familiarity with newer or niche APIs. In the world of Swift, Claude's training often predates [Swift Testing](https://developer.apple.com/documentation/testing) or [swift-openapi-generator](https://github.com/apple/swift-openapi-generator) specifics. This is where providing documentation upfront in `.claude/docs/` helps. With tools like [Sosumi.ai](https://sosumi.ai) for Apple API exploration and [llm.codes](https://llm.codes) I can provide documentation like:
 - `testing-enablinganddisabling.md` (126KB) - Swift Testing patterns
 - `webservices.md` (289KB) - CloudKit Web Services REST API reference
 - `cloudkitjs.md` (188KB) - CloudKit operation patterns and data types
