@@ -101,6 +101,12 @@ This three-phase approach ensures dependency stability before tackling the Swift
 - **swift-markdown** - Replaces Ink (0.6.0) for markdown parsing
 - **swift-subprocess** - Replaces ShellOut (2.3.0) for shell command execution
 
+**Retained Dependencies (No viable Apple alternatives, Linux-compatible):**
+- **Kanna** (5.2.2) - HTML/XML parsing (cross-platform: macOS, iOS, tvOS, watchOS, Linux)
+- **MarkdownGenerator** (0.4.0) - Markdown generation (swift-markdown is parse-only)
+- **Yams** (4.0.4) - YAML encoding (Foundation has no YAML support)
+- **Files** (4.0+) - Via Publish dependency (indirect, Publish-managed)
+
 **Package Structure:**
 ```
 brightdigit.com/  (monorepo with subrepos)
@@ -149,15 +155,17 @@ dependencies: [
   .package(path: "Packages/Publish/Files"),
   // ... all 17 subrepos
 
-  // Apple frameworks as SPM dependencies
+  // Apple frameworks as SPM dependencies (replacing Ink + ShellOut)
   .package(url: "https://github.com/swiftlang/swift-markdown.git", from: "0.4.0"),
   .package(url: "https://github.com/swiftlang/swift-subprocess.git", from: "0.1.0"),
 
-  // Utilities as SPM dependencies
-  .package(url: "https://github.com/jpsim/Yams.git", from: "4.0.4"),
-  .package(url: "https://github.com/apple/swift-argument-parser", from: "1.1.3"),
-  .package(url: "https://github.com/tid-kijyun/Kanna.git", from: "5.2.2"),
-  .package(url: "https://github.com/eneko/MarkdownGenerator.git", from: "0.4.0")
+  // Retained utilities (Linux-compatible, no viable Apple alternatives)
+  .package(url: "https://github.com/jpsim/Yams.git", from: "4.0.4"),  // YAML encoding
+  .package(url: "https://github.com/tid-kijyun/Kanna.git", from: "5.2.2"),  // HTML/XML parsing
+  .package(url: "https://github.com/eneko/MarkdownGenerator.git", from: "0.4.0"),  // Markdown generation
+
+  // Other utilities
+  .package(url: "https://github.com/apple/swift-argument-parser", from: "1.1.3")
 ]
 ```
 
@@ -275,6 +283,162 @@ git subrepo status
 - **Simplified CI/CD**: One pipeline tests all packages together
 - **Easy onboarding**: New contributors just clone one repo
 - **Future flexibility**: Can extract Packages/* to BrightDigitPublish v2.0 later
+
+---
+
+## Dependency Modernization Research
+
+This section documents research findings for replacing third-party dependencies with Apple frameworks or modern alternatives.
+
+### Executive Summary
+
+**Research Question**: Which dependencies can be replaced with official Apple frameworks?
+
+**Conclusion**: Only **Ink** and **ShellOut** have viable Apple framework replacements. Four other dependencies (Kanna, MarkdownGenerator, Yams, Files) must be **retained** due to Linux compatibility requirements and lack of alternatives.
+
+**Critical Constraint**: GitLab CI runs on Ubuntu (Linux), requiring all dependencies to be cross-platform compatible (macOS + Linux).
+
+### Summary Table
+
+| Dependency | Current Version | Replacement Considered | Decision | Rationale |
+|---|---|---|---|---|
+| **Ink** | 0.6.0 | swift-markdown | ✅ REPLACE | Official Apple framework for markdown parsing |
+| **ShellOut** | 2.3.0 | swift-subprocess | ✅ REPLACE | Official Apple framework for shell commands |
+| **Kanna** | 5.2.2 | Demark (evaluated) | ❌ KEEP | Linux-compatible, Demark is Apple-only (requires WebKit) |
+| **MarkdownGenerator** | 0.4.0 | swift-markdown (evaluated) | ❌ KEEP | Linux-compatible, swift-markdown is parse-only (not generation) |
+| **Yams** | 4.0.4 | Foundation (evaluated) | ❌ KEEP | No Apple YAML support exists in Foundation |
+| **Files** | 4.0+ | Foundation.FileManager | ❌ KEEP | Indirect Publish dependency, not under direct control |
+
+### Detailed Analysis
+
+#### 1. Kanna + MarkdownGenerator - NO REPLACEMENT (Linux Requirement BLOCKS Demark)
+
+**Current Architecture:**
+- **Purpose**: HTML → Markdown conversion in Tagscriber module
+- **Kanna**: HTML/XML parsing using XPath and CSS selectors
+- **MarkdownGenerator**: Programmatic markdown document generation
+- **Integration**: KannaMarkdownGenerator parses HTML DOM and generates markdown elements
+
+**Evaluation: swift-markdown - NOT SUITABLE**
+- **Directionality**: swift-markdown is **parse-only** (Markdown → AST)
+- **Missing Feature**: No HTML-to-Markdown conversion capability
+- **Use Case Mismatch**: Tagscriber needs generation, not parsing
+
+**Evaluation: Demark - REJECTED (Linux Blocker)**
+- **Description**: Modern HTML-to-Markdown converter (2025 by @steipete)
+- **Features**: Two engines (Turndown.js via WKWebView, html-to-md via JavaScriptCore)
+- **BLOCKER**: Requires WebKit framework - **Apple platforms only**
+- **Linux Support**: ❌ **NO** - Cannot run on GitLab CI Ubuntu builds
+- **GitHub**: https://github.com/steipete/demark
+
+**Current Dependencies ARE Linux-Compatible:**
+
+**Kanna (5.2.2)**:
+- **Platforms**: Explicitly supports Linux (macOS, iOS, tvOS, watchOS, Linux)
+- **Ubuntu Setup**: `sudo apt-get install libxml2-dev`
+- **Features**: XPath 1.0 + CSS3 selectors
+- **GitHub**: https://github.com/tid-kijyun/Kanna
+- **Status**: ✅ Working in GitLab CI
+
+**MarkdownGenerator (0.4.0)**:
+- **Platforms**: Author (Eneko Alonso) tests Swift packages on Linux using Docker
+- **Likely Compatibility**: Already working in current GitLab CI Ubuntu builds
+- **GitHub**: https://github.com/eneko/MarkdownGenerator
+- **Status**: ✅ Proven track record
+
+**Files Affected:**
+- `/Sources/Tagscriber/KannaMarkdownGenerator.swift` - NO CHANGES (keep as-is)
+- `/Sources/Tagscriber/MarkdownGenerator.swift` - NO CHANGES (keep protocol)
+- `/Sources/Tagscriber/PandocMarkdownGenerator.swift` - NO CHANGES (keep alternative)
+
+**Decision**: ✅ **KEEP** current dependencies - proven Linux compatibility, no viable cross-platform replacement
+
+---
+
+#### 2. Yams - NO APPLE ALTERNATIVE EXISTS
+
+**Current Usage:**
+- **Purpose**: YAML front matter encoding in Contribute package
+- **Primary Use**: `YAMLEncoder` for converting Codable types to YAML strings
+- **Location**: `/Contribute/Sources/Contribute/FrontMatterYAMLExporter.swift`
+- **Test Usage**: YAML parsing tests in `/Tests/BrightDigitSiteTests/`
+
+**Evaluation: Foundation - NO YAML SUPPORT**
+- **JSON**: ✅ Foundation provides `JSONEncoder` / `JSONDecoder`
+- **Property List**: ✅ Foundation provides `PropertyListEncoder` / `PropertyListDecoder`
+- **XML**: ✅ Foundation provides `XMLDocument` / `XMLParser`
+- **YAML**: ❌ **NO native support** in Foundation framework
+
+**Swift Community Consensus**:
+- Swift Forums confirm Foundation YAML support "doesn't exist"
+- Codable is extensible, but someone must implement the encoder/decoder
+- Yams (v4.0.4+, v6.0.1 available) is the de facto standard in Swift ecosystem
+
+**Decision**: ✅ **KEEP** Yams - well-maintained, no viable alternative
+
+---
+
+#### 3. Files (via Publish) - INDIRECT DEPENDENCY
+
+**Current Architecture:**
+- **Source**: Indirect dependency through Publish v0.9.0
+- **Usage**: Via PublishingContext API (`context.folder()`, `context.outputFolder()`)
+- **Abstraction**: Type-safe folder/file operations wrapper
+- **Control**: Managed by Publish library, not directly in Package.swift
+
+**Evaluation: Foundation.FileManager - NOT PRACTICAL**
+- **Capability**: ✅ FileManager supports all file operations
+- **API Style**: More verbose than Files package convenience methods
+- **Blocker**: Would require **forking Publish** to change implementation
+- **Benefit**: No functional improvement, just different API style
+
+**Decision**: ✅ **KEEP** Files - Publish dependency, not under direct control
+
+---
+
+### Cross-Platform Compatibility Matrix
+
+| Dependency | macOS | Linux | Required By | Can Replace? |
+|---|---|---|---|---|
+| Kanna | ✅ | ✅ | Tagscriber | ❌ (No cross-platform alternative) |
+| MarkdownGenerator | ✅ | ✅ | Tagscriber | ❌ (swift-markdown wrong direction) |
+| Yams | ✅ | ✅ | Contribute | ❌ (Foundation lacks YAML) |
+| Files | ✅ | ✅ | Publish | ❌ (Indirect dependency) |
+| Ink | ✅ | ✅ | Publish | ✅ (swift-markdown replaces) |
+| ShellOut | ✅ | ✅ | Tagscriber | ✅ (swift-subprocess replaces) |
+
+### Research Sources
+
+- [Kanna GitHub Repository](https://github.com/tid-kijyun/Kanna) - Cross-platform HTML/XML parser
+- [Kanna Swift Package Registry](https://swiftpackageregistry.com/tid-kijyun/Kanna) - Package information
+- [MarkdownGenerator GitHub](https://github.com/eneko/MarkdownGenerator) - Markdown generation library
+- [MarkdownGenerator Swift Package Index](https://swiftpackageindex.com/eneko/MarkdownGenerator)
+- [Demark GitHub](https://github.com/steipete/demark) - Apple-only HTML-to-Markdown (evaluated, rejected)
+- [Eneko's Blog - Linux Swift Testing](https://github.com/eneko/Blog/issues/12) - Docker-based Linux testing
+- [Swift Markdown GitHub](https://github.com/swiftlang/swift-markdown) - Apple's official markdown parser
+- [Swift Subprocess GitHub](https://github.com/swiftlang/swift-subprocess) - Apple's process execution
+
+### Recommendations
+
+1. **Replace Only 2 Dependencies**:
+   - Ink → swift-markdown (markdown parsing)
+   - ShellOut → swift-subprocess (shell commands)
+
+2. **Retain 4 Dependencies**:
+   - Kanna (HTML parsing - Linux-compatible, no alternative)
+   - MarkdownGenerator (Markdown generation - Linux-compatible, no alternative)
+   - Yams (YAML encoding - no Foundation support)
+   - Files (Publish-managed - indirect dependency)
+
+3. **Linux Compatibility First**:
+   - GitLab CI Ubuntu builds are non-negotiable
+   - All dependencies MUST support Linux
+   - Evaluate Apple frameworks ONLY if cross-platform
+
+4. **Future Monitoring**:
+   - Watch for swift-markdown generation capabilities (if added)
+   - Monitor if Apple adds native YAML support to Foundation (unlikely)
+   - Consider Demark if Linux support added (via libxml2 backend)
 
 ---
 
@@ -469,6 +633,8 @@ swiftSettings: [
 - [ ] YoutubePublishPlugin and ReadingTimePublishPlugin forked to BrightDigit
 - [ ] Ink successfully replaced with swift-markdown (identical output)
 - [ ] ShellOut successfully replaced with swift-subprocess
+- [ ] Kanna and MarkdownGenerator retained (Linux-compatible, no viable replacement)
+- [ ] Yams and Files retained (documented rationale in Dependency Modernization Research)
 - [ ] Package.swift using local path dependencies for all subrepos
 - [ ] All tests passing on macOS and Ubuntu
 - [ ] Site generation produces byte-for-byte identical output
@@ -1190,20 +1356,22 @@ This PRD documents a comprehensive modernization of the BrightDigit static site 
 
 **Key Architectural Changes:**
 1. **Monorepo Consolidation** - 17 packages managed as git-subrepos (Publish ecosystem + BrightDigit + forked plugins)
-2. **Apple Framework Migration** - Ink → swift-markdown, ShellOut → swift-subprocess (SPM dependencies)
-3. **API Client Modernization** - SwagGen/Prch → Apple's swift-openapi-generator
-4. **HTML Generation** - Direct Plot calls → SwiftUI-like components
-5. **Concurrency** - Callbacks/semaphores → async/await/TaskGroup
-6. **Language** - Swift 5.8 → Swift 6 with strict concurrency across all 17 subrepos
-7. **Documentation** - Added mermaid.js support for diagrams in markdown
+2. **Apple Framework Migration** - Ink → swift-markdown, ShellOut → swift-subprocess (ONLY these two dependencies)
+3. **Retained Dependencies** - Kanna, MarkdownGenerator, Yams, Files (Linux compatibility + no alternatives)
+4. **API Client Modernization** - SwagGen/Prch → Apple's swift-openapi-generator
+5. **HTML Generation** - Direct Plot calls → SwiftUI-like components
+6. **Concurrency** - Callbacks/semaphores → async/await/TaskGroup
+7. **Language** - Swift 5.8 → Swift 6 with strict concurrency across all 17 subrepos
+8. **Documentation** - Added mermaid.js support for diagrams in markdown
 
 **Success Criteria:**
 - All 17 packages managed as git-subrepos in organized structure
-- swift-markdown and swift-subprocess integrated successfully
+- swift-markdown and swift-subprocess integrated successfully (ONLY 2 Apple framework replacements)
+- Kanna, MarkdownGenerator, Yams, Files retained (Linux compatibility + no alternatives)
 - Zero concurrency warnings across all 17 subrepos
 - Site output byte-for-byte identical to current production (excluding mermaid diagrams)
 - All 113 newsletters and podcast episodes render correctly
 - Mermaid diagrams render correctly via client-side mermaid.js
-- CI/CD pipeline passes on macOS and Ubuntu
+- CI/CD pipeline passes on macOS and Ubuntu (cross-platform compatibility validated)
 - Component-only HTML generation throughout codebase
 - All subrepo updates pushed to upstream repositories
