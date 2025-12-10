@@ -1,5 +1,5 @@
 ---
-title: Outgrowing your app: how to scale iOS app development
+title: Outgrowing your app - how to scale iOS app development
 date: 2022-05-09 00:00
 description: This guide is for you if you’re looking to scale iOS app development smoothly. It is designed to help those with a large team and a lot of legacy code.
 featuredImage: /media/articles/scale-ios-app/overgrown-green-staircase-in-the-forest.jpg
