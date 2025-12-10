@@ -14,11 +14,6 @@ In [Part 1](https://brightdigit.com/tutorials/rebuilding-mistkit-claude-code-par
   - [The Celestra and Bushel Examples](#the-celestra-and-bushel-examples)
   - [Integration Testing Through Real Applications](#integration-testing-through-real-applications)
 - [Lessons Learned](#lessons-learned)
-  - [What Claude Code Excelled At](#what-claude-code-excelled-at)
-  - [What Required Human Judgment](#what-required-human-judgment)
-  - [Common Mistakes & How to Avoid Them](#common-mistakes-how-to-avoid-them)
-  - [Context Management Strategies](#context-management-strategies)
-  - [Code Review Best Practices](#code-review-best-practices)
 - [Conclusion](#conclusion)
 
 <a id="real-world-proof"></a>
@@ -126,14 +121,9 @@ I was able to verify that the API design and critical pieces like Server-to-Serv
 
 There were few things which surprised as far as what Claude Code was good and not good at and where collaboration worked best. Claude excelled at tasks I thought would be hard (comprehensive test generation). It struggled with things I assumed would be easy (knowing which APIs exist). Through iteration, a collaboration pattern emerged. Here's what I learned.
 
-<a id="what-claude-code-excelled-at"></a>
-### What [Claude Code](https://claude.ai/claude-code) Excelled At
+### Unit Test Generation
 
-<!-- ORIGINAL [CONTENT] BLOCK - PRESERVED AS-IS -->
-#### ✅ Test Generation - Pattern Recognition at Scale
-
-Test generation is ideal for LLMs because it leverages **pattern recognition** from vast training data. Claude has seen thousands of Swift test files and can apply those structural patterns to new domains. The task requires **extrapolation from examples**, not novel reasoning—Claude recognizes "if testing STRING type, also test empty string, Unicode, and nil" because that pattern appears frequently in its training corpus.
-
+Test generation proved to be Claude Code's greatest strength, and it's ideal for LLMs because it leverages pattern recognition from vast training data. Claude has seen thousands of Swift test files and can apply those structural patterns to new domains. The task requires extrapolation from examples, not novel reasoning—Claude recognizes "if testing STRING type, also test empty string, Unicode, and nil" because that pattern appears frequently in its training corpus. A typical interaction looked like this:
 
 ```no-highlight
 Me: "Generate tests for all CustomFieldValue types"
@@ -149,26 +139,15 @@ Claude: *[Creates tests covering all 10 field types with edge cases]*
  I also added tests for the ASSET vs ASSETID quirk"
 ```
 
-It was able to produce 4161 tests across 47 files including edge cases I hadn't considered. The only quirk I found was that it favored XCTest over Swift Testing at first. This makes sense since there's probably more training material in XCTest. I've primarily switched to Swift Testing for my new work. If you are in the same place then be sure to make a note of that in your CLAUDE.md when you start your project.
+It was able to produce 4161 tests across 47 files including edge cases I hadn't considered. The only quirk I found was that it favored XCTest over Swift Testing at first. This makes sense since there's probably more training material in XCTest. I've primarily switched to Swift Testing for my new work. If you are in the same place then be sure to make a note of that in your CLAUDE.md when you start your project. 
 
-#### ✅ OpenAPI Schema Generation
+### Human Guided Architecture
 
-Claude Code had a deep understanding of how to build OpenAPI specs. This is not a strong suit for me. Luckily Apple's documentation was decent and able to guide Claude Code through the writing of the spec. The important thing is as I build out the spec and gradually test it via unit and integration tests which Claude can help with.
+While Claude excelled at pattern-based tasks, architectural decisions consistently required human judgment. At various points, Claude would steer the architecture in strange directions that didn't seem correct. The issue is that its training is best for smaller contexts and code examples, which isn't enough for holistic system design. Be confident in steering Claude in the right direction—this is where developer expertise matters most. The risk is drift if the pattern isn't perfectly specified, but for well-defined transformations, LLMs excel. Luckily, Claude does a fairly good job at refactoring when corrected, and its context window (200K tokens in Sonnet 4.5) allows it to see multiple files simultaneously and apply consistent transformations across the codebase.
 
+### Grabby AI
 
-<a id="what-required-human-judgment"></a>
-### What Required Human Judgment
-
-While Claude excelled at pattern-based tasks, architectural decisions consistently required human judgment. At various points, Claude would steer the architecture in strange directions that didn't seem correct. The issue is that its training is best for smaller contexts and code examples, which isn't enough for holistic system design. Be confident in steering Claude in the right direction—this is where developer expertise matters most. The risk is **drift** if the pattern isn't perfectly specified, but for well-defined transformations, LLMs excel. Luckily, Claude does a fairly good job at refactoring when corrected, and its **context window** (200K tokens in Sonnet 4.5) allows it to see multiple files simultaneously and apply consistent transformations across the codebase. 
-
-
-<a id="common-mistakes-how-to-avoid-them"></a>
-### Common Mistakes & How to Avoid Them
-
-<!-- ORIGINAL [CONTENT] BLOCK - PRESERVED AS-IS -->
-#### Mistake 1: Using Internal OpenAPI Types
-
-As we were implementing the CLI tools for Bushel and Celestra, it would often try to implement it using the direct OpenAPI code as opposed to the abstracted API we had built:
+These limitations manifested in predictable patterns throughout the project. As we were implementing the CLI tools for Bushel and Celestra, Claude would often try to implement features using the direct OpenAPI code as opposed to the abstracted API we had built:
 
 ```swift
 // WRONG: Internal type reference
@@ -178,40 +157,19 @@ let operation = Components.Schemas.RecordOperation(
 )
 ```
 
-Even going so far as to make those methods and properties `public`. Often referred to **power-grabbing**, even though I would tell it often not to use those APIs, it would go outside its designated boundary.
+Even going so far as to make those methods and properties `public`. Often referred to as power-grabbing, it would go outside its designated boundary, even though I would tell it often not to use those APIs. It's important to set those constraints clearly within the context window and review the code intentionally. All mistakes share common traits—Claude follows patterns from training data or generated code literally without questioning ergonomics or existence. The fix is always the same: explicit guidance in prompts and immediate verification of suggestions.
 
-It's important to set those constraints clearly within the context window and review the code intentionally.
+### Context Management
 
-#### Pattern Recognition
-
-All mistakes share common traits—Claude follows patterns from training data or generated code literally without questioning ergonomics or existence. The fix is always the same: **explicit guidance** in prompts and **immediate verification** of suggestions.
-
-<a id="context-management-strategies"></a>
-### Context Management Strategies
-
-<!-- ORIGINAL [CONTENT] BLOCK - PRESERVED AS-IS (CONDENSED) -->
-One of the biggest challenges working with Claude Code is managing its knowledge cutoffs and lack of familiarity with newer or niche APIs.
-
-In the world of Swift, Claude's training often predates Swift Testing or swift-openapi-generator specifics.
-
-This is where providing that documentation upfront in `.claude/docs/` helps. With tools like [Sosumi.ai](https://sosumi.ai) for Apple API exploration and [llm.codes](https://llm.codes) I can provide documentation like:
+Managing these challenges required strategic context management. One of the biggest challenges working with Claude Code is managing its knowledge cutoffs and lack of familiarity with newer or niche APIs. In the world of Swift, Claude's training often predates Swift Testing or swift-openapi-generator specifics. This is where providing documentation upfront in `.claude/docs/` helps. With tools like [Sosumi.ai](https://sosumi.ai) for Apple API exploration and [llm.codes](https://llm.codes) I can provide documentation like:
 - `testing-enablinganddisabling.md` (126KB) - Swift Testing patterns
 - `webservices.md` (289KB) - CloudKit Web Services REST API reference
 - `cloudkitjs.md` (188KB) - CloudKit operation patterns and data types
 - `swift-openapi-generator.md` (235KB) - Code generation configuration
 
-#### Key Insight: CLAUDE.md as a Knowledge Router
+At the root of this is the `CLAUDE.md` file which acts as a table of contents, telling Claude where to look for specific information. Claude doesn't need to memorize everything—it needs to know where to look.
 
-At the root of this is the `CLAUDE.md` file which acts as a table of contents, telling Claude where to look for specific information. Claude doesn't need to memorize everything—it needs to know **where to look**.
-
-<a id="code-review-best-practices"></a>
-### Code Review Best Practices
-
-Any code generated or assisted by AI needs a review. Combining automated AI reviews with human expertise is even better:
-
-- Add a linter to make sure the code generated is consistent and avoids anti-patterns
-- Look for future gotchas in your code
-- AI reviews aren't perfect and in the case of Swift may misunderstand or have outdated knowledge
+### Human + AI Code Reviews
 
 Whatever your AI writes should be understood by you fairly well. Don't skip this step.
 
