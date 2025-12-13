@@ -28,9 +28,8 @@ In [Part 1](https://brightdigit.com/tutorials/rebuilding-mistkit-claude-code-par
 <!-- Theme: Unit tests prove correctness, real apps prove usability -->
 <!-- Target: ~100 words -->
 
-Would MistKit's abstractions actually work when building an application? Could the type-safe API handle CloudKit's quirks at scale?
+Would MistKit's abstractions actually work when building an application? I had 2 real-world applications for MistKit to try it out:
 
-I had 2 real-world applications for MistKit to try it out:
 - an RSS aggregator syncing thousands of articles to CloudKit using [SyndiKit](https://github.com/brightdigit/SyndiKit) for an app codenamed **[Celestra](https://celestr.app)**
 - For **[Bushel](https://getbushel.app)**, I wanted to track restore images and various metadata for macOS and developer software versions. 
 
