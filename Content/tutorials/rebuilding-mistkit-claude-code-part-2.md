@@ -6,7 +6,7 @@ featuredImage: /media/tutorials/rebuilding-mistkit-claude-code/mistkit-rebuild-p
 subscriptionCTA: Want to learn more about AI-assisted Swift development and modern API design patterns? Sign up for our newsletter to get notified about the rest of the Modern Swift Patterns series and future tutorials on building production-ready Swift applications.
 ---
 
-In [Part 1](https://brightdigit.com/tutorials/rebuilding-mistkit-claude-code-part-1/), I showed how [Claude Code](https://claude.ai/claude-code) and [swift-openapi-generator](https://github.com/apple/swift-openapi-generator) transformed [CloudKit's REST documentation](https://developer.apple.com/documentation/cloudkitjs/cloudkit/cloudkit_web_services) into a type-safe Swift client. We had 161 unit tests which passed but would it actually work in the real world.
+In [Part 1](https://brightdigit.com/tutorials/rebuilding-mistkit-claude-code-part-1/), I showed how [Claude Code](https://claude.ai/claude-code) and [swift-openapi-generator](https://github.com/apple/swift-openapi-generator) transformed [CloudKit's REST documentation](https://developer.apple.com/documentation/cloudkitjs/cloudkit/cloudkit_web_services) into a type-safe Swift client. We had 161 unit tests which passed, but would it actually work in the real world?
 
 📚 **[View Documentation](https://swiftpackageindex.com/brightdigit/MistKit/documentation)** | 🐙 **[GitHub Repository](https://github.com/brightdigit/MistKit)**
 
@@ -24,10 +24,6 @@ In [Part 1](https://brightdigit.com/tutorials/rebuilding-mistkit-claude-code-par
 <a id="real-world-proof"></a>
 ## Real-World Proof
 
-<!-- CLAUDE-WRITTEN PROSE - REVIEW AND EDIT AS NEEDED -->
-<!-- Theme: Unit tests prove correctness, real apps prove usability -->
-<!-- Target: ~100 words -->
-
 Would MistKit's abstractions actually work when building an application? I had 2 real-world applications for MistKit to try it out:
 
 - an RSS aggregator syncing thousands of articles to CloudKit using [SyndiKit](https://github.com/brightdigit/SyndiKit) for an app codenamed **[Celestra](https://celestr.app)**
@@ -37,7 +33,6 @@ Would MistKit's abstractions actually work when building an application? I had 2
 <a id="the-celestra-and-bushel-examples"></a>
 ### The Celestra and Bushel Examples
 
-<!-- ORIGINAL [CONTENT] BLOCK - PRESERVED AS-IS -->
 Tests validate correctness, but real applications validate design. MistKit needed to prove it could power actual software and not just pass unit tests. Enter two real-world applications—**[the Celestra app](https://celestr.app)** (an RSS reader) and **[the Bushel app](https://getbushel.app)** (a macOS virtualization tool)—each powered by MistKit-driven CLI backends that populate CloudKit public databases. These CLI tools, running on scheduled cloud infrastructure, proved MistKit works in production.
 
 The architecture for both follows the same pattern:
@@ -117,7 +112,7 @@ Watching MistKit power real applications was satisfying—I could see the genera
 Building real applications exposed issues no unit test could catch. Here's what Celestra and Bushel revealed:
 
 - **Batch Operation Limits**: CloudKit enforces 200-operation-per-request limit (not documented clearly) therefore we added chunking logic.
-- **Boolean Field Handling**: CloudKit has no native boolean type but we wanted the developer to safely use Swift Boolean types so we created a safe and easy way use the standardized INT64 representation.
+- **Boolean Field Handling**: CloudKit has no native boolean type but we wanted the developer to safely use Swift Boolean types so we created a safe and easy way to use the standardized INT64 representation.
 
 I was able to verify that the API design and critical pieces like Server-to-Server authentication were working as intended. These real-world tests validated MistKit's foundation.
 
@@ -125,7 +120,7 @@ I was able to verify that the API design and critical pieces like Server-to-Serv
 <a id="lessons-learned"></a>
 ## Lessons Learned
 
-There were few things which surprised as far as what Claude Code was good and not good at and where [collaboration worked best](https://brightdigit.com/tutorials/syntaxkit-swift-code-generation/). Claude excelled at tasks I thought would be hard (comprehensive test generation). It struggled with things I assumed would be easy (knowing which APIs exist). Through iteration, a collaboration pattern emerged. Here's what I learned.
+There were few things which surprised me as far as what Claude Code was good and not good at and where [collaboration worked best](https://brightdigit.com/tutorials/syntaxkit-swift-code-generation/). Claude excelled at tasks I thought would be hard (comprehensive test generation). It struggled with things I assumed would be easy (knowing which APIs exist). Through iteration, a collaboration pattern emerged. Here's what I learned.
 
 ### Unit Test Generation
 
@@ -145,7 +140,7 @@ Claude: *[Creates tests covering all 10 field types with edge cases]*
  I also added tests for the ASSET vs ASSETID quirk"
 ```
 
-It was able to produce 4161 tests across 47 files including edge cases I hadn't considered. The only quirk I found was that it favored [XCTest](https://developer.apple.com/documentation/xctest) over [Swift Testing](https://developer.apple.com/documentation/testing) at first. This makes sense since there's probably more training material in XCTest. I've primarily switched to Swift Testing for my new work. If you are in the same place then be sure to make a note of that in your `CLAUDE.md` when you start your project. 
+It was able to produce 161 tests across 47 files including edge cases I hadn't considered. The only quirk I found was that it favored [XCTest](https://developer.apple.com/documentation/xctest) over [Swift Testing](https://developer.apple.com/documentation/testing) at first. This makes sense since there's probably more training material in XCTest. I've primarily switched to Swift Testing for my new work. If you are in the same place then be sure to make a note of that in your `CLAUDE.md` when you start your project. 
 
 ### Human Guided Architecture
 
