@@ -209,7 +209,7 @@ public extension Node where Context == HTML.BodyContext {
         .footer(
           .div(
             .class("address"),
-            .text("5859 W Saginaw #182 Lansing MI 48917")
+            .text("503 Mall Court #150 Lansing MI 48912")
           ),
           .div(
             .class("copyright"),
