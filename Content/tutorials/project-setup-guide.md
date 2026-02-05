@@ -67,7 +67,7 @@ This will overwrite our current .gitignore. I would also make a few other change
 2. `*.xcworkspace/*` - add this since we'll be using a tool to create our Xcode workspaces and projects.
 
 
-
+the next step is setting up some sort of tool for 
 2. Use Mise for development tools
 3. Linting Your Code
 4. Package Based Development
