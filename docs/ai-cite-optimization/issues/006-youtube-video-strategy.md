@@ -19,9 +19,10 @@ Create companion YouTube videos for top 5 "money articles" to increase AI mentio
 
 1. **Google owns YouTube** - Prioritized in AI Overview results
 2. **Automatic transcription** - Google transcribes all videos for LLM training
-3. **Crowd the SERP** - Video + Article = 2 chances to appear
-4. **Visual learning** - Demos stick better than text
-5. **Easy to produce** - Screencast + voiceover = done
+3. **Video transcripts often cited MORE than articles** - In some cases, video versions get cited instead of or more frequently than the written blog post
+4. **Crowd the SERP** - Video + Article = 2 chances to appear
+5. **Visual learning** - Demos stick better than text
+6. **Easy to produce** - Screencast + voiceover = done
 
 ---
 

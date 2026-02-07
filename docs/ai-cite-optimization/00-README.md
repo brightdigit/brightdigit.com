@@ -61,7 +61,7 @@ Based on Jesse Schoberg's MicroConf Europe 2025 presentation, here's what each e
 1. **60% success rate within 1 week** - DropInBlog customers saw AI mentions after simple on-page optimizations
 2. **Domain authority matters less** - DR 6 sites beating DR 50+ sites in AI mentions
 3. **AI is "dumber" than Google** - Needs structured, spoon-fed data
-4. **YouTube is critical** - Google owns YouTube, transcribes all videos for AI Overview
+4. **YouTube is critical** - Google owns YouTube, transcribes all videos for AI Overview; video transcripts often cited more than written articles
 5. **Quick wins are real** - Simple changes like answer-first structure work immediately
 
 ---
