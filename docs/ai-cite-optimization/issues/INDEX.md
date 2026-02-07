@@ -13,7 +13,7 @@ All developer and research todo items in GitHub issue format.
 
 These must be completed first to unblock everything else:
 
-### [001 - Implement FAQ Schema Markup](./001-implement-faq-schema.md) ⚠️ **IN PROGRESS**
+### [001 - Implement FAQ Schema Markup](./001-implement-faq-schema.md) ([#19](https://github.com/brightdigit/brightdigit.com/issues/19)) ⚠️ **IN PROGRESS**
 **Effort:** 4-6 hours | **Priority:** P0 | **Blocks:** Everything
 
 Implement JSON-LD FAQ schema generation in PiHTMLFactory. Critical blocker for Phase 1.
@@ -29,8 +29,8 @@ Implement JSON-LD FAQ schema generation in PiHTMLFactory. Critical blocker for P
 
 ## High Priority (P1) - Weeks 1-3
 
-### [002 - Implement HowTo Schema Markup](./002-implement-howto-schema.md)
-**Effort:** 3-4 hours | **Priority:** P1 | **Depends on:** #001
+### [002 - Implement HowTo Schema Markup](./002-implement-howto-schema.md) ([#20](https://github.com/brightdigit/brightdigit.com/issues/20))
+**Effort:** 3-4 hours | **Priority:** P1 | **Depends on:** #19
 
 Implement JSON-LD HowTo schema for tutorial articles with step-by-step instructions.
 
@@ -38,8 +38,8 @@ Implement JSON-LD HowTo schema for tutorial articles with step-by-step instructi
 
 ---
 
-### [003 - Optimize Mise Setup Guide](./003-optimize-mise-setup-guide.md) ⭐ **QUICK WIN**
-**Effort:** 2 hours | **Priority:** P1 | **Depends on:** #002
+### [003 - Optimize Mise Setup Guide](./003-optimize-mise-setup-guide.md) ([#21](https://github.com/brightdigit/brightdigit.com/issues/21)) ⭐ **QUICK WIN**
+**Effort:** 2 hours | **Priority:** P1 | **Depends on:** #20
 
 Apply remaining AI-CITE optimizations. Already 60% complete!
 
@@ -52,7 +52,7 @@ Apply remaining AI-CITE optimizations. Already 60% complete!
 
 ---
 
-### [004 - Optimize Best Backend Article](./004-optimize-best-backend-article.md)
+### [004 - Optimize Best Backend Article](./004-optimize-best-backend-article.md) ([#22](https://github.com/brightdigit/brightdigit.com/issues/22))
 **Effort:** 3 hours | **Priority:** P1
 
 High-value article targeting "What backend should I use for my iOS app"
@@ -68,7 +68,7 @@ High-value article targeting "What backend should I use for my iOS app"
 
 ---
 
-### [005 - Test Baseline & Validate](./005-test-baseline-validate.md)
+### [005 - Test Baseline & Validate](./005-test-baseline-validate.md) ([#23](https://github.com/brightdigit/brightdigit.com/issues/23))
 **Effort:** 2 hours + 1 hr/week × 4 | **Priority:** P1
 
 Establish baseline, validate schema, measure weekly progress toward 60% success rate.
@@ -82,7 +82,7 @@ Establish baseline, validate schema, measure weekly progress toward 60% success 
 
 ## Content Optimization (P1) - Week 2-3
 
-### 008 - Optimize iOS CI/CD Article
+### [008 - Optimize iOS CI/CD Article](./008-optimize-ios-cicd-article.md) ([#26](https://github.com/brightdigit/brightdigit.com/issues/26))
 **Article:** `ios-continuous-integration-avoid-merge-hell.md`
 **Effort:** 2 hours | **Priority:** P1
 
@@ -93,7 +93,7 @@ Establish baseline, validate schema, measure weekly progress toward 60% success 
 
 ---
 
-### 009 - Optimize iOS Architecture Article
+### [009 - Optimize iOS Architecture Article](./009-optimize-ios-architecture-article.md) ([#27](https://github.com/brightdigit/brightdigit.com/issues/27))
 **Article:** `ios-software-architecture.md`
 **Effort:** 3 hours | **Priority:** P1
 
@@ -104,7 +104,7 @@ Establish baseline, validate schema, measure weekly progress toward 60% success 
 
 ---
 
-### 010 - Optimize Remaining Priority Articles (Batch)
+### [010 - Optimize Remaining Priority Articles (Batch)](./010-optimize-remaining-articles.md) ([#28](https://github.com/brightdigit/brightdigit.com/issues/28))
 **Articles:** mise-implementation-guide, swift-dependency-management, how-to-become-iOS-developer, microapps-architecture, vapor-review
 **Effort:** 10 hours total | **Priority:** P1
 
@@ -114,7 +114,7 @@ Apply AI-CITE framework to 5 remaining priority articles.
 
 ## Medium Priority (P2) - Month 2+
 
-### [006 - YouTube Video Strategy](./006-youtube-video-strategy.md)
+### [006 - YouTube Video Strategy](./006-youtube-video-strategy.md) ([#24](https://github.com/brightdigit/brightdigit.com/issues/24))
 **Effort:** 40-60 hours total | **Priority:** P2
 
 Create 5 companion YouTube videos for top articles.
@@ -130,7 +130,7 @@ Create 5 companion YouTube videos for top articles.
 
 ---
 
-### [007 - Create Unique Frameworks](./007-create-unique-frameworks.md)
+### [007 - Create Unique Frameworks](./007-create-unique-frameworks.md) ([#25](https://github.com/brightdigit/brightdigit.com/issues/25))
 **Effort:** 8-12 hours | **Priority:** P2
 
 Create branded BrightDigit methodologies (AI-CITE "E" - Exclusive POV).
@@ -145,18 +145,18 @@ Create branded BrightDigit methodologies (AI-CITE "E" - Exclusive POV).
 
 ## Issue Status Summary
 
-| # | Title | Effort | Priority | Status | Sprint |
-|---|-------|--------|----------|--------|--------|
-| 001 | FAQ Schema | 4-6h | P0 | In Progress | Week 1 |
-| 002 | HowTo Schema | 3-4h | P1 | Not Started | Week 1 |
-| 003 | Mise Setup Guide | 2h | P1 | Not Started | Week 1 |
-| 004 | Best Backend | 3h | P1 | Not Started | Week 2 |
-| 005 | Test & Validate | 2h+4h | P1 | Not Started | Weeks 1-4 |
-| 008 | iOS CI/CD | 2h | P1 | Not Started | Week 2 |
-| 009 | iOS Architecture | 3h | P1 | Not Started | Week 2 |
-| 010 | Remaining Articles | 10h | P1 | Not Started | Week 3 |
-| 006 | YouTube Videos | 40-60h | P2 | Not Started | Month 2 |
-| 007 | Unique Frameworks | 8-12h | P2 | Not Started | Month 2-3 |
+| # | GitHub | Title | Effort | Priority | Status | Sprint |
+|---|--------|-------|--------|----------|--------|--------|
+| 001 | [#19](https://github.com/brightdigit/brightdigit.com/issues/19) | FAQ Schema | 4-6h | P0 | In Progress | Week 1 |
+| 002 | [#20](https://github.com/brightdigit/brightdigit.com/issues/20) | HowTo Schema | 3-4h | P1 | Not Started | Week 1 |
+| 003 | [#21](https://github.com/brightdigit/brightdigit.com/issues/21) | Mise Setup Guide | 2h | P1 | Not Started | Week 1 |
+| 004 | [#22](https://github.com/brightdigit/brightdigit.com/issues/22) | Best Backend | 3h | P1 | Not Started | Week 2 |
+| 005 | [#23](https://github.com/brightdigit/brightdigit.com/issues/23) | Test & Validate | 2h+4h | P1 | Not Started | Weeks 1-4 |
+| 008 | [#26](https://github.com/brightdigit/brightdigit.com/issues/26) | iOS CI/CD | 2h | P1 | Not Started | Week 2 |
+| 009 | [#27](https://github.com/brightdigit/brightdigit.com/issues/27) | iOS Architecture | 3h | P1 | Not Started | Week 2 |
+| 010 | [#28](https://github.com/brightdigit/brightdigit.com/issues/28) | Remaining Articles | 10h | P1 | Not Started | Week 3 |
+| 006 | [#24](https://github.com/brightdigit/brightdigit.com/issues/24) | YouTube Videos | 40-60h | P2 | Not Started | Month 2 |
+| 007 | [#25](https://github.com/brightdigit/brightdigit.com/issues/25) | Unique Frameworks | 8-12h | P2 | Not Started | Month 2-3 |
 
 **Total Phase 1 Effort:** 29-35 hours
 **Total Phase 2 Effort:** 48-72 hours
@@ -168,7 +168,7 @@ Create branded BrightDigit methodologies (AI-CITE "E" - Exclusive POV).
 ### Sprint 1 (This Week) - Quick Wins
 **Goal:** Get 3 articles to 100% AI-CITE score
 
-**Issues:** #001, #002, #003, #005 (baseline)
+**Issues:** [#19](https://github.com/brightdigit/brightdigit.com/issues/19), [#20](https://github.com/brightdigit/brightdigit.com/issues/20), [#21](https://github.com/brightdigit/brightdigit.com/issues/21), [#23](https://github.com/brightdigit/brightdigit.com/issues/23) (baseline)
 **Effort:** 11-14 hours
 **Outcome:** 3 fully optimized articles with schema
 
@@ -177,7 +177,7 @@ Create branded BrightDigit methodologies (AI-CITE "E" - Exclusive POV).
 ### Sprint 2 (Next Week) - Scale Up
 **Goal:** Optimize 4 more articles (7 total)
 
-**Issues:** #004, #008, #009
+**Issues:** [#22](https://github.com/brightdigit/brightdigit.com/issues/22), [#26](https://github.com/brightdigit/brightdigit.com/issues/26), [#27](https://github.com/brightdigit/brightdigit.com/issues/27)
 **Effort:** 8 hours
 **Outcome:** 7 articles optimized (70% of priority list)
 
@@ -186,7 +186,7 @@ Create branded BrightDigit methodologies (AI-CITE "E" - Exclusive POV).
 ### Sprint 3 (Week 3) - Complete Phase 1
 **Goal:** Finish all 10 priority articles
 
-**Issues:** #010
+**Issues:** [#28](https://github.com/brightdigit/brightdigit.com/issues/28)
 **Effort:** 10 hours
 **Outcome:** 100% of priority articles optimized
 
@@ -195,7 +195,7 @@ Create branded BrightDigit methodologies (AI-CITE "E" - Exclusive POV).
 ### Sprint 4+ (Month 2) - YouTube & Frameworks
 **Goal:** Create video content and unique frameworks
 
-**Issues:** #006, #007
+**Issues:** [#24](https://github.com/brightdigit/brightdigit.com/issues/24), [#25](https://github.com/brightdigit/brightdigit.com/issues/25)
 **Effort:** 48-72 hours
 **Outcome:** 5 videos, 1-2 unique frameworks
 
