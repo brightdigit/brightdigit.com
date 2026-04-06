@@ -40,7 +40,11 @@ This three-phase approach ensures dependency stability before tackling the Swift
 
 ### Timeline Expectations
 
-**Phase 1: Monorepo Consolidation** (3-4 weeks)
+**Pre-Migration Cleanup** (prerequisite)
+- Remove `dev-server.sh` (hardcoded local path — issue #35)
+- Remove or archive `Import/Wordpress/` XML files (issue #34)
+
+**Phase 1: Monorepo Consolidation** (3-4 weeks) — issue #36
 - Set up git-subrepo for 17 external packages (Publish ecosystem + BrightDigit + forked plugins)
 - Organize packages into Packages/Publish/, Packages/BrightDigit/, Packages/Plugins/ directories
 - Fork YoutubePublishPlugin and ReadingTimePublishPlugin to BrightDigit organization
@@ -49,14 +53,14 @@ This three-phase approach ensures dependency stability before tackling the Swift
 - Update Package.swift to reference local subrepos
 - Validate site generation produces identical output
 
-**Phase 2: OpenAPI Generator Migration** (4-6 weeks)
+**Phase 2: OpenAPI Generator Migration** (4-6 weeks) — issue #37
 - Migrate SwiftTube from SwagGen to swift-openapi-generator
 - Migrate Spinetail from SwagGen to swift-openapi-generator
 - Replace Prch framework with swift-openapi-runtime + swift-openapi-urlsession
 - Update ContributeYouTube and ContributeMailchimp client code
 - Comprehensive API integration testing
 
-**Phase 3: Swift 6 Migration + Mermaid Support** (5-7 weeks)
+**Phase 3: Swift 6 Migration + Mermaid Support** (5-7 weeks) — issue #38
 - Update to Swift 6 language mode across all 17 subrepos
 - Fix concurrency violations (Testimonial.swift, async/await patterns)
 - Add Sendable conformances
@@ -64,17 +68,40 @@ This three-phase approach ensures dependency stability before tackling the Swift
 - Expand test coverage
 - Performance benchmarking and validation
 
-**Phase 4: Publishing Infrastructure** (3-4 weeks, follows Phase 3)
+**Phase 4: Publishing Infrastructure** (3-4 weeks, follows Phase 3) — issues #30, #31, #33
 - Build Buttondown newsletter client using swift-openapi-generator (official OpenAPI 3.0.2 spec)
 - Build Buffer social media GraphQL client (handwritten Codable client, ClientTransport)
 - Create PublishKit orchestrator with protocol-based SubscriberListProvider + NewsletterSender architecture
 - All modules run on Linux via AsyncHTTPClientTransport; no audience data stored in repo
 
-**Total Estimated Duration:** 15-21 weeks
+**Video Podcasts** (scope TBD, parallel with or after Phase 4) — issue #32
+- Add video podcast support to the BrightDigit podcast section
+
+**Total Estimated Duration:** 15-21 weeks (plus cleanup prerequisites)
 
 ---
 
 ## Technical Requirements
+
+### Pre-Migration Repository Cleanup
+
+These issues should be resolved before Phase 1 begins to avoid carrying forward technical debt.
+
+#### Remove dev-server.sh (issue #35)
+
+`dev-server.sh` hardcodes a personal system path (`/Users/leo/.nvm/versions/node/v16.14.0/bin/npm`) making it non-portable and exposing local environment details.
+
+**Action:** Delete `dev-server.sh` and add it to `.gitignore`. If a watch script remains useful, replace with a portable version using `$(which npm)` or relying on `$PATH`.
+
+#### Remove or Archive WordPress Import Files (issue #34)
+
+`Import/Wordpress/articles.xml` and `Import/Wordpress/tutorials.xml` are ~20k-line WordPress export files used for a one-time content migration. They serve no ongoing purpose and contain contributor email addresses (`admin@brightdigit.com`, `patrick@hyperverses.com`).
+
+**Options:**
+- **Remove entirely** — delete the files and add `Import/` to `.gitignore` (preferred if no future WordPress import is planned)
+- **Archive as test fixtures** — only if `ContributeWordPress` v2 is planned and these files are needed for testing
+
+---
 
 ### Phase 1 Requirements: Monorepo Consolidation
 
@@ -1088,7 +1115,21 @@ mutation CreatePost {
 
 ---
 
-### Phase 2: Code Modernization (async/await, error handling)
+### Video Podcasts (issue #32)
+
+**Scope:** TBD — add video podcast support to the BrightDigit podcast section. Likely builds on the YouTube integration established in Phase 2 and the component system from Phase 3.
+
+**Candidate work items (to be defined):**
+- Support video-first podcast episodes (YouTube video as primary media)
+- Display embedded video player in episode pages alongside audio player
+- Update podcast RSS feed generation to include video enclosures where applicable
+- Update `ContributeYouTube` / `BrightDigitPodcast` to distinguish video vs audio episodes
+
+**Dependencies:** Phase 2 (#37) for YouTube client, Phase 3 (#38) for component system.
+
+---
+
+### Appendix: Early Concurrency Analysis (Pre-Phase 2)
 
 **Critical Files for Modernization:**
 
@@ -1127,7 +1168,7 @@ Replace with lazy static closures or throwing getters.
 - [ ] Force-try statements replaced with proper error handling
 - [ ] ArgumentParser commands use async run() methods
 
-### Phase 3: Strict Concurrency Compliance
+### Appendix: Early Strict Concurrency Analysis (Pre-Phase 3)
 
 **Critical Issue 1: Mutable Global State**
 
@@ -1171,7 +1212,7 @@ Types needing explicit Sendable conformance:
 - [ ] Zero concurrency warnings in Xcode
 - [ ] Swift 6 strict mode enabled and passing
 
-### Phase 4: Testing and Validation
+### Appendix: Early Testing and Validation Analysis (Pre-Phase 3)
 
 **Current Test Coverage:** ~5% (1 test file: `StringTests.swift`)
 
