@@ -26,11 +26,6 @@ swift run brightdigitwg --mode drafts
 
 ### Content Development
 ```bash
-# Watch for content changes and rebuild (development server)
-# Note: Requires NPM_PATH environment variable for dev-server.sh
-# Example: NPM_PATH=/path/to/npm ./dev-server.sh
-./dev-server.sh
-
 # Import content from external sources
 swift run brightdigitwg import mailchimp --mailchimp-api-key=<key> --mailchimp-list-id=<id> --export-markdown-directory=Content/newsletters
 swift run brightdigitwg import podcast --youtube-api-key=<key> --export-markdown-directory Content/episodes
@@ -96,7 +91,7 @@ swift run brightdigitwg publish --mode drafts
 - Publish Plugins: SplashPublishPlugin, YoutubePublishPlugin, ReadingTimePublishPlugin, TransistorPublishPlugin, NPMPublishPlugin
 
 ### Deployment Pipeline
-The project uses GitLab CI (.gitlab-ci.yml) with six stages and multi-platform support:
+The project uses GitLab CI (.gitlab-ci.yml) with five stages and multi-platform support:
 
 1. **automate-content** - Scheduled job that imports content from Mailchimp and YouTube
    - Commits new content automatically with timestamp
@@ -114,6 +109,8 @@ The project uses GitLab CI (.gitlab-ci.yml) with six stages and multi-platform s
    - Production deployment on main branch (`--mode production`, `--prod` flag)
    - Draft deployment on other branches (`--mode drafts`, preview URLs)
    - Requires `NETLIFY_AUTH_TOKEN` and `NETLIFY_PRODUCTION_SITE_ID`
+
+5. **test** - Code quality analysis via GitLab Code Quality template (`code_quality` job)
 
 ### Testing and Build Environment
 - Tests are located in `Tests/BrightDigitSiteTests/`
