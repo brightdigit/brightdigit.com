@@ -1405,7 +1405,7 @@ netlify deploy --site $NETLIFY_PRODUCTION_SITE_ID --prod
 | Memory peak | TBD | ≤120% baseline |
 
 ### Quality Metrics
-- Test coverage: >50% (from current ~5%)
+- Test coverage: >25% (from current ~5%)
 - Concurrency test coverage: 100% of concurrent code paths
 - Zero force-try statements (except truly infallible operations)
 
@@ -1416,55 +1416,37 @@ netlify deploy --site $NETLIFY_PRODUCTION_SITE_ID --prod
 ### Technical Decisions Requiring Investigation
 
 **1. SwiftTube Package Strategy**
-- Question: Fork SwiftTube or wait for upstream fix?
-- Investigation Needed: Time estimate to fix, upstream responsiveness
-- Decision Maker: Technical Lead
-- Deadline: End of Phase 1
+- **Decision: SwiftTube is owned by BrightDigit — create a new branch for Swift 6 migration (no fork needed)**
+- No upstream wait required; we control the repo and will push changes directly via `git subrepo push`
 
 **2. Publish Framework Version**
 - Question: Stay on 0.9.0 or upgrade to latest main?
-- Recommendation: Stay on 0.9.0 (Swift 6 compatible, proven stable)
-- Decision Maker: Technical Lead
-- Deadline: Phase 1 Week 1
+- **Investigation Needed: Document the actual differences between 0.9.0 and latest main before deciding**
+- Recommendation: Stay on 0.9.0 pending changelog review (Swift 6 compatible, proven stable)
 
 **3. MarkdownGenerator Replacement**
-- Question: Keep MarkdownGenerator or migrate to alternative?
-- Options: Keep if compatible, migrate to Swift Markdown (Apple), or Ink
-- Investigation Needed: Swift 6 compatibility test results
-- Decision Maker: Technical Lead
-- Deadline: Phase 1 Week 2
+- **Decision: Migrate to [swiftlang/swift-markdown](https://github.com/swiftlang/swift-markdown) (Apple's official parser)**
+- Ink is no longer an option; swift-markdown is the designated replacement per Phase 1 plan
 
 **4. macOS Version Requirement**
-- Question: Require macOS 13+ or try to support macOS 12?
-- Context: Swift 6 officially requires macOS 13+
-- Investigation Needed: GitLab runner OS version, developer machine impact
-- Decision Maker: Technical Lead + DevOps
-- Deadline: Phase 1 Week 1
+- **Decision: Require macOS 13+ — drop macOS 12 support (don't care)**
+- Swift 6 officially requires macOS 13+; no investigation needed
 
 **5. Testing Strategy**
-- Question: What level of test coverage is sufficient?
-- Current: ~5% | Proposed: >50% overall, 100% concurrency paths
-- Decision Maker: Technical Lead
-- Deadline: Phase 2 Week 1
+- **Decision: Target 25% test coverage overall**
+- Current: ~5% | Target: 25% (revised down from original >50% proposal)
 
 **6. Deployment Strategy**
-- Question: Big-bang migration or gradual module-by-module?
-- Recommendation: Big-bang via feature branch (modules too interdependent)
-- Decision Maker: Technical Lead
-- Deadline: Phase 1 Week 1
+- **Decision: Parallel module-by-module work — a lot of work can be done simultaneously**
+- Modules can be migrated in parallel across subrepos; not strictly big-bang
 
 **7. Content Validation**
-- Question: How to validate 113+ newsletters and episodes render correctly?
-- Options: Manual spot-checking, automated HTML diffing, visual regression testing
-- Investigation Needed: Tools for HTML diffing at scale
-- Decision Maker: Technical Lead + QA
-- Deadline: Phase 3 Week 1
+- **Decision: Use automated HTML diffing to validate 113+ newsletters and episodes**
+- Manual spot-checking and visual regression testing are not required
 
 **8. Contribute Package Ownership**
-- Question: Who will release Contribute 1.0.0?
-- Actions Needed: Identify maintainer, agree on release criteria
-- Decision Maker: Package Maintainer
-- Deadline: Phase 1 Week 1
+- **Decision: BrightDigit is the maintainer — we will release Contribute 1.0.0**
+- No external coordination needed; release criteria to be defined internally
 
 **9. Publishing Protocol Shapes**
 - Question: What are the exact method signatures for `SubscriberListProvider` and `NewsletterSender`?
