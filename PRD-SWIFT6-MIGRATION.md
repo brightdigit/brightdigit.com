@@ -20,6 +20,7 @@ This three-phase approach ensures dependency stability before tackling the Swift
 4. **Swift 6 Compliance** - Achieve strict concurrency checking and eliminate data race violations
 5. **Enhanced Features** - Add mermaid diagram support for documentation
 6. **Maintain Compatibility** - Zero functional regressions, byte-for-byte identical site output
+7. **Publishing Infrastructure** - Build Buttondown (newsletter) and Buffer (social media) integrations using the swift-openapi-generator toolchain established in Phase 2
 
 **Success Criteria:**
 - All 17 packages managed as git-subrepos in Packages/ directory (organized by source/purpose)
@@ -35,6 +36,7 @@ This three-phase approach ensures dependency stability before tackling the Swift
 - All tests pass on macOS and Ubuntu
 - Generated site is byte-for-byte identical to current production
 - GitLab CI/CD pipeline executes successfully
+- Publishing tool (ButtondownKit + BufferKit) compiles with Swift 6 strict concurrency, runs on Linux, and successfully sends newsletter drafts and social posts
 
 ### Timeline Expectations
 
@@ -62,7 +64,13 @@ This three-phase approach ensures dependency stability before tackling the Swift
 - Expand test coverage
 - Performance benchmarking and validation
 
-**Total Estimated Duration:** 12-17 weeks
+**Phase 4: Publishing Infrastructure** (3-4 weeks, follows Phase 3)
+- Build Buttondown newsletter client using swift-openapi-generator (official OpenAPI 3.0.2 spec)
+- Build Buffer social media GraphQL client (handwritten Codable client, ClientTransport)
+- Create PublishKit orchestrator with protocol-based SubscriberListProvider + NewsletterSender architecture
+- All modules run on Linux via AsyncHTTPClientTransport; no audience data stored in repo
+
+**Total Estimated Duration:** 15-21 weeks
 
 ---
 
@@ -445,6 +453,8 @@ This section documents research findings for replacing third-party dependencies 
 ### Phase 2 Requirements: OpenAPI Generator Migration
 
 **Objective:** Replace SwagGen-based API clients with Apple's swift-openapi-generator
+
+> **Note:** The swift-openapi-generator toolchain and `ClientTransport` pattern established in this phase are also used in Phase 4 to generate the Buttondown newsletter client (ButtondownKit) and wrap the Buffer GraphQL client (BufferKit).
 
 **Current Architecture:**
 - SwagGen generates enum-based operations + Prch framework integration
@@ -953,6 +963,131 @@ swiftSettings: [
 
 ---
 
+### Phase 4: Publishing Infrastructure (3-4 weeks)
+
+**Objective:** Build an open source Swift package that integrates into the BrightDigit.com publishing pipeline to deliver content across newsletter (Buttondown) and social media (Buffer) channels — without storing any audience data in the repository.
+
+This phase depends on Phase 2 (swift-openapi-generator toolchain) and Phase 3 (Swift 6 compliance).
+
+#### Constraints
+
+- **Open source repo:** No subscriber emails or audience data in the repo. All credentials are environment variables. All audience list management is delegated to the platform.
+- **Linux compatibility:** All HTTP clients use `ClientTransport` from `swift-openapi-runtime`, allowing the transport to be swapped per platform:
+  ```swift
+  // Linux (CI/CD, server-side Swift):
+  let transport: any ClientTransport = AsyncHTTPClientTransport()
+  // Apple platforms:
+  let transport: any ClientTransport = URLSessionTransport()
+  ```
+- **General-purpose:** Multi-channel publishing. Social posts go to Buffer, which fans out to X/Twitter, LinkedIn, Mastodon, and others from a single API call.
+
+#### New Source Modules
+
+These are added to `Sources/` in the monorepo (not git-subrepos — they are new code local to this project):
+
+```
+Sources/
+  PublishKit/       # Core orchestrator + protocol definitions
+  ButtondownKit/    # Newsletter: Buttondown REST client (swift-openapi-generator)
+  MailgunKit/       # Newsletter: sending-only transport (no list management)
+  BufferKit/        # Social: handwritten GraphQL client (ClientTransport, Codable)
+```
+
+#### Newsletter Transport: Buttondown
+
+**Protocol architecture** (exact shapes TBD during implementation):
+
+- `SubscriberListProvider` — fetching/managing the list of recipients
+- `NewsletterSender` — delivering a composed issue to recipients
+
+This split allows Mailgun (sender-only) to be composed with a separate list provider without a full platform swap.
+
+**Why Buttondown:** Newsletter-native API. Sending an issue is two REST calls:
+```
+POST /emails              → create draft (body is markdown string)
+POST /emails/{id}/send-draft  → send to all subscribers
+```
+Subscriber management, unsubscribe links, bounce handling, and CAN-SPAM compliance are all managed by Buttondown. **Cost:** $9/month.
+
+**Code generation:** swift-openapi-generator from the official Buttondown OpenAPI 3.0.2 spec at [github.com/buttondown/openapi](https://github.com/buttondown/openapi).
+
+**Why not Mailgun as a complete solution:** Mailgun is a transactional email API — it does not manage subscribers. Owning the subscriber list means storing ~400 email addresses, which has no safe home in an open source repo. Mailgun remains a valid `NewsletterSender` implementation when paired with a separate list provider.
+
+#### Social Transport: Buffer
+
+Buffer publishes to X/Twitter, LinkedIn, Mastodon, Instagram, Threads, Bluesky, and more from a single GraphQL mutation — no per-platform OAuth or rate-limit handling required.
+
+**Implementation:** `BufferTransport` wraps a `ClientTransport` instance. Encodes the GraphQL mutation as `{"query": "...", "variables": {...}}` and decodes the response with `Codable`. No Apollo, no code generation dependency — fully Linux-compatible.
+
+```graphql
+mutation CreatePost {
+  createPost(input: {
+    text: "...",
+    channelId: "...",
+    schedulingType: automatic,
+    mode: shareNow        # or addToQueue for scheduling
+  }) {
+    ... on PostActionSuccess { post { id } }
+    ... on MutationError { message }
+  }
+}
+```
+
+#### Credential Model
+
+| Variable | Used By | Never Stored In |
+|---|---|---|
+| `BUTTONDOWN_API_KEY` | ButtondownKit | Repo, subscriber list |
+| `BUFFER_API_TOKEN` | BufferKit | Repo, audience data |
+
+#### Week 1-2: Core Protocol Design + ButtondownKit
+
+1. Define `SubscriberListProvider` and `NewsletterSender` protocol shapes in PublishKit
+2. Run swift-openapi-generator against Buttondown's OpenAPI 3.0.2 spec
+3. Implement `ButtondownTransport` conforming to both protocols
+4. Wire up `ClientTransport` (AsyncHTTPClientTransport on Linux, URLSessionTransport on Apple)
+5. Test: create draft, send draft, verify delivery
+
+#### Week 3: BufferKit + MailgunKit
+
+6. Implement `BufferTransport` — plain HTTP POST to GraphQL endpoint
+7. Encode mutation as JSON body; decode response with Codable
+8. Implement `MailgunTransport` (sender-only; list provider injected separately)
+9. Test: publish a social post through Buffer; test Mailgun send path in isolation
+
+#### Week 4: PublishKit Integration + Swift 6 Compliance
+
+10. Implement `Publisher` orchestrator in PublishKit
+11. Integrate with BrightDigit.com publishing pipeline (Publish plugin entry point or CLI subcommand)
+12. Ensure all modules pass Swift 6 strict concurrency checks
+13. Validate Linux builds in CI (Ubuntu, AsyncHTTPClientTransport)
+14. End-to-end test: publish a real newsletter draft and a real social post
+
+#### Decision Summary
+
+| Decision | Choice | Reason |
+|---|---|---|
+| Newsletter platform | Buttondown | Open source constraint eliminates subscriber ownership; REST + official OpenAPI spec; markdown-native |
+| Social platform | Buffer | Single API for all networks; GraphQL early access available; no per-platform integration |
+| Newsletter architecture | Split `SubscriberListProvider` + `NewsletterSender` | Mailgun = sender only; separation allows composition with any list provider |
+| Newsletter code gen | swift-openapi-generator | Official OpenAPI 3.0.2 spec from Buttondown |
+| Social code gen | None | Buffer API is GraphQL; handwritten Codable client requires no code gen dependency |
+| HTTP transport abstraction | `ClientTransport` (swift-openapi-runtime) | Swap `AsyncHTTPClientTransport` (Linux) / `URLSessionTransport` (Apple) — applies to all clients |
+| Subscriber storage | None (Buttondown-managed) | Cannot store audience data in open source repo |
+| Integration target | BrightDigit.com SSG (Publish, migration pending) | Tool is a publishing pipeline plugin, not a standalone CLI |
+
+**Deliverables:**
+- [ ] PublishKit protocols defined (`SubscriberListProvider`, `NewsletterSender`)
+- [ ] ButtondownKit generated from official OpenAPI 3.0.2 spec
+- [ ] BufferKit handwritten GraphQL client, Linux-compatible
+- [ ] MailgunKit sender-only transport
+- [ ] All modules Swift 6 strict concurrency compliant
+- [ ] All modules build on Linux (Ubuntu) via AsyncHTTPClientTransport
+- [ ] Integration with BrightDigit.com publishing pipeline
+- [ ] Credentials sourced from environment variables only
+
+---
+
 ### Phase 2: Code Modernization (async/await, error handling)
 
 **Critical Files for Modernization:**
@@ -1290,6 +1425,27 @@ netlify deploy --site $NETLIFY_PRODUCTION_SITE_ID --prod
 - Decision Maker: Package Maintainer
 - Deadline: Phase 1 Week 1
 
+**9. Publishing Protocol Shapes**
+- Question: What are the exact method signatures for `SubscriberListProvider` and `NewsletterSender`?
+- Context: PRD documents architectural intent; final API TBD during Phase 4 implementation
+- Investigation Needed: Buttondown API capabilities, composability with Mailgun
+- Decision Maker: Technical Lead
+- Deadline: Phase 4 Week 1
+
+**10. Buffer GraphQL Schema Stability**
+- Question: Is the Buffer GraphQL API (early access) stable enough for production use?
+- Context: Buffer's GraphQL API is labeled "early access" — schema may change
+- Investigation Needed: Buffer API changelog, breaking-change policy, fallback to REST v1
+- Decision Maker: Technical Lead
+- Deadline: Phase 4 Week 1
+
+**11. Publishing Pipeline Integration Point**
+- Question: Does the publishing tool integrate as a Publish plugin, a CLI subcommand, or a standalone binary?
+- Options: Publish plugin (inline with site generation), new `publish` subcommand in BrightDigitArgs, or separate tool
+- Context: The SSG itself is being migrated (brightdigit/brightdigit.com#31); integration point may shift
+- Decision Maker: Technical Lead
+- Deadline: Phase 4 Week 1
+
 ---
 
 ## Critical Files for Implementation
@@ -1352,7 +1508,15 @@ This PRD documents a comprehensive modernization of the BrightDigit static site 
 - Expand test coverage from ~5% to >50%
 - **Deliverable:** Full Swift 6 compliance with component-only architecture and mermaid support
 
-**Total Duration:** 12-17 weeks
+### Phase 4: Publishing Infrastructure (3-4 weeks)
+- Build Buttondown newsletter client (ButtondownKit) using swift-openapi-generator
+- Build Buffer social media client (BufferKit) — handwritten GraphQL, ClientTransport
+- Build MailgunKit sender-only transport for future composability
+- Create PublishKit orchestrator with `SubscriberListProvider` + `NewsletterSender` protocols
+- All modules Swift 6 compliant, Linux-compatible, credentials via env vars only
+- **Deliverable:** Open source publishing pipeline integrated into BrightDigit.com SSG
+
+**Total Duration:** 15-21 weeks
 
 **Key Architectural Changes:**
 1. **Monorepo Consolidation** - 17 packages managed as git-subrepos (Publish ecosystem + BrightDigit + forked plugins)
@@ -1363,6 +1527,7 @@ This PRD documents a comprehensive modernization of the BrightDigit static site 
 6. **Concurrency** - Callbacks/semaphores → async/await/TaskGroup
 7. **Language** - Swift 5.8 → Swift 6 with strict concurrency across all 17 subrepos
 8. **Documentation** - Added mermaid.js support for diagrams in markdown
+9. **Publishing Infrastructure** - ButtondownKit + BufferKit + MailgunKit + PublishKit; open source, no audience data in repo, Linux-compatible
 
 **Success Criteria:**
 - All 17 packages managed as git-subrepos in organized structure
@@ -1375,3 +1540,4 @@ This PRD documents a comprehensive modernization of the BrightDigit static site 
 - CI/CD pipeline passes on macOS and Ubuntu (cross-platform compatibility validated)
 - Component-only HTML generation throughout codebase
 - All subrepo updates pushed to upstream repositories
+- Publishing tool compiles with Swift 6 strict concurrency, runs on Linux, and integrates with BrightDigit.com pipeline
