@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/ingydotnet/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/BrightDigit/Spinetail.git
+	branch = main
+	commit = d7fab1c75de91dc264243257d498eae5af788ed8
+	parent = 15a161031ea6231610affb9ef6c3185305d5d799
+	method = merge
+	cmdver = 0.4.9
