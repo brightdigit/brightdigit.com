@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/ingydotnet/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/johnsundell/Sweep.git
+	branch = master
+	commit = 801c2878e4c6c5baf32fe132e1f3f3af6f9fd1b0
+	parent = 16178b4e79767184d7b90e4642586b13df070173
+	method = merge
+	cmdver = 0.4.9
