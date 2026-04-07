@@ -6,7 +6,7 @@
 [subrepo]
 	remote = git@github.com:brightdigit/SplashPublishPlugin.git
 	branch = brightdigit-com-260406
-	commit = 4fe79070f51e288bc8ba31934a3018cbe099d5f7
-	parent = 754eded301681fe2b88046304c3ee4cd09827ebc
+	commit = 45630b024e03037ab6069eb8e796eec65434feaf
+	parent = c755188fe327c37b25a9b5d0a47c9f14a53e8ad2
 	method = merge
 	cmdver = 0.4.9
