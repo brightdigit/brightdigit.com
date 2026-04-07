@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/ingydotnet/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/BrightDigit/TransistorPublishPlugin.git
+	branch = main
+	commit = c3a04c4d02de1029a084a75cbd3c910bd4e97f43
+	parent = ff86d0ae2703b3c520247110e78d631f4ff10e6c
+	method = merge
+	cmdver = 0.4.9
