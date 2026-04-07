@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/ingydotnet/git-subrepo#readme
+;
+[subrepo]
+	remote = git@github.com:brightdigit/Sweep.git
+	branch = brightdigit-com-260406
+	commit = 801c2878e4c6c5baf32fe132e1f3f3af6f9fd1b0
+	parent = 7a201536cca3dce5c2cfb84acb4dc3b000538a3d
+	method = merge
+	cmdver = 0.4.9

@@ -1,0 +1,23 @@
+{
+  "pins" : [
+    {
+      "identity" : "xmlcoder",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/brightdigit/XMLCoder",
+      "state" : {
+        "revision" : "8ba70f27664ea8c8b7f38fb4c6f2fd4c129eb9c5",
+        "version" : "1.0.0-alpha.1"
+      }
+    },
+    {
+      "identity" : "yams",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/jpsim/Yams.git",
+      "state" : {
+        "revision" : "9ff1cc9327586db4e0c8f46f064b6a82ec1566fa",
+        "version" : "4.0.6"
+      }
+    }
+  ],
+  "version" : 2
+}

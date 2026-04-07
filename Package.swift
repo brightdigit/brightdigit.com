@@ -24,21 +24,21 @@ let package = Package(
     .library(name: "PublishType", targets: ["PublishType"])
   ],
   dependencies: [
-    .package(url: "https://github.com/johnsundell/Publish.git", from: "0.9.0"),
+    .package(path: "Packages/Publish/Publish"),
 
-    .package(url: "https://github.com/johnsundell/SplashPublishPlugin.git", from: "0.2.0"),
-    .package(url: "https://github.com/tanabe1478/YoutubePublishPlugin.git", from: "1.0.1"),
-    .package(url: "https://github.com/alexito4/ReadingTimePublishPlugin.git", from: "0.3.0"),
+    .package(path: "Packages/Publish/SplashPublishPlugin"),
+    .package(path: "Packages/BrightDigit/YoutubePublishPlugin"),
+    .package(path: "Packages/Plugins/ReadingTimePublishPlugin"),
     .package(url: "https://github.com/johnsundell/ShellOut.git", from: "2.3.0"),
 
-    .package(url: "https://github.com/BrightDigit/SwiftTube.git", from: "0.2.0-beta.5"),
-    .package(url: "https://github.com/BrightDigit/Spinetail.git", from: "0.3.0"),
-    .package(url: "https://github.com/BrightDigit/SyndiKit", from: "0.3.7"),
+    .package(path: "Packages/BrightDigit/SwiftTube"),
+    .package(path: "Packages/BrightDigit/Spinetail"),
+    .package(path: "Packages/BrightDigit/SyndiKit"),
     //.package(url: "https://github.com/BrightDigit/Options.git", from: "0.2.0"),
-    .package(url: "https://github.com/brightdigit/NPMPublishPlugin.git", from: "1.0.0"),
-    .package(url: "https://github.com/brightdigit/Contribute.git", from: "1.0.0-alpha.5"),
-    .package(url: "https://github.com/brightdigit/ContributeWordPress.git", from: "1.0.0"),
-    .package(url: "https://github.com/brightdigit/TransistorPublishPlugin.git", from: "1.0.0"),
+    .package(path: "Packages/BrightDigit/NPMPublishPlugin"),
+    .package(path: "Packages/BrightDigit/Contribute"),
+    .package(path: "Packages/BrightDigit/ContributeWordPress"),
+    .package(path: "Packages/BrightDigit/TransistorPublishPlugin"),
 
     .package(url: "https://github.com/jpsim/Yams.git", from: "4.0.4"),
     .package(url: "https://github.com/apple/swift-argument-parser", from: "1.1.3"),

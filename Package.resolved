@@ -1,60 +1,6 @@
 {
   "pins" : [
     {
-      "identity" : "codextended",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/johnsundell/codextended.git",
-      "state" : {
-        "revision" : "8d7c46dfc9c55240870cf5561d6cefa41e3d7105",
-        "version" : "0.3.0"
-      }
-    },
-    {
-      "identity" : "collectionconcurrencykit",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/johnsundell/collectionConcurrencyKit.git",
-      "state" : {
-        "revision" : "b4f23e24b5a1bff301efc5e70871083ca029ff95",
-        "version" : "0.2.0"
-      }
-    },
-    {
-      "identity" : "contribute",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/brightdigit/Contribute.git",
-      "state" : {
-        "revision" : "5db9f5d03b9f009702cc4ec508162d8db6b00491",
-        "version" : "1.0.0-alpha.5"
-      }
-    },
-    {
-      "identity" : "contributewordpress",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/brightdigit/ContributeWordPress.git",
-      "state" : {
-        "revision" : "6dceda3ea4c7df328311ecc516b7adb11865df5a",
-        "version" : "1.0.0"
-      }
-    },
-    {
-      "identity" : "files",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/johnsundell/files.git",
-      "state" : {
-        "revision" : "d273b5b7025d386feef79ef6bad7de762e106eaf",
-        "version" : "4.2.0"
-      }
-    },
-    {
-      "identity" : "ink",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/johnsundell/ink.git",
-      "state" : {
-        "revision" : "bcc9f219900a62c4210e6db726035d7f03ae757b",
-        "version" : "0.6.0"
-      }
-    },
-    {
       "identity" : "kanna",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tid-kijyun/Kanna.git",
@@ -73,48 +19,12 @@
       }
     },
     {
-      "identity" : "npmpublishplugin",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/brightdigit/NPMPublishPlugin.git",
-      "state" : {
-        "revision" : "8d5ee2e220cc84d75efea9cebc18a881ba7158f5",
-        "version" : "1.0.0"
-      }
-    },
-    {
-      "identity" : "plot",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/johnsundell/plot.git",
-      "state" : {
-        "revision" : "271926b4413fe868739d99f5eadcf2bd6cd62fb8",
-        "version" : "0.14.0"
-      }
-    },
-    {
       "identity" : "prch",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/BrightDigit/Prch.git",
       "state" : {
         "revision" : "600b49cc7a77271ea3d2a9f9e449be081562a087",
         "version" : "0.2.1"
-      }
-    },
-    {
-      "identity" : "publish",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/johnsundell/publish.git",
-      "state" : {
-        "revision" : "1c8ad00d39c985cb5d497153241a2f1b654e0d40",
-        "version" : "0.9.0"
-      }
-    },
-    {
-      "identity" : "readingtimepublishplugin",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/alexito4/ReadingTimePublishPlugin.git",
-      "state" : {
-        "revision" : "0a0bf141a5b626c2444601cf0ed7b2bfcfdabcdf",
-        "version" : "0.3.0"
       }
     },
     {
@@ -127,42 +37,6 @@
       }
     },
     {
-      "identity" : "spinetail",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/BrightDigit/Spinetail.git",
-      "state" : {
-        "revision" : "1bc157836771772dddea118ae3c1f9bfd4eea262",
-        "version" : "0.3.0"
-      }
-    },
-    {
-      "identity" : "splash",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/johnsundell/splash.git",
-      "state" : {
-        "revision" : "7f4df436eb78fe64fe2c32c58006e9949fa28ad8",
-        "version" : "0.16.0"
-      }
-    },
-    {
-      "identity" : "splashpublishplugin",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/johnsundell/splashpublishplugin",
-      "state" : {
-        "revision" : "4fe79070f51e288bc8ba31934a3018cbe099d5f7",
-        "version" : "0.2.0"
-      }
-    },
-    {
-      "identity" : "sweep",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/johnsundell/sweep.git",
-      "state" : {
-        "revision" : "801c2878e4c6c5baf32fe132e1f3f3af6f9fd1b0",
-        "version" : "0.4.0"
-      }
-    },
-    {
       "identity" : "swift-argument-parser",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-argument-parser",
@@ -172,39 +46,12 @@
       }
     },
     {
-      "identity" : "swifttube",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/BrightDigit/SwiftTube.git",
-      "state" : {
-        "revision" : "4b9a3eae80cef01943f80ec94dcc3fa6d3db5909",
-        "version" : "0.2.0-beta.5"
-      }
-    },
-    {
-      "identity" : "syndikit",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/BrightDigit/SyndiKit",
-      "state" : {
-        "revision" : "0a077415a1ae3d20fb0327fdc3837442f7298708",
-        "version" : "0.3.7"
-      }
-    },
-    {
-      "identity" : "transistorpublishplugin",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/brightdigit/TransistorPublishPlugin.git",
-      "state" : {
-        "revision" : "d8cb3c341cfea0495d99096c7caac4016884dc79",
-        "version" : "1.0.0"
-      }
-    },
-    {
       "identity" : "xmlcoder",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/CoreOffice/XMLCoder",
       "state" : {
-        "revision" : "b1e944cbd0ef33787b13f639a5418d55b3bed501",
-        "version" : "0.17.1"
+        "revision" : "5e1ada828d2618ecb79c974e03f79c8f4df90b71",
+        "version" : "0.18.0"
       }
     },
     {
@@ -214,15 +61,6 @@
       "state" : {
         "revision" : "9ff1cc9327586db4e0c8f46f064b6a82ec1566fa",
         "version" : "4.0.6"
-      }
-    },
-    {
-      "identity" : "youtubepublishplugin",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/tanabe1478/YoutubePublishPlugin.git",
-      "state" : {
-        "revision" : "7616bb1d54999bef253846e2861cdbae8c3015fa",
-        "version" : "1.0.1"
       }
     }
   ],

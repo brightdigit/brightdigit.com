@@ -168,9 +168,9 @@ public struct BrightDigitSite: Website, MetadataAttached {
 }
 
 public extension BrightDigitSite {
-  func publish(includeDrafts: Bool) throws {
+  func publish(includeDrafts: Bool) async throws {
     let steps = includeDrafts ? Self.draftSteps : Self.productionSteps
 
-    try publish(using: steps)
+    try await publish(using: steps)
   }
 }
