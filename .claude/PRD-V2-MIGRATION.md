@@ -1152,7 +1152,7 @@ mutation CreatePost {
 - [`complete-status.md`](./ai-cite-optimization/complete-status.md) — sprint status tracker
 - [`issues/INDEX.md`](./ai-cite-optimization/issues/INDEX.md) — all 10 GitHub issues
 
-**Content Files (added/modified in PR #39):**
+**Planned Content Files (to be added in subsequent PRs):**
 - `Content/articles/dependency-management-swift.md` — rewritten with AI-CITE structure (answer-first, FAQ section, comparison tables, structured code examples)
 - `Content/articles/mise-implementation-guide.md` — new comprehensive Mise adoption guide (~4,980 lines, internal reference article)
 - `Content/tutorials/mise-setup-guide.md` — new public-facing Mise setup tutorial
@@ -1165,11 +1165,9 @@ mutation CreatePost {
 - Sprint 3 — Remaining 10 priority articles (issue #28)
 - Sprint 4+ — YouTube video strategy and unique frameworks (issues #24, #25)
 
-**GitHub Issues:** #21–#30 (tracked in `docs/ai-cite-optimization/issues/`)
+**GitHub Issues:** #21–#30 (tracked in `.claude/ai-cite-optimization/issues/`)
 
 **Dependencies:** None — runs parallel to all technical phases. Schema markup (JSON-LD) from the Indexed element may benefit from Phase 3's component system if `PiHTMLFactory` is updated to inject structured data into page `<head>` automatically.
-
-**Note on draft content:** `project-setup-guide.md` and `why-mistkit.md` are early drafts (no frontmatter, incomplete body). These should remain as `draft`-mode content or be withheld from merging until complete.
 
 ---
 
@@ -1590,7 +1588,7 @@ This PRD documents a comprehensive modernization of the BrightDigit static site 
 - Add FAQPage and HowTo JSON-LD structured data to optimized content
 - Create branded BrightDigit methodology frameworks for Exclusive POV
 - Target: 60% AI citation rate within 1 week of optimization per article
-- Reference docs: `docs/ai-cite-optimization/` — audit, sprint plan, schema design, validation
+- Reference docs: `.claude/ai-cite-optimization/` — audit, sprint plan, schema design, validation
 - **Deliverable:** All 10 priority articles optimized; JSON-LD schema in `PiHTMLFactory` (Phase 3 integration)
 
 **Key Architectural Changes:**
