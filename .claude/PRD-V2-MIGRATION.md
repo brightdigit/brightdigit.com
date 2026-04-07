@@ -1143,14 +1143,14 @@ mutation CreatePost {
 
 **Target Success Rate:** 60% of priority articles get AI mentions within 1 week of optimization.
 
-**Reference Documentation:** `docs/ai-cite-optimization/`
-- [`00-README.md`](../docs/ai-cite-optimization/00-README.md) — framework overview and quick links
-- [`ai-cite-audit.md`](../docs/ai-cite-optimization/ai-cite-audit.md) — top 10 "money articles" identified for optimization
-- [`implementation-summary.md`](../docs/ai-cite-optimization/implementation-summary.md) — before/after metrics
-- [`schema-implementation-plan.md`](../docs/ai-cite-optimization/schema-implementation-plan.md) — JSON-LD structured data design
-- [`VALIDATION.md`](../docs/ai-cite-optimization/VALIDATION.md) — testing and validation approach
-- [`complete-status.md`](../docs/ai-cite-optimization/complete-status.md) — sprint status tracker
-- [`issues/INDEX.md`](../docs/ai-cite-optimization/issues/INDEX.md) — all 10 GitHub issues
+**Reference Documentation:** `.claude/ai-cite-optimization/`
+- [`00-README.md`](./ai-cite-optimization/00-README.md) — framework overview and quick links
+- [`ai-cite-audit.md`](./ai-cite-optimization/ai-cite-audit.md) — top 10 "money articles" identified for optimization
+- [`implementation-summary.md`](./ai-cite-optimization/implementation-summary.md) — before/after metrics
+- [`schema-implementation-plan.md`](./ai-cite-optimization/schema-implementation-plan.md) — JSON-LD structured data design
+- [`VALIDATION.md`](./ai-cite-optimization/VALIDATION.md) — testing and validation approach
+- [`complete-status.md`](./ai-cite-optimization/complete-status.md) — sprint status tracker
+- [`issues/INDEX.md`](./ai-cite-optimization/issues/INDEX.md) — all 10 GitHub issues
 
 **Content Files (added/modified in PR #39):**
 - `Content/articles/dependency-management-swift.md` — rewritten with AI-CITE structure (answer-first, FAQ section, comparison tables, structured code examples)
