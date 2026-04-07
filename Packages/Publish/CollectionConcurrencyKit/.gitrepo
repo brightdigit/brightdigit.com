@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/ingydotnet/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/johnsundell/CollectionConcurrencyKit.git
+	branch = main
+	commit = b4f23e24b5a1bff301efc5e70871083ca029ff95
+	parent = 77f93a6ea62773ffb9529040093c318eae578e7b
+	method = merge
+	cmdver = 0.4.9
