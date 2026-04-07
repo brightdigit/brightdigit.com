@@ -16,7 +16,7 @@ let package = Package(
         .executable(name: "publish-cli", targets: ["PublishCLI"])
     ],
     dependencies: [
-        .package(name: "Ink", url: "https://github.com/johnsundell/ink.git", from: "0.2.0"),
+        .package(path: "../Ink"),
         .package(path: "../Plot"),
         .package(path: "../Files"),
         .package(path: "../Codextended"),
