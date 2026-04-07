@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/ingydotnet/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/johnsundell/Publish.git
+	branch = master
+	commit = 58e943047882a5a6d8135ae2711be8ba7fba57c4
+	parent = 75ebab7c198e9e88706ff409ad681c4b5510dc77
+	method = merge
+	cmdver = 0.4.9
