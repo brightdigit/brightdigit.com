@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/ingydotnet/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/BrightDigit/ContributeWordPress.git
+	branch = main
+	commit = 6dceda3ea4c7df328311ecc516b7adb11865df5a
+	parent = 309a3e53c2fa95ab5e5a45155e95a9f07e8e8964
+	method = merge
+	cmdver = 0.4.9
