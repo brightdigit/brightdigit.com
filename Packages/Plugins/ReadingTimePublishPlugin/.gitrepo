@@ -4,8 +4,8 @@
 ; git-subrepo command. See https://github.com/ingydotnet/git-subrepo#readme
 ;
 [subrepo]
-	remote = https://github.com/brightdigit/ReadingTimePublishPlugin.git
-	branch = master
+	remote = git@github.com:brightdigit/ReadingTimePublishPlugin.git
+	branch = brightdigit-com-260406
 	commit = 531dd144784e7e623d45a01dafdf4dd76c3349f8
 	parent = c38ec71685ff3a3da9363c52f8963378ca9e57e2
 	method = merge

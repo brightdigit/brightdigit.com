@@ -4,8 +4,8 @@
 ; git-subrepo command. See https://github.com/ingydotnet/git-subrepo#readme
 ;
 [subrepo]
-	remote = https://github.com/BrightDigit/SwiftTube.git
-	branch = main
+	remote = git@github.com:BrightDigit/SwiftTube.git
+	branch = brightdigit-com-260406
 	commit = 4b9a3eae80cef01943f80ec94dcc3fa6d3db5909
 	parent = 309b81d7f7c9d1cefd98cbcd0d82be4140f862d7
 	method = merge

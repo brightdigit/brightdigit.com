@@ -4,8 +4,8 @@
 ; git-subrepo command. See https://github.com/ingydotnet/git-subrepo#readme
 ;
 [subrepo]
-	remote = https://github.com/johnsundell/SplashPublishPlugin.git
-	branch = master
+	remote = git@github.com:brightdigit/SplashPublishPlugin.git
+	branch = brightdigit-com-260406
 	commit = 4fe79070f51e288bc8ba31934a3018cbe099d5f7
 	parent = 754eded301681fe2b88046304c3ee4cd09827ebc
 	method = merge
