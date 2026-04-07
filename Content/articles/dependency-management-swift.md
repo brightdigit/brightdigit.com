@@ -1,27 +1,37 @@
 ---
 title: Control Your Swift Dependencies Before They Control You
 date: 2024-02-27 02:37
-description: Learn what dependency management is in Swift.
+description: Mock Swift dependencies using protocols, dependency injection frameworks, or closure-based injection to enable unit testing and prevent coupling to external systems.
 featuredImage: /media/articles/dependency-management-swift/asian-man-buried-in-a-cardboard-box-2023-11-27-05-19-48-utc.webp
 subscriptionCTA: Subscribe for more articles about building great apps in Swift
 ---
 
-We often take dependencies for granted when building apps in Swift. Most of the time, this doesn’t lead to any problems, but it has a way of lulling many Swift developers into a false sense of security.
+**How do you manage dependencies in Swift?** Mock dependencies using protocols, [dependency injection frameworks](https://swift.libhunt.com/libs/dependency-injection), or closure-based injection. This enables unit testing and prevents coupling to external systems like databases, network APIs, and hardware. The key is balancing ergonomics (ease of use) with safety (type checking and compile-time guarantees).
 
-Dependency management in Swift is essential to maintaining the stability and security of your apps. It’s necessary if you’re going to build an app on time and budget. Done well, it avoids breaking issues, But as Brandon Williams from [Point-Free](https://www.pointfree.co) pointed out in [my conversation with him on EmpowerApps](https://brightdigit.com/episodes/159-it-depends-with-brandon-williams/), we often underappreciate how much we rely on and compromise with other people’s code that we can’t control.
+**Why it matters:** As [Brandon Williams from Point-Free](https://www.pointfree.co) explained in [my conversation with him on EmpowerApps](https://brightdigit.com/episodes/159-it-depends-with-brandon-williams/), we often underappreciate how much we rely on code we can't control. Even [Apple's frameworks like CoreLocation](https://developer.apple.com/documentation/corelocation) are dependencies that need proper management for effective testing.
 
-In this article, I’m covering what **effective** dependency management in Swift is, how it can make further development of your apps easier, and strategies for mocking dependencies during testing.
+In this article, you'll learn three proven strategies for mocking dependencies in Swift, when to use each approach, and how to maintain testability without sacrificing developer experience.
 
 > transistor https://share.transistor.fm/s/0c634d11
 
-## What is a dependency in Swift?
+## What Counts as a Dependency in Swift Apps?
 
 Despite most of us having a definite idea of what a dependency is in our minds, it is more than what you think. In the broadest sense, **a dependency is anything in your app that requires an outside system that you do not directly control**.
 
-**While we don’t usually refer to it as such, even Apple’s own code is a dependency within our apps or any time we touch an API, a clock, a file, a database or a date initializer. Even Apple’s own hardware is a kind of dependency.** We don’t have any control over it or how it’s made – we can only trust that it will work because it’s in everyone’s interest that it always works and be ready for us. Often, we don’t think about something like [Core Location](https://developer.apple.com/documentation/corelocation) as a dependency simply because we don’t add it as one in our applications.
+According to [Apple's Testing documentation](https://developer.apple.com/documentation/testing), dependencies include:
+
+- **Apple frameworks** like [CoreLocation](https://developer.apple.com/documentation/corelocation), [UserDefaults](https://developer.apple.com/documentation/foundation/userdefaults), or [URLSession](https://developer.apple.com/documentation/foundation/urlsession)
+- **Network APIs** (REST, GraphQL, WebSocket connections)
+- **Databases** (Core Data, SwiftData, SQLite, Realm)
+- **File system** operations and document storage
+- **Date and time** (Date(), Calendar, Clock)
+- **Hardware** (camera, GPS, sensors, biometrics)
+- **Third-party packages** from Swift Package Manager, CocoaPods, or Carthage
+
+Even Apple's own code is a dependency—we don't control how `CoreLocation` is implemented. We trust it works (because it's in Apple's interest), but we still need to mock it for effective unit testing.
 
 
-## Why is dependency management important for testing?
+## Why Mock Dependencies for Unit Testing in Swift?
 
 Mocking is an important part of testing with any dependency. As a general rule, **you should be mocking anything that’s persistent or external.** If you’re testing components that aren’t yet ready for your production app, mocking is a simple way to isolate this code for testing.
 
@@ -48,26 +58,34 @@ The other challenge is that there are a lot of APIs that will also break your pr
 </figure>
 
 
-## How to Mock Dependencies
+## Three Ways to Mock Swift Dependencies
 
-In my chat with [Brandon Williams, a fellow Swift programmer](https://brightdigit.com/episodes/159-it-depends-with-brandon-williams/) on EmpowerApps, we discussed dependency control. Brandon has a great way of framing how to weigh different considerations when mocking dependencies as a tradeoff between **ergonomics** and **safety**. 
+In my chat with [Brandon Williams](https://brightdigit.com/episodes/159-it-depends-with-brandon-williams/) on EmpowerApps, we discussed dependency control. Brandon has a great way of framing how to weigh different considerations when mocking dependencies as a tradeoff between **ergonomics** (developer ease) and **safety** (type checking and compile-time guarantees).
 
-In this context, ergonomics means how it is designed to make it easy or comfortable for you as a developer. Brandon uses the example of the UserDefaults class – an easy way to store a user’s preferences and optimize your app’s behavior to them.
+Every dependency mocking approach makes this tradeoff differently. Here are three proven strategies, from simplest to most robust:
 
-On the other side, you have safety. By its nature, Swift is a strong and safe language – variables are always initialized before use, memory is automatically managed, and exclusive access to memory protects you from many coding mistakes getting into your production app. 
+### Ergonomics vs. Safety Tradeoff
 
-It is impossible to have an app that is both perfectly ergonomic and safe. It’s always a compromise. Brandon uses the example of providing initializers for all your variables with no defaults, which is extremely safe but will be a huge pain run in testing.
+| Approach | Ergonomics | Safety | Best For |
+|----------|-----------|--------|----------|
+| Closure Injection | ⭐⭐⭐⭐⭐ | ⭐⭐ | Single function mocks |
+| Protocol-Based | ⭐⭐⭐ | ⭐⭐⭐⭐ | Multiple related functions |
+| DI Framework | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | Large projects, team consistency |
 
-A reliable strategy for finding a balance between ergonomics and safety is with a [dependency injection framework](https://swift.libhunt.com/libs/dependency-injection). The most popular ones all cut a different balance between ergonomics and safety, so which one you use will come down to what you need to test, the requirements of the project, and your own professional preference.
+**Quick decision guide:**
+- Need to mock one function? → **Use closures**
+- Need to mock 2-5 related functions? → **Use protocols**
+- Large project with many dependencies? → **Use a [dependency injection framework](https://swift.libhunt.com/libs/dependency-injection)** like [Swinject](https://github.com/Swinject/Swinject), [Needle](https://github.com/uber/needle), or [Factory](https://github.com/hmlongco/Factory)
 
 
-### Protocols are not the only way (to pass a single function)
+### Option 1: Closure Injection (Simplest)
 
-Protocols are the most popular way of putting your interface in front of something, but not the only way. If you only have to pass a single function as part of your mock – say, if you needed to mock access to a network –  then it’s easier and simpler to pass the function rather than mocking a protocol to declare it.
+**When to use:** Mocking a single function (e.g., network call, date provider, UUID generator)
 
-So instead of:
+**How it works:** Pass a closure directly instead of creating a protocol.
 
 ```swift
+// ❌ Over-engineered for a single function
 protocol Adder {
     func doTheThing(x : Int, y: Int) -> Int
 }
@@ -75,20 +93,175 @@ protocol Adder {
 struct TheThing {
     let adder: Adder
 }
-```
 
-You can just pass the function without the need for the protocol.
+// ✅ Simple closure injection
+struct TheThing {
+    let adder: (Int, Int) -> Int
 
-```swift
-struct TheThing  {
-    let adder : (Int, Int) -> Int
+    // Production usage
+    static func live() -> TheThing {
+        TheThing(adder: { $0 + $1 })
+    }
+
+    // Test usage
+    static func mock() -> TheThing {
+        TheThing(adder: { _, _ in 42 })
+    }
 }
 ```
 
-You substitute in for a protocol. When controlling for dependencies, you commonly will have only one or two implementations – one live, one mock. It ultimately simplifies mocking and doesn’t get you bogged down with the features and powers of protocols, which can make your life easier if you need to mock or test a function quickly.
+**Pros:**
+- Minimal boilerplate
+- No protocol overhead
+- Easy to understand
+
+**Cons:**
+- Only works for single functions
+- Less discoverability than protocols
+- No interface documentation
+
+### Option 2: Protocol-Based Injection (Most Common)
+
+**When to use:** Mocking multiple related functions (e.g., network client with GET/POST/DELETE)
+
+**How it works:** Define a protocol that describes the dependency interface. Implement one version for production and one for tests.
+
+```swift
+protocol NetworkClient {
+    func fetch(url: URL) async throws -> Data
+    func post(url: URL, body: Data) async throws -> Data
+}
+
+struct URLSessionClient: NetworkClient {
+    func fetch(url: URL) async throws -> Data {
+        try await URLSession.shared.data(from: url).0
+    }
+    // ... other methods
+}
+
+struct MockNetworkClient: NetworkClient {
+    var mockData: Data = Data()
+
+    func fetch(url: URL) async throws -> Data {
+        mockData
+    }
+    // ... other methods
+}
+```
+
+**Pros:**
+- Clear interface definition
+- Works with multiple functions
+- Self-documenting through protocol requirements
+- [Swift protocol-oriented programming](https://developer.apple.com/videos/play/wwdc2015/408/) best practice
+
+**Cons:**
+- More boilerplate than closures
+- Requires creating mock types
+
+### Option 3: Dependency Injection Frameworks (Most Robust)
+
+**When to use:** Large projects with many dependencies, team projects requiring consistency
+
+**Popular frameworks:**
+- **[Swinject](https://github.com/Swinject/Swinject)** - Container-based DI with auto-wiring
+- **[Needle](https://github.com/uber/needle)** - Compile-time DI by Uber
+- **[Factory](https://github.com/hmlongco/Factory)** - Swift property wrapper-based DI
+- **[The Composable Architecture (TCA)](https://github.com/pointfreeco/swift-composable-architecture)** - Includes dependency management
+
+**How it works (Factory example):**
+```swift
+import Factory
+
+extension Container {
+    var networkClient: Factory<NetworkClient> {
+        Factory(self) { URLSessionClient() }
+    }
+}
+
+struct MyViewModel {
+    @Injected(\.networkClient) var networkClient
+
+    // In tests, override with:
+    // Container.shared.networkClient.register { MockNetworkClient() }
+}
+```
+
+**Pros:**
+- Centralized dependency management
+- Easy to swap implementations globally
+- Supports scopes (singleton, transient, etc.)
+- Team consistency
+
+**Cons:**
+- Learning curve for framework
+- Additional dependency in your project
+- Can obscure dependency graph if overused
 
 > youtube https://youtu.be/nxpyAso6_vI
 
-## Special thanks to Brandon Williams
+## Frequently Asked Questions
 
-Thanks again to Brandon Williams, whose thoughts and conversation were valuable in putting this article together. If you enjoyed this article, I encourage you to listen to my conversation with him[ on EmpowerApps](https://brightdigit.com/episodes/159-it-depends-with-brandon-williams/). Brandon publishes videos on advanced Swift through his own brand, [Point-Free](https://www.pointfree.co), which are always worth a watch.
+### Should I mock Apple frameworks like CoreLocation or UserDefaults?
+
+**Yes, always mock external dependencies for unit testing.** Even Apple's frameworks are outside your control. You don't test whether CoreLocation works (trust Apple's testing), but you do test how your code handles location data. Mock the dependency so you can test with predictable data—both success cases and error cases.
+
+### When should I use protocols vs closures for mocking?
+
+**Use closures for single functions, protocols for multiple related functions.** If you're only mocking one thing (like a date provider), closures are simpler. If you're mocking a service with 3+ methods (like a network client), protocols provide better structure and documentation.
+
+### What's the best dependency injection framework for Swift?
+
+**It depends on your project size and team:**
+- **Small projects:** Start with manual protocol-based injection (no framework needed)
+- **Medium projects:** [Factory](https://github.com/hmlongco/Factory) or [Swinject](https://github.com/Swinject/Swinject) for ease of use
+- **Large teams:** [Needle](https://github.com/uber/needle) for compile-time safety
+- **SwiftUI/TCA projects:** [The Composable Architecture](https://github.com/pointfreeco/swift-composable-architecture) includes dependency management
+
+### How do I mock dependencies in SwiftUI Previews?
+
+**Use the same strategies (protocols/closures) and inject mock implementations.** For example:
+
+```swift
+struct ContentView: View {
+    let networkClient: NetworkClient
+
+    var body: some View { /* ... */ }
+}
+
+#Preview {
+    ContentView(networkClient: MockNetworkClient())
+}
+```
+
+SwiftUI Previews can't access hardware (camera, microphone) or require user permissions, so mocking is essential for iterating on UI.
+
+### What's the difference between mocking and stubbing?
+
+**Mocking provides controlled test data; stubbing provides minimal implementations.**
+- **Mock:** Returns predictable data for testing specific scenarios (e.g., "return this error")
+- **Stub:** Minimal implementation that does nothing or returns defaults
+
+In Swift testing, the terms are often used interchangeably. [Swift Testing best practices](https://developer.apple.com/documentation/testing) recommend using mocks for external dependencies.
+
+## Further Reading and Resources
+
+**Official Apple Documentation:**
+- [Testing in Xcode](https://developer.apple.com/documentation/testing) - Apple's official testing guide
+- [Protocol-Oriented Programming in Swift (WWDC 2015)](https://developer.apple.com/videos/play/wwdc2015/408/) - Foundational talk on protocols
+- [Modern Swift API Design (WWDC 2019)](https://developer.apple.com/videos/play/wwdc2019/415/) - Best practices for designing testable APIs
+
+**Dependency Injection Frameworks:**
+- [Swinject](https://github.com/Swinject/Swinject) - Container-based dependency injection
+- [Needle](https://github.com/uber/needle) - Compile-time safe DI by Uber
+- [Factory](https://github.com/hmlongco/Factory) - Modern Swift property wrapper DI
+- [Swift Dependency Injection Comparison](https://swift.libhunt.com/libs/dependency-injection) - Framework comparisons
+
+**Advanced Topics:**
+- [Point-Free](https://www.pointfree.co) - Advanced Swift videos by Brandon Williams and Stephen Celis
+- [The Composable Architecture](https://github.com/pointfreeco/swift-composable-architecture) - Includes dependency management system
+- [Swift Testing Best Practices](https://www.swift.org/blog/swift-testing/) - Swift.org official testing guidance
+
+## Special Thanks to Brandon Williams
+
+Thanks again to Brandon Williams, whose thoughts and conversation were valuable in putting this article together. If you enjoyed this article, I encourage you to listen to my conversation with him [on EmpowerApps](https://brightdigit.com/episodes/159-it-depends-with-brandon-williams/). Brandon publishes videos on advanced Swift through his own brand, [Point-Free](https://www.pointfree.co), which are always worth a watch.
