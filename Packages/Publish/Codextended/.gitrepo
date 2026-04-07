@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/ingydotnet/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/johnsundell/Codextended.git
+	branch = master
+	commit = 8d7c46dfc9c55240870cf5561d6cefa41e3d7105
+	parent = ab3f4967c9bde25b22da2a3eb30a555443a4a719
+	method = merge
+	cmdver = 0.4.9
