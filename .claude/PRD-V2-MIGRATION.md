@@ -1129,6 +1129,48 @@ mutation CreatePost {
 
 ---
 
+### AI-CITE Content Optimization (parallel, ongoing — branch: ai-cite-optimization, PR #39)
+
+**Scope:** Optimize BrightDigit article and tutorial content to be cited by AI systems (ChatGPT, Google AI Overview) using the AI-CITE framework (Answer-first, Intent-matched headings, Clear structure, Indexed schema, Trusted sources, Exclusive POV). Based on Jesse Schoberg's MicroConf Europe 2025 methodology.
+
+**Framework:** AI-CITE — each element maps to a content transformation:
+- **A (Answer-first):** Lead with the direct answer in the first paragraph
+- **I (Intent-matched headings):** Rewrite headings as search queries (e.g., "Three Ways to Mock Swift Dependencies")
+- **C (Clear structure):** Replace dense prose with tables, numbered lists, decision guides, TLDR sections
+- **I (Indexed schema):** Add FAQPage, HowTo, and Article JSON-LD structured data
+- **T (Trusted sources):** Link to Apple docs, WWDC sessions, Swift.org, official repos
+- **E (Exclusive POV):** Create branded frameworks/methodologies unique to BrightDigit
+
+**Target Success Rate:** 60% of priority articles get AI mentions within 1 week of optimization.
+
+**Reference Documentation:** `.claude/ai-cite-optimization/`
+- [`00-README.md`](./ai-cite-optimization/00-README.md) — framework overview and quick links
+- [`ai-cite-audit.md`](./ai-cite-optimization/ai-cite-audit.md) — top 10 "money articles" identified for optimization
+- [`implementation-summary.md`](./ai-cite-optimization/implementation-summary.md) — before/after metrics
+- [`schema-implementation-plan.md`](./ai-cite-optimization/schema-implementation-plan.md) — JSON-LD structured data design
+- [`VALIDATION.md`](./ai-cite-optimization/VALIDATION.md) — testing and validation approach
+- [`complete-status.md`](./ai-cite-optimization/complete-status.md) — sprint status tracker
+- [`issues/INDEX.md`](./ai-cite-optimization/issues/INDEX.md) — all 10 GitHub issues
+
+**Planned Content Files (to be added in subsequent PRs):**
+- `Content/articles/dependency-management-swift.md` — rewritten with AI-CITE structure (answer-first, FAQ section, comparison tables, structured code examples)
+- `Content/articles/mise-implementation-guide.md` — new comprehensive Mise adoption guide (~4,980 lines, internal reference article)
+- `Content/tutorials/mise-setup-guide.md` — new public-facing Mise setup tutorial
+- `Content/tutorials/project-setup-guide.md` — new project setup tutorial (draft)
+- `Content/tutorials/why-mistkit.md` — new MistKit explanation (draft)
+
+**Sprint Plan (from `complete-status.md`):**
+- Sprint 1 — FAQ/HowTo schema, Mise setup guide optimization (issues #21, #22, #23)
+- Sprint 2 — Baseline testing and validation (issue #26)
+- Sprint 3 — Remaining 10 priority articles (issue #28)
+- Sprint 4+ — YouTube video strategy and unique frameworks (issues #24, #25)
+
+**GitHub Issues:** #21–#30 (tracked in `.claude/ai-cite-optimization/issues/`)
+
+**Dependencies:** None — runs parallel to all technical phases. Schema markup (JSON-LD) from the Indexed element may benefit from Phase 3's component system if `PiHTMLFactory` is updated to inject structured data into page `<head>` automatically.
+
+---
+
 ### Appendix: Early Concurrency Analysis (Pre-Phase 2)
 
 **Critical Files for Modernization:**
@@ -1539,7 +1581,15 @@ This PRD documents a comprehensive modernization of the BrightDigit static site 
 - All modules Swift 6 compliant, Linux-compatible, credentials via env vars only
 - **Deliverable:** Open source publishing pipeline integrated into BrightDigit.com SSG
 
-**Total Duration:** 15-21 weeks
+**Total Duration:** 15-21 weeks (technical phases) + ongoing content optimization
+
+### AI-CITE Content Optimization (parallel, ongoing)
+- Apply AI-CITE framework (Answer-first, Intent-matched, Clear, Indexed, Trusted, Exclusive) to top 10 priority articles
+- Add FAQPage and HowTo JSON-LD structured data to optimized content
+- Create branded BrightDigit methodology frameworks for Exclusive POV
+- Target: 60% AI citation rate within 1 week of optimization per article
+- Reference docs: `.claude/ai-cite-optimization/` — audit, sprint plan, schema design, validation
+- **Deliverable:** All 10 priority articles optimized; JSON-LD schema in `PiHTMLFactory` (Phase 3 integration)
 
 **Key Architectural Changes:**
 1. **Monorepo Consolidation** - 17 packages managed as git-subrepos (Publish ecosystem + BrightDigit + forked plugins)
