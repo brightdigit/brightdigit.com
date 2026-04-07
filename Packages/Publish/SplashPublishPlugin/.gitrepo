@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/ingydotnet/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/johnsundell/SplashPublishPlugin.git
+	branch = master
+	commit = 4fe79070f51e288bc8ba31934a3018cbe099d5f7
+	parent = 754eded301681fe2b88046304c3ee4cd09827ebc
+	method = merge
+	cmdver = 0.4.9
