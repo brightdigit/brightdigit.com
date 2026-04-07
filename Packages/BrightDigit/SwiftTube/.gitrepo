@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/ingydotnet/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/BrightDigit/SwiftTube.git
+	branch = main
+	commit = 4b9a3eae80cef01943f80ec94dcc3fa6d3db5909
+	parent = 309b81d7f7c9d1cefd98cbcd0d82be4140f862d7
+	method = merge
+	cmdver = 0.4.9
