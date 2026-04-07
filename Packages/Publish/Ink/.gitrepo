@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/ingydotnet/git-subrepo#readme
+;
+[subrepo]
+	remote = git@github.com:brightdigit/Ink.git
+	branch = brightdigit-com-260406
+	commit = bcc9f219900a62c4210e6db726035d7f03ae757b
+	parent = cd62448bc826517d0f8bab39198a27fdac2c2178
+	method = merge
+	cmdver = 0.4.9
