@@ -222,11 +222,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Cache SwiftPM Dependencies
-        uses: actions/cache@v4
+      - name: Download Artifact
+        uses: actions/download-artifact@v4
         with:
-          path: .build/
-          key: ${{ runner.os }}-release-${{ hashFiles('Package.resolved') }}
+          name: brightdigitwg-binaries
 
       - name: Set Publishing Mode and Flags
         id: set-publishing
@@ -241,10 +240,8 @@ jobs:
 
       - name: Run Brightdigitwg
         run: |
-          BIN_PATH=$(swift build -c release --product brightdigitwg --show-bin-path)
-          cp "$BIN_PATH/brightdigitwg" "brightdigitwg-$(uname)-$(arch)"
           chmod +x "brightdigitwg-$(uname)-$(arch)"
-          ./brightdigitwg-$(uname)-$(arch) --mode $PUBLISHING_MODE
+          ./brightdigitwg-$(uname)-$(arch) publish --mode $PUBLISHING_MODE
 
       - name: Deploy to Netlify
         env:

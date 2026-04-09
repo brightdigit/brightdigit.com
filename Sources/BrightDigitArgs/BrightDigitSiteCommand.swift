@@ -4,7 +4,7 @@ import Foundation
   import FoundationNetworking
 #endif
 
-public struct BrightDigitSiteCommand: ParsableCommand {
+public struct BrightDigitSiteCommand: AsyncParsableCommand {
   public init() {}
 
   public static var configuration = CommandConfiguration(

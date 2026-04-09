@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/ingydotnet/git-subrepo#readme
+;
+[subrepo]
+	remote = git@github.com:brightdigit/ReadingTimePublishPlugin.git
+	branch = brightdigit-com-260406
+	commit = 0334b72cc0f3cdc96b889d60cbec23571f98892c
+	parent = 7a201536cca3dce5c2cfb84acb4dc3b000538a3d
+	method = merge
+	cmdver = 0.4.9

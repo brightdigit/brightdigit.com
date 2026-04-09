@@ -3,7 +3,7 @@ import BrightDigitSite
 import Publish
 
 public extension BrightDigitSiteCommand {
-  struct PublishCommand: ParsableCommand {
+  struct PublishCommand: AsyncParsableCommand {
     enum Mode: String, ExpressibleByArgument {
       case drafts, production
     }
@@ -13,8 +13,8 @@ public extension BrightDigitSiteCommand {
 
     @Option var mode: Mode
 
-    public func run() throws {
-      try BrightDigitSite().publish(includeDrafts: mode == .drafts)
+    public func run() async throws {
+      try await BrightDigitSite().publish(includeDrafts: mode == .drafts)
     }
   }
 }
