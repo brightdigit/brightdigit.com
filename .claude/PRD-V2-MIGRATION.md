@@ -435,7 +435,7 @@ This section documents research findings for replacing third-party dependencies 
 | Dependency | macOS | Linux | Required By | Can Replace? |
 |---|---|---|---|---|
 | Kanna | ✅ | ✅ | Tagscriber | ❌ (No cross-platform alternative) |
-| MarkdownGenerator | ✅ | ✅ | Tagscriber | ❌ (swift-markdown wrong direction) |
+| MarkdownGenerator | ✅ | ✅ | Tagscriber | ✅ BRING LOCAL (subrepo — see #47) |
 | Yams | ✅ | ✅ | Contribute | ❌ (Foundation lacks YAML) |
 | Files | ✅ | ✅ | Publish | ❌ (Indirect dependency) |
 | Ink | ✅ | ✅ | Publish (transitive) | ✅ (replaced inside Publish subrepo) |
@@ -677,10 +677,12 @@ swiftSettings: [
 **Deliverables:**
 - [x] All 17 packages present in Packages/ directory as local path dependencies
 - [x] YoutubePublishPlugin and ReadingTimePublishPlugin forked to BrightDigit (YoutubePublishPlugin placed in Packages/BrightDigit/ rather than Packages/Plugins/)
-- [ ] Ink replaced with swift-markdown inside Publish subrepo (deferred — Ink still present in Packages/Publish/)
-- [ ] ShellOut successfully replaced with swift-subprocess (deferred — ShellOut retained as remote SPM dependency)
-- [x] Kanna and MarkdownGenerator retained (Linux-compatible, no viable replacement)
-- [x] Yams and Files retained (documented rationale in Dependency Modernization Research)
+- [ ] Ink replaced with swift-markdown inside Publish subrepo (deferred — Ink still present in Packages/Publish/) (#40)
+- [ ] ShellOut replaced with swift-subprocess in `Sources/Tagscriber` (deferred — ShellOut retained as remote SPM dependency) (#41)
+- [ ] ShellOut replaced with swift-subprocess in `Packages/Publish/Publish` and `Packages/BrightDigit/NPMPublishPlugin` subrepos (#46)
+- [ ] SyndiKit subrepo upgraded from 0.3.7 tag to main branch; macOS minimum conflict resolved (#43)
+- [ ] MarkdownGenerator brought local as subrepo (remote SPM dependency removed) (#47)
+- [x] Kanna, Yams, and Files retained (Linux-compatible; no viable alternatives — documented in Dependency Modernization Research)
 - [x] Package.swift using local path dependencies for all subrepos
 - [x] All tests passing on macOS (`swift build` and `swift test` both pass)
 - [ ] Site generation produces byte-for-byte identical output (not yet validated)
@@ -694,7 +696,8 @@ swiftSettings: [
 **Objective:** Upgrade the top-level `brightdigit.com` package to Swift 6 language mode, fixing all concurrency violations in `Sources/`. Subrepos remain at current language modes — Swift 6 packages can depend on older packages. This unlocks adoption of Swift 6.3-only libraries in Phase 3.
 
 **Key tasks:**
-1. Update `Package.swift`: `// swift-tools-version: 6.0`, `.macOS(.v13)`
+1. Update `Package.swift`: `// swift-tools-version: 6.0`, `.macOS(.v13)` — **requires SyndiKit on main branch first** (#43)
+
 2. Add `swiftSettings: [.enableExperimentalFeature("StrictConcurrency")]` to all targets
 3. **Fix Testimonial.swift data race (CRITICAL)** — remove `static var lastID`, make `id` a required parameter
 4. Add `Sendable` conformances to `ContributeMailchimp`, `ContributeYouTube`, `ContributeRSS`, `BrightDigitPodcast` source types
@@ -802,7 +805,7 @@ swiftSettings: [
 **Deliverables:**
 - [ ] SwiftTube migrated to swift-openapi-generator
 - [ ] Spinetail migrated to swift-openapi-generator
-- [ ] Prch dependency completely removed
+- [ ] Prch dependency completely removed (#45)
 - [ ] All API operations working with new clients
 - [ ] Integration tests passing
 - [ ] Content import produces identical markdown
@@ -825,7 +828,7 @@ swiftSettings: [
    - Fix any concurrency warnings in Publish/Plot/swift-markdown integration
    - Test all modules compile independently
 
-2. **Enforce Component-Based Plot API**
+2. **Enforce Component-Based Plot API** (#53)
    - Mark direct Node HTML creation as `internal` (currently `public`)
    - Keep Component protocol and @ComponentBuilder public
    - Update Plot documentation to emphasize components
@@ -937,6 +940,11 @@ swiftSettings: [
     - `String.swift:4` - NSRegularExpression lazy closure
     - `RSSContent.swift:21` - Explicit error handling instead of try?
 
+15. **Replace swift-argument-parser with swift-configuration** (#44)
+    - Update `BrightDigitArgs` targets in `Package.swift`
+    - Replace `ArgumentParser` import and `ParsableCommand` usage in all CLI command files
+    - Validate all subcommands (`publish`, `import`, `url`) work identically
+
 **Week 6: Mermaid Diagram Support**
 
 15. **Add Mermaid.js Integration**
@@ -1007,7 +1015,9 @@ swiftSettings: [
 - [ ] BrightDigit packages (7) upgraded to Swift 6
 - [ ] Forked plugins (2) upgraded to Swift 6
 - [ ] brightdigit.com using components exclusively
-- [ ] Zero direct Plot HTML creation in codebase
+- [ ] Zero direct Plot HTML creation in codebase (#53)
+- [ ] ShellOut replaced with swift-subprocess in Publish and NPMPublishPlugin subrepos (#46)
+- [ ] swift-argument-parser replaced with swift-configuration (#44)
 - [ ] Zero concurrency warnings across all 17 subrepos
 - [ ] Testimonial data race fixed
 - [ ] All Sendable conformances added
@@ -1155,6 +1165,18 @@ mutation CreatePost {
 - Update `ContributeYouTube` / `BrightDigitPodcast` to distinguish video vs audio episodes
 
 **Dependencies:** Phase 3 (#37) for YouTube client, Phase 3 (#38) for component system.
+
+---
+
+### Future Work
+
+Issues tracked but not yet assigned to a specific phase:
+
+| Issue | Title | Notes |
+|-------|-------|-------|
+| #49 | Support AT Protocol | Post-Phase 4: AT Protocol / ActivityPub integration for decentralized social publishing; relevant to Phase 4 Buffer social strategy. See [overreacted.io/a-social-filesystem](https://overreacted.io/a-social-filesystem/) |
+| #50 | Migrate to GitHub Pages | Infrastructure: move deployment from Netlify to GitHub Pages; scope TBD |
+| #51 | Research node-swift | Research spike: evaluate [kabiroberai/node-swift](https://github.com/kabiroberai/node-swift) for using Node.js packages from Swift; may affect NPMPublishPlugin long-term strategy |
 
 ---
 
