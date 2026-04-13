@@ -44,7 +44,7 @@ This three-phase approach ensures dependency stability before tackling the Swift
 - Remove `dev-server.sh` (hardcoded local path — issue #35)
 - Remove or archive `Import/Wordpress/` XML files (issue #34)
 
-**Phase 1: Monorepo Consolidation** (3-4 weeks) — issue #36
+**Phase 1: Monorepo Consolidation** ~~(3-4 weeks)~~ ✅ COMPLETE (2026-04-13) — issue #36
 - Set up git-subrepo for 17 external packages (Publish ecosystem + BrightDigit + forked plugins)
 - Organize packages into Packages/Publish/, Packages/BrightDigit/, Packages/Plugins/ directories
 - Fork YoutubePublishPlugin and ReadingTimePublishPlugin to BrightDigit organization
@@ -53,20 +53,19 @@ This three-phase approach ensures dependency stability before tackling the Swift
 - Update Package.swift to reference local subrepos
 - Validate site generation produces identical output
 
-**Phase 2: OpenAPI Generator Migration** (4-6 weeks) — issue #37
+**Phase 2: Swift 6 Migration (Main Package)** (2-3 weeks) — issue #38
+- Update main `brightdigit.com` Package.swift to Swift 6 language mode
+- Fix concurrency violations in `Sources/` (Testimonial.swift, Sendable conformances, force-try)
+- Subrepos remain at their current language modes — a Swift 6 package can depend on older Swift packages
+- This unblocks adoption of Swift 6.3-only libraries (swift-subprocess, swift-openapi-generator) in Phase 3
+
+**Phase 3: OpenAPI Generator Migration** (4-6 weeks) — issue #37
 - Migrate SwiftTube from SwagGen to swift-openapi-generator
 - Migrate Spinetail from SwagGen to swift-openapi-generator
 - Replace Prch framework with swift-openapi-runtime + swift-openapi-urlsession
 - Update ContributeYouTube and ContributeMailchimp client code
+- Replace ShellOut with swift-subprocess (now available — main package is Swift 6)
 - Comprehensive API integration testing
-
-**Phase 3: Swift 6 Migration + Mermaid Support** (5-7 weeks) — issue #38
-- Update to Swift 6 language mode across all 17 subrepos
-- Fix concurrency violations (Testimonial.swift, async/await patterns)
-- Add Sendable conformances
-- Integrate mermaid.js for diagram rendering
-- Expand test coverage
-- Performance benchmarking and validation
 
 **Phase 4: Publishing Infrastructure** (3-4 weeks, follows Phase 3) — issues #30, #31, #33
 - Build Buttondown newsletter client using swift-openapi-generator (official OpenAPI 3.0.2 spec)
@@ -477,7 +476,15 @@ This section documents research findings for replacing third-party dependencies 
 
 ---
 
-### Phase 2 Requirements: OpenAPI Generator Migration
+### Phase 2 Requirements: Swift 6 Language Mode (Main Package)
+
+> **Scope:** Only the top-level `brightdigit.com` package needs Swift 6 before Phase 3. A Swift 6 package can depend on older Swift packages, so the 17 subrepos remain at their current language modes. Subrepo Swift 6 upgrades (and component migration, mermaid support) continue in Phase 3 alongside the OpenAPI migration.
+
+See [Phase 3 Requirements](#phase-3-requirements-openapi-generator-migration) for the original Phase 3 content (now moved to Phase 3).
+
+---
+
+### Phase 3 Requirements: OpenAPI Generator Migration
 
 **Objective:** Replace SwagGen-based API clients with Apple's swift-openapi-generator
 
@@ -540,7 +547,7 @@ Similar transformation from Prch-based to protocol-based client.
 4. **ContributeMailchimp** - Update Prch.APIClient.Newsletter.swift
 5. **BrightDigitPodcast** - Update to use new client patterns
 
-### Phase 3 Requirements: Swift 6 Language Mode
+### Phase 3 (continued) Requirements: Swift 6 Language Mode + Subrepos + Mermaid
 
 **Current State:**
 - Swift tools version: 5.8
@@ -578,9 +585,11 @@ swiftSettings: [
 
 ## Migration Phases
 
-### Phase 1: Monorepo Consolidation (3-4 weeks)
+### Phase 1: Monorepo Consolidation ✅ COMPLETE (2026-04-13)
 
 **Objective:** Consolidate 17 external packages into monorepo using git-subrepo, organized by source/purpose
+
+> **Status:** Complete. All packages are present in `Packages/` as local path dependencies. `swift build` and `swift test` both pass on macOS. Two items from the original plan were deferred: Ink → swift-markdown and ShellOut → swift-subprocess replacements (ShellOut remains a remote SPM dependency; Ink is present in `Packages/Publish/` but not yet replaced). `YoutubePublishPlugin` was placed under `Packages/BrightDigit/` rather than `Packages/Plugins/` as originally planned.
 
 **Week 1: Subrepo Setup and Fork Preparation**
 
@@ -666,21 +675,41 @@ swiftSettings: [
     - Rollback testing
 
 **Deliverables:**
-- [ ] All 17 packages cloned as git-subrepos in Packages/ directory
-- [ ] YoutubePublishPlugin and ReadingTimePublishPlugin forked to BrightDigit
-- [ ] Ink replaced with swift-markdown inside Publish subrepo (identical markdown output)
-- [ ] ShellOut successfully replaced with swift-subprocess
-- [ ] Kanna and MarkdownGenerator retained (Linux-compatible, no viable replacement)
-- [ ] Yams and Files retained (documented rationale in Dependency Modernization Research)
-- [ ] Package.swift using local path dependencies for all subrepos
-- [ ] All tests passing on macOS and Ubuntu
-- [ ] Site generation produces byte-for-byte identical output
-- [ ] GitLab CI/CD pipeline passing
+- [x] All 17 packages present in Packages/ directory as local path dependencies
+- [x] YoutubePublishPlugin and ReadingTimePublishPlugin forked to BrightDigit (YoutubePublishPlugin placed in Packages/BrightDigit/ rather than Packages/Plugins/)
+- [ ] Ink replaced with swift-markdown inside Publish subrepo (deferred — Ink still present in Packages/Publish/)
+- [ ] ShellOut successfully replaced with swift-subprocess (deferred — ShellOut retained as remote SPM dependency)
+- [x] Kanna and MarkdownGenerator retained (Linux-compatible, no viable replacement)
+- [x] Yams and Files retained (documented rationale in Dependency Modernization Research)
+- [x] Package.swift using local path dependencies for all subrepos
+- [x] All tests passing on macOS (`swift build` and `swift test` both pass)
+- [ ] Site generation produces byte-for-byte identical output (not yet validated)
+- [ ] GitLab CI/CD pipeline passing (not yet validated on Ubuntu)
 - [ ] Monorepo v1.0.0 tagged and documented
 
 ---
 
-### Phase 2: OpenAPI Generator Migration (4-6 weeks)
+### Phase 2: Swift 6 Migration — Main Package (2-3 weeks)
+
+**Objective:** Upgrade the top-level `brightdigit.com` package to Swift 6 language mode, fixing all concurrency violations in `Sources/`. Subrepos remain at current language modes — Swift 6 packages can depend on older packages. This unlocks adoption of Swift 6.3-only libraries in Phase 3.
+
+**Key tasks:**
+1. Update `Package.swift`: `// swift-tools-version: 6.0`, `.macOS(.v13)`
+2. Add `swiftSettings: [.enableExperimentalFeature("StrictConcurrency")]` to all targets
+3. **Fix Testimonial.swift data race (CRITICAL)** — remove `static var lastID`, make `id` a required parameter
+4. Add `Sendable` conformances to `ContributeMailchimp`, `ContributeYouTube`, `ContributeRSS`, `BrightDigitPodcast` source types
+5. Fix force-try statements in `YAMLStringFix.swift`, `String.swift`, `RSSContent.swift`
+6. Validate `swift build` and `swift test` pass with Swift 6 strict concurrency
+
+**Deliverables:**
+- [ ] `brightdigit.com` Package.swift on `swift-tools-version: 6.0`
+- [ ] Zero concurrency warnings in `Sources/`
+- [ ] All tests passing under Swift 6
+- [ ] Subrepos unchanged (still at prior language modes)
+
+---
+
+### Phase 3: OpenAPI Generator Migration + Subrepo Swift 6 + Mermaid (7-9 weeks)
 
 **Objective:** Migrate SwiftTube and Spinetail from SwagGen to swift-openapi-generator, eliminating Prch dependency
 
@@ -781,11 +810,11 @@ swiftSettings: [
 
 ---
 
-### Phase 3: Swift 6 + Component Migration + Mermaid Support (5-7 weeks)
+### Phase 3 (continued): Subrepo Swift 6 Upgrades + Component Migration + Mermaid Support
 
-**Objective:** Upgrade to Swift 6 across all 17 subrepos, enforce component-based HTML generation, eliminate concurrency violations, add mermaid diagram support
+**Objective:** Upgrade all 17 subrepos to Swift 6, enforce component-based HTML generation, add mermaid diagram support
 
-**Note:** Async/await patterns already in place from Phase 2 OpenAPI migration
+**Note:** Async/await patterns already in place from Phase 3 OpenAPI migration above. Main package is already on Swift 6 from Phase 2.
 
 **Week 1: Subrepo Swift 6 Upgrades (Publish Ecosystem)**
 
@@ -994,7 +1023,7 @@ swiftSettings: [
 
 **Objective:** Build an open source Swift package that integrates into the BrightDigit.com publishing pipeline to deliver content across newsletter (Buttondown) and social media (Buffer) channels — without storing any audience data in the repository.
 
-This phase depends on Phase 2 (swift-openapi-generator toolchain) and Phase 3 (Swift 6 compliance).
+This phase depends on Phase 3 (swift-openapi-generator toolchain) and Phase 2 (Swift 6 compliance).
 
 #### Constraints
 
@@ -1125,7 +1154,7 @@ mutation CreatePost {
 - Update podcast RSS feed generation to include video enclosures where applicable
 - Update `ContributeYouTube` / `BrightDigitPodcast` to distinguish video vs audio episodes
 
-**Dependencies:** Phase 2 (#37) for YouTube client, Phase 3 (#38) for component system.
+**Dependencies:** Phase 3 (#37) for YouTube client, Phase 3 (#38) for component system.
 
 ---
 
