@@ -20,6 +20,7 @@ extension SectionElement {
       Header {
         Link(url: product.productURL) {
           Image(url: product.logo, description: "\(product.title) logo")
+            .class(product.clipLogo ? "" : "no-clip")
           H2 {
             Text(product.title)
           }

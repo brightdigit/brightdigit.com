@@ -6,6 +6,7 @@ description: GitHub Action for building and testing Swift packages across all pl
 date: 2025-02-18 10:30
 githubRepoName: swift-build
 featuredImage: /media/products/swift-build/logo.svg
+isFeatured: true
 ---
 swift-build is a GitHub Action for building and testing Swift packages across all platforms with zero configuration.
 

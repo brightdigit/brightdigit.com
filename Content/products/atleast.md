@@ -6,6 +6,7 @@ description: A passive haptic timer for Apple Watch for meditation, breathwork, 
 date: 2026-02-24 10:30
 productURL: https://atleast.app
 featuredImage: /media/products/atleast/logo.png
+isFeatured: true
 ---
 AtLeast is a passive haptic timer for Apple Watch that uses gentle taps to mark time intervals — no screens, just rhythm.
 

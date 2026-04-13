@@ -9,7 +9,8 @@ extension SectionItem {
     let featuredIndex = allChildren.firstIndex(where: { $0.isFeatured }) ?? allChildren.startIndex
     var children = allChildren
     children.remove(at: featuredIndex)
-    let builder = SectionBuilder(section: section, children: children, featuredItem: allChildren[featuredIndex])
+    let sortedChildren = children.filter { $0.isFeatured } + children.filter { !$0.isFeatured }
+    let builder = SectionBuilder(section: section, children: sortedChildren, featuredItem: allChildren[featuredIndex])
     return SectionContent(builder: builder, context: context)
   }
 
