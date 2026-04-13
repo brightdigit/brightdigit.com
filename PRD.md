@@ -77,12 +77,23 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 | #20 | Implement HowTo Schema Markup in `PiHTMLFactory` | P1-high | Open |
 
 **Implementation files:**
-- `Sources/BrightDigitSite/Nodes/PiHTMLFactory.HTML.swift` — head generation
+- `Sources/BrightDigitSite/Nodes/PiHTMLFactory.HTML.swift` — head generation (`head(forPage:)` is the JSON-LD injection point)
 - `Sources/BrightDigitSite/PiHTMLFactory.swift` — main factory (not a protocol)
+- `Sources/PublishType/PageContent.swift` — add `schemaMarkup: String?` to the `PageContent` protocol
+- `Sources/BrightDigitSite/BrightDigitSite.swift` — extend `ItemMetadata` with `faqItems: [FAQItem]?`, `howToSteps: [HowToStep]?`
+- Each `Sources/BrightDigitSite/Nodes/Section/*.swift` — implement `schemaMarkup` computed property
 
-**Note:** Verify that FAQ and HowTo are the appropriate schema.org types for a company/agency site. Consider alternatives such as `Article`, `TechArticle`, `WebPage`, or `Service` if FAQ/HowTo don't fit the content.
+**Integration architecture:**
+- `PageContent` protocol gains `schemaMarkup: String?`; `head(forPage:)` emits `<script type="application/ld+json">` when non-nil — no per-page-type changes needed in `PiHTMLFactory`
+- Schema types per section (auto-generated from existing metadata unless noted):
+  - Articles → `Article` (title, description, date, featuredImage — zero new front matter)
+  - Tutorials → `HowTo` (requires `howToSteps` front matter array, or extracted from `##` headings)
+  - Products → `SoftwareApplication` (platforms, technologies, appStoreURL, githubRepoName)
+  - FAQ pages → `FAQPage` (requires `faqItems` front matter array)
+  - Index / About-Us → `Organization` (hardcoded BrightDigit metadata)
+- The `.claude/ai-cite-optimization/` docs already define `FAQSchema`, `HowToSchema`, `ArticleSchema`, `Person`, `Organization`, `ImageObject` structures — wire these to the Swift build
 
-**Research required:** Before implementing schema markup, determine how structured schemas integrate into the Publish pipeline — via `PiHTMLFactory`, a dedicated Publish plugin, or content metadata fields.
+**Note:** FAQ and HowTo schemas are most valuable for AI citations. `Article` and `SoftwareApplication` schemas provide additional richness at zero content-authoring cost since all required fields already exist in `ItemMetadata`.
 
 ### 1C: Validation
 
@@ -119,7 +130,9 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 | # | Title | Status |
 |---|-------|--------|
 | #38 | Swift 6 Language Mode + Component Migration + Mermaid Support | Open |
-| TBD | Investigate decoupling content updates from Swift build (prebuilt binary / separate publish step) | Open |
+| TBD | Fast-deploy: cache prebuilt binary so content-only commits skip `swift build` | Open |
+
+**Content/code separation note:** `Content/` markdown files are already runtime data — they are not compiled into the binary. The problem is CI/CD latency: every commit triggers `swift build` even when only markdown changed. Solution: store the prebuilt `brightdigitwg` binary as a GitLab CI artifact; content-only commits (no `*.swift` or `Package.swift` changes) download the cached binary and run deploy directly. Cache must be invalidated when `Package.resolved` changes.
 
 **Key tasks:**
 - Update `Package.swift`: `// swift-tools-version: 6.3`, `.macOS(.v13)`
@@ -148,7 +161,7 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 | #37 | OpenAPI Generator Migration (SwiftTube + Spinetail) | ~521 generated files replaced; rewrites `ContributeYouTube` and `ContributeMailchimp` |
 | #40 | Replace Ink with swift-markdown | Ink is used transitively via Publish's markdown pipeline |
 | #41 | Replace ShellOut with swift-subprocess (Tagscriber) | Only affects `Tagscriber/PandocMarkdownGenerator.swift` |
-| #46 | Replace ShellOut with swift-subprocess (Publish/NPMPublishPlugin) | Affects subrepos — should leverage #51 (node-swift research); if node-swift proves viable it may eliminate the ShellOut dependency entirely for NPMPublishPlugin |
+| #46 | Replace ShellOut with swift-subprocess (Publish/NPMPublishPlugin) | Affects subrepos — NPMPublishPlugin currently runs `npm ci` + `npm run publish` in `Styling/` via ShellOut; replacing ShellOut requires updating the plugin itself. If node-swift (#51) is viable it may eliminate NPMPublishPlugin entirely (run npm via native Node.js embedding). |
 | #44 | Replace swift-argument-parser with swift-configuration | Affects all 7 files in `BrightDigitArgs/` |
 
 **Dependency decisions:**
@@ -184,11 +197,21 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 
 > **High Impact Warning:** This phase substantially rewrites `PiHTMLFactory` and all `Nodes/` files.
 
+**Plot API context:** Plot has two coexisting APIs. The **Node API** (`Node<HTML.BodyContext>`) is lower-level and functional — used throughout `Nodes/`. The **Component API** (`Component` protocol, SwiftUI-style `var body: Component`) is declarative and already used in `Components/` (SectionElement, ServiceBox, Icon, ListItem) and in `ServicesBuilder.swift` and `ProductItem.swift`. Nodes conform to `Component`; components bridge back via `.convertToNode()`.
+
+**Migration approach:** Keep `PageContent.main` as `[Node<HTML.BodyContext>]`; leaf components call `.convertToNode()` at the boundary. This matches the pattern already established in `ProductItem.swift` and avoids a `PageContent` protocol break.
+
+**Migration order:** (1) header/footer in `PiHTMLFactory.HTML.swift` (affects every page), (2) `Nodes/Section/` item content files, (3) `Nodes/Pages/` builders.
+
+**#53 enforcement:** No direct `Node<HTML.BodyContext>` construction in `BrightDigitSite` — all HTML must flow through a `Component`. Enforcement mechanism TBD (SwiftLint custom rule or build-time assertion).
+
+**TailwindKit module:** "Create library for easy Tailwind access" means a new Swift module that maps to Tailwind utility class names (e.g., `.bg(.blue, .500)` → `"bg-blue-500"`), providing compile-time safety for CSS classes used in components.
+
 | # | Title | Status |
 |---|-------|--------|
 | #38 | Swift 6.3 Language Mode + Component Migration + Mermaid Support | Open |
 | #53 | Enforce component-based Plot API (no direct Node creation) | Open |
-| TBD | Upgrade Tailwind + create library for easy Tailwind access | Open |
+| TBD | Upgrade Tailwind + `TailwindKit` Swift module for type-safe class names | Open |
 | #24 | YouTube Video Content Strategy | Open |
 | #25 | Create Unique BrightDigit Frameworks/Methodologies | Open |
 
