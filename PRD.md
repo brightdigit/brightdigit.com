@@ -64,11 +64,11 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 | # | Title | Status |
 |---|-------|--------|
 | ~~#36~~ | ~~Phase 1: Monorepo Consolidation (17 packages)~~ | **Completed** (#42, #48) |
-| #43 | Upgrade SyndiKit subrepo from 0.3.7 to main branch | Open |
+| #43 | Upgrade SyndiKit subrepo from 0.3.7 to 0.8.1 | Open |
 | #47 | Remove MarkdownGenerator dependency | Open |
 
 **Notes:**
-- #43 should be resolved before Phase 2 — SyndiKit 0.3.7 predates the Swift 6.0 concurrency work. The `main` branch has `Package@swift-6.0.swift` which SPM picks up automatically under Swift 6.3, providing proper `Sendable` conformances. Not a hard blocker (a Swift 6.3 parent can depend on a 5.5 package) but resolving it first avoids concurrency warnings during Phase 2.
+- #43 should be resolved before Phase 2 — SyndiKit 0.3.7 predates the Swift 6.0 concurrency work. 0.8.1 has `Package@swift-6.0.swift` which SPM picks up automatically under Swift 6.3, providing proper `Sendable` conformances. Not a hard blocker (a Swift 6.3 parent can depend on a 5.5 package) but resolving it first avoids concurrency warnings during Phase 2.
 
 ---
 
