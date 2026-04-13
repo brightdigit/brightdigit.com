@@ -19,11 +19,10 @@ This document organizes all open GitHub issues into sequential phases and milest
 
 ```
 Phase 0 (housekeeping) ─────────────── independent, can run at any time
-Phase 1A (AI-CITE schema) ───────────── requires Phase 3 (intentional: implement after Swift 6.3 upgrade)
-Phase 1C (AI-CITE validation) ──────── requires Phase 1A (schema must ship before baseline testing)
-Phase 2 (Monorepo cleanup) ──────────── prerequisite: #36 ✓ (complete)
-Phase 3 (Swift 6.3 main package) ────── requires Phase 2
-Phase 4 (OpenAPI migration) ─────────── requires Phase 3 — Swift 6.3-only toolchain
+Phase 1 (Monorepo cleanup) ──────────── prerequisite: #36 ✓ (complete)
+Phase 2 (Swift 6.3 main package) ────── requires Phase 1
+Phase 3 (AI-CITE schema + validation) ─ requires Phase 2 (intentional: implement after Swift 6.3 upgrade)
+Phase 4 (OpenAPI migration) ─────────── requires Phase 2 — Swift 6.3-only toolchain
 Phase 5 (Swift 6.3 subrepos + components) requires Phase 4
 Phase 6 (Publishing infra) ──────────── requires Phase 4 (swift-openapi-generator toolchain)
 Phase 7 (Platform migration) ────────── requires Phase 5/6
@@ -58,17 +57,59 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 
 ---
 
+## Phase 1: Monorepo Cleanup
 
-## Phase 1: AI-CITE Optimization
+**Goal:** Finish loose ends from the monorepo consolidation (#36, completed via #42 and #48).
+
+| # | Title | Status |
+|---|-------|--------|
+| ~~#36~~ | ~~Phase 1: Monorepo Consolidation (17 packages)~~ | **Completed** (#42, #48) |
+| #43 | Upgrade SyndiKit subrepo from 0.3.7 to main branch | Open |
+| #47 | Remove MarkdownGenerator dependency | Open |
+
+**Notes:**
+- #43 must be resolved before Phase 2 — `// swift-tools-version: 6.3` requires the macOS minimum conflict in SyndiKit to be resolved first.
+
+---
+
+## Phase 2: Swift 6.3 — Main Package
+
+**Goal:** Upgrade the top-level `brightdigit.com` package to Swift 6.3 language mode. Subrepos remain at their current language modes — a Swift 6.3 package can depend on older Swift packages. This unblocks Phase 4 (swift-openapi-generator and swift-subprocess require Swift 6.3+).
+
+**Estimated effort:** 2–3 weeks  
+**Dependency:** Phase 1 (#43 resolved).
+
+| # | Title | Status |
+|---|-------|--------|
+| #38 | Swift 6 Language Mode + Component Migration + Mermaid Support | Open |
+| TBD | Fast-deploy: cache prebuilt binary so content-only commits skip `swift build` | Open |
+
+**Content/code separation note:** `Content/` markdown files are already runtime data — they are not compiled into the binary. The problem is CI/CD latency: every commit triggers `swift build` even when only markdown changed. Solution: store the prebuilt `brightdigitwg` binary as a GitLab CI artifact; content-only commits (no `*.swift` or `Package.swift` changes) download the cached binary and run deploy directly. Cache must be invalidated when `Package.resolved` changes.
+
+**Key tasks:**
+- Update `Package.swift`: `// swift-tools-version: 6.3`, `.macOS(.v13)`
+- **Fix `Testimonial.swift` data race (critical):** remove `static var lastID`, make `id` a required parameter
+- Add `Sendable` conformances: `Newsletter.Source`, `YouTubeContent.Source`, `RSSContent.Source`, `BrightDigitPodcast.Source`
+- Fix force-try: `YAMLStringFix.swift:6`, `String.swift:4`, `RSSContent.swift:21`
+
+**Deliverables:**
+- [ ] `brightdigit.com` Package.swift on `swift-tools-version: 6.3`
+- [ ] Zero concurrency warnings in `Sources/`
+- [ ] All tests passing under Swift 6.3
+- [ ] Subrepos unchanged (still at prior language modes)
+
+---
+
+## Phase 3: AI-CITE Optimization
 
 **Milestone:** AI-CITE Phase 1 (target: Feb 28, 2026)  
 **Branch:** `ai-cite-optimization` (PR #39)  
-**Goal:** Implement structured schema markup and optimize priority articles so BrightDigit content is cited by AI systems (ChatGPT, Google AI Overview, etc.). AI-CITE is fundamentally an integration into the Swift site-building code (`PublishType` protocol + `BrightDigitSite` implementation) — not just article-level content edits. Intentionally sequenced after Phase 3 to avoid doing this work twice across a Swift 6.3 boundary.
+**Goal:** Implement structured schema markup and optimize priority articles so BrightDigit content is cited by AI systems (ChatGPT, Google AI Overview, etc.). AI-CITE is fundamentally an integration into the Swift site-building code (`PublishType` protocol + `BrightDigitSite` implementation) — not just article-level content edits. Intentionally sequenced after Phase 2 to avoid doing this work twice across a Swift 6.3 boundary.
 
 **Framework:** AI-CITE — Answer-first, Intent-matched headings, Clear structure, Indexed schema, Trusted sources, Exclusive POV.  
 **Target:** 60% of priority articles get AI mentions within 1 week of optimization.
 
-### 1A: Schema Implementation
+### 3A: Schema Implementation
 
 | # | Title | Priority | Status |
 |---|-------|----------|--------|
@@ -99,7 +140,7 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 
 **Note:** FAQ and HowTo schemas are most valuable for AI citations. `Article` and `SoftwareApplication` schemas provide additional richness at zero content-authoring cost since all required fields already exist in `ItemMetadata`.
 
-### 1C: Validation
+### 3B: Validation
 
 | # | Title | Priority | Status |
 |---|-------|----------|--------|
@@ -109,55 +150,12 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 
 ---
 
-## Phase 2: Monorepo Cleanup
-
-**Goal:** Finish loose ends from the monorepo consolidation (#36, completed via #42 and #48).
-
-| # | Title | Status |
-|---|-------|--------|
-| ~~#36~~ | ~~Phase 1: Monorepo Consolidation (17 packages)~~ | **Completed** (#42, #48) |
-| #43 | Upgrade SyndiKit subrepo from 0.3.7 to main branch | Open |
-| #47 | Remove MarkdownGenerator dependency | Open |
-
-**Notes:**
-- #43 must be resolved before Phase 3 — `// swift-tools-version: 6.3` requires the macOS minimum conflict in SyndiKit to be resolved first.
-
----
-
-## Phase 3: Swift 6.3 — Main Package
-
-**Goal:** Upgrade the top-level `brightdigit.com` package to Swift 6.3 language mode. Subrepos remain at their current language modes — a Swift 6.3 package can depend on older Swift packages. This unblocks Phase 4 (swift-openapi-generator and swift-subprocess require Swift 6.3+).
-
-**Estimated effort:** 2–3 weeks  
-**Dependency:** Phase 2 (#43 resolved).
-
-| # | Title | Status |
-|---|-------|--------|
-| #38 | Swift 6 Language Mode + Component Migration + Mermaid Support | Open |
-| TBD | Fast-deploy: cache prebuilt binary so content-only commits skip `swift build` | Open |
-
-**Content/code separation note:** `Content/` markdown files are already runtime data — they are not compiled into the binary. The problem is CI/CD latency: every commit triggers `swift build` even when only markdown changed. Solution: store the prebuilt `brightdigitwg` binary as a GitLab CI artifact; content-only commits (no `*.swift` or `Package.swift` changes) download the cached binary and run deploy directly. Cache must be invalidated when `Package.resolved` changes.
-
-**Key tasks:**
-- Update `Package.swift`: `// swift-tools-version: 6.3`, `.macOS(.v13)`
-- **Fix `Testimonial.swift` data race (critical):** remove `static var lastID`, make `id` a required parameter
-- Add `Sendable` conformances: `Newsletter.Source`, `YouTubeContent.Source`, `RSSContent.Source`, `BrightDigitPodcast.Source`
-- Fix force-try: `YAMLStringFix.swift:6`, `String.swift:4`, `RSSContent.swift:21`
-
-**Deliverables:**
-- [ ] `brightdigit.com` Package.swift on `swift-tools-version: 6.3`
-- [ ] Zero concurrency warnings in `Sources/`
-- [ ] All tests passing under Swift 6.3
-- [ ] Subrepos unchanged (still at prior language modes)
-
----
-
 ## Phase 4: OpenAPI & Dependency Migration
 
 **Goal:** Replace SwagGen + Prch with Apple's swift-openapi-generator and async/await throughout. Replace other stale dependencies.
 
 **Estimated effort:** 4–6 weeks  
-**Dependency:** Phase 3 (Swift 6.3 main package).
+**Dependency:** Phase 2 (Swift 6.3 main package).
 
 | # | Title | Notes |
 |---|-------|-------|
@@ -203,7 +201,7 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 
 **Plot API context:** Plot has two coexisting APIs. The **Node API** (`Node<HTML.BodyContext>`) is lower-level and functional — used throughout `Nodes/`. The **Component API** (`Component` protocol, SwiftUI-style `var body: Component`) is declarative and already used in `Components/` (SectionElement, ServiceBox, Icon, ListItem) and in `ServicesBuilder.swift` and `ProductItem.swift`. Nodes conform to `Component`; components bridge back via `.convertToNode()`.
 
-**Migration approach:** Keep `PageContent.main` as `[Node<HTML.BodyContext>]`; leaf components call `.convertToNode()` at the boundary. This matches the pattern already established in `ProductItem.swift` and avoids a `PageContent` protocol break. The `schemaMarkup: String?` property added to `PageContent` in Phase 1 carries forward unchanged.
+**Migration approach:** Keep `PageContent.main` as `[Node<HTML.BodyContext>]`; leaf components call `.convertToNode()` at the boundary. This matches the pattern already established in `ProductItem.swift` and avoids a `PageContent` protocol break. The `schemaMarkup: String?` property added to `PageContent` in Phase 3 carries forward unchanged.
 
 **Migration order:** (1) header/footer in `PiHTMLFactory.HTML.swift` (affects every page), (2) `Nodes/Section/` item content files, (3) `Nodes/Pages/` builders.
 
@@ -315,7 +313,7 @@ New source modules (local to this repo, not subrepos):
 
 ## Post-Migration Content Tasks
 
-**Goal:** Pure content edits and article optimization — no code changes required. Deferred until the schema pipeline (Phase 1A + Swift migration) is stable.
+**Goal:** Pure content edits and article optimization — no code changes required. Deferred until the schema pipeline (Phase 3A + Swift migration) is stable.
 
 **Note:** Apply the `article-edit` GitHub label to all issues below to distinguish from migration/code issues.
 
@@ -337,7 +335,7 @@ New source modules (local to this repo, not subrepos):
 | #27 | Optimize iOS Architecture Article for AI-CITE | P1-high | Open |
 | #28 | Optimize Remaining Priority Articles (Batch) | P1-high | Open |
 
-**Dependency:** Phase 1A (#19 schema implementation) must be complete and stable before article optimization begins.
+**Dependency:** Phase 3A (#19 schema implementation) must be complete and stable before article optimization begins.
 
 ---
 
@@ -354,9 +352,9 @@ New source modules (local to this repo, not subrepos):
 | Phase | Issues | Notes |
 |-------|--------|-------|
 | Phase 0 | 2 | Quick wins |
-| Phase 1 | 4 | AI-CITE schema (#18, #19, #20) + validation (#23) |
-| Phase 2 | 2 | Monorepo cleanup (1 already done) |
-| Phase 3 | 2 | Swift 6.3 main package + rebuild-avoidance (TBD) |
+| Phase 1 | 2 | Monorepo cleanup (1 already done) |
+| Phase 2 | 2 | Swift 6.3 main package + rebuild-avoidance (TBD) |
+| Phase 3 | 4 | AI-CITE schema (#18, #19, #20) + validation (#23) |
 | Phase 4 | 6 | OpenAPI migration |
 | Phase 5 | 5 | Swift 6.3 subrepos + components + Tailwind (TBD) + AI-CITE content strategy (#24, #25) |
 | Phase 6 | 4 | Publishing infrastructure |
