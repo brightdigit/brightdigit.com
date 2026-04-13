@@ -18,8 +18,9 @@ This document organizes all open GitHub issues into sequential phases and milest
 ### Dependency Chain
 
 ```
-Phase 0/0B (housekeeping/articles) — independent, can run at any time
-Phase 1 (AI-CITE) ──────────────────── independent, can run in parallel with Phase 2
+Phase 0 (housekeeping) ─────────────── independent, can run at any time
+Phase 1A (AI-CITE schema/Swift) ─────── requires Phase 3 (PiHTMLFactory changes need Swift 6.3)
+Phase 1C (AI-CITE validation) ──────── independent, can run at any time
 Phase 2 (Monorepo cleanup) ──────────── prerequisite: #36 ✓ (complete)
 Phase 3 (Swift 6.3 main package) ────── requires Phase 2
 Phase 4 (OpenAPI migration) ─────────── requires Phase 3 — Swift 6.3-only toolchain
@@ -57,21 +58,6 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 
 ---
 
-## Phase 0B: Article Edits
-
-**Goal:** Small content fixes to existing articles.
-
-| # | Title | Status |
-|---|-------|--------|
-| #3 | Add Additional Local Storage Options | Open |
-| #4 | Add Main Actor to Swift 6 Article Solution | Open |
-| #13 | Clarify String vs Reference design choice in MistKit article | Open |
-
-**Notes:**
-- **Not part of the v2.0 migration** — these are pure markdown/content edits; no code changes required.
-- Apply the `article-edit` GitHub label to #3, #4, and #13 to distinguish from migration/code issues.
-
----
 
 ## Phase 1: AI-CITE Optimization
 
@@ -96,34 +82,13 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 
 **Note:** Verify that FAQ and HowTo are the appropriate schema.org types for a company/agency site. Consider alternatives such as `Article`, `TechArticle`, `WebPage`, or `Service` if FAQ/HowTo don't fit the content.
 
-### 1B: Article Optimization
-
-| # | Title | Priority | Status |
-|---|-------|----------|--------|
-| #21 | Optimize Mise Setup Guide for AI-CITE | P1-high | Open |
-| #22 | Optimize Best Backend Article for AI-CITE | P1-high | Open |
-| #26 | Optimize iOS CI/CD Article for AI-CITE | P1-high | Open |
-| #27 | Optimize iOS Architecture Article for AI-CITE | P1-high | Open |
-| #28 | Optimize Remaining Priority Articles (Batch) | P1-high | Open |
-
-**Dependency:** #19 must be complete before article optimization begins.
-
-**Note:** These article optimization tasks should be re-evaluated once the Swift migration (Phases 3–5) is complete, as the HTML/schema output pipeline will change.
+**Research required:** Before implementing schema markup, determine how structured schemas integrate into the Publish pipeline — via `PiHTMLFactory`, a dedicated Publish plugin, or content metadata fields.
 
 ### 1C: Validation
 
 | # | Title | Priority | Status |
 |---|-------|----------|--------|
 | #23 | Test AI-CITE Baseline and Validate Schema | P1-high | Open |
-
-### 1D: Content Strategy
-
-| # | Title | Priority | Status |
-|---|-------|----------|--------|
-| #24 | YouTube Video Content Strategy | P2-medium | Open |
-| #25 | Create Unique BrightDigit Frameworks/Methodologies | P2-medium | Open |
-
-**Note:** These are post-migration tasks — align with the refactored AI-CITE integration into Publish/BrightDigitSite after Phase 5.
 
 **Reference:** `.claude/ai-cite-optimization/`
 
@@ -154,6 +119,7 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 | # | Title | Status |
 |---|-------|--------|
 | #38 | Swift 6 Language Mode + Component Migration + Mermaid Support | Open |
+| TBD | Investigate decoupling content updates from Swift build (prebuilt binary / separate publish step) | Open |
 
 **Key tasks:**
 - Update `Package.swift`: `// swift-tools-version: 6.3`, `.macOS(.v13)`
@@ -223,6 +189,8 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 | #38 | Swift 6.3 Language Mode + Component Migration + Mermaid Support | Open |
 | #53 | Enforce component-based Plot API (no direct Node creation) | Open |
 | TBD | Upgrade Tailwind + create library for easy Tailwind access | Open |
+| #24 | YouTube Video Content Strategy | Open |
+| #25 | Create Unique BrightDigit Frameworks/Methodologies | Open |
 
 **Swift 6.3 subrepo upgrades (17 total):**
 - Publish ecosystem (8): Publish, Plot, Files, Codextended, Sweep, CollectionConcurrencyKit, Splash, SplashPublishPlugin
@@ -242,6 +210,9 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 **New components in `Sources/BrightDigitSite/Components/`:**
 - Layout: `HeaderComponent`, `FooterComponent`, `NavigationComponent`, `PageLayoutComponent`
 - Content: `ArticleCardComponent`, `NewsletterItemComponent`, `PodcastEpisodeComponent`, `TutorialItemComponent`, `ProductCardComponent`
+
+**AI-CITE Content Strategy (post-migration):**
+- #24 and #25 align with the refactored AI-CITE integration into Publish/BrightDigitSite — execute after component migration is stable.
 
 **Mermaid Support:**
 - Detect `mermaid` code blocks and wrap in `<div class="mermaid">` instead of `<pre><code>`
@@ -315,6 +286,34 @@ New source modules (local to this repo, not subrepos):
 
 ---
 
+## Post-Migration Content Tasks
+
+**Goal:** Pure content edits and article optimization — no code changes required. Deferred until the schema pipeline (Phase 1A + Swift migration) is stable.
+
+**Note:** Apply the `article-edit` GitHub label to all issues below to distinguish from migration/code issues.
+
+### Article Edits (formerly Phase 0B)
+
+| # | Title | Status |
+|---|-------|--------|
+| #3 | Add Additional Local Storage Options | Open |
+| #4 | Add Main Actor to Swift 6 Article Solution | Open |
+| #13 | Clarify String vs Reference design choice in MistKit article | Open |
+
+### Article Optimization (formerly Phase 1B)
+
+| # | Title | Priority | Status |
+|---|-------|----------|--------|
+| #21 | Optimize Mise Setup Guide for AI-CITE | P1-high | Open |
+| #22 | Optimize Best Backend Article for AI-CITE | P1-high | Open |
+| #26 | Optimize iOS CI/CD Article for AI-CITE | P1-high | Open |
+| #27 | Optimize iOS Architecture Article for AI-CITE | P1-high | Open |
+| #28 | Optimize Remaining Priority Articles (Batch) | P1-high | Open |
+
+**Dependency:** Phase 1A (#19 schema implementation) must be complete and stable before article optimization begins.
+
+---
+
 ## Excluded Issues
 
 | # | Title | Reason |
@@ -328,13 +327,13 @@ New source modules (local to this repo, not subrepos):
 | Phase | Issues | Notes |
 |-------|--------|-------|
 | Phase 0 | 2 | Quick wins |
-| Phase 0B | 3 | Article edits (not part of v2.0 migration) |
-| Phase 1 | 11 | AI-CITE + seomachine (milestone active) |
+| Phase 1 | 4 | AI-CITE schema (#18, #19, #20) + validation (#23) |
 | Phase 2 | 2 | Monorepo cleanup (1 already done) |
-| Phase 3 | 1 | Swift 6.3 main package |
+| Phase 3 | 2 | Swift 6.3 main package + rebuild-avoidance (TBD) |
 | Phase 4 | 6 | OpenAPI migration |
-| Phase 5 | 3 | Swift 6.3 subrepos + components + mermaid + Tailwind (TBD issue) |
+| Phase 5 | 5 | Swift 6.3 subrepos + components + Tailwind (TBD) + AI-CITE content strategy (#24, #25) |
 | Phase 6 | 4 | Publishing infrastructure |
-| Phase 7 | 3 | Platform migration + form integration (TBD issue) |
+| Phase 7 | 3 | Platform migration + form integration (TBD) |
 | Phase 8 | 3 | Deferred cleanup |
-| **Total** | **38** | Excludes #12 (done), #36 (done); includes 2 TBD issues awaiting GitHub creation |
+| Post-Migration | 8 | Article edits (#3, #4, #13) + article optimization (#21, #22, #26, #27, #28) |
+| **Total** | **39** | Excludes #12 (done), #36 (done); includes 3 TBD issues awaiting GitHub creation |
