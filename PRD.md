@@ -68,7 +68,7 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 | #47 | Remove MarkdownGenerator dependency | Open |
 
 **Notes:**
-- #43 must be resolved before Phase 2 — `// swift-tools-version: 6.3` requires the macOS minimum conflict in SyndiKit to be resolved first.
+- #43 should be resolved before Phase 2 — SyndiKit 0.3.7 predates the Swift 6.0 concurrency work. The `main` branch has `Package@swift-6.0.swift` which SPM picks up automatically under Swift 6.3, providing proper `Sendable` conformances. Not a hard blocker (a Swift 6.3 parent can depend on a 5.5 package) but resolving it first avoids concurrency warnings during Phase 2.
 
 ---
 
