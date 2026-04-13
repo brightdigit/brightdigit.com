@@ -72,9 +72,12 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 
 | # | Title | Priority | Status |
 |---|-------|----------|--------|
+| #56 | Evaluate correct schema.org types for each content section | P0-critical | Open |
 | #18 | Add seomachine.io integration | P1-high | Open |
 | #19 | Implement FAQ Schema Markup in `PiHTMLFactory` | P0-critical | In Progress |
 | #20 | Implement HowTo Schema Markup in `PiHTMLFactory` | P1-high | Open |
+
+**Note:** #56 must be resolved before #19 and #20 — schema type selection drives the implementation.
 
 **Implementation files (`PublishType` is intentionally untouched in this phase):**
 - `Sources/BrightDigitSite/Nodes/PiHTMLFactory.HTML.swift` — `head(forPage:)` casts `PageContent` to `SchemaProvider` and emits `<script type="application/ld+json">` when non-nil
