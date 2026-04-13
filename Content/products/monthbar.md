@@ -7,6 +7,8 @@ date: 2026-02-13 10:30
 productURL: https://month.bar
 appStoreURL: https://apps.apple.com/us/app/monthbar-month-progress/id6759099775
 featuredImage: /media/products/monthbar/logo.png
+style: square
+screenshots: pie-elapsed.webp, pie-remaining.webp, pie-elapsed-menu.webp, percent-elapsed.webp, percent-remaining-menu.webp
 ---
 MonthBar lives in your macOS menu bar and shows how much of the current month has elapsed or remains — displayed as a pie chart or percentage, your choice.
 
