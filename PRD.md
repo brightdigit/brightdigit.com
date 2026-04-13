@@ -164,6 +164,7 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 | #40 | Replace Ink with swift-markdown | Ink is used transitively via Publish's markdown pipeline |
 | #41 | Replace ShellOut with swift-subprocess (Tagscriber) | Only affects `Tagscriber/PandocMarkdownGenerator.swift` |
 | #46 | Replace ShellOut with swift-subprocess (Publish/NPMPublishPlugin) | Affects subrepos — NPMPublishPlugin currently runs `npm ci` + `npm run publish` in `Styling/` via ShellOut; replacing ShellOut requires updating the plugin itself. If node-swift (#51) is viable it may eliminate NPMPublishPlugin entirely (run npm via native Node.js embedding). |
+| TBD | Replace Kanna with SwiftSoup in `Tagscriber` | Rename `KannaMarkdownGenerator` → `SwiftSoupMarkdownGenerator`; XPath → CSS selectors |
 | #44 | Replace swift-argument-parser with swift-configuration | Affects all 7 files in `BrightDigitArgs/` |
 
 **Dependency decisions:**
@@ -172,7 +173,7 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 |---|---|---|
 | Ink | ✅ Replace with swift-markdown | Transitive via Publish subrepo |
 | ShellOut | ✅ Replace with swift-subprocess | Official Apple framework |
-| Kanna | ❌ Keep | Used in `Tagscriber` for HTML/XML parsing when extracting markdown from web URLs. Linux-compatible; no cross-platform alternative (Demark requires WebKit). Research viable alternatives — TBD. |
+| Kanna | ✅ Replace with SwiftSoup | Used in `Tagscriber/KannaMarkdownGenerator.swift` for HTML traversal (tag names, text, attributes, child selection). SwiftSoup is a pure Swift Linux-compatible replacement — XPath swaps for CSS selectors, properties become method calls. Rename `KannaMarkdownGenerator` → `SwiftSoupMarkdownGenerator`. |
 | MarkdownGenerator | ❌ Keep (bring local via #47) | Linux-compatible; swift-markdown is parse-only, not generation. Research newer generation alternatives — check library age/activity before bringing local. |
 | Yams | ❌ Keep | Foundation has no YAML support |
 
@@ -355,10 +356,10 @@ New source modules (local to this repo, not subrepos):
 | Phase 1 | 2 | Monorepo cleanup (1 already done) |
 | Phase 2 | 2 | Swift 6.3 main package + rebuild-avoidance (TBD) |
 | Phase 3 | 4 | AI-CITE schema (#18, #19, #20) + validation (#23) |
-| Phase 4 | 6 | OpenAPI migration |
+| Phase 4 | 7 | OpenAPI migration + Kanna → SwiftSoup (TBD) |
 | Phase 5 | 5 | Swift 6.3 subrepos + components + Tailwind (TBD) + AI-CITE content strategy (#24, #25) |
 | Phase 6 | 4 | Publishing infrastructure |
 | Phase 7 | 3 | Platform migration + form integration (TBD) |
 | Phase 8 | 3 | Deferred cleanup |
 | Post-Migration | 8 | Article edits (#3, #4, #13) + article optimization (#21, #22, #26, #27, #28) |
-| **Total** | **39** | Excludes #12 (done), #36 (done); includes 3 TBD issues awaiting GitHub creation |
+| **Total** | **40** | Excludes #12 (done), #36 (done); includes 3 TBD issues awaiting GitHub creation |
