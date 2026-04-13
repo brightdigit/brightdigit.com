@@ -11,7 +11,7 @@
 This document organizes all open GitHub issues into sequential phases and milestones. The work spans four major concerns:
 
 1. **Content & SEO** — AI-CITE schema optimization and article edits
-2. **Infrastructure Modernization** — Swift 6, OpenAPI migration, dependency replacements
+2. **Infrastructure Modernization** — Swift 6.3, OpenAPI migration, dependency replacements
 3. **Publishing Pipeline** — Buttondown + Buffer integration, newsletter/podcast tooling
 4. **Platform Migration** — GitHub Pages, AT Protocol support
 
@@ -21,9 +21,9 @@ This document organizes all open GitHub issues into sequential phases and milest
 Phase 0/0B (housekeeping/articles) — independent, can run at any time
 Phase 1 (AI-CITE) ──────────────────── independent, can run in parallel with Phase 2
 Phase 2 (Monorepo cleanup) ──────────── prerequisite: #36 ✓ (complete)
-Phase 3 (Swift 6 main package) ──────── requires Phase 2
+Phase 3 (Swift 6.3 main package) ────── requires Phase 2
 Phase 4 (OpenAPI migration) ─────────── requires Phase 3 — Swift 6.3-only toolchain
-Phase 5 (Swift 6 subrepos + components) requires Phase 4
+Phase 5 (Swift 6.3 subrepos + components) requires Phase 4
 Phase 6 (Publishing infra) ──────────── requires Phase 4 (swift-openapi-generator toolchain)
 Phase 7 (Platform migration) ────────── requires Phase 5/6
 Phase 8 (Final cleanup) ─────────────── anytime, low priority
@@ -49,7 +49,6 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 | # | Title | Status |
 |---|-------|--------|
 | #11 | Fix Content Updates | Open |
-| #18 | Add seomachine.io | Open |
 | #35 | Remove dev-server.sh | Open |
 
 **Notes:**
@@ -69,8 +68,8 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 | #13 | Clarify String vs Reference design choice in MistKit article | Open |
 
 **Notes:**
-- Pure markdown/content edits; no code changes required.
-- Recommend adding an `article-edit` label to GitHub to distinguish from code issues.
+- **Not part of the v2.0 migration** — these are pure markdown/content edits; no code changes required.
+- Apply the `article-edit` GitHub label to #3, #4, and #13 to distinguish from migration/code issues.
 
 ---
 
@@ -78,7 +77,7 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 
 **Milestone:** AI-CITE Phase 1 (target: Feb 28, 2026)  
 **Branch:** `ai-cite-optimization` (PR #39)  
-**Goal:** Implement structured schema markup and optimize priority articles so BrightDigit content is cited by AI systems (ChatGPT, Google AI Overview, etc.).
+**Goal:** Implement structured schema markup and optimize priority articles so BrightDigit content is cited by AI systems (ChatGPT, Google AI Overview, etc.). AI-CITE is fundamentally an integration into the Swift site-building code (`BrightDigitSite` / Publish) — not just article-level content edits.
 
 **Framework:** AI-CITE — Answer-first, Intent-matched headings, Clear structure, Indexed schema, Trusted sources, Exclusive POV.  
 **Target:** 60% of priority articles get AI mentions within 1 week of optimization.
@@ -87,12 +86,15 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 
 | # | Title | Priority | Status |
 |---|-------|----------|--------|
+| #18 | Add seomachine.io integration | P1-high | Open |
 | #19 | Implement FAQ Schema Markup in `PiHTMLFactory` | P0-critical | In Progress |
 | #20 | Implement HowTo Schema Markup in `PiHTMLFactory` | P1-high | Open |
 
 **Implementation files:**
 - `Sources/BrightDigitSite/Nodes/PiHTMLFactory.HTML.swift` — head generation
-- `Sources/BrightDigitSite/PiHTMLFactory.swift` — main factory
+- `Sources/BrightDigitSite/PiHTMLFactory.swift` — main factory (not a protocol)
+
+**Note:** Verify that FAQ and HowTo are the appropriate schema.org types for a company/agency site. Consider alternatives such as `Article`, `TechArticle`, `WebPage`, or `Service` if FAQ/HowTo don't fit the content.
 
 ### 1B: Article Optimization
 
@@ -106,6 +108,8 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 
 **Dependency:** #19 must be complete before article optimization begins.
 
+**Note:** These article optimization tasks should be re-evaluated once the Swift migration (Phases 3–5) is complete, as the HTML/schema output pipeline will change.
+
 ### 1C: Validation
 
 | # | Title | Priority | Status |
@@ -118,6 +122,8 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 |---|-------|----------|--------|
 | #24 | YouTube Video Content Strategy | P2-medium | Open |
 | #25 | Create Unique BrightDigit Frameworks/Methodologies | P2-medium | Open |
+
+**Note:** These are post-migration tasks — align with the refactored AI-CITE integration into Publish/BrightDigitSite after Phase 5.
 
 **Reference:** `.claude/ai-cite-optimization/`
 
@@ -134,13 +140,13 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 | #47 | Remove MarkdownGenerator dependency | Open |
 
 **Notes:**
-- #43 must be resolved before Phase 3 — `// swift-tools-version: 6.0` requires the macOS minimum conflict in SyndiKit to be resolved first.
+- #43 must be resolved before Phase 3 — `// swift-tools-version: 6.3` requires the macOS minimum conflict in SyndiKit to be resolved first.
 
 ---
 
-## Phase 3: Swift 6 — Main Package
+## Phase 3: Swift 6.3 — Main Package
 
-**Goal:** Upgrade the top-level `brightdigit.com` package to Swift 6 language mode. Subrepos remain at their current language modes — a Swift 6 package can depend on older Swift packages. This unblocks Phase 4 (swift-openapi-generator and swift-subprocess require Swift 6.3+).
+**Goal:** Upgrade the top-level `brightdigit.com` package to Swift 6.3 language mode. Subrepos remain at their current language modes — a Swift 6.3 package can depend on older Swift packages. This unblocks Phase 4 (swift-openapi-generator and swift-subprocess require Swift 6.3+).
 
 **Estimated effort:** 2–3 weeks  
 **Dependency:** Phase 2 (#43 resolved).
@@ -150,16 +156,15 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 | #38 | Swift 6 Language Mode + Component Migration + Mermaid Support | Open |
 
 **Key tasks:**
-- Update `Package.swift`: `// swift-tools-version: 6.0`, `.macOS(.v13)`
-- Add `swiftSettings: [.enableExperimentalFeature("StrictConcurrency")]` to all targets
+- Update `Package.swift`: `// swift-tools-version: 6.3`, `.macOS(.v13)`
 - **Fix `Testimonial.swift` data race (critical):** remove `static var lastID`, make `id` a required parameter
 - Add `Sendable` conformances: `Newsletter.Source`, `YouTubeContent.Source`, `RSSContent.Source`, `BrightDigitPodcast.Source`
 - Fix force-try: `YAMLStringFix.swift:6`, `String.swift:4`, `RSSContent.swift:21`
 
 **Deliverables:**
-- [ ] `brightdigit.com` Package.swift on `swift-tools-version: 6.0`
+- [ ] `brightdigit.com` Package.swift on `swift-tools-version: 6.3`
 - [ ] Zero concurrency warnings in `Sources/`
-- [ ] All tests passing under Swift 6
+- [ ] All tests passing under Swift 6.3
 - [ ] Subrepos unchanged (still at prior language modes)
 
 ---
@@ -169,7 +174,7 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 **Goal:** Replace SwagGen + Prch with Apple's swift-openapi-generator and async/await throughout. Replace other stale dependencies.
 
 **Estimated effort:** 4–6 weeks  
-**Dependency:** Phase 3 (Swift 6 main package).
+**Dependency:** Phase 3 (Swift 6.3 main package).
 
 | # | Title | Notes |
 |---|-------|-------|
@@ -177,7 +182,7 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 | #37 | OpenAPI Generator Migration (SwiftTube + Spinetail) | ~521 generated files replaced; rewrites `ContributeYouTube` and `ContributeMailchimp` |
 | #40 | Replace Ink with swift-markdown | Ink is used transitively via Publish's markdown pipeline |
 | #41 | Replace ShellOut with swift-subprocess (Tagscriber) | Only affects `Tagscriber/PandocMarkdownGenerator.swift` |
-| #46 | Replace ShellOut with swift-subprocess (Publish/NPMPublishPlugin) | Affects subrepos |
+| #46 | Replace ShellOut with swift-subprocess (Publish/NPMPublishPlugin) | Affects subrepos — should leverage #51 (node-swift research); if node-swift proves viable it may eliminate the ShellOut dependency entirely for NPMPublishPlugin |
 | #44 | Replace swift-argument-parser with swift-configuration | Affects all 7 files in `BrightDigitArgs/` |
 
 **Dependency decisions:**
@@ -186,8 +191,8 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 |---|---|---|
 | Ink | ✅ Replace with swift-markdown | Transitive via Publish subrepo |
 | ShellOut | ✅ Replace with swift-subprocess | Official Apple framework |
-| Kanna | ❌ Keep | Linux-compatible; no cross-platform alternative (Demark requires WebKit) |
-| MarkdownGenerator | ❌ Keep (bring local via #47) | Linux-compatible; swift-markdown is parse-only, not generation |
+| Kanna | ❌ Keep | Used in `Tagscriber` for HTML/XML parsing when extracting markdown from web URLs. Linux-compatible; no cross-platform alternative (Demark requires WebKit). Research viable alternatives — TBD. |
+| MarkdownGenerator | ❌ Keep (bring local via #47) | Linux-compatible; swift-markdown is parse-only, not generation. Research newer generation alternatives — check library age/activity before bringing local. |
 | Yams | ❌ Keep | Foundation has no YAML support |
 
 **Target architecture after Phase 4:**
@@ -200,12 +205,13 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 - `SwiftTube 1.0.0` and `Spinetail 1.0.0` released with swift-openapi-generator
 - Full newsletter import (113 newsletters) + podcast import produces identical markdown output
 - CI/CD content automation job passes
+- Optionally: implement #1 (Skip Campaign Download For Existing Newsletters) as part of this migration
 
 ---
 
-## Phase 5: Swift 6 Subrepos + Component Migration + Mermaid
+## Phase 5: Swift 6.3 Subrepos + Component Migration + Mermaid
 
-**Goal:** Upgrade all 17 subrepos to Swift 6 strict concurrency. Migrate `PiHTMLFactory` and all `Nodes/` files to a component-based Plot API. Add Mermaid diagram support.
+**Goal:** Upgrade all 17 subrepos to Swift 6.3 strict concurrency. Migrate `PiHTMLFactory` and all `Nodes/` files to a component-based Plot API. Add Mermaid diagram support.
 
 **Estimated effort:** 5–7 weeks  
 **Dependency:** Phase 4.
@@ -214,10 +220,11 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 
 | # | Title | Status |
 |---|-------|--------|
-| #38 | Swift 6 Language Mode + Component Migration + Mermaid Support | Open |
+| #38 | Swift 6.3 Language Mode + Component Migration + Mermaid Support | Open |
 | #53 | Enforce component-based Plot API (no direct Node creation) | Open |
+| TBD | Upgrade Tailwind + create library for easy Tailwind access | Open |
 
-**Swift 6 subrepo upgrades (17 total):**
+**Swift 6.3 subrepo upgrades (17 total):**
 - Publish ecosystem (8): Publish, Plot, Files, Codextended, Sweep, CollectionConcurrencyKit, Splash, SplashPublishPlugin
 - BrightDigit packages (7): SwiftTube 2.0.0, Spinetail 2.0.0, SyndiKit 1.0.0, NPMPublishPlugin, Contribute 2.0.0, ContributeWordPress, TransistorPublishPlugin
 - Forked plugins (2): YoutubePublishPlugin, ReadingTimePublishPlugin
@@ -242,7 +249,7 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 
 **Success criteria:**
 - Zero concurrency warnings across all 17 subrepos
-- `swift build` with Swift 6 strict mode passes on macOS and Ubuntu
+- `swift build` with Swift 6.3 strict mode passes on macOS and Ubuntu
 - Site output byte-for-byte identical (excluding mermaid blocks — visual verification)
 
 ---
@@ -291,7 +298,8 @@ New source modules (local to this repo, not subrepos):
 | # | Title | Notes |
 |---|-------|-------|
 | #50 | Migrate to GitHub Pages | Currently deployed via Netlify |
-| #49 | Support AT Protocol | Reference: [A Social Filesystem](https://overreacted.io/a-social-filesystem/) |
+| #49 | Support AT Protocol | Reference: [A Social Filesystem](https://overreacted.io/a-social-filesystem/) — consider as prerequisite for `PublishKit` (#33) |
+| TBD | New form integration: contact us + subscribe button (Buttondown?) | New GitHub issue(s) needed; evaluate contact form and subscribe button as part of Buttondown migration |
 
 ---
 
@@ -302,8 +310,8 @@ New source modules (local to this repo, not subrepos):
 | # | Title | Notes |
 |---|-------|-------|
 | #34 | Remove or repurpose Import/Wordpress XML files | Clean up leftover import artifacts |
-| #1 | Skip Campaign Download For Existing Newsletters | May be superseded by Phase 6 Buttondown migration; keep for now |
-| #51 | Research node-swift | Evaluate [kabiroberai/node-swift](https://github.com/kabiroberai/node-swift); may affect NPMPublishPlugin long-term |
+| #1 | Skip Campaign Download For Existing Newsletters | Should be implemented as part of `ButtondownKit` integration (Phase 6) |
+| #51 | Research node-swift | Evaluate [kabiroberai/node-swift](https://github.com/kabiroberai/node-swift); prerequisite for NPMPublishPlugin ShellOut replacement (#46) — evaluate before implementing Phase 4 #46 |
 
 ---
 
@@ -319,14 +327,14 @@ New source modules (local to this repo, not subrepos):
 
 | Phase | Issues | Notes |
 |-------|--------|-------|
-| Phase 0 | 3 | Quick wins |
-| Phase 0B | 3 | Article edits |
-| Phase 1 | 10 | AI-CITE (milestone active) |
+| Phase 0 | 2 | Quick wins |
+| Phase 0B | 3 | Article edits (not part of v2.0 migration) |
+| Phase 1 | 11 | AI-CITE + seomachine (milestone active) |
 | Phase 2 | 2 | Monorepo cleanup (1 already done) |
-| Phase 3 | 1 | Swift 6 main package |
+| Phase 3 | 1 | Swift 6.3 main package |
 | Phase 4 | 6 | OpenAPI migration |
-| Phase 5 | 2 | Swift 6 subrepos + components + mermaid |
+| Phase 5 | 3 | Swift 6.3 subrepos + components + mermaid + Tailwind (TBD issue) |
 | Phase 6 | 4 | Publishing infrastructure |
-| Phase 7 | 2 | Platform migration |
+| Phase 7 | 3 | Platform migration + form integration (TBD issue) |
 | Phase 8 | 3 | Deferred cleanup |
-| **Total** | **36** | Excludes #12 (done), #36 (done) |
+| **Total** | **38** | Excludes #12 (done), #36 (done); includes 2 TBD issues awaiting GitHub creation |
