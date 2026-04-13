@@ -1,0 +1,5 @@
+[tools]
+node = "20"
+
+[env]
+NPM_PATH = "{{ env.HOME }}/.local/share/mise/shims/npm"
