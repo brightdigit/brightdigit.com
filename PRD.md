@@ -79,21 +79,16 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 
 **Note:** #56 must be resolved before #19 and #20 — schema type selection drives the implementation.
 
-**Implementation files (`PublishType` is intentionally untouched in this phase):**
-- `Sources/BrightDigitSite/Nodes/PiHTMLFactory.HTML.swift` — `head(forPage:)` casts `PageContent` to `SchemaProvider` and emits `<script type="application/ld+json">` when non-nil
+**Implementation files:**
+- `Sources/PublishType/PageContent.swift` — add `schemaMarkup: String?` requirement (`PublishType` owns the protocol contract)
+- `Sources/BrightDigitSite/Nodes/PiHTMLFactory.HTML.swift` — `head(forPage:)` emits `<script type="application/ld+json">` when `schemaMarkup` is non-nil
 - `Sources/BrightDigitSite/PiHTMLFactory.swift` — main factory (not a protocol)
 - `Sources/BrightDigitSite/BrightDigitSite.swift` — extend `ItemMetadata` with `faqItems: [FAQItem]?`, `howToSteps: [HowToStep]?`
-- Each `Sources/BrightDigitSite/Nodes/Section/*.swift` — conform to `SchemaProvider`, implement `schemaMarkup` computed property
+- Each `Sources/BrightDigitSite/Nodes/Section/*.swift` — implement `schemaMarkup` (the `BrightDigitSite` layer provides the concrete values)
 
 **Integration architecture:**
-- Add `SchemaProvider` protocol to `BrightDigitSite` (not `PublishType`) — keeps Phase 1 independent of the Phase 5 `PageContent` rewrite:
-  ```swift
-  protocol SchemaProvider {
-      var schemaMarkup: String? { get }
-  }
-  ```
-- `head(forPage:)` checks `if let provider = setup as? SchemaProvider` and emits the JSON-LD block — no `PublishType` changes required
-- `PageContent` protocol promotion (`schemaMarkup: String?`) happens in Phase 5 as part of the component migration; `SchemaProvider` is retired then
+- `PublishType` defines the requirement; `BrightDigitSite` types fulfill it — consistent with the existing layering throughout the codebase
+- Adding `schemaMarkup: String?` to `PageContent` is additive and does not conflict with the Phase 5 component migration (which rewrites how content is built, not the protocol shape)
 - Schema types per section (auto-generated from existing metadata unless noted):
   - Articles → `Article` (title, description, date, featuredImage — zero new front matter)
   - Tutorials → `HowTo` (requires `howToSteps` front matter array, or extracted from `##` headings)
@@ -208,7 +203,7 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 
 **Plot API context:** Plot has two coexisting APIs. The **Node API** (`Node<HTML.BodyContext>`) is lower-level and functional — used throughout `Nodes/`. The **Component API** (`Component` protocol, SwiftUI-style `var body: Component`) is declarative and already used in `Components/` (SectionElement, ServiceBox, Icon, ListItem) and in `ServicesBuilder.swift` and `ProductItem.swift`. Nodes conform to `Component`; components bridge back via `.convertToNode()`.
 
-**Migration approach:** Keep `PageContent.main` as `[Node<HTML.BodyContext>]`; leaf components call `.convertToNode()` at the boundary. This matches the pattern already established in `ProductItem.swift` and avoids a `PageContent` protocol break. As part of this migration, promote `schemaMarkup: String?` from the Phase 1 `SchemaProvider` protocol into `PageContent` directly, and retire `SchemaProvider`.
+**Migration approach:** Keep `PageContent.main` as `[Node<HTML.BodyContext>]`; leaf components call `.convertToNode()` at the boundary. This matches the pattern already established in `ProductItem.swift` and avoids a `PageContent` protocol break. The `schemaMarkup: String?` property added to `PageContent` in Phase 1 carries forward unchanged.
 
 **Migration order:** (1) header/footer in `PiHTMLFactory.HTML.swift` (affects every page), (2) `Nodes/Section/` item content files, (3) `Nodes/Pages/` builders.
 
