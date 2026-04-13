@@ -19,8 +19,8 @@ This document organizes all open GitHub issues into sequential phases and milest
 
 ```
 Phase 0 (housekeeping) ─────────────── independent, can run at any time
-Phase 1A (AI-CITE schema/Swift) ─────── requires Phase 3 (PiHTMLFactory changes need Swift 6.3)
-Phase 1C (AI-CITE validation) ──────── independent, can run at any time
+Phase 1A (AI-CITE schema) ───────────── independent — PublishType change is additive; no Swift 6.3 required
+Phase 1C (AI-CITE validation) ──────── requires Phase 1A (schema must ship before baseline testing)
 Phase 2 (Monorepo cleanup) ──────────── prerequisite: #36 ✓ (complete)
 Phase 3 (Swift 6.3 main package) ────── requires Phase 2
 Phase 4 (OpenAPI migration) ─────────── requires Phase 3 — Swift 6.3-only toolchain
@@ -63,7 +63,7 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 
 **Milestone:** AI-CITE Phase 1 (target: Feb 28, 2026)  
 **Branch:** `ai-cite-optimization` (PR #39)  
-**Goal:** Implement structured schema markup and optimize priority articles so BrightDigit content is cited by AI systems (ChatGPT, Google AI Overview, etc.). AI-CITE is fundamentally an integration into the Swift site-building code (`BrightDigitSite` / Publish) — not just article-level content edits.
+**Goal:** Implement structured schema markup and optimize priority articles so BrightDigit content is cited by AI systems (ChatGPT, Google AI Overview, etc.). AI-CITE is fundamentally an integration into the Swift site-building code (`PublishType` protocol + `BrightDigitSite` implementation) — not just article-level content edits. This phase is independent of the Swift 6.3 migration.
 
 **Framework:** AI-CITE — Answer-first, Intent-matched headings, Clear structure, Indexed schema, Trusted sources, Exclusive POV.  
 **Target:** 60% of priority articles get AI mentions within 1 week of optimization.
