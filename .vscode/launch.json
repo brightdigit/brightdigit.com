@@ -6,8 +6,9 @@
             "args": [],
             "cwd": "${workspaceFolder:brightdigit.com}",
             "name": "Debug brightdigitwg",
-            "program": "${workspaceFolder:brightdigit.com}/.build/debug/brightdigitwg",
-            "preLaunchTask": "swift: Build Debug brightdigitwg"
+            "preLaunchTask": "swift: Build Debug brightdigitwg",
+            "target": "brightdigitwg",
+            "configuration": "debug"
         },
         {
             "type": "swift",
@@ -15,8 +16,9 @@
             "args": [],
             "cwd": "${workspaceFolder:brightdigit.com}",
             "name": "Release brightdigitwg",
-            "program": "${workspaceFolder:brightdigit.com}/.build/release/brightdigitwg",
-            "preLaunchTask": "swift: Build Release brightdigitwg"
+            "preLaunchTask": "swift: Build Release brightdigitwg",
+            "target": "brightdigitwg",
+            "configuration": "release"
         }
     ]
 }
