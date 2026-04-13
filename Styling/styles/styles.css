@@ -727,7 +727,10 @@ body#products {
               @apply flex flex-row-reverse sm:flex-row justify-between sm:justify-start items-center mb-2 md:mb-4 lg:no-underline lg:border-b-2 lg:pb-2 no-underline text-gray-900;
               @apply transition-all;
               & > img {
-                @apply w-12 h-12 md:w-20 md:h-20 lg:w-24 lg:h-24 mr-4 object-contain rounded-full opacity-95;
+                @apply w-12 h-12 md:w-20 md:h-20 lg:w-24 lg:h-24 mr-4 object-contain opacity-95;
+              }
+              & > img:not(.no-clip) {
+                @apply rounded-full;
               }
               & > h2 {
                 @apply text-4xl font-light md:text-7xl lg:text-8xl;

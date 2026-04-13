@@ -93,6 +93,7 @@ public struct BrightDigitSite: Website, MetadataAttached {
     var screenshots: [String]?
     var style: String?
     var isFeatured: Bool?
+    var clipLogo: Bool?
   }
 
   public static var metadata: WebsiteMetadata {

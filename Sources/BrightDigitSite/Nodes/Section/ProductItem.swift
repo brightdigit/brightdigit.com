@@ -77,6 +77,7 @@ struct ProductItem: SectionItem {
   let source: Item<BrightDigitSite>
 
   let isFeatured: Bool
+  let clipLogo: Bool
 
   static let sectionH1: String? = "Products"
 
@@ -144,6 +145,7 @@ struct ProductItem: SectionItem {
 
     self.source = item
     self.isFeatured = item.metadata.isFeatured ?? false
+    self.clipLogo = item.metadata.clipLogo ?? true
     self.appStoreURL = item.metadata.appStoreURL.map(URL.init(staticString:))
     self.pressKitURL = item.metadata.pressKitURL.map(URL.init(staticString:))
     self.title = item.title
