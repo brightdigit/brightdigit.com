@@ -65,10 +65,11 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 |---|-------|--------|
 | ~~#36~~ | ~~Phase 1: Monorepo Consolidation (17 packages)~~ | **Completed** (#42, #48) |
 | #43 | Upgrade SyndiKit subrepo from 0.3.7 to 0.8.1 | Open |
-| #47 | Remove MarkdownGenerator dependency | Open |
+| #47 | Remove MarkdownGenerator dependency | Open — fold into Phase 4 #40 |
 
 **Notes:**
 - #43 should be resolved before Phase 2 — SyndiKit 0.3.7 predates the Swift 6.0 concurrency work. 0.8.1 has `Package@swift-6.0.swift` which SPM picks up automatically under Swift 6.3, providing proper `Sendable` conformances. Not a hard blocker (a Swift 6.3 parent can depend on a 5.5 package) but resolving it first avoids concurrency warnings during Phase 2.
+- #47 no longer needs a "bring local" vendor step. `eneko/MarkdownGenerator` is used by exactly one file (`Sources/Tagscriber/KannaMarkdownGenerator.swift`) and swift-markdown (already adopted in Phase 4 #40) covers generation as well as parsing — see the Phase 4 dependency table. The removal will happen as part of the same Phase 4 rewrite that renames `KannaMarkdownGenerator` → `SwiftSoupMarkdownGenerator`.
 
 ---
 
@@ -161,7 +162,7 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 |---|-------|-------|
 | #45 | Replace Prch with swift-openapi-* | First step — unblocks async/await everywhere |
 | #37 | OpenAPI Generator Migration (SwiftTube + Spinetail) | ~521 generated files replaced; rewrites `ContributeYouTube` and `ContributeMailchimp` |
-| #40 | Replace Ink with swift-markdown | Ink is used transitively via Publish's markdown pipeline |
+| #40 | Replace Ink with swift-markdown; also absorbs #47 (MarkdownGenerator removal) | Ink is used transitively via Publish's markdown pipeline. swift-markdown covers both parsing (replacing Ink) and generation (replacing MarkdownGenerator in `Tagscriber/KannaMarkdownGenerator.swift`) via its public block/inline initializers + `MarkupFormatter`. |
 | #41 | Replace ShellOut with swift-subprocess (Tagscriber) | Only affects `Tagscriber/PandocMarkdownGenerator.swift` |
 | #46 | Replace ShellOut with swift-subprocess (Publish/NPMPublishPlugin) | Affects subrepos — NPMPublishPlugin currently runs `npm ci` + `npm run publish` in `Styling/` via ShellOut; replacing ShellOut requires updating the plugin itself. If node-swift (#51) is viable it may eliminate NPMPublishPlugin entirely (run npm via native Node.js embedding). |
 | TBD | Replace Kanna with SwiftSoup in `Tagscriber` | Rename `KannaMarkdownGenerator` → `SwiftSoupMarkdownGenerator`; XPath → CSS selectors |
@@ -174,7 +175,7 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 | Ink | ✅ Replace with swift-markdown | Transitive via Publish subrepo |
 | ShellOut | ✅ Replace with swift-subprocess | Official Apple framework |
 | Kanna | ✅ Replace with SwiftSoup | Used in `Tagscriber/KannaMarkdownGenerator.swift` for HTML traversal (tag names, text, attributes, child selection). SwiftSoup is a pure Swift Linux-compatible replacement — XPath swaps for CSS selectors, properties become method calls. Rename `KannaMarkdownGenerator` → `SwiftSoupMarkdownGenerator`. |
-| MarkdownGenerator | ❌ Keep (bring local via #47) | Linux-compatible; swift-markdown is parse-only, not generation. Research newer generation alternatives — check library age/activity before bringing local. |
+| MarkdownGenerator | ✅ Replace with swift-markdown (absorbs #47) | `eneko/MarkdownGenerator` is stale (v1.1.0, Jan 2021, Swift 4.0+) and used by only one file, `Sources/Tagscriber/KannaMarkdownGenerator.swift`. swift-markdown supports programmatic construction — `Heading`, `Paragraph`, `CodeBlock`, `BlockQuote`, `UnorderedList`/`OrderedList`, `Image`, `Link`, `Emphasis`, `Strong` all expose public initializers — and `MarkupFormatter` renders a `Markup` tree back to CommonMark. Swift 6 concurrency-ready (immutable value types), Linux-compatible. Net dependency delta: −1 (since swift-markdown is already added by this row's #40). Migration happens in the same rewrite that renames `KannaMarkdownGenerator` → `SwiftSoupMarkdownGenerator`. |
 | Yams | ❌ Keep | Foundation has no YAML support |
 
 **Target architecture after Phase 4:**
