@@ -1,6 +1,6 @@
 ---
 title: Getting Started with Mise for iOS and Swift Development
-date: 2026-05-01 00:00
+date: 2026-04-22 12:00
 description: A guide to setting up Mise tool version management for Xcode projects
   and Swift Packages, with real-world examples and migration patterns.
 tags: mise, tooling, swift, xcode, devops, ci-cd
