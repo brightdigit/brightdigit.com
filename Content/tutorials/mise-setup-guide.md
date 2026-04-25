@@ -76,8 +76,6 @@ experimental = true
 [tools]
 # Swift tools via SPM
 "spm:swiftlang/swift-format" = "601.0.0"
-"spm:peripheryapp/periphery" = "3.1.0"
-"spm:apple/swift-openapi-generator" = "1.7.0"
 
 # Linting (via core or aqua)
 swiftlint = "0.58.0"
