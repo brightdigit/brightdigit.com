@@ -10,17 +10,15 @@ subscriptionCTA: Want to stay up-to-date with the latest Swift tooling and CI/CD
   tips? Sign up for the newsletter to get notified when new tutorials drop.
 ---
 
-When creating an app, let’s think about we need to get started. At the top of your mind is the Xcode Project. The Xcode project is the backbone of your application. It contains various metadata, messaging, and build configuration of your application. Metadata would include bundle identifiers and permission text. Build configuration includes your targets which could be anything from the application itself, frameworks, and app extensions. The Xcode project is in a special proprietary format which for many is difficult to deal with both if you want to directly but most especially if you deal with version conflicts.
+When creating an app, let’s think about what we need to get started. The Xcode project is the backbone of your application — it contains metadata like bundle identifiers and permission text, along with build configuration for your targets, which can include the app itself, frameworks, and app extensions.
 
-<!-- Why/Why not tuist -->
+The Xcode project uses a proprietary format that is notoriously difficult to work with, especially when dealing with merge conflicts in version control.
 
  This is where a tool which creates the Xcode project is most helpful. There’s 2 leading tools which I’d recommend: Xcodegen or Tuist. Xcodegen is great if you have a fairly simple app or minimal team structure. Xcodegen uses Yaml for its specification structure. The tool will take that yaml and convert it an Xcode project. Tuist is what I’d recommend in most any other case. Tuist uses Swift and is much more flexible for larger teams and applications. Tuist has a very robust community and support as well. In the end I’d highly recommend **not** committing Xcode projects to your code repository.
 
-<!-- How to add tuist -->
-
-
-
 # Using Tuist
+
+If you haven't set up `mise` yet, start with the [mise setup guide](/tutorials/mise-setup-guide/) first.
 
 You can begin using Tuist by running:
 
@@ -28,7 +26,7 @@ You can begin using Tuist by running:
 mise exec tuist -- tuist init
 ```
 
-For my app Lumemo, a memo taking iPhone app for iOS 26 this is the Project.swift tuist created:
+For my app Lumemo, a memo-taking iPhone app for iOS 26, here is the `Project.swift` Tuist generated:
 
 ```swift
 import ProjectDescription
@@ -70,7 +68,7 @@ let project = Project(
 )
 ```
 
-This will get you started with the Tuist infruscture. Like I said Tuist uses Swift for creating Xcode projects so editing the project is fairly simple. You edit the Project.swift directly or if you prefer to use Xcode you can call:
+This will get you started with the Tuist infrastructure. Tuist uses Swift for creating Xcode projects, so editing the project is fairly simple. You edit the Project.swift directly or if you prefer to use Xcode you can call:
 
 ```
 mise exec tuist -- tuist edit
@@ -88,11 +86,11 @@ This will create the Xcode project and workspace where you can work on your app.
 
 **Remember don't edit the project and workspace setting in Xcode directly. Edit the Project.swift file and other tuist related Swift files to save your changes to the repo.**
 
-Now that we've setup our first project using tuist, let's dive into how the Xcode project works.
+Now that we've set up our first project using Tuist, let's dive into how the Xcode project works. The generated `Project.swift` uses `buildableFolders`, but for the walkthrough below we'll use the simpler `sources` parameter — it's easier to reason about as we build up to the final version.
 
 ### Projects and their Targets
 
-An Xcode target is the core of our Xcode project. It creates the the testable and deliverable app. Here's what a typical `Project.swift` looks like at this early stage:
+An Xcode target is the core of our Xcode project. It produces the testable and deliverable app. Here's what a typical `Project.swift` looks like at this early stage:
 
 ```swift
 import ProjectDescription
@@ -126,13 +124,13 @@ At the top, we have the name of the project "Lumemo". Inside we have out sets of
 
 A target could be anything from a app extension to a framework to a unit tests. Esentially anything which could in that target spot. These different types (app extension, framework, etc...) are defined as _product types_. In tuist, we use an enum called `Product`. In our case this is an `.app`.
 
-We have a few identifiers here including the target name and the bundleId. The bundle identifier of course has the follow the reverse dns name and is unique to the app store. Target name is the name shown in the target list. Unless you specifically supply the product name, this will be used as the product name (i.e. the name of the ipa, app, pkg, etc...).
+We have a few identifiers here including the target name and the bundle ID. The bundle identifier must follow reverse DNS naming and is unique to the App Store. The target name is the name shown in the target list. Unless you specifically supply a product name, the target name will be used as the product name (i.e. the name of the .ipa, .app, .pkg, etc.).
 
-In this case we are setting our destination to `.iPhone`. This can be a variey of destination which are not only the platform (iOS) or device (iPad) but in cases where you want to target macOS or visionOS but build it from an iPad app or in case you wanted to build a Catalyst app for macOS.
+In this case we are setting our destination to `.iPhone`. This can be a variety of destinations — not only the platform (iOS) or device (iPad), but also cases where you want to target macOS or visionOS from an iPad app, or build a Catalyst app for macOS.
 
-Last but not least are your source files which can get an array glob strings. These are add the your project as source files and complied as so.
+Last but not least are your source files, which accept an array of glob strings. These are added to your project as source files and compiled accordingly.
 
-No that we have the basics, there are a few things we need to add so it's ready for app store deployment:
+Now that we have the basics, we need to address a few gaps before this project is ready for App Store deployment:
 
 * Notice the os version is set to the very latest based on the default of your Xcode version. We should set this so it's stable across Xcode versions.
 * We are missing an app icon.
@@ -140,13 +138,13 @@ No that we have the basics, there are a few things we need to add so it's ready 
 * Small App Store required info is missing such as exempt encryption use and our privacy manifest
 * Lastly we don't have a stable way to define the app version.
 
-Lest's go through each of these.
+Let's go through each of these.
 
 ### Deployment Targets
 
 As stated earlier, destination defines not just the platform or device but what technology is used to deploy to a particular. This usually means the device class. However in cases where you are catalyst for macOS or allowing an iPad app's destination on a Mac or Vision Pro these specifics are required. 
 
-To define the actual platform versions, you'd use the `deployTargets`. If this isn't set, Xcode will use whatever the latest version available for that version of Xcode. 
+To define the actual platform versions, you'd use `deploymentTargets`. If this isn't set, Xcode will use whatever the latest version available for that version of Xcode. 
 
 Under the hood, `DeploymentTargets` is just a set of properties for each Apple platform. In the `Project` intializer you can set the individual platform using one the static methods below:
 
@@ -197,7 +195,7 @@ Asset catalogs, text files, etc... any other resource would go here and a glob p
 
 ### Privacy Manifest
 
-The Privacy Manifest is required too and can go under the resources property as well. If you need help building one there are some great resources here:
+The Privacy Manifest is required too and can go under the resources property as well. Apple's [Privacy manifest files documentation](https://developer.apple.com/documentation/bundleresources/privacy-manifest-files) is the authoritative reference for building one.
 
 
 ### Extending Other Default
@@ -222,9 +220,9 @@ Let's do something like this for setting the development team. If you try to com
       )
 ```
 
-Both of these functions for Info.plist and settings, provide a plethoria of property values that most users don't need to touch. This allows us to simply provide only the few overrides we need.
+Both of these functions for Info.plist and settings provide a plethora of property values that most users don't need to touch. This allows us to simply provide only the few overrides we need.
 
-One last piece I want to add is the ability to simplify version management.
+The last gap to close is version management.
 
 ### Version Management with xcconfig
 
@@ -245,14 +243,14 @@ These settings are stored in the Info.plist. The _Marketing Version_ is stored a
       ),
 ```      
 
-However if you want to automate incrementing or updating the build number each time, I would prefer a more reliable way to then depnding on a regular expression to cleaning update these values. This is where an `xcconfig` file. xcconfig files are well-documented and simple to understand. They are similar to .env files but with additional abilities. Let's create a new file `Config/Version.xcconfig` and set the version info there:
+However if you want to automate incrementing or updating the build number each time, a more reliable approach than depending on a regular expression to update these values is an `xcconfig` file. `xcconfig` files are well-documented and simple to understand — they are similar to `.env` files but with additional capabilities. Let's create a new file `Config/Version.xcconfig` and set the version info there:
 
 ```
 MARKETING_VERSION = 1.0.0
 CURRENT_PROJECT_VERSION = 2
 ```
 
-As you can tell it's just a name-value pair and we using our our nomenclarture for these values name. 
+As you can tell it's just a name-value pair, and we are using Xcode's standard nomenclature for these value names.
 
 To let Tuist know about these we can import these into our build settings and configuration:
 
@@ -268,7 +266,7 @@ To let Tuist know about these we can import these into our build settings and co
       )
 ```   
 
-Notice we are making sure we import into both the `debug` and `release` configuration. Also since xconfig is the native method for configurations in Xcode tuist will refer to the xcconfg file in the generated Xcode project.
+Notice we are making sure we import into both the `debug` and `release` configurations. Also, since `xcconfig` is the native method for build configurations in Xcode, Tuist will reference the `xcconfig` file directly in the generated Xcode project.
 
 Lastly we need to reference these properties in our Info.plist. To refer to a specific property we use the variable notation of :
 
@@ -358,35 +356,25 @@ We'll want to do the same thing for Xcode workspaces, so make sure we have the l
 *.xcworkspace
 ```
 
-Lastly dervied files or caches from Tuist should be ignored as well:
+Lastly, derived files or caches from Tuist should be ignored as well:
 
 ```
 .tuist/
 Derived/
 ```
 
-Now would be a good time to commit and push this to your repo. Every time someone pull this repo, they should be able to use `mise` to execute `tuist` and generate the Xcode workspace and project.
+Now would be a good time to commit and push this to your repo. Every time someone pulls this repo, they should be able to use `mise` to execute `tuist` and generate the Xcode workspace and project.
 
 ### One More Thing
 
-For a typical app, you may want to add a few other things:
+For a typical app, a few more target properties are worth knowing about. Depending on what your app does, you may need one or more of these before submitting to the App Store:
 
 * `entitlements` - these are permissions your app requires such as HealthKit, App Groups, etc... - this is set via a [Dictionary](https://developer.apple.com/documentation/bundleresources/entitlements)
-* `Info.plist` - there are variety of settings you made need for your application
-  * Apple Watch Componanion Settings - `WKApplication`, `WKCompanionAppBundleIdentifier`, `WKRunsIndependentlyOfCompanionApp`
+* `Info.plist` - there are a variety of settings you may need for your application
+  * Apple Watch Companion Settings - `WKApplication`, `WKCompanionAppBundleIdentifier`, `WKRunsIndependentlyOfCompanionApp`
   * File and URL Types - `CFBundleDocumentTypes`, `CFBundleURLTypes`, `UTExportedTypeDeclarations`, `UTImportedTypeDeclarations`
-  * Usage Descriptions - text for various accesses request like geolocation, healthkit, etc...
-
-<!-- Writing prompt — Entitlements / inline vs. .entitlements file:
-You might expect to find a .entitlements file in the repo. Why isn't there one?
-What does putting entitlements inline in Project.swift actually buy you — what problem does it solve? -->
+  * Usage Descriptions - text for various access requests like geolocation, HealthKit, etc...
 
 ### Where does all the source code go?
 
-Right now you should have a fully buildable app. However as far as source code, this can be fairly limiting in its structure and compatability. We'll be talking about how we can breakdown our application's source code into Swift Packages for easier testing, flexible OS compatablity, and easier modularization.
-
-
-<!-- Writing prompt — Sources / why it stays minimal:
-What is the single file that must live in the Tuist target's Sources/ folder, and what does it do?
-Why does everything else (views, models, business logic) live in a Swift Package instead?
-What would happen if you put a view file directly in Sources/ rather than the package? -->
+Right now you should have a fully buildable app. However, this structure can be fairly limiting in terms of source code organization and compatibility. We'll be talking about how we can break down our application's source code into Swift Packages for easier testing, flexible OS compatibility, and easier modularization.
