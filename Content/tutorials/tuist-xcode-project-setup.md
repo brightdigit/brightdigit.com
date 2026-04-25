@@ -1,6 +1,6 @@
 ---
 title: Automating your Xcode Project
-date: 2026-05-18 12:00
+date: 2026-04-30 12:00
 description: Before any CI/CD automation can run, you need a project structure worth
   automating. This part covers Xcode project generation with Tuist, keeping all real
   code in Swift Packages, and the package topologies that work for apps of every size.
