@@ -76,11 +76,6 @@ mise exec tuist -- tuist edit
 
 This will create a temporary workspace for you edit the Swift files and make sure they "compile" in the Xcode. Once you are done you can simply close the temporary workspace and your edits will be in your repo. 
 
-<figure>
-<img src="/media/tutorials/tuist-xcode-project-setup/xcode-tuist-edit-split-view.webp" alt="Tuist edit split view showing Project.swift code alongside the Xcode General settings tab" class="full-size" />
-<figcaption>Tuist edit opens a split view where your Project.swift maps directly to Xcode's settings.</figcaption>
-</figure>
-
 To create the Xcode project and workspace, just call:
 
 ```
@@ -144,11 +139,6 @@ In this case we are setting our destination to `.iPhone`. This can be a variety 
 </figure>
 
 Last but not least are your source files, which accept an array of glob strings. These are added to your project as source files and compiled accordingly.
-
-<figure>
-<img src="/media/tutorials/tuist-xcode-project-setup/xcode-default-deployment-empty-version.webp" alt="Xcode showing iOS 26.4 as the default deployment target and empty Version and Build fields" class="full-size" />
-<figcaption>Out of the box: Xcode defaults to the latest iOS version and leaves Version and Build empty.</figcaption>
-</figure>
 
 Now that we have the basics, we need to address a few gaps before this project is ready for App Store deployment:
 
