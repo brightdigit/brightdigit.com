@@ -204,7 +204,7 @@ You can get an idea of my current toolset and where _mise_ fits in:
 <img src="/media/tutorials/mise-setup-guide/mise-development-tools.webp" class="full-size" />
 </figure>
 
-In the next article, we'll talk about a major piece of this setup - Tuist and how I use it to simplify my Xcode project setup.
+In the next article, we'll talk about a major piece of this setup - [Tuist and how I use it to simplify my Xcode project setup](/tutorials/tuist-xcode-project-setup/).
 
 ---
 
