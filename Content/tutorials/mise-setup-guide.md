@@ -1,8 +1,8 @@
 ---
 title: Getting Started with Mise for iOS and Swift Development
 date: 2026-04-22 12:00
-description: A guide to setting up Mise tool version management for Xcode projects
-  and Swift Packages, with real-world examples and migration patterns.
+description: A guide to setting up Mise tool version management for iOS and Swift
+  projects, covering local development and GitHub Actions CI integration.
 tags: mise, tooling, swift, xcode, devops, ci-cd
 featuredImage: /media/tutorials/mise-setup-guide/mise-setup-guide-hero.webp
 subscriptionCTA: Want to stay up-to-date with the latest Swift tooling and CI/CD
@@ -16,13 +16,13 @@ Over the years, I've used a variety of tools from Homebrew to Mint. Each have ha
 
 Mise is a tool version manager. There are a lot out there but Mise fit what I was looking for. Here's what I have tried and didn't quite fit:
 
-### HomeBrew
+### Homebrew
 
-HomeBrew is great for installing tools and apps locally on my computer. I recently purchased a brand new 15-inch M5 MacBook Air and rather than restoring from a backup I used Brew Bundle to restore the list of apps from my old MacBook Air easily. However for development tools, it's not really ideal especially in the case of Continuous Integration (automated build servers like GitHub Actions). **I want an isolated environment when I use CI** in order to have a repeatable environment regardless of OS or where the machine is hosted. So that fell short. Lastly handling multiple versions of language tools (ruby, node, etc...) is not ideal and is better suited with specific tools (rbenv, nvm, etc...).
+Homebrew is great for installing tools and apps locally on my computer. I recently purchased a brand new 15-inch M5 MacBook Air and rather than restoring from a backup I used Brew Bundle to restore the list of apps from my old MacBook Air easily. However for development tools, it's not really ideal especially in the case of Continuous Integration (automated build servers like GitHub Actions). **I want an isolated environment when I use CI** in order to have a repeatable environment regardless of OS or where the machine is hosted. So that fell short. Lastly handling multiple versions of language tools (ruby, node, etc...) is not ideal and is better suited with specific tools (rbenv, nvm, etc...).
 
 ### Swift Package Plugin
 
-There are several reasons I don't use Swift Package plugins but the biggest is the lack of support distinguishing between a consumer of a swift package vs a developer of a Swift package. I really don't want a consumer to need to pull Swift tools I use (swift-format, swiftlint, xcodegen, periphery, stringslint, etc...) as a develop when trying to consume my library. There are proposals and [tools](https://github.com/shibapm/Rocket) that try to remediate this but it really hasn't stuck. Therefore it's best to configure these outside of Package.swift.
+There are several reasons I don't use Swift Package plugins but the biggest is the lack of support distinguishing between a consumer of a swift package vs a developer of a Swift package. I really don't want a consumer to need to pull Swift tools I use (swift-format, swiftlint, xcodegen, periphery, stringslint, etc...) as a developer when trying to consume my library. There are proposals and [tools](https://github.com/shibapm/Rocket) that try to remediate this but it really hasn't stuck. Therefore it's best to configure these outside of Package.swift.
 
 ### Mint
 
@@ -75,16 +75,16 @@ experimental = true
 
 [tools]
 # Swift tools via SPM
-"spm:swiftlang/swift-format" = "601.0.0"
+"spm:swiftlang/swift-format" = "602.0.0"
 
 # Linting (via core or aqua)
-swiftlint = "0.58.0"
+swiftlint = "0.63.2"
 ```
 
 **Critical Settings Explained:**
 
 - `experimental = true` — Enables the SPM backend for Swift Package tools
-- `spm:<org>/<repo>` — Tells mise to install a tool by building it from a Swift Package. The format mirrors a GitHub slug: `spm:swiftlang/swift-format` maps to `github.com/swiftlang/swift-format`.
+- `spm:<org>/<repo>` — Tells mise to install a tool by building it from a Swift Package.
 
 ### 3. Create/Update `Makefile`
 
@@ -96,8 +96,8 @@ install-dependencies:
 	@mise install
 ```
 
-**How It Works:**
-- `make install-dependencies` installs all tools from `.mise.toml`
+**Why use Make here:**
+Using a named Make target standardizes the setup command across team members, CI scripts, and onboarding docs. `make install-dependencies` is easier to document and remember than `mise install` alone — and it scales if you need to add other setup steps (e.g. npm install, pre-commit hooks) in the future.
 
 ### 4. Update GitHub Actions Workflow
 
@@ -112,9 +112,6 @@ jobs:
 
       # This replaces multiple tool setup actions
       - uses: jdx/mise-action@v4
-        with:
-          install: true
-          cache: true
 ```
 
 ### 5. Test Locally
@@ -127,32 +124,7 @@ mise install
 mise list
 ```
 
-
-## Key Patterns from Production
-
-### ✅ Always Do This
-
-1. **Enable experimental**: `experimental = true` (for SPM backend)
-2. **Pin exact versions**: `swiftlint = "0.58.0"` not `"0.58"`
-3. **Use mise-action@v4 in CI**: Replaces 5+ setup actions
-
-### ❌ Common Pitfalls
-
-1. **Version drift**: Pin exact versions — `swiftlint = "0.58.0"` not `"0.58"`
-
-### Backend Selection Guide
-
-| Tool Type          | Backend | Example                                    |
-| ------------------ | ------- | ------------------------------------------ |
-| Swift tools        | `spm`   | `"spm:swiftlang/swift-format" = "601.0.0"` |
-| Fast binaries      | `aqua`  | `"aqua:realm/SwiftLint" = "0.58.0"`        |
-
-**When to use which backend:**
-- **core**: First choice for popular tools (Node, Ruby)
-- **spm**: Swift Package Manager tools (swift-format, periphery)
-- **aqua**: Fast alternative for tools in Aqua registry
-
----
+> **Note for new clones:** When a developer clones this repo for the first time, mise will not activate tools until they explicitly trust the config. Run `mise trust` once in the repo directory before `mise install`.
 
 ## Quick Reference Commands
 
@@ -169,14 +141,8 @@ mise exec swiftlint -- swiftlint lint
 # Check mise setup
 mise doctor
 
-# Clear cache if issues
-rm -rf ~/.mise/cache && mise install
-
 # Show tool versions in current directory
 mise current
-
-# Upgrade mise itself
-brew upgrade mise
 ```
 
 ---
@@ -199,22 +165,6 @@ eval "$(mise activate zsh)"
 mise exec swiftlint -- swiftlint version
 ```
 
-### SPM Tools Failing to Install
-
-**Problem:** Swift Package tools fail to build
-
-**Solution:**
-```bash
-# Ensure experimental is enabled
-grep "experimental = true" .mise.toml
-
-# Clear SPM cache
-rm -rf ~/.mise/installs/spm
-
-# Reinstall
-mise install
-```
-
 ### Version Mismatch in CI
 
 **Problem:** CI uses different version than local
@@ -229,16 +179,32 @@ git commit -m "Pin tool versions with mise"
 grep "jdx/mise-action@v4" .github/workflows/*.yml
 ```
 
+### Tools Not Activating After Clone
+
+**Problem:** mise shows an "untrusted" warning and tools are not available after cloning a repo
+
+**Solution:**
+```bash
+# Trust the repo's mise config
+mise trust
+
+# Then install tools
+mise install
+```
+
 ---
 
 ## Conclusion
 
-A few things worth keeping in mind as you get started:
+Setting up mise takes about ten minutes, but the payoff is a development environment that works identically on every machine and in every CI run. Commit `.mise.toml`, run `mise trust` on a fresh clone, and `mise install` does the rest — no more setup docs, no more version drift.
 
-- **Commit `.mise.toml`** to version control — that's what makes tool versions consistent across your team and in CI.
-- **Use the `spm:` prefix** for Swift Package tools like swift-format and periphery.
-- **`mise install` is all you need** — any developer who clones your repo can be up and running with a single command.
-- **One step in GitHub Actions** replaces all your individual tool-setup boilerplate. The `jdx/mise-action` reads the same `.mise.toml` your teammates use locally.
+You can get an idea of my current toolset and where _mise_ fits in:
+
+<figure>
+<img src="/media/tutorials/mise-setup-guide/mise-development-tools.webp" class="full-size" />
+</figure>
+
+In the next article, we'll talk about a major piece of this setup - Tuist and how I use it to simplify my Xcode project setup.
 
 ---
 
@@ -247,10 +213,6 @@ A few things worth keeping in mind as you get started:
 - **Mise Official Docs**: [mise.jdx.dev][2]
 - **GitHub Action**: [jdx/mise-action][3]
 - **Mise Registry**: [mise.jdx.dev/registry.html][5]
-
----
-
-This guide is based on production implementations across my app projects.
 
 [2]:	https://mise.jdx.dev
 [3]:	https://github.com/jdx/mise-action

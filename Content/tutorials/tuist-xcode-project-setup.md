@@ -5,16 +5,10 @@ description: Before any CI/CD automation can run, you need a project structure w
   automating. This part covers Xcode project generation with Tuist, keeping all real
   code in Swift Packages, and the package topologies that work for apps of every size.
 tags: tuist, xcode, swift, ci-cd, tooling
-featuredImage: /media/tutorials/tuist-xcode-project-setup/Swift-Automation-Tuist.webp
+featuredImage: /media/tutorials/tuist-xcode-project-setup/tuist-xcode-hero.webp
 subscriptionCTA: Want to stay up-to-date with the latest Swift tooling and CI/CD
   tips? Sign up for the newsletter to get notified when new tutorials drop.
 ---
-
-## Draft Structure
-
-In the previous article, we setup _mise_ to install various linting tools for linting our Swift code. Today we going to add our first tool to help manage our Xcode project - tuist.
-
-<!-- Why should we not commit Xcode projects -->
 
 When creating an app, let’s think about we need to get started. At the top of your mind is the Xcode Project. The Xcode project is the backbone of your application. It contains various metadata, messaging, and build configuration of your application. Metadata would include bundle identifiers and permission text. Build configuration includes your targets which could be anything from the application itself, frameworks, and app extensions. The Xcode project is in a special proprietary format which for many is difficult to deal with both if you want to directly but most especially if you deal with version conflicts.
 
@@ -33,6 +27,8 @@ You can begin using Tuist by running:
 ```
 mise exec tuist -- tuist init
 ```
+
+For my app Lumemo, a memo taking iPhone app for iOS 26 this is the Project.swift tuist created:
 
 ```swift
 import ProjectDescription
@@ -74,13 +70,13 @@ let project = Project(
 )
 ```
 
-This will get you started with the Tuist infruscture. Like I said Tuist uses Swift for creating Xcode projects so editing the project is fairly simple. You can even call:
+This will get you started with the Tuist infruscture. Like I said Tuist uses Swift for creating Xcode projects so editing the project is fairly simple. You edit the Project.swift directly or if you prefer to use Xcode you can call:
 
 ```
 mise exec tuist -- tuist edit
 ```
 
-This will create a temporary workspace for you edit the Swift files and make sure they "compile" in the Xcode. Once you are done you can simply close the temporary workspace and you're edits will be in your repo. 
+This will create a temporary workspace for you edit the Swift files and make sure they "compile" in the Xcode. Once you are done you can simply close the temporary workspace and your edits will be in your repo. 
 
 To create the Xcode project and workspace, just call:
 
@@ -90,27 +86,13 @@ mise exec tuist -- tuist generate
 
 This will create the Xcode project and workspace where you can work on your app.
 
-> Remember don't edit the project and workspace setting in Xcode directly. Edit the Project.swift file and other tuist related Swift files to save your changes to the repo.
+**Remember don't edit the project and workspace setting in Xcode directly. Edit the Project.swift file and other tuist related Swift files to save your changes to the repo.**
 
-Now that we've installed tuist, let's understand how the Xcode project works.
+Now that we've setup our first project using tuist, let's dive into how the Xcode project works.
 
-### What is an Xcode Project
+### Projects and their Targets
 
-An Xcode target is the core of our Xcode project. It creates the the testable and deliverable app.
-
- Here's how each category maps to `Project.swift`:
-
-| Category                | What it controls                          | How Tuist handles it                                           |
-| ----------------------- | ----------------------------------------- | -------------------------------------------------------------- |
-| Deployment Requirements | OS versions, destinations, Swift version  | `destinations:`, `deploymentTargets:`, base build settings     |
-| Labels & Branding       | Bundle ID, display name, version numbers  | `bundleId:`, `displayName:`, xcconfig for version              |
-| Settings                | Code signing, team, Swift flags           | `settings:` with Debug/Release configurations                  |
-| Sources                 | The `@main` entry point                   | `sources: ["Sources/**"]` — kept intentionally minimal         |
-| Resources               | App icon, asset catalog, privacy manifest | `resources:` referencing `Resources/` folder                   |
-| Entitlements            | App sandbox, App Groups, capabilities     | Inline dictionary in `Project.swift` — no `.entitlements` file |
-| Dependencies            | Local SPM packages, SDKs                  | `dependencies: [.package(product:)]`                           |
-
-Here's what a typical `Project.swift` looks like at this stage, before adding Swift Packages, Fastlane, and certificate management:
+An Xcode target is the core of our Xcode project. It creates the the testable and deliverable app. Here's what a typical `Project.swift` looks like at this early stage:
 
 ```swift
 import ProjectDescription
@@ -131,7 +113,12 @@ let project = Project(
 
 Let’s take a look at how these map out:
 
-![Diagram for Mapping Tuist Project to Xcode Project][image-1]
+<a target="_blank" href="/media/tutorials/tuist-xcode-project-setup/Swift-Automation-Tuist.webp">
+<figure>
+<img src="/media/tutorials/tuist-xcode-project-setup/Swift-Automation-Tuist.webp" alt="Diagram showing how the Tuist Project.swift files lines up with Xcode" class="full-size" />
+<figcaption>Diagram showing how the Tuist Project.swift files lines up with Xcode.</figcaption>
+</figure>
+</a>
 
 At the top, we have the name of the project "Lumemo". Inside we have out sets of targets. Typically Tuists sets up a test target but we removing that for simplicity sake for now. 
 
@@ -217,7 +204,9 @@ The Privacy Manifest is required too and can go under the resources property as 
 
 Besides the privacy manifest, there's the `ITSAppUsesNonExemptEncryption` setting. If you ever tried to submit an app's first version to app review, you've seen this question asked.
 
-![](media/tutorials/tuist-xcode-project-setup/AppStore-ITSAppUsesNonExemptEncryption.png)
+<figure>
+<img src="/media/tutorials/tuist-xcode-project-setup/AppStore-ITSAppUsesNonExemptEncryption.png" class="full-size" />
+</figure>
 
 Luckily we can skip this step by simply supplying this property in our Info.plist file. 
 
@@ -397,13 +386,7 @@ What does putting entitlements inline in Project.swift actually buy you — what
 Right now you should have a fully buildable app. However as far as source code, this can be fairly limiting in its structure and compatability. We'll be talking about how we can breakdown our application's source code into Swift Packages for easier testing, flexible OS compatablity, and easier modularization.
 
 
-> *[missing: next steps — Part 2 covers Swift Package structure before we share types across repos in Part 3]*
-
 <!-- Writing prompt — Sources / why it stays minimal:
 What is the single file that must live in the Tuist target's Sources/ folder, and what does it do?
 Why does everything else (views, models, business logic) live in a Swift Package instead?
 What would happen if you put a view file directly in Sources/ rather than the package? -->
-
-
-
-[image-1]:	media/tutorials/tuist-xcode-project-setup/Swift-Automation-Tuist.webp
