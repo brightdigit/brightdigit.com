@@ -235,7 +235,7 @@ Let's do something like this for setting the development team. If you try to com
 ```swift
       settings: .settings(
         base: [
-          "DEVELOPMENT_TEAM": "MLT7M394S7",
+          "DEVELOPMENT_TEAM": "XXXXXXXXXX", // Your 10-character Apple Developer Team ID
         ]
       )
 ```
@@ -277,7 +277,7 @@ To let Tuist know about these we can import these into our build settings and co
 ```swift
       settings: .settings(
         base: [
-          "DEVELOPMENT_TEAM": "MLT7M394S7",
+          "DEVELOPMENT_TEAM": "XXXXXXXXXX", // Your 10-character Apple Developer Team ID
         ],
         configurations: [
           .debug(xcconfig: .relativeToRoot("Config/Version.xcconfig")),
@@ -338,7 +338,7 @@ let project = Project(
       ],
       settings: .settings(
         base: [
-          "DEVELOPMENT_TEAM": "MLT7M394S7",
+          "DEVELOPMENT_TEAM": "XXXXXXXXXX", // Your 10-character Apple Developer Team ID
         ],
         configurations: [
           .debug(xcconfig: .relativeToRoot("Config/Version.xcconfig")),
