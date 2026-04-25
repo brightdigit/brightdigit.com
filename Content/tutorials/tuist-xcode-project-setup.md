@@ -12,7 +12,7 @@ subscriptionCTA: Want to stay up-to-date with the latest Swift tooling and CI/CD
 
 When creating an app, let’s think about what we need to get started. The Xcode project is the backbone of your application — it contains metadata like bundle identifiers and permission text, along with build configuration for your targets, which can include the app itself, frameworks, and app extensions.
 
-The Xcode project uses a proprietary format that is notoriously difficult to work with, especially when dealing with merge conflicts in version control.
+The Xcode project uses a _proprietary format_ that is notoriously difficult to work with, especially when dealing with merge conflicts in version control.
 
  This is where a tool which creates the Xcode project is most helpful. There’s 2 leading tools which I’d recommend: Xcodegen or Tuist. Xcodegen is great if you have a fairly simple app or minimal team structure. Xcodegen uses Yaml for its specification structure. The tool will take that yaml and convert it an Xcode project. Tuist is what I’d recommend in most any other case. Tuist uses Swift and is much more flexible for larger teams and applications. Tuist has a very robust community and support as well. In the end I’d highly recommend **not** committing Xcode projects to your code repository.
 
@@ -129,7 +129,7 @@ At the top, we have the name of the project "Lumemo". Inside we have out sets of
 
 A target could be anything from a app extension to a framework to a unit tests. Esentially anything which could in that target spot. These different types (app extension, framework, etc...) are defined as _product types_. In tuist, we use an enum called `Product`. In our case this is an `.app`.
 
-We have a few identifiers here including the target name and the bundle ID. The bundle identifier must follow reverse DNS naming and is unique to the App Store. The target name is the name shown in the target list. Unless you specifically supply a product name, the target name will be used as the product name (i.e. the name of the .ipa, .app, .pkg, etc.).
+We have a few identifiers here including the target name and the bundle ID. The bundle identifier must follow _reverse DNS naming_ and is unique to the App Store. The target name is the name shown in the target list. Unless you specifically supply a product name, the target name will be used as the product name (i.e. the name of the .ipa, .app, .pkg, etc.).
 
 In this case we are setting our destination to `.iPhone`. This can be a variety of destinations — not only the platform (iOS) or device (iPad), but also cases where you want to target macOS or visionOS from an iPad app, or build a Catalyst app for macOS.
 
@@ -142,11 +142,11 @@ Last but not least are your source files, which accept an array of glob strings.
 
 Now that we have the basics, we need to address a few gaps before this project is ready for App Store deployment:
 
-* Notice the os version is set to the very latest based on the default of your Xcode version. We should set this so it's stable across Xcode versions.
-* We are missing an app icon.
-* We can't build it because we don't have a deployment team defined.
-* Small App Store required info is missing such as exempt encryption use and our privacy manifest
-* Lastly we don't have a stable way to define the app version.
+* **Notice the os version is set to the very latest based on the default of your Xcode version.** We should set this so it's stable across Xcode versions.
+* **We are missing an app icon.**
+* **We can't build it because we don't have a deployment team defined.**
+* **Small App Store required info is missing** such as exempt encryption use and our privacy manifest
+* **Lastly we don't have a stable way to define the app version.**
 
 Let's go through each of these.
 
@@ -350,7 +350,7 @@ let project = Project(
 )
 ```
 
-This will give us a fully working Xcode project but before we commit this to our repository, we need to make sure we aren't commiting our project and workspace.
+This will give us a fully working Xcode project but before we commit this to our repository, **we need to make sure we aren't committing our project and workspace.**
 
 If you don't already have a .gitignore file, [toptal has a great resource for creating one](https://www.toptal.com/developers/gitignore). I even have a url I download from everytime:
 
