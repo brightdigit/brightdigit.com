@@ -76,6 +76,11 @@ mise exec tuist -- tuist edit
 
 This will create a temporary workspace for you edit the Swift files and make sure they "compile" in the Xcode. Once you are done you can simply close the temporary workspace and your edits will be in your repo. 
 
+<figure>
+<img src="/media/tutorials/tuist-xcode-project-setup/Screenshot%202026-04-24%20at%208.27.04%20AM.png" alt="Tuist edit split view showing Project.swift code alongside the Xcode General settings tab" class="full-size" />
+<figcaption>Tuist edit opens a split view where your Project.swift maps directly to Xcode's settings.</figcaption>
+</figure>
+
 To create the Xcode project and workspace, just call:
 
 ```
@@ -83,6 +88,11 @@ mise exec tuist -- tuist generate
 ```
 
 This will create the Xcode project and workspace where you can work on your app.
+
+<figure>
+<img src="/media/tutorials/tuist-xcode-project-setup/Screenshot%202026-04-24%20at%208.20.58%20AM.png" alt="Xcode showing the Lumemo project after tuist generate, with Build Succeeded" class="full-size" />
+<figcaption>After running tuist generate, Xcode opens the workspace with your project ready to build.</figcaption>
+</figure>
 
 **Remember don't edit the project and workspace setting in Xcode directly. Edit the Project.swift file and other tuist related Swift files to save your changes to the repo.**
 
@@ -128,7 +138,17 @@ We have a few identifiers here including the target name and the bundle ID. The 
 
 In this case we are setting our destination to `.iPhone`. This can be a variety of destinations — not only the platform (iOS) or device (iPad), but also cases where you want to target macOS or visionOS from an iPad app, or build a Catalyst app for macOS.
 
+<figure>
+<img src="/media/tutorials/tuist-xcode-project-setup/Screenshot%202026-04-24%20at%208.11.28%20AM.png" alt="Xcode Supported Destinations dropdown showing iPhone, iPad, Mac, Apple TV, and Apple Vision options" class="full-size" />
+<figcaption>The full range of destinations available — from iPhone-only to multiplatform apps targeting Mac, Apple TV, and Apple Vision.</figcaption>
+</figure>
+
 Last but not least are your source files, which accept an array of glob strings. These are added to your project as source files and compiled accordingly.
+
+<figure>
+<img src="/media/tutorials/tuist-xcode-project-setup/Screenshot%202026-04-24%20at%208.14.06%20AM.png" alt="Xcode showing iOS 26.4 as the default deployment target and empty Version and Build fields" class="full-size" />
+<figcaption>Out of the box: Xcode defaults to the latest iOS version and leaves Version and Build empty.</figcaption>
+</figure>
 
 Now that we have the basics, we need to address a few gaps before this project is ready for App Store deployment:
 
@@ -171,6 +191,11 @@ In our case we'll be targeting the minimum deployment version for iOS 26.0:
   deploymentTargets: .iOS("26.0"),
 ```
 
+<figure>
+<img src="/media/tutorials/tuist-xcode-project-setup/Screenshot%202026-04-24%20at%208.11.34%20AM.png" alt="Xcode Minimum Deployments section showing iOS 26.0" class="full-size" />
+<figcaption>With deploymentTargets set, Xcode shows the exact minimum iOS version you specified.</figcaption>
+</figure>
+
 Just as with `destinations` we can set variety of destinations, we have can create a multiplatform app as well:
 
 ```swift
@@ -209,6 +234,11 @@ Besides the privacy manifest, there's the `ITSAppUsesNonExemptEncryption` settin
 Luckily we can skip this step by simply supplying this property in our Info.plist file. 
 
 One thing great about Tuist, is that a lot of boiler plate and default values are already supplied to us for things like the Info.plist and the build settings. In our case we'll be using the `.extendingDefault(with:)` method to set `ITSAppUsesNonExemptEncryption` to `false`.
+
+<figure>
+<img src="/media/tutorials/tuist-xcode-project-setup/Screenshot%202026-04-24%20at%208.16.50%20AM.png" alt="Xcode Signing tab showing 'Signing for Lumemo requires a development team' error" class="full-size" />
+<figcaption>Without a development team set, Xcode refuses to build for a device.</figcaption>
+</figure>
 
 Let's do something like this for setting the development team. If you try to compile the app it will instantly complain that now development team is set. We can do this using the build settings and set it as a base property for all configurations:
 
