@@ -5,7 +5,7 @@ description: Before any CI/CD automation can run, you need a project structure w
   automating. This part covers Xcode project generation with Tuist, keeping all real
   code in Swift Packages, and the package topologies that work for apps of every size.
 tags: tuist, xcode, swift, ci-cd, tooling
-featuredImage: /media/tutorials/part-1-xcode-project/Swift-Automation-Tuist.webp
+featuredImage: /media/tutorials/tuist-xcode-project-setup/Swift-Automation-Tuist.webp
 subscriptionCTA: Want to stay up-to-date with the latest Swift tooling and CI/CD
   tips? Sign up for the newsletter to get notified when new tutorials drop.
 ---
@@ -217,7 +217,7 @@ The Privacy Manifest is required too and can go under the resources property as 
 
 Besides the privacy manifest, there's the `ITSAppUsesNonExemptEncryption` setting. If you ever tried to submit an app's first version to app review, you've seen this question asked.
 
-![](media/tutorials/part-1-xcode-project/AppStore-ITSAppUsesNonExemptEncryption.png)
+![](media/tutorials/tuist-xcode-project-setup/AppStore-ITSAppUsesNonExemptEncryption.png)
 
 Luckily we can skip this step by simply supplying this property in our Info.plist file. 
 
@@ -406,4 +406,4 @@ What would happen if you put a view file directly in Sources/ rather than the pa
 
 
 
-[image-1]:	media/tutorials/part-1-xcode-project/Swift-Automation-Tuist.webp
+[image-1]:	media/tutorials/tuist-xcode-project-setup/Swift-Automation-Tuist.webp
