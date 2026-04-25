@@ -84,11 +84,6 @@ mise exec tuist -- tuist generate
 
 This will create the Xcode project and workspace where you can work on your app.
 
-<figure>
-<img src="/media/tutorials/tuist-xcode-project-setup/xcode-tuist-generate-result.webp" alt="Xcode showing the Lumemo project after tuist generate, with Build Succeeded" class="full-size" />
-<figcaption>After running tuist generate, Xcode opens the workspace with your project ready to build.</figcaption>
-</figure>
-
 **Remember don't edit the project and workspace setting in Xcode directly. Edit the Project.swift file and other tuist related Swift files to save your changes to the repo.**
 
 Now that we've set up our first project using Tuist, let's dive into how the Xcode project works. The generated `Project.swift` uses `buildableFolders`, but for the walkthrough below we'll use the simpler `sources` parameter — it's easier to reason about as we build up to the final version.
