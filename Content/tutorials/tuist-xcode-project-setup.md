@@ -107,7 +107,7 @@ This will create the Xcode project and workspace where you can work on your app.
 
 Now that we've set up our first project using Tuist, let's dive into how the Xcode project works. The generated `Project.swift` uses `buildableFolders`, but for the walkthrough below we'll use the simpler `sources` parameter — it's easier to reason about as we build up to the final version.
 
-### Projects and their Targets
+## Projects and their Targets
 
 An Xcode target is the core of our Xcode project. It produces the testable and deliverable app. Here's what a typical `Project.swift` looks like at this early stage:
 
@@ -232,7 +232,7 @@ The Privacy Manifest is required too and can go under the resources property as 
 Besides the privacy manifest, there's the `ITSAppUsesNonExemptEncryption` setting. If you ever tried to submit an app's first version to app review, you've seen this question asked.
 
 <figure>
-<img src="/media/tutorials/tuist-xcode-project-setup/AppStore-ITSAppUsesNonExemptEncryption.png" class="full-size" />
+<img src="/media/tutorials/tuist-xcode-project-setup/AppStore-ITSAppUsesNonExemptEncryption.png" class="full-size" alt="App Store export compliance dialog showing ITSAppUsesNonExemptEncryption" />
 </figure>
 
 Luckily we can skip this step by simply supplying this property in our Info.plist file. 
