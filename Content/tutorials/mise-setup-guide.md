@@ -206,7 +206,7 @@ Setting up mise takes about ten minutes, but the payoff is a development environ
 You can get an idea of my current toolset and where _mise_ fits in:
 
 <figure>
-<img src="/media/tutorials/mise-setup-guide/mise-development-tools.webp" class="full-size" />
+<img src="/media/tutorials/mise-setup-guide/mise-development-tools.webp" class="full-size" alt="Mise development tools and setup overview" />
 </figure>
 
 In the next article, we'll talk about a major piece of this setup - [Tuist and how I use it to simplify my Xcode project setup](/tutorials/tuist-xcode-project-setup/).
