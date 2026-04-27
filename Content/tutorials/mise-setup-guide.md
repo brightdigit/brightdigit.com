@@ -16,6 +16,7 @@ Over the years, I've used a variety of tools from Homebrew to Mint. Each have ha
 
 Mise is a tool version manager. There are a lot out there but Mise fit what I was looking for. Here's what I have tried and didn't quite fit:
 
+<a name="homebrew"></a>
 ### Homebrew
 
 Homebrew is great for installing tools and apps locally on my computer. I recently purchased a brand new 15-inch M5 MacBook Air and rather than restoring from a backup I used Brew Bundle to restore the list of apps from my old MacBook Air easily. However for development tools, it's not really ideal especially in the case of Continuous Integration (automated build servers like GitHub Actions). **I want an isolated environment when I use CI** in order to have a repeatable environment regardless of OS or where the machine is hosted. So that fell short. Lastly handling multiple versions of language tools (ruby, node, etc...) is not ideal and is better suited with specific tools (rbenv, nvm, etc...).
@@ -32,6 +33,7 @@ Mint is a fantastic tool for installing Swift Package based tools. As a Swift de
 2. Only suited for Swift Packages. If you have a web application attached (node) or require fastlane for deployment (ruby), you'll need an additional tool to do this.
 3. Every swift package is rebuilt; so deployment via binaries is unavailable meaning long build times just to get the tool up and running.
 
+<a name="why-mise"></a>
 ### Why Mise
 
 Mise solves a lot of these issues:
@@ -50,6 +52,7 @@ For my projects, it manages everything from Node.js to Swift tooling.
 
 The first thing you are going to want to do is install mise.
 
+<a name="shell-integration"></a>
 ### 1. Install Mise
 
 ```bash
@@ -63,6 +66,8 @@ brew install mise
 echo 'eval "$(mise activate zsh)"' >> ~/.zshrc    # zsh
 echo 'eval "$(mise activate bash)"' >> ~/.bashrc  # bash
 ```
+
+Once shell integration is active, tools managed by mise are available directly — just run `swiftlint lint`, `tuist generate`, etc. and mise automatically uses the pinned version. The `mise exec <tool> --` prefix is still useful in scripts or CI environments where shell integration isn't set up.
 
 ### 2. Create `.mise.toml` at Repository Root
 

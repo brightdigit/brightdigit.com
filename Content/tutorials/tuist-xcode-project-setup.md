@@ -1,6 +1,6 @@
 ---
 title: Automating your Xcode Project
-date: 2026-04-30 12:00
+date: 2026-04-27 12:00
 description: Before any CI/CD automation can run, you need a project structure worth
   automating. This part covers Xcode project generation with Tuist, keeping all real
   code in Swift Packages, and the package topologies that work for apps of every size.
@@ -14,16 +14,35 @@ When creating an app, let’s think about what we need to get started. The Xcode
 
 The Xcode project uses a _proprietary format_ that is notoriously difficult to work with, especially when dealing with merge conflicts in version control.
 
- This is where a tool which creates the Xcode project is most helpful. There’s 2 leading tools which I’d recommend: Xcodegen or Tuist. Xcodegen is great if you have a fairly simple app or minimal team structure. Xcodegen uses Yaml for its specification structure. The tool will take that yaml and convert it an Xcode project. Tuist is what I’d recommend in most any other case. Tuist uses Swift and is much more flexible for larger teams and applications. Tuist has a very robust community and support as well. In the end I’d highly recommend **not** committing Xcode projects to your code repository.
+This is where a tool which creates the Xcode project is most helpful. There’s 2 leading tools which I’d recommend: Xcodegen or Tuist. Xcodegen is great if you have a fairly simple app or minimal team structure. Xcodegen uses YAML for its specification structure — if you prefer a simpler static config format, it’s the right choice. For a broader look at both tools, see [How to automate iOS development](/articles/ios-automation/). 
+
+Tuist is what I’d recommend in most any other case. Tuist uses Swift for its manifest files, which is a deliberate design choice — it gives you type-checking and the full power of the language for complex configurations. Tuist has a very robust community and support as well. In the end I’d highly recommend **not** committing Xcode projects to your code repository.
 
 # Using Tuist
 
-If you haven't set up `mise` yet, start with the [mise setup guide](/tutorials/mise-setup-guide/) first.
+If you've followed the [mise setup guide](/tutorials/mise-setup-guide/), add Tuist to your `.mise.toml` and you're set:
+
+```toml
+[tools]
+tuist = "4.188.1"
+```
+
+Pinning to a specific version ensures everyone on the team — and your CI environment — uses the exact same Tuist build. `latest` can silently pull in a breaking release and break your project generation unexpectedly.
+
+Homebrew also works for a quick local install:
+
+```bash
+brew install tuist
+```
+
+[Homebrew](/tutorials/mise-setup-guide/#homebrew) works for local use, but doesn't give you per-project version pinning or a consistent CI environment. See [Why Mise](/tutorials/mise-setup-guide/#why-mise) in the setup guide for the full comparison.
+
+With [mise shell integration](/tutorials/mise-setup-guide/#shell-integration) active, run Tuist commands directly — mise automatically uses the pinned version. Without shell integration, prefix commands with `mise exec tuist --`.
 
 You can begin using Tuist by running:
 
 ```
-mise exec tuist -- tuist init
+tuist init
 ```
 
 For my app Lumemo, a memo-taking iPhone app for iOS 26, here is the `Project.swift` Tuist generated:
@@ -68,23 +87,23 @@ let project = Project(
 )
 ```
 
-This will get you started with the Tuist infrastructure. Tuist uses Swift for creating Xcode projects, so editing the project is fairly simple. You edit the Project.swift directly or if you prefer to use Xcode you can call:
+This will get you started with the Tuist infrastructure. Tuist uses Swift for creating Xcode projects, so editing the project is fairly simple. You can edit `Project.swift` directly in any text editor, or if you want Xcode's type-checking and autocomplete while editing your manifest files, run:
 
 ```
-mise exec tuist -- tuist edit
+tuist edit
 ```
 
-This will create a temporary workspace for you edit the Swift files and make sure they "compile" in the Xcode. Once you are done you can simply close the temporary workspace and your edits will be in your repo. 
+This creates a temporary Xcode workspace that can compile your manifest Swift files — useful for catching typos or checking API signatures. When you're done, just close the workspace. Tuist writes your changes back to the manifest files automatically; no manual save is needed before closing.
 
 To create the Xcode project and workspace, just call:
 
 ```
-mise exec tuist -- tuist generate
+tuist generate
 ```
 
 This will create the Xcode project and workspace where you can work on your app.
 
-**Remember don't edit the project and workspace setting in Xcode directly. Edit the Project.swift file and other tuist related Swift files to save your changes to the repo.**
+> **Don't edit the generated Xcode project directly.** Any changes you make to `.xcodeproj` settings inside Xcode are not stored in your manifest files — the next time you run `tuist generate`, they will be silently overwritten. Always make changes in `Project.swift` (or via `tuist edit`).
 
 Now that we've set up our first project using Tuist, let's dive into how the Xcode project works. The generated `Project.swift` uses `buildableFolders`, but for the walkthrough below we'll use the simpler `sources` parameter — it's easier to reason about as we build up to the final version.
 
