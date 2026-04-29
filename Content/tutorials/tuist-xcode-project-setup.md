@@ -294,8 +294,8 @@ To let Tuist know about these we can import these into our build settings and co
           "DEVELOPMENT_TEAM": "XXXXXXXXXX", // Your 10-character Apple Developer Team ID
         ],
         configurations: [
-          .debug(xcconfig: .relativeToRoot("Config/Version.xcconfig")),
-          .release(xcconfig: .relativeToRoot("Config/Version.xcconfig")),
+          .debug(name: .debug, xcconfig: .relativeToRoot("Config/Version.xcconfig")),
+          .release(name: .release, xcconfig: .relativeToRoot("Config/Version.xcconfig")),
         ]
       )
 ```   
@@ -356,8 +356,8 @@ let project = Project(
           "DEVELOPMENT_TEAM": "XXXXXXXXXX", // Your 10-character Apple Developer Team ID
         ],
         configurations: [
-          .debug(xcconfig: .relativeToRoot("Config/Version.xcconfig")),
-          .release(xcconfig: .relativeToRoot("Config/Version.xcconfig")),
+          .debug(name: .debug, xcconfig: .relativeToRoot("Config/Version.xcconfig")),
+          .release(name: .release, xcconfig: .relativeToRoot("Config/Version.xcconfig")),
         ]
       )
     )
