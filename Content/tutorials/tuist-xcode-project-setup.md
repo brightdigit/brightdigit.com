@@ -12,11 +12,11 @@ subscriptionCTA: Want to stay up-to-date with the latest Swift tooling and CI/CD
 
 When creating an app, let’s think about what we need to get started. The Xcode project is the backbone of your application — it contains metadata like bundle identifiers and permission text, along with build configuration for your targets, which can include the app itself, frameworks, and app extensions.
 
-The Xcode project uses a _proprietary format_ that is notoriously difficult to work with, especially when dealing with merge conflicts in version control.
+The Xcode project uses a _proprietary format_ that is notoriously difficult to work with, especially when dealing with merge conflicts in version control. In the ancient days, it was Storyboards and Xcode projects which were the biggest culprits of merge conflict hell. Coding your UI in UIKit and then SwiftUI eleviated the Storyboard issue but Xcode projects still remain.
 
-This is where a tool which creates the Xcode project is most helpful. There’s 2 leading tools which I’d recommend: Xcodegen or Tuist. Xcodegen is great if you have a fairly simple app or minimal team structure. Xcodegen uses YAML for its specification structure — if you prefer a simpler static config format, it’s the right choice. For a broader look at both tools, see [How to automate iOS development](/articles/ios-automation/). 
+This is where a tool which creates the Xcode project is most helpful. There’s 2 leading tools which I’d recommend: Xcodegen or Tuist. [Xcodegen](https://github.com/yonaskolb/xcodegen) is great if you have a fairly simple app or minimal team structure. Xcodegen uses YAML for its specification structure — if you prefer a simpler static config format, it’s the right choice. For a broader look at both tools, see [How to automate iOS development](/articles/ios-automation/). 
 
-Tuist is what I’d recommend in most any other case. Tuist uses Swift for its manifest files, which is a deliberate design choice — it gives you type-checking and the full power of the language for complex configurations. Tuist has a very robust community and support as well. In the end I’d highly recommend **not** committing Xcode projects to your code repository.
+[Tuist](https://tuist.dev) is what I’d recommend in most any other case. Tuist uses Swift for its manifest files, which is a deliberate design choice — it gives you type-checking and the full power of the language for complex configurations. Tuist has a very robust community and support as well. In the end I’d highly recommend **not** committing Xcode projects to your code repository.
 
 # Using Tuist
 
@@ -322,7 +322,8 @@ So in our case, our `infoPlist` would look like:
 
 This will make it much easier to increment the build number or change the marketing version.
 
-### Ignoring Our Project
+---
+
 
 This is what we should have for our end result:
 
@@ -365,6 +366,8 @@ let project = Project(
 ```
 
 This will give us a fully working Xcode project but before we commit this to our repository, **we need to make sure we aren't committing our project and workspace.**
+
+### Ignoring Our Project
 
 If you don't already have a .gitignore file, [toptal has a great resource for creating one](https://www.toptal.com/developers/gitignore). I even have a url I download from everytime:
 
