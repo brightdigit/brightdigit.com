@@ -1,0 +1,26 @@
+---
+title: Actually Really Useful
+date: 2026-06-03 10:24
+description: After ten months away, Leo's back. He covers Swift Craft 2026, the rest of his speaking year (Beer City Code, iOSDevUK), and his honest take on AI dev tooling. Plus updates on MistKit, SyntaxKit, swift-build, MonthBar, and a new watchOS app called AtLeast (in TestFlight now). He's open to work, offering free 30-minute consultations, and a live WWDC 2026 episode is coming. Subscribe so you don't miss it.
+featuredImage: https://img.transistorcdn.com/NufhIxNXujc2VepD6V9EpnrrQC-P7vZSwrNqnNl-AgM/rs:fill:0:0:1/w:1400/h:1400/q:60/mb:500000/aHR0cHM6Ly9pbWct/dXBsb2FkLXByb2R1/Y3Rpb24udHJhbnNp/c3Rvci5mbS85OWU2/ZjViMDAyOTMyMjYw/NTRkNzk4ZmZlNzM5/YjIxZi5qcGc.jpg
+youtubeID: HGqW_9OLNG8
+audioDuration: 978
+videoDuration: 1050
+podcastID: b0323fef
+---
+<p>After ten months away, Leo's back. He covers Swift Craft 2026, the rest of his speaking year (Beer City Code, iOSDevUK), and his honest take on AI dev tooling. Plus updates on MistKit, SyntaxKit, swift-build, MonthBar, and a new watchOS app called AtLeast (in TestFlight now). He's open to work, offering free 30-minute consultations, and a live WWDC 2026 episode is coming. Subscribe so you don't miss it.</p><p><strong>Related Links</strong></p><ul><li><a href="https://zcal.co/leogdion/consultation~">Free 30-min consultation</a> — Zcal</li><li><a href="https://swiftcraft.uk~">Swift Craft 2026</a> — Folkestone, May 2026</li><li><a href="https://beercitycode.com~">Beer City Code</a> — Grand Rapids, Aug 14–15, 2026</li><li><a href="https://www.iosdevuk.com~">iOSDevUK</a> — Wales, September 2026</li><li><a href="https://hbr.org/2026/02/ai-doesnt-reduce-work-it-intensifies-it">AI Doesn’t Reduce Work—It Intensifies It</a></li><li><a href="https://www.youtube.com/watch?v=EkudegOD2FU~">AI-assisted development talk (Boston)</a> — YouTube</li><li><a href="https://github.com/brightdigit/MistKit~">MistKit</a> — GitHub</li><li><a href="https://github.com/brightdigit/SyntaxKit~">SyntaxKit</a> — GitHub</li><li><a href="https://github.com/brightdigit/swift-build~">swift-build</a> — GitHub</li><li><a href="https://month.bar~">MonthBar</a> — month.bar</li><li><a href="https://atleast.app~">AtLeast</a> — <a href="atleast.app">atleast.app</a> (TestFlight)</li><li><a href="https://getbushel.app~">Bushel</a> — <a href="getbushel.app">getbushel.app</a></li></ul><p><strong>Related Episodes</strong></p><ul><li><a href="https://brightdigit.com/episodes/200-live-from-communitykit-wwdc-2025-with-matt-massicotte~">Ep 200 — Live from CommunityKit WWDC 2025 with Matt Massicotte</a></li><li><a href="https://brightdigit.com/episodes/199-v26-0-with-peter-witham~">Ep 199 — v26.0 with Peter Witham</a></li><li><a href="https://brightdigit.com/episodes/178-sotu-2024-with-peter-witham~">Ep 178 — SOTU 2024 with Peter Witham</a></li><li><a href="https://brightdigit.com/episodes/196-swift-on-android-with-marc-prud-hommeaux~">Ep 196 — Swift on Android with Marc Prud'hommeaux</a></li><li><a href="https://brightdigit.com/episodes/203-milk-diary-with-kaya-thomas~">Ep 203 — Milk Diary with Kaya Thomas</a></li></ul><p><strong>Chapters</strong><br></p><ul><li>(00:00) - I'm Back</li>
+<li>(00:43) - Conferences 2026</li>
+<li>(03:54) - AI in 2026</li>
+<li>(05:59) - Swift Automation</li>
+<li>(07:34) - Projects 2026</li>
+<li>(12:02) - Free Consultation</li>
+<li>(14:37) -  Thank you</li>
+</ul><p><br><strong>Watch</strong><br><a href="https://www.youtube.com/watch?v=HGqW_9OLNG8" title="Click here to watch a video of this episode.">Click here to watch a video of this episode.</a><br>
+</p><p><br><strong>Transcript</strong><br><a href="https://share.transistor.fm/s/b0323fef/transcript" title="Click here to view the episode transcript.">Click here to view the episode transcript.</a><br>
+</p><p><br><strong>Support the Show</strong></p><p><strong>
+  <a href="https://www.patreon.com/brightdigit" rel="payment" title="★ Support this podcast on Patreon ★">★ Support this podcast on Patreon ★</a>
+</strong> </p><p>Thanks to our supporters: <strong>Thanks to our monthly supporters</strong>
+</p><ul>
+  <li>Steven Lipton</li>
+</ul> <br>Welcome new supporters: <p><br><strong>Social Media</strong></p><ul><li><a href="https://www.linkedin.com/in/leogdion/">LinkedIn - @leogdion</a></li><li><a href="https://github.com/brightdigit">GitHub - @brightdigit</a></li><li><a href="https://github.com/leogdion/">GitHub - @leogdion</a></li><li><a href="https://c.im/@leogdion">Mastodon - @leogdion@c.im</a></li><li><a href="http://youtube.com/@brightdigit">YouTube - @brightdigit</a></li><li><a href="https://x.com/leogdion">X - @leogdion</a></li><li><a href="https://x.com/brightdigit">X - @brightdigit</a></li></ul><p><strong>Credits</strong></p><p>Music from <a href="https://filmmusic.io/">https://filmmusic.io</a> "Blippy Trance" by Kevin MacLeod (<a href="https://incompetech.com/">https://incompetech.com</a>) License: CC BY (<a href="http://creativecommons.org/licenses/by/4.0/">http://creativecommons.org/licenses/by/4.0/</a>)</p>
+      
