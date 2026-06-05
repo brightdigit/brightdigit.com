@@ -114,7 +114,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .build/
-          key: ${{ runner.os }}-build-${{ hashFiles('Package.resolved') }}
+          key: ${{ runner.os }}-build-v2-${{ hashFiles('Package.resolved') }}
 
       - name: Configure Architecture Prefix
         run: |
@@ -144,7 +144,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .build/
-          key: ${{ runner.os }}-release-${{ hashFiles('Package.resolved', 'Sources/**/*.swift') }}
+          key: ${{ runner.os }}-release-v2-${{ hashFiles('Package.resolved', 'Sources/**/*.swift') }}
 
       - name: Build Release Product
         run: |
