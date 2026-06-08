@@ -7,10 +7,14 @@ on:
     branches: [ '*' ]
   workflow_dispatch:
     inputs:
-      AUTOMATE_CONTENT:
-        description: "Set AUTOMATE_CONTENT to trigger automate-content job"
+      automate_content:
+        description: "Set automate_content to trigger automate-content job"
         required: false
         default: ""
+      skip_build:
+        description: "Skip swift build (use prebuilt binary in .build)"
+        required: false
+        default: "false"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -90,7 +94,7 @@ jobs:
                   git commit -m "${COMMIT_MESSAGE}"
       
                   # Ensure your runner has credentials (PAT via checkout or SSH key) to push
-                  git push origin ${{ github.head_ref }}
+                  git push origin ${{ github.ref_name }}
       
                   echo "Changes pushed successfully."
 

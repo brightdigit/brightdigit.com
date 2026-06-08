@@ -144,6 +144,5 @@ The project uses GitLab CI (.gitlab-ci.yml) with five stages and multi-platform 
 - Each section type (articles, episodes, tutorials, newsletters) has its own `SectionItem` implementation
 
 ### Development Environment
-- Development server uses `md5` checksums to detect Content/ directory changes
 - Requires Node.js/NPM for final styling build step via NPMPublishPlugin
 - GitLab CI caches `.build/` directory based on `Package.resolved` for faster builds
