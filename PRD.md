@@ -264,6 +264,7 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 | #31 | Migrate Newsletters | Open |
 | #30 | Public Buffer API | Open |
 | #32 | Video Podcasts | Open |
+| #49 | Support AT Protocol | Open — feeds posts into Buffer |
 
 **Architecture (#33):**
 
@@ -274,7 +275,8 @@ New source modules (local to this repo, not subrepos):
 | `PublishKit` | Core orchestrator + protocol definitions (`SubscriberListProvider`, `NewsletterSender`) | — |
 | `ButtondownKit` | Newsletter transport | swift-openapi-generator from official Buttondown OpenAPI 3.0.2 spec |
 | `MailgunKit` | Sender-only transport (no list management) | Composable with any `SubscriberListProvider` |
-| `BufferKit` | Social: X/Twitter, LinkedIn, Mastodon, etc. | Handwritten GraphQL + Codable (no code gen) |
+| `BufferKit` | Social: X/Twitter, LinkedIn, Mastodon, etc. — accepts AT Protocol records as input | Handwritten GraphQL + Codable (no code gen) |
+| `ATProtoKit` | Compose posts as AT Protocol records (`app.bsky.feed.post`) for Buffer fan-out (#49) | Reference: [A Social Filesystem](https://overreacted.io/a-social-filesystem/) |
 
 **Why Buttondown:** Two REST calls to send an issue (`POST /emails`, `POST /emails/{id}/send-draft`). Subscriber management and CAN-SPAM compliance are platform-managed — no audience data stored in this repo.
 
@@ -285,6 +287,7 @@ New source modules (local to this repo, not subrepos):
 **Notes:**
 - #31 (newsletter migration) follows after #33 tooling is complete
 - #30 (Buffer API) is a prerequisite for #33's social publishing leg
+- #49 (AT Protocol) authors posts as `app.bsky.feed.post` records that `BufferKit` consumes — single canonical post format fans out across networks
 - Subscriber data stays on Buttondown's servers — nothing stored in this repo
 
 ---
@@ -296,7 +299,6 @@ New source modules (local to this repo, not subrepos):
 | # | Title | Notes |
 |---|-------|-------|
 | #50 | Migrate to GitHub Pages | Currently deployed via Netlify |
-| #49 | Support AT Protocol | Reference: [A Social Filesystem](https://overreacted.io/a-social-filesystem/) — consider as prerequisite for `PublishKit` (#33) |
 | TBD | New form integration: contact us + subscribe button (Buttondown?) | New GitHub issue(s) needed; evaluate contact form and subscribe button as part of Buttondown migration |
 
 ---
@@ -359,8 +361,8 @@ New source modules (local to this repo, not subrepos):
 | Phase 3 | 4 | AI-CITE schema (#18, #19, #20) + validation (#23) |
 | Phase 4 | 7 | OpenAPI migration + Kanna → SwiftSoup (TBD) |
 | Phase 5 | 5 | Swift 6.3 subrepos + components + Tailwind (TBD) + AI-CITE content strategy (#24, #25) |
-| Phase 6 | 4 | Publishing infrastructure |
-| Phase 7 | 3 | Platform migration + form integration (TBD) |
+| Phase 6 | 5 | Publishing infrastructure + AT Protocol (#49) feeds Buffer |
+| Phase 7 | 2 | Platform migration + form integration (TBD) |
 | Phase 8 | 3 | Deferred cleanup |
 | Post-Migration | 8 | Article edits (#3, #4, #13) + article optimization (#21, #22, #26, #27, #28) |
 | **Total** | **40** | Excludes #12 (done), #36 (done); includes 3 TBD issues awaiting GitHub creation |
