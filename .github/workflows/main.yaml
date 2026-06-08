@@ -159,12 +159,9 @@ jobs:
           key: ${{ runner.os }}-release-${{ steps.swift.outputs.ver }}-${{ hashFiles('Package.resolved', 'Sources/**/*.swift') }}
 
       - name: Build Release Product
-        # -Onone works around a Swift 6.4 release-optimizer miscompile of Splash's
-        # SwiftGrammar.init (CharacterSet) that crashes the binary at runtime on
-        # linux/amd64. The site generator runs once, so optimization is irrelevant.
         run: |
-          swift build -c release -Xswiftc -Onone --product brightdigitwg
-          BIN_PATH=$(swift build -c release -Xswiftc -Onone --product brightdigitwg --show-bin-path)
+          swift build -c release --product brightdigitwg
+          BIN_PATH=$(swift build -c release --product brightdigitwg --show-bin-path)
           cp "$BIN_PATH/brightdigitwg" "brightdigitwg-$(uname)-$(arch)"
 
       - name: Upload Artifact
