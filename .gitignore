@@ -175,3 +175,6 @@ Styling/*.svg
 
 # Claude Code local settings (machine-specific)
 .claude/settings.local.json
+
+# Local content-watch dev server (machine-specific)
+dev-server.sh
