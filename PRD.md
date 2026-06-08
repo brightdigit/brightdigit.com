@@ -19,7 +19,7 @@ This document organizes all open GitHub issues into sequential phases and milest
 
 ```
 Phase 0 (housekeeping) ─────────────── independent, can run at any time
-Phase 1 (Monorepo cleanup) ──────────── prerequisite: #36 ✓ (complete)
+Phase 1 (Monorepo cleanup) ──────────── prerequisite: [#36](https://github.com/brightdigit/brightdigit.com/issues/36) ✓ (complete)
 Phase 2 (Swift 6.3 main package) ────── requires Phase 1
 Phase 3 (AI-CITE schema + validation) ─ requires Phase 2 (intentional: implement after Swift 6.3 upgrade)
 Phase 4 (OpenAPI migration) ─────────── requires Phase 2 — Swift 6.3-only toolchain
@@ -48,26 +48,25 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 
 | # | Title | Status |
 |---|-------|--------|
-| #11 | Fix Content Updates | Open |
-| #35 | Remove dev-server.sh | Open |
+| [#11](https://github.com/brightdigit/brightdigit.com/issues/11) | Fix Content Updates | Open |
+| [#35](https://github.com/brightdigit/brightdigit.com/issues/35) | Remove dev-server.sh | Open |
 
 **Notes:**
 - These are independent of all other phases and can be done at any time.
-- #35 removes the shell-based dev server (`dev-server.sh` hardcodes `/Users/leo/.nvm/...`); replaced by the Swift-native approach.
+- [#35](https://github.com/brightdigit/brightdigit.com/issues/35) removes the shell-based dev server (`dev-server.sh` hardcodes `/Users/leo/.nvm/...`); replaced by the Swift-native approach.
 
 ---
 
 ## Phase 1: Monorepo Cleanup
 
-**Goal:** Finish loose ends from the monorepo consolidation (#36, completed via #42 and #48).
+**Goal:** Finish loose ends from the monorepo consolidation ([#36](https://github.com/brightdigit/brightdigit.com/issues/36), completed via [#42](https://github.com/brightdigit/brightdigit.com/issues/42) and [#48](https://github.com/brightdigit/brightdigit.com/issues/48)).
 
 | # | Title | Status |
 |---|-------|--------|
-| ~~#36~~ | ~~Phase 1: Monorepo Consolidation (17 packages)~~ | **Completed** (#42, #48) |
-| #47 | Remove MarkdownGenerator dependency | Open — fold into Phase 4 #40 |
+| ~~[#36](https://github.com/brightdigit/brightdigit.com/issues/36)~~ | ~~Phase 1: Monorepo Consolidation (17 packages)~~ | **Completed** ([#42](https://github.com/brightdigit/brightdigit.com/issues/42), [#48](https://github.com/brightdigit/brightdigit.com/issues/48)) |
 
 **Notes:**
-- #47 no longer needs a "bring local" vendor step. `eneko/MarkdownGenerator` is used by exactly one file (`Sources/Tagscriber/KannaMarkdownGenerator.swift`) and swift-markdown (already adopted in Phase 4 #40) covers generation as well as parsing — see the Phase 4 dependency table. The removal will happen as part of the same Phase 4 rewrite that renames `KannaMarkdownGenerator` → `SwiftSoupMarkdownGenerator`.
+- Phase 1 has no remaining open work. The `MarkdownGenerator` removal originally tracked by [#47](https://github.com/brightdigit/brightdigit.com/issues/47) has been folded into Phase 4 [#40](https://github.com/brightdigit/brightdigit.com/issues/40) (swift-markdown covers both Ink replacement and MarkdownGenerator replacement, since both libraries are swapped for the same dependency). [#47](https://github.com/brightdigit/brightdigit.com/issues/47) has been retitled and moved to Phase 4 to track the orthogonal Kanna → SwiftSoup migration in `Tagscriber` — it was previously a TBD row there.
 
 ---
 
@@ -80,9 +79,9 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 
 | # | Title | Status |
 |---|-------|--------|
-| #38 | Swift 6 Language Mode + Component Migration + Mermaid Support | Open |
-| #54 | Migrate linting and style configs to Swift-App-Template patterns | Open |
-| #65 | CI cache key doesn't track docker image — stale `.build/` segfaults release binary | Open — short-term `-v2-` mitigation applied; durable fix pending |
+| [#38](https://github.com/brightdigit/brightdigit.com/issues/38) | Swift 6 Language Mode + Component Migration + Mermaid Support | Open |
+| [#54](https://github.com/brightdigit/brightdigit.com/issues/54) | Migrate linting and style configs to Swift-App-Template patterns | Open |
+| [#65](https://github.com/brightdigit/brightdigit.com/issues/65) | CI cache key doesn't track docker image — stale `.build/` segfaults release binary | Open — short-term `-v2-` mitigation applied; durable fix pending |
 | TBD | Fast-deploy: cache prebuilt binary so content-only commits skip `swift build` | Open |
 
 **Content/code separation note:** `Content/` markdown files are already runtime data — they are not compiled into the binary. The problem is CI/CD latency: every commit triggers `swift build` even when only markdown changed. Solution: store the prebuilt `brightdigitwg` binary as a GitLab CI artifact; content-only commits (no `*.swift` or `Package.swift` changes) download the cached binary and run deploy directly. Cache must be invalidated when `Package.resolved` changes.
@@ -104,7 +103,7 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 ## Phase 3: AI-CITE Optimization
 
 **Milestone:** AI-CITE Phase 1 (target: Feb 28, 2026)  
-**Branch:** `ai-cite-optimization` (PR #39)  
+**Branch:** `ai-cite-optimization` (PR [#39](https://github.com/brightdigit/brightdigit.com/issues/39))  
 **Goal:** Implement structured schema markup and optimize priority articles so BrightDigit content is cited by AI systems (ChatGPT, Google AI Overview, etc.). AI-CITE is fundamentally an integration into the Swift site-building code (`PublishType` protocol + `BrightDigitSite` implementation) — not just article-level content edits. Intentionally sequenced after Phase 2 to avoid doing this work twice across a Swift 6.3 boundary.
 
 **Framework:** AI-CITE — Answer-first, Intent-matched headings, Clear structure, Indexed schema, Trusted sources, Exclusive POV.  
@@ -114,12 +113,12 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 
 | # | Title | Priority | Status |
 |---|-------|----------|--------|
-| #56 | Evaluate correct schema.org types for each content section | P0-critical | Open |
-| #18 | Add seomachine.io integration | P1-high | Open |
-| #19 | Implement FAQ Schema Markup in `PiHTMLFactory` | P0-critical | In Progress |
-| #20 | Implement HowTo Schema Markup in `PiHTMLFactory` | P1-high | Open |
+| [#56](https://github.com/brightdigit/brightdigit.com/issues/56) | Evaluate correct schema.org types for each content section | P0-critical | Open |
+| [#18](https://github.com/brightdigit/brightdigit.com/issues/18) | Add seomachine.io integration | P1-high | Open |
+| [#19](https://github.com/brightdigit/brightdigit.com/issues/19) | Implement FAQ Schema Markup in `PiHTMLFactory` | P0-critical | In Progress |
+| [#20](https://github.com/brightdigit/brightdigit.com/issues/20) | Implement HowTo Schema Markup in `PiHTMLFactory` | P1-high | Open |
 
-**Note:** #56 must be resolved before #19 and #20 — schema type selection drives the implementation.
+**Note:** [#56](https://github.com/brightdigit/brightdigit.com/issues/56) must be resolved before [#19](https://github.com/brightdigit/brightdigit.com/issues/19) and [#20](https://github.com/brightdigit/brightdigit.com/issues/20) — schema type selection drives the implementation.
 
 **Implementation files:**
 - `Sources/PublishType/PageContent.swift` — add `schemaMarkup: String?` requirement (`PublishType` owns the protocol contract)
@@ -145,7 +144,7 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 
 | # | Title | Priority | Status |
 |---|-------|----------|--------|
-| #23 | Test AI-CITE Baseline and Validate Schema | P1-high | Open |
+| [#23](https://github.com/brightdigit/brightdigit.com/issues/23) | Test AI-CITE Baseline and Validate Schema | P1-high | Open |
 
 **Reference:** `.claude/ai-cite-optimization/`
 
@@ -160,13 +159,13 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 
 | # | Title | Notes |
 |---|-------|-------|
-| #45 | Replace Prch with swift-openapi-* | First step — unblocks async/await everywhere |
-| #37 | OpenAPI Generator Migration (SwiftTube + Spinetail) | ~521 generated files replaced; rewrites `ContributeYouTube` and `ContributeMailchimp` |
-| #40 | Replace Ink with swift-markdown; also absorbs #47 (MarkdownGenerator removal) | Ink is used transitively via Publish's markdown pipeline. swift-markdown covers both parsing (replacing Ink) and generation (replacing MarkdownGenerator in `Tagscriber/KannaMarkdownGenerator.swift`) via its public block/inline initializers + `MarkupFormatter`. |
-| #41 | Replace ShellOut with swift-subprocess (Tagscriber) | Only affects `Tagscriber/PandocMarkdownGenerator.swift` |
-| #46 | Replace ShellOut with swift-subprocess (Publish/NPMPublishPlugin) | Affects subrepos — NPMPublishPlugin currently runs `npm ci` + `npm run publish` in `Styling/` via ShellOut; replacing ShellOut requires updating the plugin itself. If node-swift (#51) is viable it may eliminate NPMPublishPlugin entirely (run npm via native Node.js embedding). |
-| TBD | Replace Kanna with SwiftSoup in `Tagscriber` | Rename `KannaMarkdownGenerator` → `SwiftSoupMarkdownGenerator`; XPath → CSS selectors |
-| #44 | Replace swift-argument-parser with swift-configuration | Affects all 7 files in `BrightDigitArgs/` |
+| [#45](https://github.com/brightdigit/brightdigit.com/issues/45) | Replace Prch with swift-openapi-* | First step — unblocks async/await everywhere |
+| [#37](https://github.com/brightdigit/brightdigit.com/issues/37) | OpenAPI Generator Migration (SwiftTube + Spinetail) | ~521 generated files replaced; rewrites `ContributeYouTube` and `ContributeMailchimp` |
+| [#40](https://github.com/brightdigit/brightdigit.com/issues/40) | Replace Ink **and** MarkdownGenerator with swift-markdown | swift-markdown is the single replacement for both libraries: parsing (was Ink, used transitively via Publish's markdown pipeline) and generation (was MarkdownGenerator in `Tagscriber/KannaMarkdownGenerator.swift`). Covers both via its public block/inline initializers + `MarkupFormatter`. This is the parsing/emission swap only — the input-side Kanna → SwiftSoup migration is tracked separately under [#47](https://github.com/brightdigit/brightdigit.com/issues/47) and can land in either order. |
+| [#41](https://github.com/brightdigit/brightdigit.com/issues/41) | Replace ShellOut with swift-subprocess (Tagscriber) | Only affects `Tagscriber/PandocMarkdownGenerator.swift` |
+| [#46](https://github.com/brightdigit/brightdigit.com/issues/46) | Replace ShellOut with swift-subprocess (Publish/NPMPublishPlugin) | Affects subrepos — NPMPublishPlugin currently runs `npm ci` + `npm run publish` in `Styling/` via ShellOut; replacing ShellOut requires updating the plugin itself. If node-swift ([#51](https://github.com/brightdigit/brightdigit.com/issues/51)) is viable it may eliminate NPMPublishPlugin entirely (run npm via native Node.js embedding). |
+| [#47](https://github.com/brightdigit/brightdigit.com/issues/47) | Replace Kanna with SwiftSoup in `Tagscriber` | Rename `KannaMarkdownGenerator` → `SwiftSoupMarkdownGenerator`; XPath → CSS selectors. Orthogonal to [#40](https://github.com/brightdigit/brightdigit.com/issues/40) (Kanna handles HTML input parsing; swift-markdown from [#40](https://github.com/brightdigit/brightdigit.com/issues/40) handles Markdown emission). Either order works. *Issue [#47](https://github.com/brightdigit/brightdigit.com/issues/47) needs to be retitled on GitHub from "Remove MarkdownGenerator dependency" to reflect this scope.* |
+| [#44](https://github.com/brightdigit/brightdigit.com/issues/44) | Replace swift-argument-parser with swift-configuration | Affects all 7 files in `BrightDigitArgs/` |
 
 **Dependency decisions:**
 
@@ -174,8 +173,8 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 |---|---|---|
 | Ink | ✅ Replace with swift-markdown | Transitive via Publish subrepo |
 | ShellOut | ✅ Replace with swift-subprocess | Official Apple framework |
-| Kanna | ✅ Replace with SwiftSoup | Used in `Tagscriber/KannaMarkdownGenerator.swift` for HTML traversal (tag names, text, attributes, child selection). SwiftSoup is a pure Swift Linux-compatible replacement — XPath swaps for CSS selectors, properties become method calls. Rename `KannaMarkdownGenerator` → `SwiftSoupMarkdownGenerator`. |
-| MarkdownGenerator | ✅ Replace with swift-markdown (absorbs #47) | `eneko/MarkdownGenerator` is stale (v1.1.0, Jan 2021, Swift 4.0+) and used by only one file, `Sources/Tagscriber/KannaMarkdownGenerator.swift`. swift-markdown supports programmatic construction — `Heading`, `Paragraph`, `CodeBlock`, `BlockQuote`, `UnorderedList`/`OrderedList`, `Image`, `Link`, `Emphasis`, `Strong` all expose public initializers — and `MarkupFormatter` renders a `Markup` tree back to CommonMark. Swift 6 concurrency-ready (immutable value types), Linux-compatible. Net dependency delta: −1 (since swift-markdown is already added by this row's #40). Migration happens in the same rewrite that renames `KannaMarkdownGenerator` → `SwiftSoupMarkdownGenerator`. |
+| Kanna | ✅ Replace with SwiftSoup (tracked under [#47](https://github.com/brightdigit/brightdigit.com/issues/47)) | Used in `Tagscriber/KannaMarkdownGenerator.swift` for HTML traversal (tag names, text, attributes, child selection). SwiftSoup is a pure Swift Linux-compatible replacement — XPath swaps for CSS selectors, properties become method calls. Rename `KannaMarkdownGenerator` → `SwiftSoupMarkdownGenerator`. Independent of [#40](https://github.com/brightdigit/brightdigit.com/issues/40); the two halves of the file (HTML parsing vs Markdown emission) can be migrated in separate PRs. |
+| MarkdownGenerator | ✅ Replace with swift-markdown (part of [#40](https://github.com/brightdigit/brightdigit.com/issues/40)) | `eneko/MarkdownGenerator` is stale (v1.1.0, Jan 2021, Swift 4.0+) and used by only one file, `Sources/Tagscriber/KannaMarkdownGenerator.swift`. swift-markdown supports programmatic construction — `Heading`, `Paragraph`, `CodeBlock`, `BlockQuote`, `UnorderedList`/`OrderedList`, `Image`, `Link`, `Emphasis`, `Strong` all expose public initializers — and `MarkupFormatter` renders a `Markup` tree back to CommonMark. Swift 6 concurrency-ready (immutable value types), Linux-compatible. Net dependency delta: −1 (swift-markdown is already added by [#40](https://github.com/brightdigit/brightdigit.com/issues/40) for the Ink replacement, so MarkdownGenerator's removal piggybacks for free). The Kanna → SwiftSoup rename is a separate step under [#47](https://github.com/brightdigit/brightdigit.com/issues/47). |
 | Yams | ❌ Keep | Foundation has no YAML support |
 
 **Target architecture after Phase 4:**
@@ -188,7 +187,7 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 - `SwiftTube 1.0.0` and `Spinetail 1.0.0` released with swift-openapi-generator
 - Full newsletter import (113 newsletters) + podcast import produces identical markdown output
 - CI/CD content automation job passes
-- Optionally: implement #1 (Skip Campaign Download For Existing Newsletters) as part of this migration
+- Optionally: implement [#1](https://github.com/brightdigit/brightdigit.com/issues/1) (Skip Campaign Download For Existing Newsletters) as part of this migration
 
 ---
 
@@ -207,17 +206,17 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 
 **Migration order:** (1) header/footer in `PiHTMLFactory.HTML.swift` (affects every page), (2) `Nodes/Section/` item content files, (3) `Nodes/Pages/` builders.
 
-**#53 enforcement:** No direct `Node<HTML.BodyContext>` construction in `BrightDigitSite` — all HTML must flow through a `Component`. Enforcement mechanism TBD (SwiftLint custom rule or build-time assertion).
+**[#53](https://github.com/brightdigit/brightdigit.com/issues/53) enforcement:** No direct `Node<HTML.BodyContext>` construction in `BrightDigitSite` — all HTML must flow through a `Component`. Enforcement mechanism TBD (SwiftLint custom rule or build-time assertion).
 
 **TailwindKit module:** "Create library for easy Tailwind access" means a new Swift module that maps to Tailwind utility class names (e.g., `.bg(.blue, .500)` → `"bg-blue-500"`), providing compile-time safety for CSS classes used in components.
 
 | # | Title | Status |
 |---|-------|--------|
-| #38 | Swift 6.3 Language Mode + Component Migration + Mermaid Support | Open |
-| #53 | Enforce component-based Plot API (no direct Node creation) | Open |
+| [#38](https://github.com/brightdigit/brightdigit.com/issues/38) | Swift 6.3 Language Mode + Component Migration + Mermaid Support | Open |
+| [#53](https://github.com/brightdigit/brightdigit.com/issues/53) | Enforce component-based Plot API (no direct Node creation) | Open |
 | TBD | Upgrade Tailwind + `TailwindKit` Swift module for type-safe class names | Open |
-| #24 | YouTube Video Content Strategy | Open |
-| #25 | Create Unique BrightDigit Frameworks/Methodologies | Open |
+| [#24](https://github.com/brightdigit/brightdigit.com/issues/24) | YouTube Video Content Strategy | Open |
+| [#25](https://github.com/brightdigit/brightdigit.com/issues/25) | Create Unique BrightDigit Frameworks/Methodologies | Open |
 
 **Swift 6.3 subrepo upgrades (17 total):**
 - Publish ecosystem (8): Publish, Plot, Files, Codextended, Sweep, CollectionConcurrencyKit, Splash, SplashPublishPlugin
@@ -239,7 +238,7 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 - Content: `ArticleCardComponent`, `NewsletterItemComponent`, `PodcastEpisodeComponent`, `TutorialItemComponent`, `ProductCardComponent`
 
 **AI-CITE Content Strategy (post-migration):**
-- #24 and #25 align with the refactored AI-CITE integration into Publish/BrightDigitSite — execute after component migration is stable.
+- [#24](https://github.com/brightdigit/brightdigit.com/issues/24) and [#25](https://github.com/brightdigit/brightdigit.com/issues/25) align with the refactored AI-CITE integration into Publish/BrightDigitSite — execute after component migration is stable.
 
 **Mermaid Support:**
 - Detect `mermaid` code blocks and wrap in `<div class="mermaid">` instead of `<pre><code>`
@@ -260,13 +259,13 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 
 | # | Title | Status |
 |---|-------|--------|
-| #33 | Swift Publishing Tool: Buttondown + Buffer Architecture | Open |
-| #31 | Migrate Newsletters | Open |
-| #30 | Public Buffer API | Open |
-| #32 | Video Podcasts | Open |
-| #49 | Support AT Protocol | Open — feeds posts into Buffer |
+| [#33](https://github.com/brightdigit/brightdigit.com/issues/33) | Swift Publishing Tool: Buttondown + Buffer Architecture | Open |
+| [#31](https://github.com/brightdigit/brightdigit.com/issues/31) | Migrate Newsletters | Open |
+| [#30](https://github.com/brightdigit/brightdigit.com/issues/30) | Public Buffer API | Open |
+| [#32](https://github.com/brightdigit/brightdigit.com/issues/32) | Video Podcasts | Open |
+| [#49](https://github.com/brightdigit/brightdigit.com/issues/49) | Support AT Protocol | Open — feeds posts into Buffer |
 
-**Architecture (#33):**
+**Architecture ([#33](https://github.com/brightdigit/brightdigit.com/issues/33)):**
 
 New source modules (local to this repo, not subrepos):
 
@@ -276,7 +275,7 @@ New source modules (local to this repo, not subrepos):
 | `ButtondownKit` | Newsletter transport | swift-openapi-generator from official Buttondown OpenAPI 3.0.2 spec |
 | `MailgunKit` | Sender-only transport (no list management) | Composable with any `SubscriberListProvider` |
 | `BufferKit` | Social: X/Twitter, LinkedIn, Mastodon, etc. — accepts AT Protocol records as input | Handwritten GraphQL + Codable (no code gen) |
-| `ATProtoKit` | Compose posts as AT Protocol records (`app.bsky.feed.post`) for Buffer fan-out (#49) | Reference: [A Social Filesystem](https://overreacted.io/a-social-filesystem/) |
+| `ATProtoKit` | Compose posts as AT Protocol records (`app.bsky.feed.post`) for Buffer fan-out ([#49](https://github.com/brightdigit/brightdigit.com/issues/49)) | Reference: [A Social Filesystem](https://overreacted.io/a-social-filesystem/) |
 
 **Why Buttondown:** Two REST calls to send an issue (`POST /emails`, `POST /emails/{id}/send-draft`). Subscriber management and CAN-SPAM compliance are platform-managed — no audience data stored in this repo.
 
@@ -285,9 +284,9 @@ New source modules (local to this repo, not subrepos):
 **HTTP transport:** All clients use `ClientTransport` from `swift-openapi-runtime` — `AsyncHTTPClientTransport` on Linux (CI/CD), `URLSessionTransport` on Apple platforms.
 
 **Notes:**
-- #31 (newsletter migration) follows after #33 tooling is complete
-- #30 (Buffer API) is a prerequisite for #33's social publishing leg
-- #49 (AT Protocol) authors posts as `app.bsky.feed.post` records that `BufferKit` consumes — single canonical post format fans out across networks
+- [#31](https://github.com/brightdigit/brightdigit.com/issues/31) (newsletter migration) follows after [#33](https://github.com/brightdigit/brightdigit.com/issues/33) tooling is complete
+- [#30](https://github.com/brightdigit/brightdigit.com/issues/30) (Buffer API) is a prerequisite for [#33](https://github.com/brightdigit/brightdigit.com/issues/33)'s social publishing leg
+- [#49](https://github.com/brightdigit/brightdigit.com/issues/49) (AT Protocol) authors posts as `app.bsky.feed.post` records that `BufferKit` consumes — single canonical post format fans out across networks
 - Subscriber data stays on Buttondown's servers — nothing stored in this repo
 
 ---
@@ -298,7 +297,7 @@ New source modules (local to this repo, not subrepos):
 
 | # | Title | Notes |
 |---|-------|-------|
-| #50 | Migrate to GitHub Pages | Currently deployed via Netlify |
+| [#50](https://github.com/brightdigit/brightdigit.com/issues/50) | Migrate to GitHub Pages | Currently deployed via Netlify |
 | TBD | New form integration: contact us + subscribe button (Buttondown?) | New GitHub issue(s) needed; evaluate contact form and subscribe button as part of Buttondown migration |
 
 ---
@@ -309,9 +308,9 @@ New source modules (local to this repo, not subrepos):
 
 | # | Title | Notes |
 |---|-------|-------|
-| #34 | Remove or repurpose Import/Wordpress XML files | Clean up leftover import artifacts |
-| #1 | Skip Campaign Download For Existing Newsletters | Should be implemented as part of `ButtondownKit` integration (Phase 6) |
-| #51 | Research node-swift | Evaluate [kabiroberai/node-swift](https://github.com/kabiroberai/node-swift); prerequisite for NPMPublishPlugin ShellOut replacement (#46) — evaluate before implementing Phase 4 #46 |
+| [#34](https://github.com/brightdigit/brightdigit.com/issues/34) | Remove or repurpose Import/Wordpress XML files | Clean up leftover import artifacts |
+| [#1](https://github.com/brightdigit/brightdigit.com/issues/1) | Skip Campaign Download For Existing Newsletters | Should be implemented as part of `ButtondownKit` integration (Phase 6) |
+| [#51](https://github.com/brightdigit/brightdigit.com/issues/51) | Research node-swift | Evaluate [kabiroberai/node-swift](https://github.com/kabiroberai/node-swift); prerequisite for NPMPublishPlugin ShellOut replacement ([#46](https://github.com/brightdigit/brightdigit.com/issues/46)) — evaluate before implementing Phase 4 [#46](https://github.com/brightdigit/brightdigit.com/issues/46) |
 
 ---
 
@@ -325,21 +324,21 @@ New source modules (local to this repo, not subrepos):
 
 | # | Title | Status |
 |---|-------|--------|
-| #3 | Add Additional Local Storage Options | Open |
-| #4 | Add Main Actor to Swift 6 Article Solution | Open |
-| #13 | Clarify String vs Reference design choice in MistKit article | Open |
+| [#3](https://github.com/brightdigit/brightdigit.com/issues/3) | Add Additional Local Storage Options | Open |
+| [#4](https://github.com/brightdigit/brightdigit.com/issues/4) | Add Main Actor to Swift 6 Article Solution | Open |
+| [#13](https://github.com/brightdigit/brightdigit.com/issues/13) | Clarify String vs Reference design choice in MistKit article | Open |
 
 ### Article Optimization (formerly Phase 1B)
 
 | # | Title | Priority | Status |
 |---|-------|----------|--------|
-| #21 | Optimize Mise Setup Guide for AI-CITE | P1-high | Open |
-| #22 | Optimize Best Backend Article for AI-CITE | P1-high | Open |
-| #26 | Optimize iOS CI/CD Article for AI-CITE | P1-high | Open |
-| #27 | Optimize iOS Architecture Article for AI-CITE | P1-high | Open |
-| #28 | Optimize Remaining Priority Articles (Batch) | P1-high | Open |
+| [#21](https://github.com/brightdigit/brightdigit.com/issues/21) | Optimize Mise Setup Guide for AI-CITE | P1-high | Open |
+| [#22](https://github.com/brightdigit/brightdigit.com/issues/22) | Optimize Best Backend Article for AI-CITE | P1-high | Open |
+| [#26](https://github.com/brightdigit/brightdigit.com/issues/26) | Optimize iOS CI/CD Article for AI-CITE | P1-high | Open |
+| [#27](https://github.com/brightdigit/brightdigit.com/issues/27) | Optimize iOS Architecture Article for AI-CITE | P1-high | Open |
+| [#28](https://github.com/brightdigit/brightdigit.com/issues/28) | Optimize Remaining Priority Articles (Batch) | P1-high | Open |
 
-**Dependency:** Phase 3A (#19 schema implementation) must be complete and stable before article optimization begins.
+**Dependency:** Phase 3A ([#19](https://github.com/brightdigit/brightdigit.com/issues/19) schema implementation) must be complete and stable before article optimization begins.
 
 ---
 
@@ -347,7 +346,7 @@ New source modules (local to this repo, not subrepos):
 
 | # | Title | Reason |
 |---|-------|--------|
-| #12 | Make Repo Public | Already completed |
+| [#12](https://github.com/brightdigit/brightdigit.com/issues/12) | Make Repo Public | Already completed |
 
 ---
 
@@ -356,13 +355,13 @@ New source modules (local to this repo, not subrepos):
 | Phase | Issues | Notes |
 |-------|--------|-------|
 | Phase 0 | 2 | Quick wins |
-| Phase 1 | 1 | Monorepo cleanup (#36 already done; #47 folded into Phase 4) |
-| Phase 2 | 4 | Swift 6.3 main package + lint config (#54) + CI cache (#65) + rebuild-avoidance (TBD) |
-| Phase 3 | 5 | AI-CITE schema (#56, #18, #19, #20) + validation (#23) |
-| Phase 4 | 7 | OpenAPI migration + Kanna → SwiftSoup (TBD) |
-| Phase 5 | 5 | Swift 6.3 subrepos + components + Tailwind (TBD) + AI-CITE content strategy (#24, #25) |
-| Phase 6 | 5 | Publishing infrastructure + AT Protocol (#49) feeds Buffer |
+| Phase 1 | 0 | Monorepo cleanup ([#36](https://github.com/brightdigit/brightdigit.com/issues/36) already done; MarkdownGenerator removal folded into Phase 4 [#40](https://github.com/brightdigit/brightdigit.com/issues/40); [#47](https://github.com/brightdigit/brightdigit.com/issues/47) retitled and moved to Phase 4) |
+| Phase 2 | 4 | Swift 6.3 main package + lint config ([#54](https://github.com/brightdigit/brightdigit.com/issues/54)) + CI cache ([#65](https://github.com/brightdigit/brightdigit.com/issues/65)) + rebuild-avoidance (TBD) |
+| Phase 3 | 5 | AI-CITE schema ([#56](https://github.com/brightdigit/brightdigit.com/issues/56), [#18](https://github.com/brightdigit/brightdigit.com/issues/18), [#19](https://github.com/brightdigit/brightdigit.com/issues/19), [#20](https://github.com/brightdigit/brightdigit.com/issues/20)) + validation ([#23](https://github.com/brightdigit/brightdigit.com/issues/23)) |
+| Phase 4 | 7 | OpenAPI migration + Kanna → SwiftSoup ([#47](https://github.com/brightdigit/brightdigit.com/issues/47)) |
+| Phase 5 | 5 | Swift 6.3 subrepos + components + Tailwind (TBD) + AI-CITE content strategy ([#24](https://github.com/brightdigit/brightdigit.com/issues/24), [#25](https://github.com/brightdigit/brightdigit.com/issues/25)) |
+| Phase 6 | 5 | Publishing infrastructure + AT Protocol ([#49](https://github.com/brightdigit/brightdigit.com/issues/49)) feeds Buffer |
 | Phase 7 | 2 | Platform migration + form integration (TBD) |
 | Phase 8 | 3 | Deferred cleanup |
-| Post-Migration | 8 | Article edits (#3, #4, #13) + article optimization (#21, #22, #26, #27, #28) |
-| **Total** | **42** | Excludes #12 (done), #36 (done), #43 (dropped); includes 3 TBD issues awaiting GitHub creation |
+| Post-Migration | 8 | Article edits ([#3](https://github.com/brightdigit/brightdigit.com/issues/3), [#4](https://github.com/brightdigit/brightdigit.com/issues/4), [#13](https://github.com/brightdigit/brightdigit.com/issues/13)) + article optimization ([#21](https://github.com/brightdigit/brightdigit.com/issues/21), [#22](https://github.com/brightdigit/brightdigit.com/issues/22), [#26](https://github.com/brightdigit/brightdigit.com/issues/26), [#27](https://github.com/brightdigit/brightdigit.com/issues/27), [#28](https://github.com/brightdigit/brightdigit.com/issues/28)) |
+| **Total** | **41** | Excludes [#12](https://github.com/brightdigit/brightdigit.com/issues/12) (done), [#36](https://github.com/brightdigit/brightdigit.com/issues/36) (done), [#43](https://github.com/brightdigit/brightdigit.com/issues/43) (dropped); includes 3 TBD issues awaiting GitHub creation (Phase 2 rebuild-avoidance, Phase 5 Tailwind, Phase 7 form integration) |
