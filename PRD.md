@@ -64,11 +64,9 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 | # | Title | Status |
 |---|-------|--------|
 | ~~#36~~ | ~~Phase 1: Monorepo Consolidation (17 packages)~~ | **Completed** (#42, #48) |
-| #43 | Upgrade SyndiKit subrepo from 0.3.7 to 0.8.1 | Open |
 | #47 | Remove MarkdownGenerator dependency | Open — fold into Phase 4 #40 |
 
 **Notes:**
-- #43 should be resolved before Phase 2 — SyndiKit 0.3.7 predates the Swift 6.0 concurrency work. 0.8.1 has `Package@swift-6.0.swift` which SPM picks up automatically under Swift 6.3, providing proper `Sendable` conformances. Not a hard blocker (a Swift 6.3 parent can depend on a 5.5 package) but resolving it first avoids concurrency warnings during Phase 2.
 - #47 no longer needs a "bring local" vendor step. `eneko/MarkdownGenerator` is used by exactly one file (`Sources/Tagscriber/KannaMarkdownGenerator.swift`) and swift-markdown (already adopted in Phase 4 #40) covers generation as well as parsing — see the Phase 4 dependency table. The removal will happen as part of the same Phase 4 rewrite that renames `KannaMarkdownGenerator` → `SwiftSoupMarkdownGenerator`.
 
 ---
@@ -78,11 +76,13 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 **Goal:** Upgrade the top-level `brightdigit.com` package to Swift 6.3 language mode. Subrepos remain at their current language modes — a Swift 6.3 package can depend on older Swift packages. This unblocks Phase 4 (swift-openapi-generator and swift-subprocess require Swift 6.3+).
 
 **Estimated effort:** 2–3 weeks  
-**Dependency:** Phase 1 (#43 resolved).
+**Dependency:** Phase 1.
 
 | # | Title | Status |
 |---|-------|--------|
 | #38 | Swift 6 Language Mode + Component Migration + Mermaid Support | Open |
+| #54 | Migrate linting and style configs to Swift-App-Template patterns | Open |
+| #65 | CI cache key doesn't track docker image — stale `.build/` segfaults release binary | Open — short-term `-v2-` mitigation applied; durable fix pending |
 | TBD | Fast-deploy: cache prebuilt binary so content-only commits skip `swift build` | Open |
 
 **Content/code separation note:** `Content/` markdown files are already runtime data — they are not compiled into the binary. The problem is CI/CD latency: every commit triggers `swift build` even when only markdown changed. Solution: store the prebuilt `brightdigitwg` binary as a GitLab CI artifact; content-only commits (no `*.swift` or `Package.swift` changes) download the cached binary and run deploy directly. Cache must be invalidated when `Package.resolved` changes.
@@ -356,13 +356,13 @@ New source modules (local to this repo, not subrepos):
 | Phase | Issues | Notes |
 |-------|--------|-------|
 | Phase 0 | 2 | Quick wins |
-| Phase 1 | 2 | Monorepo cleanup (1 already done) |
-| Phase 2 | 2 | Swift 6.3 main package + rebuild-avoidance (TBD) |
-| Phase 3 | 4 | AI-CITE schema (#18, #19, #20) + validation (#23) |
+| Phase 1 | 1 | Monorepo cleanup (#36 already done; #47 folded into Phase 4) |
+| Phase 2 | 4 | Swift 6.3 main package + lint config (#54) + CI cache (#65) + rebuild-avoidance (TBD) |
+| Phase 3 | 5 | AI-CITE schema (#56, #18, #19, #20) + validation (#23) |
 | Phase 4 | 7 | OpenAPI migration + Kanna → SwiftSoup (TBD) |
 | Phase 5 | 5 | Swift 6.3 subrepos + components + Tailwind (TBD) + AI-CITE content strategy (#24, #25) |
 | Phase 6 | 5 | Publishing infrastructure + AT Protocol (#49) feeds Buffer |
 | Phase 7 | 2 | Platform migration + form integration (TBD) |
 | Phase 8 | 3 | Deferred cleanup |
 | Post-Migration | 8 | Article edits (#3, #4, #13) + article optimization (#21, #22, #26, #27, #28) |
-| **Total** | **40** | Excludes #12 (done), #36 (done); includes 3 TBD issues awaiting GitHub creation |
+| **Total** | **42** | Excludes #12 (done), #36 (done), #43 (dropped); includes 3 TBD issues awaiting GitHub creation |
