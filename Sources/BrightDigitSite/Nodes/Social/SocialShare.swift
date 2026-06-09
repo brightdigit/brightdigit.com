@@ -6,12 +6,3 @@ protocol SocialShare: Sendable {
   var nameText: String { get }
   var flaticonName: String { get }
 }
-
-enum SocialShares {
-  static let shares: [SocialShare] = [
-    TwitterSocialShare(),
-    LinkedInSocialShare(),
-    BufferSocialShare(),
-    EmailSocialShare()
-  ]
-}

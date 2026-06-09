@@ -6,46 +6,6 @@ import PublishType
 struct ProductItem: SectionItem {
   typealias WebsiteType = BrightDigitSite
 
-  enum ScreenshotStyle: String, Codable, Equatable {
-    case `default`, portrait, square
-  }
-  
-    struct PressCoverage: Codable, Equatable, Hashable {
-      internal init(source: String, quote: String, url: String, date: Date) {
-        self.source = source
-        self.quote = quote
-        self.url = URL(string: url)!
-        self.date = date
-      }
-  
-      let source: String
-      let quote: String
-      let url: URL
-      let date: Date
-    }
-
-  struct Image {
-    fileprivate init(path: String) {
-      self.path = path
-    }
-
-    
-    static func logo(withName name: String?) -> Image {
-      at(path: name ?? "logo.svg")
-    }
-
-    static func at(path: String) -> Image {
-      self.init(path: path)
-    }
-
-    static let basePath = "/media/products"
-    let path: String
-
-    func string(basedOnSlug slug: String) -> String {
-      [Self.basePath, slug, path].joined(separator: "/")
-    }
-  }
-
   let title: String
   let description: String
 
@@ -61,18 +21,6 @@ struct ProductItem: SectionItem {
   let githubURL: URL?
   let pressKitURL: URL?
   let appStoreURL: URL?
-
-  var featuredItemContent: Plot.Node<Plot.HTML.BodyContext> {
-    SectionElement{
-      List{
-        ListItem(forProduct: self)
-      }
-    }.environmentValue(.ordered, key: .listStyle).convertToNode()
-  }
-
-  var sectionItemContent: [Plot.Node<Plot.HTML.BodyContext>] {
-    [SectionElement(forProduct: self).environmentValue(.ordered, key: .listStyle).convertToNode()]
-  }
 
   let source: Item<BrightDigitSite>
 
@@ -103,35 +51,29 @@ struct ProductItem: SectionItem {
 
   var featuredImageURL: URL { URL(staticString: logo) }
 
-  init(item: Item<BrightDigitSite>, site: BrightDigitSite) throws {
-    let platforms = item.metadata.platforms?
-      .components(separatedBy: ",")
-      .map{$0.trimmingCharacters(in: .whitespacesAndNewlines)}
-
-    guard let platforms = platforms else {
-      throw PublishTypeError.missingField(
-        MissingFields.ProductField.platforms,
-        item
-      )
+  private static func commaSeparated(
+    _ raw: String?,
+    or field: MissingFields.ProductField,
+    _ item: Item<BrightDigitSite>
+  ) throws -> [String] {
+    guard let raw else {
+      throw PublishTypeError.missingField(field, item)
     }
+    return raw.components(separatedBy: ",")
+      .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+  }
 
-    let technologies = item.metadata.technologies?
-      .components(separatedBy: ",")
-      .map{
-        $0.trimmingCharacters(in: .whitespacesAndNewlines)
-      }
-      
-
-    guard let technologies = technologies else {
-      throw PublishTypeError.missingField(
-        MissingFields.ProductField.technologies,
-        item
-      )
-    }
+  private static func parseMetadata(from item: Item<BrightDigitSite>) throws
+    -> (platforms: [String], technologies: [String], slug: String, logo: String,
+        style: ScreenshotStyle, screenshots: [String], productURL: URL, githubURL: URL?) {
+    let platforms = try Self.commaSeparated(item.metadata.platforms, or: .platforms, item)
+    let technologies = try Self.commaSeparated(
+      item.metadata.technologies, or: .technologies, item
+    )
 
     let slug = item.title.convertedToSlug()
     let logo = item.metadata.featuredImage
-      
+
     let style: ScreenshotStyle = {
       guard let rawValue = item.metadata.style else {
         return .default
@@ -139,9 +81,24 @@ struct ProductItem: SectionItem {
       return .init(rawValue: rawValue) ?? .default
     }()
     let screenshots = item.metadata.screenshots?
-      .map { Image(path: $0).string(basedOnSlug: slug) } ?? []
+      .map { Image.at(path: $0).string(basedOnSlug: slug) } ?? []
     let productURL = try Self.calculateProductURL(from: item)
     let githubURL = Self.buildGithubURL(from: item.metadata.githubRepoName)
+
+    return (
+      platforms: platforms,
+      technologies: technologies,
+      slug: slug,
+      logo: logo,
+      style: style,
+      screenshots: screenshots,
+      productURL: productURL,
+      githubURL: githubURL
+    )
+  }
+
+  init(item: Item<BrightDigitSite>, site: BrightDigitSite) throws {
+    let parsed = try Self.parseMetadata(from: item)
 
     self.source = item
     self.isFeatured = item.metadata.isFeatured ?? false
@@ -151,13 +108,13 @@ struct ProductItem: SectionItem {
     self.title = item.title
     self.description = item.description
     self.date = item.metadata.date
-    self.logo = logo
-    self.style = style
-    self.screenshots = screenshots
-    self.platforms = platforms
-    self.technologies = technologies
-    self.productURL = productURL
-    self.githubURL = githubURL
+    self.logo = parsed.logo
+    self.style = parsed.style
+    self.screenshots = parsed.screenshots
+    self.platforms = parsed.platforms
+    self.technologies = parsed.technologies
+    self.productURL = parsed.productURL
+    self.githubURL = parsed.githubURL
   }
 
   private static func calculateProductURL(

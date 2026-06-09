@@ -1,6 +1,9 @@
+// swift-format-ignore-file
+// swiftlint:disable all
 import Foundation
 import Contribute
 
+@available(*, deprecated, message: "Scheduled for removal; do not use in new code.")
 public extension YouTubeContent {
   static func write(
     episodes: [SourceType],

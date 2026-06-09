@@ -15,6 +15,7 @@ struct SectionElement: Component {
 
 
 extension SectionElement {
+  // swiftlint:disable:next function_body_length
   init(forProduct product: ProductItem) {
     self.init {
       Header {

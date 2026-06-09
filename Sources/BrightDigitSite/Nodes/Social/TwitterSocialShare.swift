@@ -3,7 +3,7 @@ import Foundation
 struct TwitterSocialShare: SocialQueryItemsShare {
   let flaticonName: String = "twitter"
 
-  static let baseURLComponents = URLComponents(string: "https://twitter.com/intent/tweet")!
+  static let baseURLComponents = URLComponents(staticString: "https://twitter.com/intent/tweet")
 
   func queryItems<PostableType>(for item: PostItem<PostableType>) -> [URLQueryItem] where PostableType: Postable {
     var queryItems = [URLQueryItem]()

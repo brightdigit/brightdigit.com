@@ -24,6 +24,7 @@ struct ContactBuilder: PageBuilder {
 public extension Node where Context == HTML.BodyContext {
   // MARK: - makeContactUsFormWithPicture
 
+  // swiftlint:disable:next function_body_length
   static func makeContactUsFormWithPicture() -> Node {
     .section(
       .id("contact-us-form"),

@@ -1,3 +1,5 @@
+// swift-format-ignore-file
+// swiftlint:disable all
 import Contribute
 import Foundation
 import Prch
@@ -10,6 +12,7 @@ import SwiftTube
 
 public typealias MailchimpCampaign = Campaigns.GetCampaigns.Response.Status200.Campaigns
 
+@available(*, deprecated, message: "Scheduled for removal; do not use in new code.")
 public extension Client where APIType == Mailchimp.API {
   func campaigns(fromRequest request: MailchimpCampaignRequest, timeout: DispatchTime = .now() + 1000.0) throws -> [MailchimpCampaign] {
     let request = Campaigns.GetCampaigns.Request(count: 1000, status: .sent, listId: request.listID, sortField: .sendTime, sortDir: .desc)

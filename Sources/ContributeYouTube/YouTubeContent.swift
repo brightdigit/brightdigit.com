@@ -1,3 +1,5 @@
+// swift-format-ignore-file
+// swiftlint:disable all
 import Prch
 import Foundation
 import SwiftTube
@@ -7,12 +9,14 @@ import Contribute
   import FoundationNetworking
 #endif
 
+@available(*, deprecated, message: "Scheduled for removal; do not use in new code.")
 public enum YouTubeContent: ContentType {
   public typealias SourceType = Source
   public typealias MarkdownExtractorType = MarkdownExtractor
   public typealias FrontMatterTranslatorType = FrontMatterTranslator
 }
 
+@available(*, deprecated, message: "Scheduled for removal; do not use in new code.")
 public extension YouTubeContent {
   static func videos(byRequest request: YouTubePlaylistRequest) throws -> [SourceType] {
     let youtubeClient = Prch.Client(

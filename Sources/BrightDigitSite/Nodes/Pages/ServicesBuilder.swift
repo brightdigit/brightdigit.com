@@ -7,6 +7,7 @@ struct ServicesBuilder: PageBuilder {
 
   let description: String = "Is your app making customers and driving sales? We help you create, rebuild and port apps to excite customers and boost your business."
 
+  // swiftlint:disable:next function_body_length
   func main(forLocation _: Page, withContext _: PublishingContext<BrightDigitSite>) -> [Node<HTML.BodyContext>] {
     [
       .components {

@@ -36,7 +36,12 @@ public extension BrightDigitSiteCommand.ImportCommand {
     public var youtubeAPIKey: String
 
     @Option
-    public var rss = URL(string: "https://feeds.transistor.fm/empowerapps-show")!
+    public var rss = {
+      guard let url = URL(string: "https://feeds.transistor.fm/empowerapps-show") else {
+        preconditionFailure("Invalid RSS feed URL")
+      }
+      return url
+    }()
 
     @Option(help: "Destination directory for markdown files.")
     public var exportMarkdownDirectory: String

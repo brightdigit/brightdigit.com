@@ -2,18 +2,6 @@ import Foundation
 import Plot
 import Publish
 
-public struct WebsiteMetadata {
-  public init(title: String) {
-    self.title = title
-  }
-
-  let title: String
-}
-
-public protocol MetadataAttached {
-  static var metadata: WebsiteMetadata { get }
-}
-
 public struct DynamicPageContent<BuilderType: ContentBuilder,
   WebsiteType>: PageContent where BuilderType.WebsiteType == WebsiteType {
   public var description: String {

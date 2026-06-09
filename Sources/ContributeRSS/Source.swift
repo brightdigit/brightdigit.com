@@ -32,48 +32,40 @@ extension RSSContent {
 }
 
 
+private func require<Value>(
+  _ value: Value?,
+  _ error: @autoclosure () -> RSSError
+) throws -> Value {
+  guard let value else { throw error() }
+  return value
+}
+
 extension RSSContent.Source {
-  init (item : RSSItem,  id: KeyPath<RSSItem, String>) throws {
-    guard let content = item.contentEncoded?.value ?? item.description?.value else {
-      throw RSSError.invalidPodcastEpisodeFromRSSItem(String(describing: item))
+  init(item: RSSItem, id: KeyPath<RSSItem, String>) throws {
+    let itemError = RSSError.invalidPodcastEpisodeFromRSSItem(String(describing: item))
+    let content = try require(item.contentEncoded?.value ?? item.description?.value, itemError)
+    let date = try require(item.published, itemError)
+
+    guard case let .podcast(episode) = item.media else { throw itemError }
+
+    func missing(_ field: RSSError.EpisodeField) -> RSSError {
+      .missingFieldFromPodcastEpisode(String(describing: episode), field)
     }
 
-    guard let date = item.published else {
-      throw RSSError.invalidPodcastEpisodeFromRSSItem(String(describing: item))
-    }
+    let duration = try require(episode.duration, missing(.duration))
+    let title = try require(episode.title, missing(.title))
+    let episodeNo = try require(episode.episode, missing(.episode))
+    let summary = try require(
+      episode.summary?.firstSummaryParagraph() ?? episode.subtitle, missing(.summary)
+    )
+    let imageURL = try require(episode.image?.href, missing(.imageHref))
 
-    guard case let .podcast(episode) = item.media else {
-      throw RSSError.invalidPodcastEpisodeFromRSSItem(String(describing: item))
-    }
+    guard episode.enclosure.type == "audio/mpeg" else { throw missing(.episode) }
 
-    guard let duration = episode.duration else {
-      throw RSSError.missingFieldFromPodcastEpisode(String(describing: episode), .duration)
-    }
-
-    guard let title = episode.title else {
-      throw RSSError.missingFieldFromPodcastEpisode(String(describing: episode), .title)
-    }
-
-    guard let episodeNo = episode.episode else {
-      throw RSSError.missingFieldFromPodcastEpisode(String(describing: episode), .episode)
-    }
-
-    guard let summary = episode.summary?.firstSummaryParagraph() ?? episode.subtitle else {
-      throw RSSError.missingFieldFromPodcastEpisode(String(describing: episode), .summary)
-    }
-
-    guard let imageURL = episode.image?.href else {
-      throw RSSError.missingFieldFromPodcastEpisode(String(describing: episode), .imageHref)
-    }
-
-    let slug = title.slugify()
-    
-    guard episode.enclosure.type == "audio/mpeg" else {
-      throw RSSError.missingFieldFromPodcastEpisode(String(describing: episode), .episode)
-    }
-    
-    let audioURL = episode.enclosure.url
-
-    self.init(episodeNo: episodeNo, slug: slug, title: title, date: date, summary: summary, content: content, audioURL: audioURL, imageURL: imageURL, duration: duration, podcastID: item[keyPath: id])
+    self.init(
+      episodeNo: episodeNo, slug: title.slugify(), title: title, date: date,
+      summary: summary, content: content, audioURL: episode.enclosure.url,
+      imageURL: imageURL, duration: duration, podcastID: item[keyPath: id]
+    )
   }
 }

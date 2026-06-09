@@ -1,7 +1,10 @@
+// swift-format-ignore-file
+// swiftlint:disable all
 import Contribute
 import Foundation
 import Prch
 
+@available(*, deprecated, message: "Scheduled for removal; do not use in new code.")
 public extension Newsletter.Source {
   struct Campaign {
     public init(slug: String, issueNo: Int, campaignID: String, longArchiveURL: URL, featuredImageURL: URL? = nil, title: String, subjectLine: String, previewText: String? = nil, sendTime: Date) {

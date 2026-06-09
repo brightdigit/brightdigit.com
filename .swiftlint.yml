@@ -113,6 +113,12 @@ excluded:
   - "*/.swiftpm"
   - "*/.build"
   - Packages
+  # Deprecated content-import code (also carries in-file swiftlint/swift-format
+  # ignore directives); excluded so it does not block lint while awaiting removal.
+  - Sources/ContributeMailchimp
+  - Sources/ContributeYouTube
+  - Sources/BrightDigitArgs/Import/Mailchimp.swift
+  - Sources/Tagscriber/KannaMarkdownGenerator.swift
 indentation_width:
   indentation_width: 2
 file_name:

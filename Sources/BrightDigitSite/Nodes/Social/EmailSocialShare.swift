@@ -2,7 +2,7 @@ import Foundation
 
 struct EmailSocialShare: SocialQueryItemsShare {
   let flaticonName: String = "newsletter"
-  static let baseURLComponents = URLComponents(string: "mailto:")!
+  static let baseURLComponents = URLComponents(staticString: "mailto:")
   func queryItems<PostableType>(for item: PostItem<PostableType>) -> [URLQueryItem] where PostableType: Postable {
     var queryItems = [URLQueryItem]()
     queryItems.append(URLQueryItem(name: "subject", value: item.title))

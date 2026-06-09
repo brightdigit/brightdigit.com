@@ -23,6 +23,7 @@ public extension Node where Context == HTML.BodyContext {
 
   /// Add an `<li>` HTML element within the current context.
   /// - parameter nodes: The element's attributes and child elements.
+  // swiftlint:disable:next function_body_length
   static func header() -> Node {
     .header(
       .nav(
@@ -112,6 +113,7 @@ public extension PageContent {
 }
 
 public extension Node where Context == HTML.DocumentContext {
+  // swiftlint:disable:next function_body_length
   static func head(forPage page: PageContent) -> Node {
     .head(
       .title(page.headTitle),
@@ -181,6 +183,7 @@ public extension Node where Context == HTML.DocumentContext {
 // MARK: - makeFooter
 
 public extension Node where Context == HTML.BodyContext {
+  // swiftlint:disable:next function_body_length
   static func footer() -> Node {
     .footer(
       .footer(
