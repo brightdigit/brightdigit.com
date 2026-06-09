@@ -1,4 +1,4 @@
-name: NPMPublishPlugin
+name: SyndiKit
 on:
   push:
     branches: [main, brightdigit-com-260406]
