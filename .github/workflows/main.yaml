@@ -114,27 +114,32 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Capture Swift version
-        id: swift
-        run: echo "ver=$(swift --version | head -n1 | tr -cd '[:alnum:].')" >> "$GITHUB_OUTPUT"
+      - name: Build and Test
+        uses: brightdigit/swift-build@v1
 
-      - name: Cache SwiftPM Dependencies
-        uses: actions/cache@v4
-        with:
-          path: .build/
-          key: ${{ runner.os }}-build-${{ steps.swift.outputs.ver }}-${{ hashFiles('Package.resolved') }}
+  lint:
+    needs: build-linux
+    runs-on: ubuntu-latest
+    container:
+      image: brightdigit/publish-xml:6.4
+    concurrency:
+        group: lint
+        cancel-in-progress: true
 
-      - name: Configure Architecture Prefix
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install mise
         run: |
-          export ARCH_PREFIX=$(uname -i)
-          echo "ARCH_PREFIX=${ARCH_PREFIX}" >> $GITHUB_ENV
-      
-      - name: Build with Swift
-        run: swift build
+          curl https://mise.run | sh
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
-      - name: Run Tests with Swift
-        run: swift test
-  
+      - name: Lint
+        run: ./Scripts/lint.sh
+        env:
+          LINT_MODE: STRICT
+
   package-linux:
     needs: build-linux
     runs-on: ubuntu-latest
