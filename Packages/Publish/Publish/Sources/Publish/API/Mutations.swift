@@ -5,4 +5,4 @@
 */
 
 /// Closure type used to implement content mutations.
-public typealias Mutations<T> = (inout T) throws -> Void
+public typealias Mutations<T> = @Sendable (inout T) throws -> Void

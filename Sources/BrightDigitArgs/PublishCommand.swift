@@ -8,7 +8,7 @@ public extension BrightDigitSiteCommand {
       case drafts, production
     }
 
-    nonisolated(unsafe) public static let configuration = CommandConfiguration(commandName: "publish")
+    public static let configuration = CommandConfiguration(commandName: "publish")
     public init() {}
 
     @Option var mode: Mode

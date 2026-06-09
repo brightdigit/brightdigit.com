@@ -13,9 +13,9 @@ import Plot
 /// be combined into groups, and conditionally executed. Publish ships with many
 /// built-in steps, and new ones can easily be defined using `step(named:body:)`.
 /// Steps are added when calling `Website.publish`.
-public struct PublishingStep<Site: Website> {
+public struct PublishingStep<Site: Website>: Sendable {
     /// Closure type used to define the main body of a publishing step.
-    public typealias Closure = (inout PublishingContext<Site>) async throws -> Void
+    public typealias Closure = @Sendable (inout PublishingContext<Site>) async throws -> Void
 
     internal let kind: Kind
     internal let body: Body
@@ -474,13 +474,13 @@ public extension PublishingStep {
 // MARK: - Implementation details
 
 internal extension PublishingStep {
-    enum Kind: String {
+    enum Kind: String, Sendable {
         case system
         case generation
         case deployment
     }
 
-    enum Body {
+    enum Body: Sendable {
         case empty
         case operation(name: String, closure: Closure)
         case group([PublishingStep])

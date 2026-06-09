@@ -7,7 +7,7 @@
 import Foundation
 
 /// Enum that defines various video formats supported by most browsers.
-public enum HTMLVideoFormat: String, Codable {
+public enum HTMLVideoFormat: String, Codable, Sendable {
     case mp4
     case webM = "webm"
     case ogg

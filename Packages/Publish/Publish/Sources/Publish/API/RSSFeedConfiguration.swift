@@ -10,7 +10,7 @@ import Plot
 /// Configuration type used to customize how an RSS feed is generated
 /// when using the `generateRSSFeed` step. To use a default implementation,
 /// use `RSSFeedConfiguration.default`.
-public struct RSSFeedConfiguration: FeedConfiguration {
+public struct RSSFeedConfiguration: FeedConfiguration, Sendable {
     public var targetPath: Path
     public var ttlInterval: TimeInterval
     public var maximumItemCount: Int

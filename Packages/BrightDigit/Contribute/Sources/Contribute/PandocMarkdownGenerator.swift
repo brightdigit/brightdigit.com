@@ -24,10 +24,10 @@ public struct PandocMarkdownGenerator: MarkdownGenerator {
   }
 
   /// The function used for executing shell commands.
-  private let shellOut: (String, [String]) throws -> String
+  private let shellOut: @Sendable (String, [String]) throws -> String
 
   /// The function used for creating temporary files.
-  private let temporaryFile: (String) throws -> URL
+  private let temporaryFile: @Sendable (String) throws -> URL
 
   /// The path to the Pandoc executable.
   private let pandocPath = ProcessInfo.processInfo.environment["PANDOC_PATH"]
@@ -39,8 +39,8 @@ public struct PandocMarkdownGenerator: MarkdownGenerator {
   ///   - temporaryFile: A closure that creates a temporary file from the given content.
   ///   - shellOut: A closure that executes a shell command and returns the output.
   public init(
-    shellOut: @escaping (String, [String]) throws -> String,
-    temporaryFile: @escaping (String) throws -> URL = Temporary.file(fromContent:)
+    shellOut: @escaping @Sendable (String, [String]) throws -> String,
+    temporaryFile: @escaping @Sendable (String) throws -> URL = { try Temporary.file(fromContent: $0) }
   ) {
     self.shellOut = shellOut
     self.temporaryFile = temporaryFile

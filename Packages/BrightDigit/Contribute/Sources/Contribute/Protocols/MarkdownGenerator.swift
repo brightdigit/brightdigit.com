@@ -1,7 +1,7 @@
 import Foundation
 
 /// A protocol for generating Markdown from HTML.
-public protocol MarkdownGenerator {
+public protocol MarkdownGenerator: Sendable {
   /// Converts an HTML string to Markdown.
   ///
   /// - Parameter htmlString: The HTML string to convert.
