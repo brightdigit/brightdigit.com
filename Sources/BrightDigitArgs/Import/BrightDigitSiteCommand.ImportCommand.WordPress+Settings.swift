@@ -1,30 +1,33 @@
-import Foundation
 import BrightDigitSite
 import ContributeWordPress
+import Foundation
 
 #if canImport(FoundationNetworking)
   import FoundationNetworking
 #endif
 
-public extension BrightDigitSiteCommand.ImportCommand.WordPress {
-  var rootPublishPathURL: URL {
+extension BrightDigitSiteCommand.ImportCommand.WordPress {
+  public var rootPublishPathURL: URL {
     URL(
       fileURLWithPath: "",
       relativeTo: FileManager.default.currentDirectoryURL
     )
   }
 
-  var exportsDirectoryURL: URL {
+  public var exportsDirectoryURL: URL {
     URL(
       fileURLWithPath: wordpressExportsDirectory,
       relativeTo: FileManager.default.currentDirectoryURL
     )
   }
 
-  var assetImportSetting: AssetImportSetting {
+  public var assetImportSetting: AssetImportSetting {
     switch (importAssetsDirectory, skipDownload) {
     case (.some(let directory), _):
-      return .copyFilesFrom(.init(fileURLWithPath: directory, relativeTo: FileManager.default.currentDirectoryURL))
+      return .copyFilesFrom(
+        .init(
+          fileURLWithPath: directory, relativeTo: FileManager.default.currentDirectoryURL)
+      )
     case (.none, true):
       return .none
     default:

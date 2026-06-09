@@ -1,8 +1,8 @@
 import Plot
 
-struct Icon: Component {
-  let className: String
-  var body: Component {
+internal struct Icon: Component {
+  internal let className: String
+  internal var body: Component {
     Element(name: "i") {}.class(className)
   }
 }

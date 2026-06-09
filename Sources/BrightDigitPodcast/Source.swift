@@ -2,8 +2,8 @@ import Foundation
 
 public typealias BrightDigitPodcastSource = BrightDigitPodcast.Source
 
-public extension BrightDigitPodcast {
-  struct Source: Sendable {
+extension BrightDigitPodcast {
+  public struct Source: Sendable {
     public let episodeNo: Int
     public let slug: String
     public let title: String
@@ -12,7 +12,10 @@ public extension BrightDigitPodcast {
     public let content: String
     public let media: Media
 
-    public init(episodeNo: Int, slug: String, title: String, date: Date, summary: String, content: String, media: Media) {
+    public init(
+      episodeNo: Int, slug: String, title: String, date: Date, summary: String,
+      content: String, media: Media
+    ) {
       self.episodeNo = episodeNo
       self.slug = slug
       self.title = title

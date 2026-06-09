@@ -1,13 +1,13 @@
 import Plot
 
-struct ServiceBox: Component {
-  let id: String
-  let bigImage: Image
-  let smallImage: Image
-  let title: String
-  let text: String
+internal struct ServiceBox: Component {
+  internal let id: String
+  internal let bigImage: Image
+  internal let smallImage: Image
+  internal let title: String
+  internal let text: String
 
-  var body: Component {
+  internal var body: Component {
     Element(name: "section") {
       Header {
         bigImage.class("rounded-lg")

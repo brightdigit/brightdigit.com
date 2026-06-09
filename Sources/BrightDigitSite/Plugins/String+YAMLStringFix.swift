@@ -1,7 +1,7 @@
 import Foundation
 import Publish
 
-public extension String {
+extension String {
   private static let escUnicodeRegex: NSRegularExpression = {
     do {
       return try NSRegularExpression(
@@ -13,7 +13,7 @@ public extension String {
     }
   }()
 
-  func fixEmojiis() -> String {
+  public func fixEmojiis() -> String {
     let matches = Self.escUnicodeRegex.matches(
       in: self,
       range: .init(location: 0, length: count)
@@ -39,8 +39,8 @@ public extension String {
   }
 }
 
-public extension PublishingStep {
-  static var yamlStringFix: Self {
+extension PublishingStep {
+  public static var yamlStringFix: Self {
     .step(named: "Dequoting YAML Metadata") { context in
       context.mutateAllSections { section in
         section.mutateItems { item in

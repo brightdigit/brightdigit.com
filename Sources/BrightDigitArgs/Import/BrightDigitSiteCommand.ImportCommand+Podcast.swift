@@ -1,8 +1,8 @@
 import ArgumentParser
-import ContributeYouTube
-import ContributeRSS
-import Contribute
 import BrightDigitPodcast
+import Contribute
+import ContributeRSS
+import ContributeYouTube
 import Foundation
 import SyndiKit
 
@@ -10,24 +10,21 @@ import SyndiKit
   import FoundationNetworking
 #endif
 
-
-extension RSSContent.Source : AudioPodcastItem {
-  
+extension RSSContent.Source: AudioPodcastItem {
 }
 
-
-extension YouTubeContent.Source : VideoYouTubeItem {
-  
+extension YouTubeContent.Source: VideoYouTubeItem {
 }
 
-public extension BrightDigitSiteCommand.ImportCommand {
-  struct Podcast: ParsableCommand {
+extension BrightDigitSiteCommand.ImportCommand {
+  public struct Podcast: ParsableCommand {
     public static let configuration = CommandConfiguration(
       commandName: "podcast",
       abstract: "Command for importing a podcast into the BrightDigit site."
     )
 
-    public init() {}
+    private static let markdownGenerator: MarkdownGenerator = BrightDigitSiteCommand
+      .ImportCommand.markdownGenerator
 
     @Option
     public var playlistID: String = "PLmpJxPaZbSnBvpnEdaX78wSM1d9BVvMfI"
@@ -52,10 +49,23 @@ public extension BrightDigitSiteCommand.ImportCommand {
     @Flag
     public var includeMissingPrevious: Bool = false
 
-    private static let markdownGenerator: MarkdownGenerator = BrightDigitSiteCommand.ImportCommand.markdownGenerator
-
-    var contentPathURL: URL {
+    internal var contentPathURL: URL {
       URL(fileURLWithPath: exportMarkdownDirectory)
+    }
+
+    public init() {}
+
+    internal static func episodesBasedOn(
+      rssItems: [RSSContent.Source],
+      withVideoDurations videoDurations: VideoDurations
+    ) throws -> [BrightDigitPodcastSource] {
+      try BrightDigitPodcastSource
+        .episodesBasedOn(
+          rssItems: rssItems
+        ) { rssItem in
+          let title = rssItem.title.trimmingCharacters(in: .whitespacesAndNewlines)
+          return videoDurations[title]
+        }
     }
 
     public func run() throws {
@@ -84,20 +94,6 @@ public extension BrightDigitSiteCommand.ImportCommand {
         using: Self.markdownGenerator.markdown(fromHTML:),
         options: options
       )
-    }
-    
-    
-    static func episodesBasedOn(
-      rssItems: [RSSContent.Source],
-      withVideoDurations videoDurations: VideoDurations
-    ) throws -> [BrightDigitPodcastSource] {
-      try BrightDigitPodcastSource
-        .episodesBasedOn(
-          rssItems: rssItems
-        ) { rssItem in
-              let title = rssItem.title.trimmingCharacters(in: .whitespacesAndNewlines)
-              return videoDurations[title]
-      }
     }
   }
 }

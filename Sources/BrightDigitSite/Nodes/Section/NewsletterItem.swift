@@ -3,40 +3,41 @@ import Plot
 import Publish
 import PublishType
 
-struct NewsletterItem: SectionItem {
-  typealias WebsiteType = BrightDigitSite
+internal struct NewsletterItem: SectionItem {
+  internal typealias WebsiteType = BrightDigitSite
 
-  static let sectionH1: String? = nil
-  static let sectionTitle: String = "Newsletters"
-  static let sectionDescription: String = "Subscribe to the BrightDigit newsletter now and get  helpful tips and advice right to your inbox!"
+  internal static let sectionH1: String? = nil
+  internal static let sectionTitle: String = "Newsletters"
+  internal static let sectionDescription: String =
+    "Subscribe to the BrightDigit newsletter now and get  helpful tips and advice right to your inbox!"
 
-  let description: String
-  let issueNo: Int
-  let featuredImageURL: URL
-  let archiveURL: URL
-  let title: String
-  let publishedDate: Date
-  let source: Item<BrightDigitSite>
+  internal let description: String
+  internal let issueNo: Int
+  internal let featuredImageURL: URL
+  internal let archiveURL: URL
+  internal let title: String
+  internal let publishedDate: Date
+  internal let source: Item<BrightDigitSite>
 
-  let isFeatured: Bool
+  internal let isFeatured: Bool
 
-  var pageTitle: String {
+  internal var pageTitle: String {
     title
   }
 
-  var pageBodyID: String? {
+  internal var pageBodyID: String? {
     nil
   }
 
-  var pageMainContent: [Node<HTML.BodyContext>] {
+  internal var pageMainContent: [Node<HTML.BodyContext>] {
     [.contentBody(source.body)]
   }
 
-  var redirectURL: URL? {
+  internal var redirectURL: URL? {
     archiveURL
   }
 
-  init(item: Item<BrightDigitSite>, site _: BrightDigitSite) throws {
+  internal init(item: Item<BrightDigitSite>, site _: BrightDigitSite) throws {
     source = item
     let featuredImageURL = item.featuredImageURL
     let archiveURL = item.metadata.longArchiveURL.flatMap(URL.init(string:))

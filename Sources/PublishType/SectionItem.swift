@@ -3,13 +3,13 @@ import Plot
 import Publish
 
 public protocol SectionItem: SectionContentFactory {
+  static var sectionH1: String? { get }
+  static var sectionTitle: String { get }
+  static var sectionDescription: String { get }
   var featuredItemContent: Node<HTML.BodyContext> { get }
   var sectionItemContent: [Node<HTML.BodyContext>] { get }
   var isFeatured: Bool { get }
   var source: Item<WebsiteType> { get }
-  static var sectionH1: String? { get }
-  static var sectionTitle: String { get }
-  static var sectionDescription: String { get }
   var description: String { get }
   var pageTitle: String { get }
 

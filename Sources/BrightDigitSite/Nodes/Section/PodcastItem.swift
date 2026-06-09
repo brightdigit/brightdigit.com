@@ -7,46 +7,49 @@ import PublishType
   import FoundationNetworking
 #endif
 
-struct PodcastItem: SectionItem {
-  typealias WebsiteType = BrightDigitSite
-  var redirectURL: URL? {
+internal struct PodcastItem: SectionItem {
+  internal typealias WebsiteType = BrightDigitSite
+
+  internal static let sectionH1: String? = sectionTitle
+
+  internal static let sectionTitle: String = "EmpowerApps Podcast"
+
+  internal static let sectionDescription: String =
+    "Watch and Listen to the latest episodes of EmpowerApps Show, we talk all things app development and Apple"
+
+  internal let description: String
+  internal let episodeNo: Int
+  internal let title: String
+  internal let publishedDate: Date
+  internal let youtubeID: String?
+  internal let audioDuration: TimeInterval
+  internal let videoDuration: TimeInterval?
+  internal let featuredImageURL: URL
+  internal let isFeatured: Bool
+  internal let transistorID: String
+  internal let source: Item<BrightDigitSite>
+  internal let site: WebsiteType
+
+  internal var redirectURL: URL? {
     nil
   }
 
-  static let sectionH1: String? = sectionTitle
-
-  static let sectionTitle: String = "EmpowerApps Podcast"
-
-  static let sectionDescription: String = "Watch and Listen to the latest episodes of EmpowerApps Show, we talk all things app development and Apple"
-
-  let description: String
-  let episodeNo: Int
-  let title: String
-  let publishedDate: Date
-  let youtubeID: String?
-  let audioDuration: TimeInterval
-  let videoDuration: TimeInterval?
-  let featuredImageURL: URL
-  let isFeatured: Bool
-  let transistorID: String
-  let source: Item<BrightDigitSite>
-  let site: WebsiteType
-
-  var pageTitle: String {
+  internal var pageTitle: String {
     title
   }
 
-  var pageBodyID: String? {
+  internal var pageBodyID: String? {
     nil
   }
 
-  init(item: Item<BrightDigitSite>, site: BrightDigitSite) throws {
+  internal init(item: Item<BrightDigitSite>, site: BrightDigitSite) throws {
     source = item
     self.site = site
     let featuredImageURL = item.featuredImageURL
     let isFeatured = item.metadata.featured ?? false
 
-    let episodeNo = item.path.absoluteString.components(separatedBy: "/").last?.components(separatedBy: .decimalDigits.inverted).first.flatMap(Int.init)
+    let episodeNo = item.path.absoluteString.components(separatedBy: "/").last?
+      .components(separatedBy: .decimalDigits.inverted).first.flatMap(Int.init)
 
     guard let episodeNo = episodeNo else {
       throw PublishTypeError.missingField(MissingFields.PodcastField.episodeNo, item)

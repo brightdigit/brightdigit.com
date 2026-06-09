@@ -1,10 +1,10 @@
 import Foundation
 
-enum SocialShares {
-  static let shares: [SocialShare] = [
+internal enum SocialShares {
+  internal static let shares: [SocialShare] = [
     TwitterSocialShare(),
     LinkedInSocialShare(),
     BufferSocialShare(),
-    EmailSocialShare()
+    EmailSocialShare(),
   ]
 }

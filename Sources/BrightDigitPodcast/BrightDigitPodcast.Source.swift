@@ -1,29 +1,12 @@
 import Foundation
 
-public extension BrightDigitPodcast.Source {
-  static func episodesBasedOn(
-    rssItems: [AudioPodcastItem],
-    fetchVideo: @escaping (AudioPodcastItem) -> VideoYouTubeItem?
-  ) throws -> [BrightDigitPodcastSource] {
-    try rssItems.map { rssItem in
-      guard let video = fetchVideo(rssItem) else {
-        throw MediaError.missingVideoForEpisode(String(describing: rssItem))
-      }
-      return try .init(
-        podcastID: rssItem.podcastID,
-        audio: rssItem,
-        video: video
-      )
-    }
-  }
-  
-  init(
+extension BrightDigitPodcast.Source {
+  public init(
     podcastID: String,
     audio: AudioPodcastItem,
     video: VideoYouTubeItem
   ) throws {
-    
-    let media : BrightDigitPodcastMedia = .init(
+    let media: BrightDigitPodcastMedia = .init(
       youtubeID: video.youtubeID,
       videoDuration: video.duration,
       podcastID: audio.podcastID,
@@ -41,5 +24,20 @@ public extension BrightDigitPodcast.Source {
       media: media
     )
   }
-  
+
+  public static func episodesBasedOn(
+    rssItems: [AudioPodcastItem],
+    fetchVideo: @escaping (AudioPodcastItem) -> VideoYouTubeItem?
+  ) throws -> [BrightDigitPodcastSource] {
+    try rssItems.map { rssItem in
+      guard let video = fetchVideo(rssItem) else {
+        throw MediaError.missingVideoForEpisode(String(describing: rssItem))
+      }
+      return try .init(
+        podcastID: rssItem.podcastID,
+        audio: rssItem,
+        video: video
+      )
+    }
+  }
 }

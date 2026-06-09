@@ -2,9 +2,15 @@ import Foundation
 import Plot
 import Publish
 
-public struct SectionBuilder<ChildType: SectionItem,
-  WebsiteType: Website>: SectionBuilderProtocol {
-  public var h1: String? {
+public struct SectionBuilder<
+  ChildType: SectionItem,
+  WebsiteType: Website
+>: SectionBuilderProtocol {
+  public let section: Section<WebsiteType>
+  public let children: [ChildType]
+  public let featuredItem: ChildType
+
+  public var header1: String? {
     ChildType.sectionH1
   }
 
@@ -16,13 +22,11 @@ public struct SectionBuilder<ChildType: SectionItem,
     ChildType.sectionDescription
   }
 
-  public init(section: Section<WebsiteType>, children: [ChildType], featuredItem: ChildType) {
+  public init(
+    section: Section<WebsiteType>, children: [ChildType], featuredItem: ChildType
+  ) {
     self.section = section
     self.children = children
     self.featuredItem = featuredItem
   }
-
-  public let section: Section<WebsiteType>
-  public let children: [ChildType]
-  public let featuredItem: ChildType
 }

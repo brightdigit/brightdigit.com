@@ -2,31 +2,12 @@ import Foundation
 import Plot
 import Publish
 
-public extension URL {
-  init(staticString: String) {
-    guard let url = URL(string: staticString) else {
-      preconditionFailure("Invalid static URL string: \(staticString)")
-    }
-    self = url
-  }
-}
-
-public extension Item {
-  var rootRelativeURL: URL {
-    URL(staticString: "/\(path)")
-  }
-
-  func absoluteURL(forSite site: Site) -> URL {
-    site.url(for: path)
-  }
-}
-
-public struct ItemContent<ItemType: SectionItem,
-  WebsiteType>: PageContent where ItemType.WebsiteType == WebsiteType {
-  public init(item: ItemType, context: PublishingContext<WebsiteType>) {
-    self.item = item
-    self.context = context
-  }
+public struct ItemContent<
+  ItemType: SectionItem,
+  WebsiteType
+>: PageContent where ItemType.WebsiteType == WebsiteType {
+  internal let item: ItemType
+  internal let context: PublishingContext<WebsiteType>
 
   public var description: String {
     item.description
@@ -43,9 +24,6 @@ public struct ItemContent<ItemType: SectionItem,
   public var absoluteURL: URL {
     item.source.absoluteURL(forSite: context.site)
   }
-
-  let item: ItemType
-  let context: PublishingContext<WebsiteType>
 
   public var title: String {
     item.pageTitle
@@ -69,5 +47,29 @@ public struct ItemContent<ItemType: SectionItem,
 
   public var canonicalURL: URL? {
     redirectURL ?? absoluteURL
+  }
+
+  public init(item: ItemType, context: PublishingContext<WebsiteType>) {
+    self.item = item
+    self.context = context
+  }
+}
+
+extension URL {
+  public init(staticString: String) {
+    guard let url = URL(string: staticString) else {
+      preconditionFailure("Invalid static URL string: \(staticString)")
+    }
+    self = url
+  }
+}
+
+extension Item {
+  public var rootRelativeURL: URL {
+    URL(staticString: "/\(path)")
+  }
+
+  public func absoluteURL(forSite site: Site) -> URL {
+    site.url(for: path)
   }
 }

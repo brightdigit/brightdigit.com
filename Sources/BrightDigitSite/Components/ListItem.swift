@@ -1,7 +1,7 @@
 import Plot
 
 extension ListItem {
-  init(forPressCoverage pressCoverage: ProductItem.PressCoverage) {
+  internal init(forPressCoverage pressCoverage: ProductItem.PressCoverage) {
     self.init {
       Link(url: pressCoverage.url) {
         Element(name: "figure") {
@@ -18,8 +18,8 @@ extension ListItem {
       }.linkTarget(.blank)
     }
   }
-  
-  init(forProduct product: ProductItem) {
+
+  internal init(forProduct product: ProductItem) {
     self.init {
       SectionElement(forProduct: product)
     }

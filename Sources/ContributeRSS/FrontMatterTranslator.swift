@@ -1,18 +1,18 @@
-import Foundation
 import Contribute
+import Foundation
 
-public extension RSSContent {
-  struct FrontMatterTranslator: Contribute.FrontMatterTranslator {
+extension RSSContent {
+  public struct FrontMatterTranslator: Contribute.FrontMatterTranslator {
     public typealias SourceType = Source
     public typealias FrontMatterType = FrontMatter
 
     public struct FrontMatter: Codable {
-      let title: String
-      let date: String
-      let description: String
-      let featuredImage: URL
-      let audioDuration: Int
-      let podcastID: String
+      internal let title: String
+      internal let date: String
+      internal let description: String
+      internal let featuredImage: URL
+      internal let audioDuration: Int
+      internal let podcastID: String
 
       public init(episode: Source) {
         title = episode.title

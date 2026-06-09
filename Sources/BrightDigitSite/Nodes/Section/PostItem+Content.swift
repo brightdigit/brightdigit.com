@@ -4,7 +4,7 @@ import Publish
 import PublishType
 
 extension PostItem {
-  var featuredItemContent: Node<HTML.BodyContext> {
+  internal var featuredItemContent: Node<HTML.BodyContext> {
     .header(
       .section(
         .class("hero"),
@@ -36,7 +36,7 @@ extension PostItem {
     )
   }
 
-  var sectionItemContent: [Node<HTML.BodyContext>] {
+  internal var sectionItemContent: [Node<HTML.BodyContext>] {
     [
       .id("post-\(slug)"),
       .header(
@@ -53,29 +53,11 @@ extension PostItem {
         .a(
           .text(PiHTMLFactory.itemFormatter.string(from: publishedDate))
         )
-      )
+      ),
     ]
   }
 
-  func shareListItem(for share: SocialShare) -> Node<HTML.ListContext> {
-    .li(
-      .a(
-        .href(share.shareURL(for: self)),
-        .target(.blank),
-        .span(
-          .class("action"),
-          .text(share.actionText)
-        ),
-        .span(
-          .class("name"),
-          .text(share.nameText)
-        ),
-        .i(.class("flaticon-\(share.flaticonName)"))
-      )
-    )
-  }
-
-  var pageHeader: Node<HTML.BodyContext> {
+  internal var pageHeader: Node<HTML.BodyContext> {
     .header(
       .header(
         .img(.src(featuredImageURL)),
@@ -93,7 +75,7 @@ extension PostItem {
     )
   }
 
-  var pageFooter: Node<HTML.BodyContext> {
+  internal var pageFooter: Node<HTML.BodyContext> {
     .footer(
       .ol(
         .forEach(SocialShares.shares, shareListItem(for:))
@@ -103,7 +85,9 @@ extension PostItem {
           .unwrap(subscriptionCTA) {
             .h2(.text($0))
           },
-          .h3("The BrightDigit newsletter gives you regular helpful tips and advice right to your inbox!"),
+          .h3(
+            "The BrightDigit newsletter gives you regular helpful tips and advice right to your inbox!"
+          ),
           .p(
             .markdown(
               "A couple of times a month, I publish a [newsletter](/newsletters), with news, updates, and other content related to Apple and iOS. I try to help people better understand how to succeed with iOS apps, and keep you informed about what’s coming up on the horizon for the industry."
@@ -128,6 +112,24 @@ extension PostItem {
             )
           )
         )
+      )
+    )
+  }
+
+  internal func shareListItem(for share: SocialShare) -> Node<HTML.ListContext> {
+    .li(
+      .a(
+        .href(share.shareURL(for: self)),
+        .target(.blank),
+        .span(
+          .class("action"),
+          .text(share.actionText)
+        ),
+        .span(
+          .class("name"),
+          .text(share.nameText)
+        ),
+        .i(.class("flaticon-\(share.flaticonName)"))
       )
     )
   }

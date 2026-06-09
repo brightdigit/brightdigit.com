@@ -1,12 +1,12 @@
-import Foundation
 import Contribute
+import Foundation
 
-public extension RSSContent {
-  static func write(
+extension RSSContent {
+  public static func write(
     episodes: [SourceType],
     atContentPathURL contentPathURL: URL,
     fileNameWithoutExtension: @escaping (SourceType) -> String =
-    Self.fileNameWithoutExtensionFromSource(_:),
+      Self.fileNameWithoutExtensionFromSource(_:),
     using htmlToMarkdown: @escaping (String) throws -> String,
     options: MarkdownContentBuilderOptions = []
   ) throws {
@@ -19,11 +19,11 @@ public extension RSSContent {
     )
   }
 
-  static func write(
+  public static func write(
     episodes: [SourceType],
     atContentPathURL contentPathURL: URL,
     fileNameWithoutExtension: @escaping (SourceType) -> String =
-    Self.fileNameWithoutExtensionFromSource(_:),
+      Self.fileNameWithoutExtensionFromSource(_:),
     using htmlToMarkdown: @escaping (String) throws -> String,
     markdownExtractorType: MarkdownExtractorType.Type,
     options: MarkdownContentBuilderOptions = []
@@ -37,11 +37,11 @@ public extension RSSContent {
     )
   }
 
-  static func write(
+  public static func write(
     episodes: [SourceType],
     atContentPathURL contentPathURL: URL,
     fileNameWithoutExtension: @escaping (SourceType) -> String =
-    Self.fileNameWithoutExtensionFromSource(_:),
+      Self.fileNameWithoutExtensionFromSource(_:),
     using htmlToMarkdown: @escaping (String) throws -> String,
     frontMatterTranslatorType: FrontMatterTranslatorType.Type,
     options: MarkdownContentBuilderOptions = []
@@ -55,11 +55,11 @@ public extension RSSContent {
     )
   }
 
-  static func write(
+  public static func write(
     episodes: [SourceType],
     atContentPathURL contentPathURL: URL,
     fileNameWithoutExtension: @escaping (SourceType) -> String =
-    Self.fileNameWithoutExtensionFromSource(_:),
+      Self.fileNameWithoutExtensionFromSource(_:),
     using htmlToMarkdown: @escaping (String) throws -> String,
     markdownExtractorType: MarkdownExtractorType.Type,
     frontMatterTranslatorType: FrontMatterTranslatorType.Type,
@@ -74,7 +74,7 @@ public extension RSSContent {
     )
   }
 
-  static func fileNameWithoutExtensionFromSource(
+  public static func fileNameWithoutExtensionFromSource(
     _ source: SourceType
   ) -> String {
     source.slug

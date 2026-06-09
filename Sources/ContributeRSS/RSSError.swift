@@ -1,5 +1,5 @@
-import Foundation
 import Contribute
+import Foundation
 
 public enum RSSError: ContributeError {
   case invalidRSS(URL)

@@ -3,11 +3,15 @@ import Foundation
 extension String {
   private static let quotes = ["\"", "'"]
 
-  private static let slugSafeCharacters = CharacterSet(charactersIn: "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-")
+  private static let slugSafeCharacters = CharacterSet(
+    charactersIn: "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-")
 
-  func dequote() -> String {
+  internal func dequote() -> String {
     let trimmedString = trimmingCharacters(in: .whitespacesAndNewlines)
-    guard let first = trimmedString.first.map(String.init), let last = trimmedString.last.map(String.init), trimmedString.count > 1, last == first else {
+    guard let first = trimmedString.first.map(String.init),
+      let last = trimmedString.last.map(String.init), trimmedString.count > 1,
+      last == first
+    else {
       return trimmedString
     }
 
@@ -17,7 +21,7 @@ extension String {
     let startIndex = trimmedString.index(after: trimmedString.startIndex)
     let endIndex = trimmedString.index(before: trimmedString.endIndex)
 
-    return String(trimmedString[startIndex ..< endIndex])
+    return String(trimmedString[startIndex..<endIndex])
   }
 
   private func convertedToSlugBackCompat() -> String? {
@@ -26,8 +30,9 @@ extension String {
     // So we're going to do the only thing possible: dump to ASCII and hope for the best
     if let data = data(using: .ascii, allowLossyConversion: true) {
       if let str = String(data: data, encoding: .ascii) {
-        let urlComponents = str.lowercased().components(separatedBy: String.slugSafeCharacters.inverted)
-        return urlComponents.filter { $0 != "" }.joined(separator: "-")
+        let urlComponents = str.lowercased().components(
+          separatedBy: String.slugSafeCharacters.inverted)
+        return urlComponents.filter { !$0.isEmpty }.joined(separator: "-")
       }
     }
 
@@ -42,16 +47,19 @@ extension String {
       result = convertedToSlugBackCompat()
     #else
       if #available(OSX 10.11, *) {
-        if let latin = self.applyingTransform(StringTransform("Any-Latin; Latin-ASCII; Lower;"), reverse: false) {
-          let urlComponents = latin.components(separatedBy: String.slugSafeCharacters.inverted)
-          result = urlComponents.filter { $0 != "" }.joined(separator: "-")
+        if let latin = self.applyingTransform(
+          StringTransform("Any-Latin; Latin-ASCII; Lower;"), reverse: false)
+        {
+          let urlComponents = latin.components(
+            separatedBy: String.slugSafeCharacters.inverted)
+          result = urlComponents.filter { !$0.isEmpty }.joined(separator: "-")
         }
       } else {
         result = convertedToSlugBackCompat()
       }
     #endif
 
-    guard var result = result, result.count > 0 else {
+    guard var result = result, !result.isEmpty else {
       return self
     }
 

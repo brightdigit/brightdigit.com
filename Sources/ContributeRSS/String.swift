@@ -1,7 +1,7 @@
 import Foundation
 
-public extension String {
-  static let allParagraphTagRegex: NSRegularExpression = {
+extension String {
+  public static let allParagraphTagRegex: NSRegularExpression = {
     do {
       return try NSRegularExpression(pattern: "<p[^>]*>(.*?)</p>", options: [])
     } catch {
@@ -9,7 +9,7 @@ public extension String {
     }
   }()
 
-  func firstSummaryParagraph() -> String? {
+  public func firstSummaryParagraph() -> String? {
     guard let htmlFirstParagraph = self.firstParagraphTag() else {
       return firstParagraphText()
     }
@@ -17,16 +17,19 @@ public extension String {
     return htmlFirstParagraph
   }
 
-  func firstParagraphText() -> String? {
+  public func firstParagraphText() -> String? {
     components(separatedBy: .newlines).first { line in
       !line.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }?.trimmingCharacters(in: .whitespacesAndNewlines)
   }
 
-  func firstParagraphTag() -> String? {
+  public func firstParagraphTag() -> String? {
     let range = NSRange(location: 0, length: self.utf16.count)
 
-    guard let match = String.allParagraphTagRegex.firstMatch(in: self, options: [], range: range) else {
+    guard
+      let match = String.allParagraphTagRegex.firstMatch(
+        in: self, options: [], range: range)
+    else {
       return nil
     }
 

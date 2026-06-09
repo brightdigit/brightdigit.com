@@ -5,29 +5,33 @@ import PublishType
 
 // MARK: - BodyContext
 
-struct IndexBuilder: ContentBuilder {
-  let description: String = BrightDigitSite.SiteInfo.description
-  var imagePath: Path = BrightDigitSite.SiteInfo.imagePath
+internal struct IndexBuilder: ContentBuilder {
+  internal typealias LocationType = Index
 
-  func main(forLocation _: Index, withContext context: PublishingContext<BrightDigitSite>) -> [Node<HTML.BodyContext>] {
+  internal let description: String = BrightDigitSite.SiteInfo.description
+  internal var imagePath: Path = BrightDigitSite.SiteInfo.imagePath
+
+  internal var bodyClasses: [String] { [] }
+
+  internal func main(
+    forLocation _: Index, withContext context: PublishingContext<BrightDigitSite>
+  )
+    -> [Node<HTML.BodyContext>]
+  {
     [
       .mainHeader(),
       .sectionForServices(),
       .sectionForTestimonials(),
       .sectionForLatestArticles(basedOn: context),
-      .sectionForNewsletterCTA()
+      .sectionForNewsletterCTA(),
     ]
   }
-
-  var bodyClasses: [String] { [] }
-
-  typealias LocationType = Index
 }
 
-public extension Node where Context == HTML.BodyContext {
+extension Node where Context == HTML.BodyContext {
   // MARK: - Main Header
 
-  static func mainHeader() -> Node {
+  public static func mainHeader() -> Node {
     .header(
       .main(
         .header(
@@ -56,13 +60,15 @@ public extension Node where Context == HTML.BodyContext {
 
   // MARK: - sectionForHero
 
-  static func sectionForHero1() -> Node {
+  public static func sectionForHero1() -> Node {
     .section(
       .class("hero"),
       .main(
         .section(
           .class("text"),
-          .main("Join our newsletter to be the first to know when we have availability, plus advice on what's new with Apple apps and products.")
+          .main(
+            "Join our newsletter to be the first to know when we have availability, plus advice on what's new with Apple apps and products."
+          )
         ),
         .footer(
           .a(.href("/newsletters"), .text("Subscribe Now"))
@@ -71,7 +77,7 @@ public extension Node where Context == HTML.BodyContext {
     )
   }
 
-  static func sectionForHero2() -> Node {
+  public static func sectionForHero2() -> Node {
     .section(
       .class("hero"),
       .header(
@@ -80,7 +86,9 @@ public extension Node where Context == HTML.BodyContext {
       .main(
         .section(
           .class("text"),
-          .main("Founded in 2012, BrightDigit aims to provide you with the very best in Swift-based development for the Apple ecosystem.")
+          .main(
+            "Founded in 2012, BrightDigit aims to provide you with the very best in Swift-based development for the Apple ecosystem."
+          )
         ),
         .footer(
           .a(.href("/about-us"), .text("Learn more about us"))
@@ -91,7 +99,7 @@ public extension Node where Context == HTML.BodyContext {
 
   // MARK: - sectionForServices
 
-  static func sectionForServices() -> Node {
+  public static func sectionForServices() -> Node {
     .section(
       .class("services"),
       .header(
@@ -99,28 +107,35 @@ public extension Node where Context == HTML.BodyContext {
         .img(.src("/media/services/001-swift.svg"), .alt("Swift Logo"))
       ),
       .ol(
-        .makeService(title: "Is your app still at the idea stage?",
-                     imageSrc: "/media/services/003-iphone.svg",
-                     imageAlt: "iPhone",
-                     paragraph: "We provide consulting services to make sure you can deliver the best user experience from the ground up.",
-                     linkID: "iPhone-service"),
-        .makeService(title: "Have you started development and need specialist support?",
-                     imageSrc: "/media/services/002-smartwatch-app.svg",
-                     imageAlt: "Apple Watch",
-                     paragraph: "We specialize in Swift development for apps, large and small. If you've run into development trouble, we can help get back on track",
-                     linkID: "swift-service"),
-        .makeService(title: "Do you have an existing app but want to go bigger, better or port to an Apple platform?",
-                     imageSrc: "/media/services/004-cloud.svg",
-                     imageAlt: "The Cloud",
-                     paragraph: "We believe that platform-native development is almost always best. If you have an app for Android we can help you make a twin app that works seamlessly on iOS.",
-                     linkID: "apple-service")
+        .makeService(
+          title: "Is your app still at the idea stage?",
+          imageSrc: "/media/services/003-iphone.svg",
+          imageAlt: "iPhone",
+          paragraph:
+            "We provide consulting services to make sure you can deliver the best user experience from the ground up.",
+          linkID: "iPhone-service"),
+        .makeService(
+          title: "Have you started development and need specialist support?",
+          imageSrc: "/media/services/002-smartwatch-app.svg",
+          imageAlt: "Apple Watch",
+          paragraph:
+            "We specialize in Swift development for apps, large and small. If you've run into development trouble, we can help get back on track",
+          linkID: "swift-service"),
+        .makeService(
+          title:
+            "Do you have an existing app but want to go bigger, better or port to an Apple platform?",
+          imageSrc: "/media/services/004-cloud.svg",
+          imageAlt: "The Cloud",
+          paragraph:
+            "We believe that platform-native development is almost always best. If you have an app for Android we can help you make a twin app that works seamlessly on iOS.",
+          linkID: "apple-service")
       )
     )
   }
 
   // MARK: - sectionForTestimonials
 
-  static func sectionForTestimonials() -> Node {
+  public static func sectionForTestimonials() -> Node {
     .section(
       .id("testimonials"),
       .header(
@@ -134,8 +149,11 @@ public extension Node where Context == HTML.BodyContext {
 
   // MARK: - Latest Articles
 
-  static func sectionForLatestArticles(basedOn context: PublishingContext<BrightDigitSite>) -> Node {
-    let latestArticles : [IndexArticle] = context.sections.compactMap(\.items.first).filter(\.isAvailable)
+  public static func sectionForLatestArticles(
+    basedOn context: PublishingContext<BrightDigitSite>
+  ) -> Node {
+    let latestArticles: [IndexArticle] = context.sections.compactMap(\.items.first)
+      .filter(\.isAvailable)
 
     return .section(
       .id("posts"),
@@ -152,14 +170,16 @@ public extension Node where Context == HTML.BodyContext {
 
   // MARK: - sectionForNewsletterCTA
 
-  static func sectionForNewsletterCTA() -> Node {
+  public static func sectionForNewsletterCTA() -> Node {
     .section(
       .class("newsletter-cta"),
       .header(
         .h2(.text("Don't Let Your App "), .em("Fall Behind"))
       ),
       .main(
-        .p("Stay informed about the latest developments in the world of Swift App Development and what they could mean for your business.")
+        .p(
+          "Stay informed about the latest developments in the world of Swift App Development and what they could mean for your business."
+        )
       ),
       .footer(
         .a(.href("/newsletters"), .text("Subscribe Now"))
@@ -170,8 +190,10 @@ public extension Node where Context == HTML.BodyContext {
 
 // MARK: - ListContext
 
-public extension Node where Context == HTML.ListContext {
-  private static func makeService(title: String, imageSrc: String, imageAlt: String, paragraph: String, linkID: String) -> Node {
+extension Node where Context == HTML.ListContext {
+  private static func makeService(
+    title: String, imageSrc: String, imageAlt: String, paragraph: String, linkID: String
+  ) -> Node {
     .li(
       .header(
         .h3(
@@ -185,7 +207,7 @@ public extension Node where Context == HTML.ListContext {
     )
   }
 
-  static func latestArticle(_ article: IndexArticle) -> Node {
+  public static func latestArticle(_ article: IndexArticle) -> Node {
     .li(
       .header(
         .a(

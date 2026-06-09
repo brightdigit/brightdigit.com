@@ -1,8 +1,8 @@
 import BrightDigitArgs
 
 @main
-struct BrightDigitWG {
-  static func main() async {
+internal enum BrightDigitWG {
+  internal static func main() async {
     await BrightDigitSiteCommand.main()
   }
 }

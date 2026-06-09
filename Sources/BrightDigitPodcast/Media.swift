@@ -2,8 +2,8 @@ import Foundation
 
 public typealias BrightDigitPodcastMedia = BrightDigitPodcast.Media
 
-public extension BrightDigitPodcast {
-  struct Media: Sendable {
+extension BrightDigitPodcast {
+  public struct Media: Sendable {
     public let youtubeID: String
     public let youtubeDuration: TimeInterval
     public let podcastID: String
@@ -11,7 +11,10 @@ public extension BrightDigitPodcast {
     public let audioURL: URL
     public let imageURL: URL
 
-    public init(youtubeID: String, videoDuration: TimeInterval, podcastID: String, audioDuration: TimeInterval, audioURL: URL, imageURL: URL) {
+    public init(
+      youtubeID: String, videoDuration: TimeInterval, podcastID: String,
+      audioDuration: TimeInterval, audioURL: URL, imageURL: URL
+    ) {
       self.youtubeID = youtubeID
       self.youtubeDuration = videoDuration
       self.podcastID = podcastID

@@ -3,56 +3,56 @@ import Plot
 import Publish
 import PublishType
 
-struct PostItem<PostableType: Postable>: SectionItem {
-  typealias WebsiteType = BrightDigitSite
-  static var sectionH1: String? {
+internal struct PostItem<PostableType: Postable>: SectionItem {
+  internal typealias WebsiteType = BrightDigitSite
+  internal static var sectionH1: String? {
     PostableType.sectionH1
   }
 
-  static var sectionDescription: String {
+  internal static var sectionDescription: String {
     PostableType.sectionDescription
   }
 
-  static var sectionTitle: String {
+  internal static var sectionTitle: String {
     PostableType.sectionTitle
   }
 
-  let slug: String
-  let description: String
-  let featuredImageURL: URL
-  let title: String
-  let publishedDate: Date
-  let source: Item<BrightDigitSite>
-  let site: BrightDigitSite
-  let subscriptionCTA: String?
+  internal let slug: String
+  internal let description: String
+  internal let featuredImageURL: URL
+  internal let title: String
+  internal let publishedDate: Date
+  internal let source: Item<BrightDigitSite>
+  internal let site: BrightDigitSite
+  internal let subscriptionCTA: String?
 
-  let isFeatured: Bool
+  internal let isFeatured: Bool
 
-  var pageTitle: String {
+  internal var pageTitle: String {
     title
   }
 
-  var pageBodyID: String? {
+  internal var pageBodyID: String? {
     nil
   }
 
-  var absoluteURL: URL {
+  internal var absoluteURL: URL {
     source.absoluteURL(forSite: site)
   }
 
-  var pageMainContent: [Node<HTML.BodyContext>] {
+  internal var pageMainContent: [Node<HTML.BodyContext>] {
     [
       pageHeader,
       .main(.contentBody(source.body)),
-      pageFooter
+      pageFooter,
     ]
   }
 
-  var redirectURL: URL? {
+  internal var redirectURL: URL? {
     nil
   }
 
-  init(item: Item<BrightDigitSite>, site: BrightDigitSite) throws {
+  internal init(item: Item<BrightDigitSite>, site: BrightDigitSite) throws {
     source = item
     self.site = site
     let featuredImageURL = item.featuredImageURL

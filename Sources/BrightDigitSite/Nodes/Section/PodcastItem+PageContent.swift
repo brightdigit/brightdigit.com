@@ -4,7 +4,7 @@ import Publish
 import PublishType
 
 extension PodcastItem {
-  var featuredItemContent: Node<HTML.BodyContext> {
+  internal var featuredItemContent: Node<HTML.BodyContext> {
     .header(
       .section(
         .class("hero"),
@@ -80,7 +80,7 @@ extension PodcastItem {
     )
   }
 
-  var sectionItemContent: [Node<HTML.BodyContext>] {
+  internal var sectionItemContent: [Node<HTML.BodyContext>] {
     [
       .id("episode-\(episodeNo)"),
       .header(
@@ -116,21 +116,21 @@ extension PodcastItem {
             .raw("<i class=\"flaticon-share\"></i> Share")
           )
         )
-      )
+      ),
     ]
   }
 
-  var pageMainContent: [Node<HTML.BodyContext>] {
+  internal var pageMainContent: [Node<HTML.BodyContext>] {
     [
       podcastHeader,
       .main(
         descriptionHeader,
         mainContent
-      )
+      ),
     ]
   }
 
-  var podcastHeader: Node<HTML.BodyContext> {
+  internal var podcastHeader: Node<HTML.BodyContext> {
     .header(
       .ol(
         .li(
@@ -164,7 +164,7 @@ extension PodcastItem {
     )
   }
 
-  var descriptionHeader: Node<HTML.BodyContext> {
+  internal var descriptionHeader: Node<HTML.BodyContext> {
     .header(
       .img(
         .class("youtube"),
@@ -223,7 +223,7 @@ extension PodcastItem {
     )
   }
 
-  var mainContent: Node<HTML.BodyContext> {
+  internal var mainContent: Node<HTML.BodyContext> {
     .main(
       .div(
         .class("content"),
@@ -234,7 +234,7 @@ extension PodcastItem {
     )
   }
 
-  var showNotes: Node<HTML.BodyContext> {
+  internal var showNotes: Node<HTML.BodyContext> {
     .main(
       .class("show-notes"),
       .contentBody(source.body)

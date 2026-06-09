@@ -1,8 +1,8 @@
-import Foundation
 import Contribute
+import Foundation
 
-public extension BrightDigitPodcast {
-  struct MarkdownExtractor: Contribute.MarkdownExtractor {
+extension BrightDigitPodcast {
+  public struct MarkdownExtractor: Contribute.MarkdownExtractor {
     public typealias SourceType = Source
 
     public init() {}

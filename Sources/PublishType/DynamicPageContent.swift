@@ -2,8 +2,10 @@ import Foundation
 import Plot
 import Publish
 
-public struct DynamicPageContent<BuilderType: ContentBuilder,
-  WebsiteType>: PageContent where BuilderType.WebsiteType == WebsiteType {
+public struct DynamicPageContent<
+  BuilderType: ContentBuilder,
+  WebsiteType
+>: PageContent where BuilderType.WebsiteType == WebsiteType {
   public var description: String {
     builder.description
   }
@@ -24,18 +26,14 @@ public struct DynamicPageContent<BuilderType: ContentBuilder,
     absoluteURL
   }
 
-  public init(builder: BuilderType, location: BuilderType.LocationType, context: PublishingContext<WebsiteType>) {
-    self.builder = builder
-    self.location = location
-    self.context = context
-  }
-
-  let builder: BuilderType
-  let location: BuilderType.LocationType
-  let context: PublishingContext<WebsiteType>
+  internal let builder: BuilderType
+  internal let location: BuilderType.LocationType
+  internal let context: PublishingContext<WebsiteType>
 
   public var title: String {
-    if let site = WebsiteType.self as? MetadataAttached.Type, BuilderType.self.LocationType == Index.self {
+    if let site = WebsiteType.self as? MetadataAttached.Type,
+      BuilderType.self.LocationType == Index.self
+    {
       return site.metadata.title
     } else {
       return location.title
@@ -56,5 +54,14 @@ public struct DynamicPageContent<BuilderType: ContentBuilder,
 
   public var redirectURL: URL? {
     nil
+  }
+
+  public init(
+    builder: BuilderType, location: BuilderType.LocationType,
+    context: PublishingContext<WebsiteType>
+  ) {
+    self.builder = builder
+    self.location = location
+    self.context = context
   }
 }

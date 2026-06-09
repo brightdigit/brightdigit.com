@@ -1,5 +1,5 @@
-import Foundation
 import Contribute
+import Foundation
 import SyndiKit
 
 extension RSSContent {
@@ -15,7 +15,11 @@ extension RSSContent {
     public let duration: TimeInterval
     public let podcastID: String
 
-    public init(episodeNo: Int, slug: String, title: String, date: Date, summary: String, content: String, audioURL: URL, imageURL: URL, duration: TimeInterval, podcastID: String) {
+    public init(
+      episodeNo: Int, slug: String, title: String, date: Date, summary: String,
+      content: String, audioURL: URL, imageURL: URL, duration: TimeInterval,
+      podcastID: String
+    ) {
       self.episodeNo = episodeNo
       self.slug = slug
       self.title = title
@@ -28,9 +32,7 @@ extension RSSContent {
       self.podcastID = podcastID
     }
   }
-
 }
-
 
 private func require<Value>(
   _ value: Value?,
@@ -41,9 +43,10 @@ private func require<Value>(
 }
 
 extension RSSContent.Source {
-  init(item: RSSItem, id: KeyPath<RSSItem, String>) throws {
+  internal init(item: RSSItem, id: KeyPath<RSSItem, String>) throws {
     let itemError = RSSError.invalidPodcastEpisodeFromRSSItem(String(describing: item))
-    let content = try require(item.contentEncoded?.value ?? item.description?.value, itemError)
+    let content = try require(
+      item.contentEncoded?.value ?? item.description?.value, itemError)
     let date = try require(item.published, itemError)
 
     guard case let .podcast(episode) = item.media else { throw itemError }

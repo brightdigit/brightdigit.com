@@ -2,16 +2,17 @@ import ArgumentParser
 import BrightDigitSite
 import Publish
 
-public extension BrightDigitSiteCommand {
-  struct PublishCommand: AsyncParsableCommand {
-    enum Mode: String, ExpressibleByArgument {
+extension BrightDigitSiteCommand {
+  public struct PublishCommand: AsyncParsableCommand {
+    internal enum Mode: String, ExpressibleByArgument {
       case drafts, production
     }
 
     public static let configuration = CommandConfiguration(commandName: "publish")
-    public init() {}
 
-    @Option var mode: Mode
+    @Option internal var mode: Mode
+
+    public init() {}
 
     public func run() async throws {
       try await BrightDigitSite().publish(includeDrafts: mode == .drafts)

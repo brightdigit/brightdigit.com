@@ -3,10 +3,10 @@ import Plot
 import Publish
 import PublishType
 
-public extension Node where Context == HTML.ListContext {
+extension Node where Context == HTML.ListContext {
   /// Add an `<li>` HTML element within the current context.
   /// - parameter nodes: The element's attributes and child elements.
-  static func li(for name: String, at path: String? = nil) -> Node {
+  public static func li(for name: String, at path: String? = nil) -> Node {
     .li(
       .a(
         .href("/" + (path ?? name.lowercased())),
@@ -18,13 +18,13 @@ public extension Node where Context == HTML.ListContext {
 
 // MARK: - ItemList
 
-public extension Node where Context == HTML.BodyContext {
+extension Node where Context == HTML.BodyContext {
   // MARK: - HeaderNav
 
-  /// Add an `<li>` HTML element within the current context.
-  /// - parameter nodes: The element's attributes and child elements.
+  // Add an `<li>` HTML element within the current context.
+  // - parameter nodes: The element's attributes and child elements.
   // swiftlint:disable:next function_body_length
-  static func header() -> Node {
+  public static func header() -> Node {
     .header(
       .nav(
         .ol(
@@ -54,15 +54,17 @@ public extension Node where Context == HTML.BodyContext {
             )
           ),
           .li(
-            .a(.href("/about-us"),
-               .text("About"))
+            .a(
+              .href("/about-us"),
+              .text("About"))
           )
         ),
         .ol(
           .class("menu"),
           .li(
-            .a(.href("/contact-us"),
-               .text("Contact Us"))
+            .a(
+              .href("/contact-us"),
+              .text("Contact Us"))
           )
         ),
         .ol(
@@ -82,23 +84,23 @@ public extension Node where Context == HTML.BodyContext {
   }
 }
 
-public extension Node where Context == HTML.BodyContext {
-  static func year(fromDate date: Date = Date()) -> Self {
+extension Node where Context == HTML.BodyContext {
+  public static func year(fromDate date: Date = Date()) -> Self {
     text(PiHTMLFactory.yearFormatter.string(from: date))
   }
 }
 
 // MARK: - makeHead
 
-public extension Node where Context == HTML.HeadContext {
-  static func meta(name: String, content: String) -> Node<HTML.HeadContext> {
+extension Node where Context == HTML.HeadContext {
+  public static func meta(name: String, content: String) -> Node<HTML.HeadContext> {
     .meta(
       .attribute(named: "name", value: name),
       .attribute(named: "content", value: content)
     )
   }
 
-  static func meta(property: String, content: String) -> Node<HTML.HeadContext> {
+  public static func meta(property: String, content: String) -> Node<HTML.HeadContext> {
     .meta(
       .attribute(named: "property", value: property),
       .attribute(named: "content", value: content)
@@ -106,27 +108,29 @@ public extension Node where Context == HTML.HeadContext {
   }
 }
 
-public extension PageContent {
-  var headTitle: String {
+extension PageContent {
+  public var headTitle: String {
     [title, "BrightDigit"].joined(separator: " | ")
   }
 }
 
-public extension Node where Context == HTML.DocumentContext {
+extension Node where Context == HTML.DocumentContext {
   // swiftlint:disable:next function_body_length
-  static func head(forPage page: PageContent) -> Node {
+  public static func head(forPage page: PageContent) -> Node {
     .head(
       .title(page.headTitle),
       .meta(name: "description", content: page.description),
       .meta(
         .charset(.utf8)
       ),
-      .unwrap(page.redirectURL, { url in
-        .meta(
-          .attribute(named: "http-equiv", value: "refresh"),
-          .attribute(named: "content", value: "0; url=\(url)")
-        )
-      }, else: .meta(name: "robots", content: "index,follow")),
+      .unwrap(
+        page.redirectURL,
+        { url in
+          .meta(
+            .attribute(named: "http-equiv", value: "refresh"),
+            .attribute(named: "content", value: "0; url=\(url)")
+          )
+        }, else: .meta(name: "robots", content: "index,follow")),
       .meta(name: "twitter:card", content: "summary"),
       .meta(name: "twitter:site", content: "@brightdigit"),
       .meta(name: "twitter:creator", content: "@leogdion"),
@@ -143,22 +147,41 @@ public extension Node where Context == HTML.DocumentContext {
         .content("width=device-width, initial-scale=1.0")
       ),
 
-      .link(.rel(.alternate), .type("application/rss+xml"), .title("Main Site Content"), .href("/feed.rss")),
-      .link(.rel(.alternate), .type("application/rss+xml"), .title("Just Articles"), .href("/articles.rss")),
+      .link(
+        .rel(.alternate), .type("application/rss+xml"), .title("Main Site Content"),
+        .href("/feed.rss")),
+      .link(
+        .rel(.alternate), .type("application/rss+xml"), .title("Just Articles"),
+        .href("/articles.rss")),
 
-      .link(.rel(.alternate), .type("application/rss+xml"), .title("Developer Tutorials"), .href("/tutorials.rss")),
+      .link(
+        .rel(.alternate), .type("application/rss+xml"), .title("Developer Tutorials"),
+        .href("/tutorials.rss")),
 
-      .link(.rel(.alternate), .type("application/rss+xml"), .title("EmpowerApps.Show Podcast"), .href("https://feeds.transistor.fm/empowerapps-show")),
+      .link(
+        .rel(.alternate), .type("application/rss+xml"),
+        .title("EmpowerApps.Show Podcast"),
+        .href("https://feeds.transistor.fm/empowerapps-show")),
 
-      .link(.rel(.alternate), .type("application/rss+xml"), .title("BrightDigit Newsletter"), .href("https://us12.campaign-archive.com/feed?u=cb3bba007ed171091f55c47f0&id=584d0d5c40")),
+      .link(
+        .rel(.alternate), .type("application/rss+xml"), .title("BrightDigit Newsletter"),
+        .href(
+          "https://us12.campaign-archive.com/feed?u=cb3bba007ed171091f55c47f0&id=584d0d5c40"
+        )),
 
       .link(.rel(.icon), .href("/favicon.ico"), .sizes("any"), .type("image/svg+xml")),
       .link(.rel(.icon), .href("/favicon.svg"), .type("image/svg+xml")),
 
       .link(.rel(.manifest), .href("/site.webmanifest?v=2022")),
-      .link(.id("mask-icon"), .rel(.maskIcon), .href("/safari-pinned-tab.svg?v=2022"), .color("#000000")),
-      .link(.id("apple-dark-mode-icon"), .rel(.alternate), .href("/dark-mode-mask.svg?v=2022")),
-      .link(.id("apple-light-mode-icon"), .rel(.alternate), .href("/safari-pinned-tab.svg?v=2022")),
+      .link(
+        .id("mask-icon"), .rel(.maskIcon), .href("/safari-pinned-tab.svg?v=2022"),
+        .color("#000000")),
+      .link(
+        .id("apple-dark-mode-icon"), .rel(.alternate), .href("/dark-mode-mask.svg?v=2022")
+      ),
+      .link(
+        .id("apple-light-mode-icon"), .rel(.alternate),
+        .href("/safari-pinned-tab.svg?v=2022")),
 
       .unwrap(page.canonicalURL) { canonicalURL in
         .link(.rel(.canonical), .href(canonicalURL))
@@ -182,9 +205,9 @@ public extension Node where Context == HTML.DocumentContext {
 
 // MARK: - makeFooter
 
-public extension Node where Context == HTML.BodyContext {
+extension Node where Context == HTML.BodyContext {
   // swiftlint:disable:next function_body_length
-  static func footer() -> Node {
+  public static func footer() -> Node {
     .footer(
       .footer(
         .header(
@@ -201,12 +224,15 @@ public extension Node where Context == HTML.BodyContext {
           .class("social"),
           .li(href: "http://twitter.com/brightdigit", flatIcon: "twitter"),
           .li(href: "http://github.com/brightdigit", flatIcon: "github"),
-          .li(href: "https://c.im/@leogdion", flatIcon: "mastodon", rel: .me),
+          .li(href: "https://c.im/@leogdion", flatIcon: "mastodon", rel: .meRelationship),
           .li(href: "https://www.patreon.com/brightdigit", flatIcon: "patreon"),
           .li(href: "https://www.linkedin.com/in/leogdion/", flatIcon: "linkedin"),
           .li(href: "https://www.empowerapps.show", flatIcon: "podcast"),
           .li(href: "http://youtube.com/c/BrightdigitLLC", flatIcon: "youtube"),
-          .li(href: "https://us12.campaign-archive.com/home/?u=cb3bba007ed171091f55c47f0&id=584d0d5c40", flatIcon: "newsletter"),
+          .li(
+            href:
+              "https://us12.campaign-archive.com/home/?u=cb3bba007ed171091f55c47f0&id=584d0d5c40",
+            flatIcon: "newsletter"),
           .li(href: "/feed.rss", flatIcon: "rss")
         ),
         .footer(
@@ -225,20 +251,24 @@ public extension Node where Context == HTML.BodyContext {
   }
 }
 
-public extension HTMLAnchorRelationship {
-  static let me: HTMLAnchorRelationship = "me"
+extension HTMLAnchorRelationship {
+  public static let meRelationship: HTMLAnchorRelationship = "me"
 }
 
-public extension Node where Context == HTML.ListContext {
-  static func li(href: String, flatIcon: String, rel: HTMLAnchorRelationship? = nil) -> Node {
+extension Node where Context == HTML.ListContext {
+  public static func li(
+    href: String, flatIcon: String, rel: HTMLAnchorRelationship? = nil
+  ) -> Node {
     .li(
       .a(
         .ariaLabel(flatIcon.capitalized),
         .href(href),
         .i(.class("flaticon-\(flatIcon)")),
-        .unwrap(rel, {
-          .rel($0)
-        })
+        .unwrap(
+          rel,
+          {
+            .rel($0)
+          })
       )
     )
   }
