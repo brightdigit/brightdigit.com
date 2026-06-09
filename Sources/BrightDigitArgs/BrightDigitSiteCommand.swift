@@ -7,14 +7,14 @@ import Foundation
 public struct BrightDigitSiteCommand: AsyncParsableCommand {
   public init() {}
 
-  nonisolated(unsafe) public static let configuration = CommandConfiguration(
+  public static let configuration = CommandConfiguration(
     abstract: "Command for maintaining the BrightDigit site.",
     subcommands: [PublishCommand.self, ImportCommand.self, URLCommand.self],
     defaultSubcommand: PublishCommand.self
   )
 }
 
-extension URL: ExpressibleByArgument {
+extension URL: @retroactive ExpressibleByArgument {
   public init?(argument: String) {
     self.init(string: argument)
   }

@@ -223,7 +223,7 @@ public extension Node where Context == HTML.BodyContext {
 }
 
 public extension HTMLAnchorRelationship {
-  nonisolated(unsafe) static let me: HTMLAnchorRelationship = "me"
+  static let me: HTMLAnchorRelationship = "me"
 }
 
 public extension Node where Context == HTML.ListContext {

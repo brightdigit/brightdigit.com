@@ -7,7 +7,7 @@
 import Foundation
 
 /// A representation of a kind of indentation at a given level.
-public struct Indentation: Codable, Equatable {
+public struct Indentation: Codable, Equatable, Sendable {
     /// The kind of the indentation (see `Kind`).
     public var kind: Kind
     /// The level of the indentation (0 = root).
@@ -22,7 +22,7 @@ public struct Indentation: Codable, Equatable {
 public extension Indentation {
     /// Enum defining various kinds of indentation that a document
     /// can be rendered using.
-    enum Kind: Equatable {
+    enum Kind: Equatable, Sendable {
         /// Each level should be indented by a given number of tabs.
         case tabs(Int)
         /// Each level should be indented by a given number of spaces.

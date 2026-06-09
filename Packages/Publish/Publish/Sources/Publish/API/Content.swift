@@ -8,7 +8,7 @@ import Foundation
 import Plot
 
 /// Type representing a location's main content.
-public struct Content: Hashable, ContentProtocol {
+public struct Content: Hashable, ContentProtocol, Sendable {
     public var title: String
     public var description: String
     public var body: Body
@@ -48,7 +48,7 @@ public struct Content: Hashable, ContentProtocol {
 
 public extension Content {
     /// Type that represents the main renderable body of a piece of content.
-    struct Body: Hashable {
+    struct Body: Hashable, Sendable {
         /// The content's renderable HTML.
         public var html: String
         /// A node that can be used to embed the content in a Plot hierarchy.

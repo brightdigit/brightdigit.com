@@ -10,7 +10,7 @@ import Plot
 /// Configuration type used to customize how a podcast feed is generated when
 /// using the `generatePodcastFeed` step. To use a default implementation,
 /// use `PodcastFeedConfiguration.default`.
-public struct PodcastFeedConfiguration<Site: Website>: FeedConfiguration {
+public struct PodcastFeedConfiguration<Site: Website>: FeedConfiguration, Sendable {
     public var targetPath: Path
     public var ttlInterval: TimeInterval
     public var maximumItemCount: Int

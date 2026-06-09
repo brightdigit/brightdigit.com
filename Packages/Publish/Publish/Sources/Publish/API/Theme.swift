@@ -10,13 +10,13 @@ import Plot
 /// When implementing reusable themes that are vended as frameworks or APIs,
 /// it's recommended to create them using static factory methods, just like
 /// how the built-in `foundation` theme is implemented.
-public struct Theme<Site: Website> {
-    internal let makeIndexHTML: (Index, PublishingContext<Site>) throws -> HTML
-    internal let makeSectionHTML: (Section<Site>, PublishingContext<Site>) throws -> HTML
-    internal let makeItemHTML: (Item<Site>, PublishingContext<Site>) throws -> HTML
-    internal let makePageHTML: (Page, PublishingContext<Site>) throws -> HTML
-    internal let makeTagListHTML: (TagListPage, PublishingContext<Site>) throws -> HTML?
-    internal let makeTagDetailsHTML: (TagDetailsPage, PublishingContext<Site>) throws -> HTML?
+public struct Theme<Site: Website>: Sendable {
+    internal let makeIndexHTML: @Sendable (Index, PublishingContext<Site>) throws -> HTML
+    internal let makeSectionHTML: @Sendable (Section<Site>, PublishingContext<Site>) throws -> HTML
+    internal let makeItemHTML: @Sendable (Item<Site>, PublishingContext<Site>) throws -> HTML
+    internal let makePageHTML: @Sendable (Page, PublishingContext<Site>) throws -> HTML
+    internal let makeTagListHTML: @Sendable (TagListPage, PublishingContext<Site>) throws -> HTML?
+    internal let makeTagDetailsHTML: @Sendable (TagDetailsPage, PublishingContext<Site>) throws -> HTML?
     internal let resourcePaths: Set<Path>
     internal let creationPath: Path
 
@@ -32,12 +32,12 @@ public struct Theme<Site: Website> {
         resourcePaths resources: Set<Path> = [],
         file: StaticString = #file
     ) where T.Site == Site {
-        makeIndexHTML = factory.makeIndexHTML
-        makeSectionHTML = factory.makeSectionHTML
-        makeItemHTML = factory.makeItemHTML
-        makePageHTML = factory.makePageHTML
-        makeTagListHTML = factory.makeTagListHTML
-        makeTagDetailsHTML = factory.makeTagDetailsHTML
+        makeIndexHTML = { try factory.makeIndexHTML(for: $0, context: $1) }
+        makeSectionHTML = { try factory.makeSectionHTML(for: $0, context: $1) }
+        makeItemHTML = { try factory.makeItemHTML(for: $0, context: $1) }
+        makePageHTML = { try factory.makePageHTML(for: $0, context: $1) }
+        makeTagListHTML = { try factory.makeTagListHTML(for: $0, context: $1) }
+        makeTagDetailsHTML = { try factory.makeTagDetailsHTML(for: $0, context: $1) }
         resourcePaths = resources
         creationPath = Path("\(file)")
     }
