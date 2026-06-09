@@ -7,7 +7,7 @@ import Foundation
 public struct BrightDigitSiteCommand: AsyncParsableCommand {
   public init() {}
 
-  public static var configuration = CommandConfiguration(
+  nonisolated(unsafe) public static let configuration = CommandConfiguration(
     abstract: "Command for maintaining the BrightDigit site.",
     subcommands: [PublishCommand.self, ImportCommand.self, URLCommand.self],
     defaultSubcommand: PublishCommand.self

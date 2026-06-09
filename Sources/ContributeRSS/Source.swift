@@ -3,7 +3,7 @@ import Contribute
 import SyndiKit
 
 extension RSSContent {
-  public struct Source {
+  public struct Source: Sendable {
     public let episodeNo: Int
     public let slug: String
     public let title: String
@@ -35,41 +35,41 @@ extension RSSContent {
 extension RSSContent.Source {
   init (item : RSSItem,  id: KeyPath<RSSItem, String>) throws {
     guard let content = item.contentEncoded?.value ?? item.description?.value else {
-      throw RSSError.invalidPodcastEpisodeFromRSSItem(item)
+      throw RSSError.invalidPodcastEpisodeFromRSSItem(String(describing: item))
     }
 
     guard let date = item.published else {
-      throw RSSError.invalidPodcastEpisodeFromRSSItem(item)
+      throw RSSError.invalidPodcastEpisodeFromRSSItem(String(describing: item))
     }
 
     guard case let .podcast(episode) = item.media else {
-      throw RSSError.invalidPodcastEpisodeFromRSSItem(item)
+      throw RSSError.invalidPodcastEpisodeFromRSSItem(String(describing: item))
     }
 
     guard let duration = episode.duration else {
-      throw RSSError.missingFieldFromPodcastEpisode(episode, .duration)
+      throw RSSError.missingFieldFromPodcastEpisode(String(describing: episode), .duration)
     }
 
     guard let title = episode.title else {
-      throw RSSError.missingFieldFromPodcastEpisode(episode, .title)
+      throw RSSError.missingFieldFromPodcastEpisode(String(describing: episode), .title)
     }
 
     guard let episodeNo = episode.episode else {
-      throw RSSError.missingFieldFromPodcastEpisode(episode, .episode)
+      throw RSSError.missingFieldFromPodcastEpisode(String(describing: episode), .episode)
     }
 
     guard let summary = episode.summary?.firstSummaryParagraph() ?? episode.subtitle else {
-      throw RSSError.missingFieldFromPodcastEpisode(episode, .summary)
+      throw RSSError.missingFieldFromPodcastEpisode(String(describing: episode), .summary)
     }
 
     guard let imageURL = episode.image?.href else {
-      throw RSSError.missingFieldFromPodcastEpisode(episode, .imageHref)
+      throw RSSError.missingFieldFromPodcastEpisode(String(describing: episode), .imageHref)
     }
 
     let slug = title.slugify()
     
     guard episode.enclosure.type == "audio/mpeg" else {
-      throw RSSError.missingFieldFromPodcastEpisode(episode, .episode)
+      throw RSSError.missingFieldFromPodcastEpisode(String(describing: episode), .episode)
     }
     
     let audioURL = episode.enclosure.url

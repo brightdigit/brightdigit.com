@@ -3,10 +3,10 @@ import Contribute
 
 public enum RSSError: ContributeError {
   case invalidRSS(URL)
-  case invalidPodcastEpisodeFromRSSItem(Any)
-  case missingFieldFromPodcastEpisode(Any, EpisodeField)
+  case invalidPodcastEpisodeFromRSSItem(String)
+  case missingFieldFromPodcastEpisode(String, EpisodeField)
 
-  public enum EpisodeField {
+  public enum EpisodeField: Sendable {
     case duration
     case title
     case episode

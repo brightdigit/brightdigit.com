@@ -7,7 +7,7 @@ public extension BrightDigitPodcast.Source {
   ) throws -> [BrightDigitPodcastSource] {
     try rssItems.map { rssItem in
       guard let video = fetchVideo(rssItem) else {
-        throw MediaError.missingVideoForEpisode(rssItem)
+        throw MediaError.missingVideoForEpisode(String(describing: rssItem))
       }
       return try .init(
         podcastID: rssItem.podcastID,

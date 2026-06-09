@@ -1,8 +1,7 @@
 import Foundation
 import Plot
 
-public struct Testimonial: Hashable, Comparable {
-  static var lastID = 0
+public struct Testimonial: Hashable, Comparable, Sendable {
   public static func == (lhs: Testimonial, rhs: Testimonial) -> Bool {
     lhs.id == rhs.id
   }
@@ -15,9 +14,8 @@ public struct Testimonial: Hashable, Comparable {
     .derekDeJonghe, .daveCIO, .tomAssetHealth, .daveAM, .jody, .flickCMC, .hrAssetHealth, .davidSmith, .edCMC
   ])
 
-  internal init(id: Int? = nil, fullName: String, title: String, fullQuote: String, briefQuote: String? = nil, url: URL? = nil) {
-    self.id = id ?? (Self.lastID + 1)
-    Self.lastID += 1
+  internal init(id: Int, fullName: String, title: String, fullQuote: String, briefQuote: String? = nil, url: URL? = nil) {
+    self.id = id
     self.fullName = fullName
     self.title = title
     self.fullQuote = fullQuote

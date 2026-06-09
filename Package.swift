@@ -1,4 +1,4 @@
-// swift-tools-version:5.8
+// swift-tools-version:6.4
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 // swiftlint:disable explicit_top_level_acl
 // swiftlint:disable prefixed_toplevel_constant
@@ -9,7 +9,7 @@ import PackageDescription
 let package = Package(
   name: "BrightDigit",
   platforms: [
-    .macOS(.v12)
+    .macOS(.v13)
   ],
   products: [
     .executable(

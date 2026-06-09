@@ -28,22 +28,22 @@ public extension YouTubeContent {
     )
     .map { video in
       guard let id = video.id else {
-        throw YoutubeError.missingFieldForVideo(video, .id)
+        throw YoutubeError.missingFieldForVideo(String(describing: video), .id)
       }
       guard let title = video.snippet?.title?.trimmingCharacters(in: .whitespacesAndNewlines) else {
-        throw YoutubeError.missingFieldForVideo(video, .snippetTitle)
+        throw YoutubeError.missingFieldForVideo(String(describing: video), .snippetTitle)
       }
       guard let description = video.snippet?.description else {
-        throw YoutubeError.missingFieldForVideo(video, .description)
+        throw YoutubeError.missingFieldForVideo(String(describing: video), .description)
       }
       guard let durationString = video.contentDetails?.duration else {
-        throw YoutubeError.missingFieldForVideo(video, .duration)
+        throw YoutubeError.missingFieldForVideo(String(describing: video), .duration)
       }
       guard let publishedAt = video.snippet?.publishedAt else {
-        throw YoutubeError.missingFieldForVideo(video, .publishedAt)
+        throw YoutubeError.missingFieldForVideo(String(describing: video), .publishedAt)
       }
       guard let imageUrl = video.snippet?.thumbnails?.standard?.url else {
-        throw YoutubeError.missingFieldForVideo(video, .thumbnailUrl)
+        throw YoutubeError.missingFieldForVideo(String(describing: video), .thumbnailUrl)
       }
       return .init(
         title: title,
@@ -64,7 +64,7 @@ public extension YouTubeContent {
           guard existingVideo == video else {
             throw YoutubeError.duplicateTitle(
               title,
-              forVideos: [existingVideo, video]
+              forVideos: [existingVideo, video].map { String(describing: $0) }
             )
           }
           return dictionary

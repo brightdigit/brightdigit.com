@@ -105,7 +105,7 @@ public struct BrightDigitSite: Website, MetadataAttached {
     public static let name = "BrightDigit"
     public static let title = "BrightDigit | Expert Swift App Development"
     public static let description = "Need a specialist Swift developer for your business’s next app to grow sales and delight customers? We are your go-to for expert development in the Apple ecosystem. Learn more..."
-    public static let imagePath: Path = "/android-chrome-512x512.png"
+    nonisolated(unsafe) public static let imagePath: Path = "/android-chrome-512x512.png"
   }
 
   // Update these properties to configure your website:
@@ -115,12 +115,12 @@ public struct BrightDigitSite: Website, MetadataAttached {
   public var language: Language { .english }
   public var imagePath: Path? = SiteInfo.imagePath
 
-  public static let mainJS = OutputPath.file("js/main.js")
+  nonisolated(unsafe) public static let mainJS = OutputPath.file("js/main.js")
   public static let npmPath = ProcessInfo.processInfo.environment["NPM_PATH"]
 
   static let now = Date()
 
-  static let preMarkdownSteps: [PublishingStep<BrightDigitSite>] = [
+  nonisolated(unsafe) static let preMarkdownSteps: [PublishingStep<BrightDigitSite>] = [
     .optional(copyResourcesStep()),
     .group([
       .installPlugin(.transistor()),
@@ -130,7 +130,7 @@ public struct BrightDigitSite: Website, MetadataAttached {
     .addMarkdownFiles()
   ]
 
-  static let postMarkdownSteps: [PublishingStep<BrightDigitSite>] = [
+  nonisolated(unsafe) static let postMarkdownSteps: [PublishingStep<BrightDigitSite>] = [
     .yamlStringFix,
     .installPlugin(.readingTime()),
     .sortItems(by: \.date, order: .descending),
@@ -152,12 +152,12 @@ public struct BrightDigitSite: Website, MetadataAttached {
     }
   ]
 
-  static let draftSteps = [
+  nonisolated(unsafe) static let draftSteps = [
     preMarkdownSteps,
     postMarkdownSteps
   ].flatMap { $0 }
 
-  static let productionSteps = [
+  nonisolated(unsafe) static let productionSteps = [
     preMarkdownSteps,
     [
       .removeAllItems(matching: .init(matcher: { item in

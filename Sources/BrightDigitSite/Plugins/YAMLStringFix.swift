@@ -2,11 +2,16 @@ import Foundation
 import Publish
 
 public extension String {
-  // swiftlint:disable:next force_try
-  private static let escUnicodeRegex = try! NSRegularExpression(
-    pattern: "\\\\U([0-9a-f]{8})",
-    options: [.caseInsensitive]
-  )
+  private static let escUnicodeRegex: NSRegularExpression = {
+    do {
+      return try NSRegularExpression(
+        pattern: "\\\\U([0-9a-f]{8})",
+        options: [.caseInsensitive]
+      )
+    } catch {
+      preconditionFailure("Invalid escUnicodeRegex pattern: \(error)")
+    }
+  }()
 
   func fixEmojiis() -> String {
     let matches = Self.escUnicodeRegex.matches(

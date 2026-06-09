@@ -3,7 +3,7 @@ import Foundation
 public typealias BrightDigitPodcastSource = BrightDigitPodcast.Source
 
 public extension BrightDigitPodcast {
-  struct Source {
+  struct Source: Sendable {
     public let episodeNo: Int
     public let slug: String
     public let title: String

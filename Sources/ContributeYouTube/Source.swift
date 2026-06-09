@@ -3,7 +3,7 @@ import Foundation
 public typealias VideoDurations = [String: YouTubeContent.Source]
 
 public extension YouTubeContent {
-  struct Source: Equatable {
+  struct Source: Equatable, Sendable {
     public let title: String
     public let description: String
     public let youtubeID: String

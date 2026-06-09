@@ -1,7 +1,13 @@
 import Foundation
 
 public extension String {
-  static let allParagraphTagRegex = try! NSRegularExpression(pattern: "<p[^>]*>(.*?)</p>", options: [])
+  static let allParagraphTagRegex: NSRegularExpression = {
+    do {
+      return try NSRegularExpression(pattern: "<p[^>]*>(.*?)</p>", options: [])
+    } catch {
+      preconditionFailure("Invalid allParagraphTagRegex pattern: \(error)")
+    }
+  }()
 
   func firstSummaryParagraph() -> String? {
     guard let htmlFirstParagraph = self.firstParagraphTag() else {

@@ -1,6 +1,6 @@
 {
     "name": "Swift",
-    "image": "brightdigit/publish-xml",
+    "image": "brightdigit/publish-xml:6.4",
     "features": {
         "ghcr.io/devcontainers/features/common-utils:2": {
             "installZsh": "false",

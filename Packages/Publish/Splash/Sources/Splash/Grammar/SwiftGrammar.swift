@@ -13,12 +13,8 @@ public struct SwiftGrammar: Grammar {
     public var syntaxRules: [SyntaxRule]
 
     public init() {
-        var delimiters = CharacterSet.alphanumerics.inverted
-        delimiters.remove("_")
-        delimiters.remove("\"")
-        delimiters.remove("#")
-        delimiters.remove("@")
-        delimiters.remove("$")
+        let excludedDelimiters = CharacterSet(charactersIn: "_\"#@$")
+        let delimiters = CharacterSet.alphanumerics.inverted.subtracting(excludedDelimiters)
         self.delimiters = delimiters
 
         syntaxRules = [

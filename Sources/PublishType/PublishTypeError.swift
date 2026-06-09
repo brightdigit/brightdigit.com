@@ -1,5 +1,5 @@
 import Foundation
-import Publish
+@preconcurrency import Publish
 
 public enum PublishTypeError: Error, LocalizedError {
   case missingContentFor(Location)

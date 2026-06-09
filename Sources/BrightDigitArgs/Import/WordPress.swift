@@ -8,7 +8,7 @@ import Foundation
 
 public extension BrightDigitSiteCommand.ImportCommand {
   struct WordPress: ParsableCommand {
-    public static var configuration = CommandConfiguration(
+    nonisolated(unsafe) public static let configuration = CommandConfiguration(
       commandName: "wordpress",
       abstract: "Command for import WordPress export file into the BrightDigit site."
     )

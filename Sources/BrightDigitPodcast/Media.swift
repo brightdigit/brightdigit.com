@@ -3,7 +3,7 @@ import Foundation
 public typealias BrightDigitPodcastMedia = BrightDigitPodcast.Media
 
 public extension BrightDigitPodcast {
-  struct Media {
+  struct Media: Sendable {
     public let youtubeID: String
     public let youtubeDuration: TimeInterval
     public let podcastID: String

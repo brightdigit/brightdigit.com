@@ -91,32 +91,23 @@ swift run brightdigitwg publish --mode drafts
 - Publish Plugins: SplashPublishPlugin, YoutubePublishPlugin, ReadingTimePublishPlugin, TransistorPublishPlugin, NPMPublishPlugin
 
 ### Deployment Pipeline
-The project uses GitLab CI (.gitlab-ci.yml) with five stages and multi-platform support:
+CI/CD runs on **GitHub Actions** (`.github/workflows/main.yaml`). All Linux jobs run in the `brightdigit/publish-xml:6.4` container (Swift 6.4, Ubuntu Noble — based on the `swiftlang/swift:nightly-6.4.x-noble` snapshot), built from this repo's `Dockerfile`. Jobs:
 
-1. **automate-content** - Scheduled job that imports content from Mailchimp and YouTube
-   - Commits new content automatically with timestamp
-   - Uses `AUTOMATE_CONTENT` variable to trigger
+1. **automate-content** - Manual/dispatch job (self-hosted macOS) that imports content from Mailchimp and YouTube, then commits and pushes any new content. Triggered via the `AUTOMATE_CONTENT` workflow input.
 
-2. **build** - Parallel builds on macOS and Linux (Ubuntu Jammy via brightdigit/publish-xml image)
-   - Runs `swift build` and `swift test` on both platforms
-   - Skips if executable already exists or only certain files changed
+2. **build-linux** - Runs `swift build` and `swift test` in the container. Caches `.build/` with a key that embeds the Swift toolchain version (`swift --version`), so a toolchain change auto-invalidates the cache.
 
-3. **package** - Creates release binaries for macOS and Linux
-   - Only runs on main branch after Swift file changes
-   - Outputs: `brightdigitwg-Darwin-arm64` and `brightdigitwg-Linux-x86_64`
+3. **package-linux** - Builds the release binary (`swift build -c release --product brightdigitwg`) and uploads it as an artifact (`brightdigitwg-Linux-x86_64`).
 
-4. **deploy** - Generates site and deploys to Netlify
-   - Production deployment on main branch (`--mode production`, `--prod` flag)
-   - Draft deployment on other branches (`--mode drafts`, preview URLs)
-   - Requires `NETLIFY_AUTH_TOKEN` and `NETLIFY_PRODUCTION_SITE_ID`
+4. **deploy** - Downloads the artifact, generates the site (`--mode production` on `main`, `--mode drafts` otherwise), and deploys to Netlify (`--prod` on `main`). Requires `NETLIFY_AUTH_TOKEN` and `NETLIFY_PRODUCTION_SITE_ID`.
 
-5. **test** - Code quality analysis via GitLab Code Quality template (`code_quality` job)
+The self-hosted macOS `build`/`package` jobs are currently commented out in the workflow. The Docker image is bumped by editing `Dockerfile` and pushing `brightdigit/publish-xml:6.4` (+ `:latest`). **Swift 6.4 is currently a pre-release nightly** — the image is based on `swiftlang/swift:nightly-6.4.x-noble`. Since 6.4 is not yet released, `.swift-version` pins the `6.4.x-snapshot` toolchain (install with `swiftly install 6.4.x-snapshot`); the Xcode 6.4 toolchain (`xcrun swift`) also works for local builds.
 
 ### Testing and Build Environment
 - Tests are located in `Tests/BrightDigitSiteTests/`
 - Run tests: `swift test`
-- Project requires Swift 5.8+ and macOS 12+
-- Linux builds use Ubuntu Jammy (22.04) with custom Docker image
+- Project requires Swift 6.4+ and macOS 13+
+- Linux builds use Ubuntu Noble (24.04) with custom Docker image
 - Swift Package Manager handles all dependency resolution
 
 ## Important Notes
@@ -145,4 +136,4 @@ The project uses GitLab CI (.gitlab-ci.yml) with five stages and multi-platform 
 
 ### Development Environment
 - Requires Node.js/NPM for final styling build step via NPMPublishPlugin
-- GitLab CI caches `.build/` directory based on `Package.resolved` for faster builds
+- GitHub Actions caches the `.build/` directory keyed on the Swift toolchain version + `Package.resolved` for faster builds

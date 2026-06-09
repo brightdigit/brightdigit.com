@@ -2,7 +2,7 @@ import Foundation
 import Contribute
 
 public enum YoutubeError: ContributeError {
-  public enum VideoField {
+  public enum VideoField: Sendable {
     case snippetTitle
     case id
     case duration
@@ -11,6 +11,6 @@ public enum YoutubeError: ContributeError {
     case thumbnailUrl
   }
 
-  case missingFieldForVideo(Any, VideoField)
-  case duplicateTitle(String, forVideos: [Any])
+  case missingFieldForVideo(String, VideoField)
+  case duplicateTitle(String, forVideos: [String])
 }

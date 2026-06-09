@@ -22,7 +22,7 @@ extension YouTubeContent.Source : VideoYouTubeItem {
 
 public extension BrightDigitSiteCommand.ImportCommand {
   struct Podcast: ParsableCommand {
-    public static var configuration = CommandConfiguration(
+    nonisolated(unsafe) public static let configuration = CommandConfiguration(
       commandName: "podcast",
       abstract: "Command for importing a podcast into the BrightDigit site."
     )
@@ -47,7 +47,7 @@ public extension BrightDigitSiteCommand.ImportCommand {
     @Flag
     public var includeMissingPrevious: Bool = false
 
-    private static let markdownGenerator: MarkdownGenerator = BrightDigitSiteCommand.ImportCommand.markdownGenerator
+    nonisolated(unsafe) private static let markdownGenerator: MarkdownGenerator = BrightDigitSiteCommand.ImportCommand.markdownGenerator
 
     var contentPathURL: URL {
       URL(fileURLWithPath: exportMarkdownDirectory)

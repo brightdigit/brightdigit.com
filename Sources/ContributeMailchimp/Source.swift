@@ -4,7 +4,7 @@ import Foundation
   import FoundationNetworking
 #endif
 public extension Newsletter {
-  struct Source {
+  struct Source: Sendable {
     init(campaign: Campaign, html: String, markdown: String) {
       slug = campaign.slug
       issueNo = campaign.issueNo

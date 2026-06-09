@@ -44,7 +44,13 @@ public extension BrightDigitSiteCommand.ImportCommand {
     
     static let issueNoRegexPatternString = #"(?:^|\s)#?(\d+)(?:\s|$)"#
     
-    static let issueNoRegex = try! NSRegularExpression(pattern: issueNoRegexPatternString, options: [])
+    static let issueNoRegex: NSRegularExpression = {
+      do {
+        return try NSRegularExpression(pattern: issueNoRegexPatternString, options: [])
+      } catch {
+        preconditionFailure("Invalid issueNoRegex pattern: \(error)")
+      }
+    }()
     
     static func parseIssueNumber(from subject: String) -> Int? {
            // Pattern matches either a standalone number or a number with # prefix

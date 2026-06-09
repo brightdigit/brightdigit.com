@@ -7,7 +7,7 @@ public extension BrightDigitSiteCommand {
   struct URLCommand: ParsableCommand {
     public init() {}
 
-    public static var configuration = CommandConfiguration(
+    nonisolated(unsafe) public static let configuration = CommandConfiguration(
       commandName: "url",
       abstract: "Command for previewing urls for the BrightDigit site.",
       subcommands: [Podcast.self]
