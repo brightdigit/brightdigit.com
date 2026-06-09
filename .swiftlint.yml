@@ -114,6 +114,7 @@ excluded:
   - "*/.swiftpm"
   - "*/.build"
   - Packages
+  - Package.swift
   # Deprecated content-import code (also carries in-file swiftlint/swift-format
   # ignore directives); excluded so it does not block lint while awaiting removal.
   - Sources/ContributeMailchimp

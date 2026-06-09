@@ -40,6 +40,7 @@ extension Node where Context == HTML.BodyContext {
         .main(
           .div(
             .p(
+              // swiftlint:disable:next line_length
               "Want to chat about how we can help you and your company? Let us know how we help."
             ),
             .form(
@@ -59,7 +60,8 @@ extension Node where Context == HTML.BodyContext {
               .div(
                 .div(
                   .input(
-                    .type(.text), .name("email"), .placeholder("leo@brightdigit.com")),
+                    .type(.text), .name("email"), .placeholder("leo@brightdigit.com")
+                  ),
                   .label("Email")
                 )
               ),

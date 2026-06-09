@@ -21,28 +21,32 @@ internal struct AboutBuilder: PageBuilder {
       .aboutHeader(),
       .leftImageWithRightTextNoHeader(
         imageSrc: "/media/about-us/graphic-attract.webm",
-        text: Strings.About.section1),
+        text: Strings.About.section1
+      ),
 
       .leftTextWithHeaderRightImage(
         imageSrc: "/media/about-us/opportunities.webm",
         header: Strings.About.whoWeAreTitle,
         para1: Strings.About.whoWeAreP1,
         para2: Strings.About.whoWeAreP2,
-        para3: Strings.About.whoWeAreP3),
+        para3: Strings.About.whoWeAreP3
+      ),
 
       .leftImageRightTextWithHeader(
         imageSrc: "/media/about-us/communication.webm",
         header: Strings.About.workWithUsTitle,
         para1: Strings.About.workWithusP1,
         para2: Strings.About.workWithusP2,
-        para3: Strings.About.workWithusP3),
+        para3: Strings.About.workWithusP3
+      ),
 
       .leftTextWithHeaderRightImage(
         imageSrc: "/media/about-us/podcast.webm",
         header: Strings.About.helpingOthersTitle,
         para1: Strings.About.helpingOthersP1,
         para2: Strings.About.helpingOthersP2,
-        para3: ""),
+        para3: ""
+      ),
 
       .aboutCTA(),
     ]

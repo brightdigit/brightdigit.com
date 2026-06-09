@@ -9,6 +9,7 @@ internal struct NewsletterItem: SectionItem {
   internal static let sectionH1: String? = nil
   internal static let sectionTitle: String = "Newsletters"
   internal static let sectionDescription: String =
+    // swiftlint:disable:next line_length
     "Subscribe to the BrightDigit newsletter now and get  helpful tips and advice right to your inbox!"
 
   internal let description: String

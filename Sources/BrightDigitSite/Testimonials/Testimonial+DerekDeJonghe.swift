@@ -6,6 +6,7 @@ extension Testimonial {
     fullName: "Derek DeJonghe",
     title: "Vice President Of Engineering at RightBrain Networks",
     fullQuote:
+      // swiftlint:disable:next line_length
       "Leo was an asset to our small team, he made a big impact, and was very professional. Our ask was for something outside the realm of typical Swift development - serverless functions with AWS Lambda. Leo was able to gain traction and deliver a vital part of our project."
   )
 }

@@ -14,7 +14,8 @@ internal struct EmailSocialShare: SocialQueryItemsShare {
     var queryItems: [URLQueryItem] = []
     queryItems.append(URLQueryItem(name: "subject", value: item.title))
     queryItems.append(
-      URLQueryItem(name: "body", value: "\(item.description)\n\n\(item.absoluteURL)"))
+      URLQueryItem(name: "body", value: "\(item.description)\n\n\(item.absoluteURL)")
+    )
     return queryItems
   }
 }

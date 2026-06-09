@@ -16,8 +16,15 @@ extension RSSContent {
     public let podcastID: String
 
     public init(
-      episodeNo: Int, slug: String, title: String, date: Date, summary: String,
-      content: String, audioURL: URL, imageURL: URL, duration: TimeInterval,
+      episodeNo: Int,
+      slug: String,
+      title: String,
+      date: Date,
+      summary: String,
+      content: String,
+      audioURL: URL,
+      imageURL: URL,
+      duration: TimeInterval,
       podcastID: String
     ) {
       self.episodeNo = episodeNo
@@ -46,7 +53,9 @@ extension RSSContent.Source {
   internal init(item: RSSItem, id: KeyPath<RSSItem, String>) throws {
     let itemError = RSSError.invalidPodcastEpisodeFromRSSItem(String(describing: item))
     let content = try require(
-      item.contentEncoded?.value ?? item.description?.value, itemError)
+      item.contentEncoded?.value ?? item.description?.value,
+      itemError
+    )
     let date = try require(item.published, itemError)
 
     guard case let .podcast(episode) = item.media else { throw itemError }

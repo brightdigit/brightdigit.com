@@ -4,7 +4,8 @@ extension String {
   private static let quotes = ["\"", "'"]
 
   private static let slugSafeCharacters = CharacterSet(
-    charactersIn: "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-")
+    charactersIn: "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-"
+  )
 
   internal func dequote() -> String {
     let trimmedString = trimmingCharacters(in: .whitespacesAndNewlines)
@@ -31,7 +32,8 @@ extension String {
     if let data = data(using: .ascii, allowLossyConversion: true) {
       if let str = String(data: data, encoding: .ascii) {
         let urlComponents = str.lowercased().components(
-          separatedBy: String.slugSafeCharacters.inverted)
+          separatedBy: String.slugSafeCharacters.inverted
+        )
         return urlComponents.filter { !$0.isEmpty }.joined(separator: "-")
       }
     }
@@ -48,10 +50,12 @@ extension String {
     #else
       if #available(OSX 10.11, *) {
         if let latin = self.applyingTransform(
-          StringTransform("Any-Latin; Latin-ASCII; Lower;"), reverse: false)
-        {
+          StringTransform("Any-Latin; Latin-ASCII; Lower;"),
+          reverse: false
+        ) {
           let urlComponents = latin.components(
-            separatedBy: String.slugSafeCharacters.inverted)
+            separatedBy: String.slugSafeCharacters.inverted
+          )
           result = urlComponents.filter { !$0.isEmpty }.joined(separator: "-")
         }
       } else {

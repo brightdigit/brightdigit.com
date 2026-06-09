@@ -2,7 +2,8 @@ import Foundation
 
 internal struct LinkedInSocialShare: SocialQueryItemsShare {
   internal static let baseURLComponents = URLComponents(
-    staticString: "http://www.linkedin.com/shareArticle")
+    staticString: "http://www.linkedin.com/shareArticle"
+  )
 
   internal let flaticonName: String = "linkedin"
 
@@ -20,7 +21,10 @@ internal struct LinkedInSocialShare: SocialQueryItemsShare {
       URLQueryItem(
         name: "url",
         value: item.absoluteURL.absoluteString.addingPercentEncoding(
-          withAllowedCharacters: .urlQueryAllowed)))
+          withAllowedCharacters: .urlQueryAllowed
+        )
+      )
+    )
     return queryItems
   }
 }

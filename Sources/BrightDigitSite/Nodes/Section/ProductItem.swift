@@ -22,6 +22,7 @@ internal struct ProductItem: SectionItem {
   internal static let sectionTitle: String = "Products"
 
   internal static let sectionDescription: String =
+    // swiftlint:disable:next line_length
     "Here are some of the apps and libraries we’ve created. Like what you see? Contact us to find out if we can help you reach your app goals."
 
   internal let title: String

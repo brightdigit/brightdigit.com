@@ -57,7 +57,8 @@ public struct DynamicPageContent<
   }
 
   public init(
-    builder: BuilderType, location: BuilderType.LocationType,
+    builder: BuilderType,
+    location: BuilderType.LocationType,
     context: PublishingContext<WebsiteType>
   ) {
     self.builder = builder

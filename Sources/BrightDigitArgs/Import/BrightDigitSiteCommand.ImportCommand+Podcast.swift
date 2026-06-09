@@ -78,10 +78,12 @@ extension BrightDigitSiteCommand.ImportCommand {
       )
       let videoDurations = try YouTubeContent.videoDurations(videos)
 
-      let episodes: [BrightDigitPodcastSource] = try Self.episodesBasedOn(
-        rssItems: podcastEpisodes,
-        withVideoDurations: videoDurations
-      ).sorted(by: { lhs, rhs in lhs.episodeNo < rhs.episodeNo })
+      let episodes: [BrightDigitPodcastSource] =
+        try Self.episodesBasedOn(
+          rssItems: podcastEpisodes,
+          withVideoDurations: videoDurations
+        )
+        .sorted(by: { lhs, rhs in lhs.episodeNo < rhs.episodeNo })
 
       let options: MarkdownContentBuilderOptions = .init(
         shouldOverwriteExisting: overwriteExisting,

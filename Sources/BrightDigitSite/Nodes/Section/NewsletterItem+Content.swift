@@ -14,7 +14,8 @@ extension NewsletterItem {
           .input(
             .type(.text),
             .placeholder("leo@brightdigit.com"),
-            .name("email")),
+            .name("email")
+          ),
           .label("Email")
         )
       ),
@@ -30,13 +31,16 @@ extension NewsletterItem {
           .ol(
             .li(
               "When we publish", .b(" new content "),
-              "on building better apps on our blog or podcast."),
+              "on building better apps on our blog or podcast."
+            ),
             .li(
               "Details about", .b(" upcoming events and conferences "),
-              "Leo is speaking at."),
+              "Leo is speaking at."
+            ),
             .li(
               "About the", .b(" latest developments "),
-              "in the world of Swift and Apple software, and how they can help you.")
+              "in the world of Swift and Apple software, and how they can help you."
+            )
           )
         )
       )

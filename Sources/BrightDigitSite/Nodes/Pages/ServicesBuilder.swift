@@ -6,6 +6,7 @@ internal struct ServicesBuilder: PageBuilder {
   internal let imagePath: Path = "/media/services/new2-12.png"
 
   internal let description: String =
+    // swiftlint:disable:next line_length
     "Is your app making customers and driving sales? We help you create, rebuild and port apps to excite customers and boost your business."
 
   internal var bodyClasses: [String] { [] }
@@ -35,10 +36,12 @@ internal struct ServicesBuilder: PageBuilder {
         ServiceBox(
           id: "iPhone-service",
           bigImage: .init(
-            url: "/media/services/new2-12.png", description: "Building a Brand New App"),
+            url: "/media/services/new2-12.png", description: "Building a Brand New App"
+          ),
           smallImage: Image(
             url: "/media/services/003-iphone.svg",
-            description: "iPhone"),
+            description: "iPhone"
+          ),
           title: "New App Development",
           text: Strings.Services.iOSDevelopment
         )
@@ -47,10 +50,12 @@ internal struct ServicesBuilder: PageBuilder {
           id: "swift-service",
           bigImage: .init(
             url: "/media/services/12-agustus-outline-02.png",
-            description: "Upgrading an Existing App"),
+            description: "Upgrading an Existing App"
+          ),
           smallImage: Image(
             url: "/media/services/001-swift.svg",
-            description: "Swift Logo"),
+            description: "Swift Logo"
+          ),
           title: "Upgrade Your Existing App",
           text: Strings.Services.consulting
         )
@@ -59,10 +64,12 @@ internal struct ServicesBuilder: PageBuilder {
           id: "apple-service",
           bigImage: .init(
             url: "/media/services/mar6-outline-07.png",
-            description: "Porting an app over"),
+            description: "Porting an app over"
+          ),
           smallImage: .init(
             url: "/media/services/002-smartwatch-app.svg",
-            description: "Apple Watch"),
+            description: "Apple Watch"
+          ),
           title: "Port Your App to Apple Platforms",
           text: Strings.Services.appleDevelopment
         )

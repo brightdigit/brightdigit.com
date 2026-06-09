@@ -12,8 +12,12 @@ extension BrightDigitPodcast {
     public let imageURL: URL
 
     public init(
-      youtubeID: String, videoDuration: TimeInterval, podcastID: String,
-      audioDuration: TimeInterval, audioURL: URL, imageURL: URL
+      youtubeID: String,
+      videoDuration: TimeInterval,
+      podcastID: String,
+      audioDuration: TimeInterval,
+      audioURL: URL,
+      imageURL: URL
     ) {
       self.youtubeID = youtubeID
       self.youtubeDuration = videoDuration

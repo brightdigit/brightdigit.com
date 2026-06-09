@@ -17,8 +17,12 @@ public struct Testimonial: Hashable, Comparable, Sendable {
   internal let url: URL?
 
   internal init(
-    id: Int, fullName: String, title: String, fullQuote: String,
-    briefQuote: String? = nil, url: URL? = nil
+    id: Int,
+    fullName: String,
+    title: String,
+    fullQuote: String,
+    briefQuote: String? = nil,
+    url: URL? = nil
   ) {
     self.id = id
     self.fullName = fullName
@@ -55,8 +59,10 @@ extension Testimonial {
               .text(testimonial.fullName),
               .text(", "),
               .element(named: "cite", nodes: [.text(testimonial.title)]),
-            ]),
-        ])
+            ]
+          ),
+        ]
+      )
     )
   }
 }

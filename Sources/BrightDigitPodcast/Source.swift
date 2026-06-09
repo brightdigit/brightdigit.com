@@ -13,8 +13,13 @@ extension BrightDigitPodcast {
     public let media: Media
 
     public init(
-      episodeNo: Int, slug: String, title: String, date: Date, summary: String,
-      content: String, media: Media
+      episodeNo: Int,
+      slug: String,
+      title: String,
+      date: Date,
+      summary: String,
+      content: String,
+      media: Media
     ) {
       self.episodeNo = episodeNo
       self.slug = slug

@@ -15,6 +15,7 @@ internal struct PodcastItem: SectionItem {
   internal static let sectionTitle: String = "EmpowerApps Podcast"
 
   internal static let sectionDescription: String =
+    // swiftlint:disable:next line_length
     "Watch and Listen to the latest episodes of EmpowerApps Show, we talk all things app development and Apple"
 
   internal let description: String
@@ -48,8 +49,13 @@ internal struct PodcastItem: SectionItem {
     let featuredImageURL = item.featuredImageURL
     let isFeatured = item.metadata.featured ?? false
 
-    let episodeNo = item.path.absoluteString.components(separatedBy: "/").last?
-      .components(separatedBy: .decimalDigits.inverted).first.flatMap(Int.init)
+    let episodeNo =
+      item.path.absoluteString
+      .components(separatedBy: "/")
+      .last?
+      .components(separatedBy: .decimalDigits.inverted)
+      .first
+      .flatMap(Int.init)
 
     guard let episodeNo = episodeNo else {
       throw PublishTypeError.missingField(MissingFields.PodcastField.episodeNo, item)

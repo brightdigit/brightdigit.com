@@ -2,7 +2,8 @@ import Foundation
 
 internal struct TwitterSocialShare: SocialQueryItemsShare {
   internal static let baseURLComponents = URLComponents(
-    staticString: "https://twitter.com/intent/tweet")
+    staticString: "https://twitter.com/intent/tweet"
+  )
 
   internal let flaticonName: String = "twitter"
 

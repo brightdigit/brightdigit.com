@@ -66,6 +66,7 @@ extension SectionElement {
             Image(screenshotURL)
           }
         }.class("screenshots \(product.style.rawValue)")
+        // swiftlint:disable:next line_length
         //          List(product.pressCoverage, content: ListItem.init(forPressCoverage:)).class("press-coverage")
       }
       Footer {

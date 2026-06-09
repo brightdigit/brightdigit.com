@@ -14,10 +14,11 @@ extension String {
   }()
 
   public func fixEmojiis() -> String {
-    let matches = Self.escUnicodeRegex.matches(
+    let allMatches = Self.escUnicodeRegex.matches(
       in: self,
       range: .init(location: 0, length: count)
-    ).reversed()
+    )
+    let matches = allMatches.reversed()
     var result = self
     for match in matches {
       guard let range = Range(match.range, in: result) else {

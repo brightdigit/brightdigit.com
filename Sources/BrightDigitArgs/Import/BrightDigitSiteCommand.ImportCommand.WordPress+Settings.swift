@@ -26,7 +26,9 @@ extension BrightDigitSiteCommand.ImportCommand.WordPress {
     case (.some(let directory), _):
       return .copyFilesFrom(
         .init(
-          fileURLWithPath: directory, relativeTo: FileManager.default.currentDirectoryURL)
+          fileURLWithPath: directory,
+          relativeTo: FileManager.default.currentDirectoryURL
+        )
       )
     case (.none, true):
       return .none

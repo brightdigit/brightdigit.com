@@ -20,13 +20,15 @@ internal func copyDirectory(from sourcePath: String, to destinationPath: String)
       domain: "DirectoryCopyError", code: 1,
       userInfo: [
         NSLocalizedDescriptionKey: "Source path is not a directory or doesn't exist."
-      ])
+      ]
+    )
   }
 
   // Create destination directory if it doesn't exist
   if !fileManager.fileExists(atPath: destinationPath) {
     try fileManager.createDirectory(
-      atPath: destinationPath, withIntermediateDirectories: true)
+      atPath: destinationPath, withIntermediateDirectories: true
+    )
   }
 
   // Get contents of the source directory
@@ -104,6 +106,7 @@ public struct BrightDigitSite: Website, MetadataAttached {
     public static let name = "BrightDigit"
     public static let title = "BrightDigit | Expert Swift App Development"
     public static let description =
+      // swiftlint:disable:next line_length
       "Need a specialist Swift developer for your business’s next app to grow sales and delight customers? We are your go-to for expert development in the Apple ecosystem. Learn more..."
     public static let imagePath: Path = "/android-chrome-512x512.png"
   }
@@ -136,7 +139,8 @@ public struct BrightDigitSite: Website, MetadataAttached {
       .generateRSSFeed(including: [.articles, .tutorials]),
       .generateRSSFeed(including: [.articles], config: .init(targetPath: "articles.rss")),
       .generateRSSFeed(
-        including: [.tutorials], config: .init(targetPath: "tutorials.rss")),
+        including: [.tutorials], config: .init(targetPath: "tutorials.rss")
+      ),
     ]),
 
     .generateSiteMap(excluding: .init(["newsletters/", "products/"])),
@@ -161,7 +165,8 @@ public struct BrightDigitSite: Website, MetadataAttached {
       .removeAllItems(
         matching: .init(matcher: { item in
           item.date > now
-        }))
+        })
+      )
     ],
     postMarkdownSteps,
   ].flatMap { $0 }

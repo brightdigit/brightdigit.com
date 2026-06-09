@@ -2,7 +2,8 @@ import Foundation
 
 internal struct BufferSocialShare: SocialQueryItemsShare {
   internal static let baseURLComponents = URLComponents(
-    staticString: "https://publish.buffer.com/compose")
+    staticString: "https://publish.buffer.com/compose"
+  )
 
   internal let flaticonName: String = "buffer"
 
@@ -18,7 +19,10 @@ internal struct BufferSocialShare: SocialQueryItemsShare {
       URLQueryItem(
         name: "url",
         value: item.absoluteURL.absoluteString.addingPercentEncoding(
-          withAllowedCharacters: .urlQueryAllowed)))
+          withAllowedCharacters: .urlQueryAllowed
+        )
+      )
+    )
     return queryItems
   }
 }

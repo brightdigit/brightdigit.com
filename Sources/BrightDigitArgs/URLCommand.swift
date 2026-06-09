@@ -22,9 +22,12 @@ extension BrightDigitSiteCommand {
 
       internal func run() throws {
         let fileName = BrightDigitPodcast.fileNameWithoutExtensionForEpisode(
-          withNumber: episodeNumber, title: episodeTitle)
+          withNumber: episodeNumber,
+          title: episodeTitle
+        )
         let url = baseURL.appendingPathComponent(basePath).appendingPathComponent(
-          fileName)
+          fileName
+        )
         print(url)
       }
     }

@@ -30,7 +30,8 @@ internal struct PiHTMLFactory: HTMLFactory {
           return nil
         }
         return ["\(value)", formatTimeIntervalSufficies[index]].joined()
-      }.joined(separator: " ")
+      }
+      .joined(separator: " ")
   }
 
   // MARK: - makeIndexHTML

@@ -18,9 +18,11 @@ extension String {
   }
 
   public func firstParagraphText() -> String? {
-    components(separatedBy: .newlines).first { line in
-      !line.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-    }?.trimmingCharacters(in: .whitespacesAndNewlines)
+    components(separatedBy: .newlines)
+      .first { line in
+        !line.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+      }?
+      .trimmingCharacters(in: .whitespacesAndNewlines)
   }
 
   public func firstParagraphTag() -> String? {
@@ -28,7 +30,10 @@ extension String {
 
     guard
       let match = String.allParagraphTagRegex.firstMatch(
-        in: self, options: [], range: range)
+        in: self,
+        options: [],
+        range: range
+      )
     else {
       return nil
     }

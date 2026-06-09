@@ -12,19 +12,17 @@ extension PodcastItem {
 
   internal static let maxresdefault = "maxresdefault.jpg"
 
-  internal static let transistorShareBaseURL: URL = Self.transistorBaseURL
-    .appendingPathComponent(
-      "s")
-  internal static let transistorEmbedBaseURL: URL = Self.transistorBaseURL
-    .appendingPathComponent(
-      "e")
-  internal static let transistorBaseURL: URL = .init(
-    staticString: "https://share.transistor.fm/")
+  internal static let transistorShareBaseURL: URL =
+    Self.transistorBaseURL.appendingPathComponent("s")
+  internal static let transistorEmbedBaseURL: URL =
+    Self.transistorBaseURL.appendingPathComponent("e")
+  internal static let transistorBaseURL: URL =
+    .init(staticString: "https://share.transistor.fm/")
 
-  internal static let youtubeBaseURL: URL = .init(
-    staticString: "https://www.youtube.com/")
-  internal static let youtubeEmbedBaseURL = Self.youtubeBaseURL.appendingPathComponent(
-    "embed")
+  internal static let youtubeBaseURL: URL =
+    .init(staticString: "https://www.youtube.com/")
+  internal static let youtubeEmbedBaseURL =
+    Self.youtubeBaseURL.appendingPathComponent("embed")
   internal static let youtubeShareBaseURLComponents: URLComponents = {
     guard
       let components = URLComponents(
@@ -74,6 +72,7 @@ extension PodcastItem {
         .frameborder(false),
         .allowfullscreen(true),
         .allow(
+          // swiftlint:disable:next line_length
           "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         )
       )
