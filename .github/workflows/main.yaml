@@ -21,6 +21,40 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      code-changed: ${{ steps.filter.outputs.code }}
+      image-digest: ${{ steps.image.outputs.digest }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect code changes
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          # Anything that affects the compiled binary or the CI logic itself.
+          # Content/ markdown is runtime data and is intentionally excluded.
+          filters: |
+            code:
+              - 'Sources/**'
+              - 'Package.swift'
+              - 'Package.resolved'
+              - '.swift-version'
+              - 'Dockerfile'
+              - '.github/workflows/main.yaml'
+
+      - name: Resolve build image digest
+        id: image
+        run: |
+          DIGEST=$(docker buildx imagetools inspect brightdigit/publish-xml:6.4 \
+            --format '{{.Manifest.Digest}}')
+          echo "Resolved brightdigit/publish-xml:6.4 -> ${DIGEST}"
+          echo "digest=${DIGEST}" >> "$GITHUB_OUTPUT"
+
   automate-content:
       if: ${{ inputs.automate_content != '' }}
       runs-on: [self-hosted, macOS]
@@ -103,6 +137,8 @@ jobs:
                 fi
 
   build-linux:
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.code-changed == 'true' }}
     runs-on: ubuntu-latest
     container:
       image: brightdigit/publish-xml:6.4
@@ -118,7 +154,8 @@ jobs:
         uses: brightdigit/swift-build@v1
 
   lint:
-    needs: build-linux
+    needs: [detect-changes, build-linux]
+    if: ${{ needs.detect-changes.outputs.code-changed == 'true' }}
     runs-on: ubuntu-latest
     container:
       image: brightdigit/publish-xml:6.4
@@ -141,7 +178,10 @@ jobs:
           LINT_MODE: STRICT
 
   package-linux:
-    needs: build-linux
+    needs: [detect-changes, build-linux]
+    # build-linux is skipped on content-only commits; still run as long as it
+    # didn't actually fail (success or skipped both proceed).
+    if: ${{ !cancelled() && needs.build-linux.result != 'failure' }}
     runs-on: ubuntu-latest
     container:
       image: brightdigit/publish-xml:6.4
@@ -161,9 +201,21 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .build/
-          key: ${{ runner.os }}-release-${{ steps.swift.outputs.ver }}-${{ hashFiles('Package.resolved', 'Sources/**/*.swift') }}
+          key: ${{ runner.os }}-release-${{ steps.swift.outputs.ver }}-${{ needs.detect-changes.outputs.image-digest }}-${{ hashFiles('Package.resolved', 'Sources/**/*.swift') }}
+
+      # Cache the prebuilt release binary keyed on Swift source state AND the build
+      # image digest. The digest is essential: keying on source alone deployed an
+      # ABI-incompatible binary when the image drifted (issue #65 segfault). A
+      # content-only commit hits this cache and skips the release build entirely.
+      - name: Cache Release Binary
+        id: bincache
+        uses: actions/cache@v4
+        with:
+          path: brightdigitwg-Linux-x86_64
+          key: bin-${{ runner.os }}-${{ steps.swift.outputs.ver }}-${{ needs.detect-changes.outputs.image-digest }}-${{ hashFiles('Package.resolved', 'Package.swift', 'Sources/**/*.swift') }}
 
       - name: Build Release Product
+        if: ${{ steps.bincache.outputs.cache-hit != 'true' }}
         run: |
           swift build -c release --product brightdigitwg
           BIN_PATH=$(swift build -c release --product brightdigitwg --show-bin-path)
