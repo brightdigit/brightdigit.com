@@ -7,6 +7,6 @@
 	remote = git@github.com:BrightDigit/ContributeWordPress.git
 	branch = brightdigit-com-260406
 	commit = 89b15a973b1e633d17ace488ca7d5b2fdeeb1587
-	parent = 7a201536cca3dce5c2cfb84acb4dc3b000538a3d
+	parent = 75ebab7c198e9e88706ff409ad681c4b5510dc77
 	method = merge
 	cmdver = 0.4.9

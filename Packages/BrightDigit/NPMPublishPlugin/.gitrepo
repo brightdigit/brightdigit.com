@@ -7,6 +7,6 @@
 	remote = git@github.com:BrightDigit/NPMPublishPlugin.git
 	branch = brightdigit-com-260406
 	commit = c91c07002d8d5c7a98b9f88cf0fa5ed5030c125d
-	parent = 7a201536cca3dce5c2cfb84acb4dc3b000538a3d
+	parent = 75ebab7c198e9e88706ff409ad681c4b5510dc77
 	method = merge
 	cmdver = 0.4.9
