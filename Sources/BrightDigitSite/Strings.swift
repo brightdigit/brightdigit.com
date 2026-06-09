@@ -1,6 +1,6 @@
 import Foundation
 
-/// Static strings used in the website copy
+/// Static strings used in the website copy.
 internal enum Strings {
   // MARK: - Services
 

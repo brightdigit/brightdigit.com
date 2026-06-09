@@ -172,6 +172,17 @@ jobs:
           curl https://mise.run | sh
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
+      # Cache the mise-managed tools (swift-format is built from source via the
+      # spm backend, ~11 min). Keyed on the container image digest + .mise.toml so
+      # it only rebuilds when the toolchain image or a tool version changes.
+      - name: Cache mise tools
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/share/mise/installs
+          key: mise-${{ runner.os }}-${{ runner.arch }}-${{ needs.detect-changes.outputs.image-digest }}-${{ hashFiles('.mise.toml') }}
+          restore-keys: |
+            mise-${{ runner.os }}-${{ runner.arch }}-
+
       - name: Lint
         run: ./Scripts/lint.sh
         env:
