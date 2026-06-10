@@ -25,15 +25,16 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       code-changed: ${{ steps.filter.outputs.code }}
+      packages-changed: ${{ steps.filter.outputs.packages }}
       image-digest: ${{ steps.image.outputs.digest }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
       - name: Detect code changes
-        uses: dorny/paths-filter@v3
+        uses: dorny/paths-filter@v4
         id: filter
         with:
           # Anything that affects the compiled binary or the CI logic itself.
@@ -45,6 +46,9 @@ jobs:
               - 'Package.resolved'
               - '.swift-version'
               - 'Dockerfile'
+              - '.github/workflows/main.yaml'
+            packages:
+              - 'Packages/BrightDigit/**'
               - '.github/workflows/main.yaml'
 
       - name: Resolve build image digest
@@ -64,7 +68,7 @@ jobs:
 
       steps:
           - name: Checkout code
-            uses: actions/checkout@v4
+            uses: actions/checkout@v6
             with:
               fetch-depth: 0
 
@@ -148,7 +152,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Build and Test
         uses: brightdigit/swift-build@v1
@@ -165,7 +169,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install mise
         run: |
@@ -176,7 +180,7 @@ jobs:
       # spm backend, ~11 min). Keyed on the container image digest + .mise.toml so
       # it only rebuilds when the toolchain image or a tool version changes.
       - name: Cache mise tools
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.local/share/mise/installs
           key: mise-${{ runner.os }}-${{ runner.arch }}-${{ needs.detect-changes.outputs.image-digest }}-${{ hashFiles('.mise.toml') }}
@@ -184,6 +188,64 @@ jobs:
             mise-${{ runner.os }}-${{ runner.arch }}-
 
       - name: Lint
+        run: ./Scripts/lint.sh
+        env:
+          LINT_MODE: STRICT
+
+  # Build, test, and lint the vendored BrightDigit packages in-place. In the
+  # monorepo checkout every sibling already sits at its relative-path location
+  # (../../Publish/*, ../Contribute, ...), so each package resolves with no
+  # dependency reconstruction. One matrix = one dashboard for all subrepos.
+  test-packages:
+    name: Package ${{ matrix.package.name }}
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.packages-changed == 'true' }}
+    runs-on: ubuntu-latest
+    container:
+      image: brightdigit/publish-xml:6.4
+    strategy:
+      fail-fast: false
+      matrix:
+        package:
+          - { name: SyndiKit, path: Packages/BrightDigit/SyndiKit }
+          - { name: Contribute, path: Packages/BrightDigit/Contribute }
+          - { name: ContributeWordPress, path: Packages/BrightDigit/ContributeWordPress }
+          - { name: TransistorPublishPlugin, path: Packages/BrightDigit/TransistorPublishPlugin }
+          - { name: NPMPublishPlugin, path: Packages/BrightDigit/NPMPublishPlugin }
+          - { name: YoutubePublishPlugin, path: Packages/BrightDigit/YoutubePublishPlugin }
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Install mise
+        run: |
+          curl https://mise.run | sh
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      # swift-format is built from source via the spm backend (~11 min). Tool
+      # versions are identical across packages, so the restore-keys prefix lets
+      # every leg reuse a single build.
+      - name: Cache mise tools
+        uses: actions/cache@v5
+        with:
+          path: ~/.local/share/mise/installs
+          key: mise-${{ runner.os }}-${{ runner.arch }}-${{ needs.detect-changes.outputs.image-digest }}-${{ hashFiles(format('{0}/.mise.toml', matrix.package.path)) }}
+          restore-keys: |
+            mise-${{ runner.os }}-${{ runner.arch }}-
+
+      - name: Build & Test
+        working-directory: ${{ matrix.package.path }}
+        run: |
+          swift build --build-tests
+          swift test
+
+      # Always run so the lint signal reports even when tests fail. lint.sh is
+      # non-mutating under CI ($CI is set) and builds tests itself, resolving
+      # siblings in-place.
+      - name: Lint
+        if: ${{ !cancelled() }}
+        working-directory: ${{ matrix.package.path }}
         run: ./Scripts/lint.sh
         env:
           LINT_MODE: STRICT
@@ -202,14 +264,14 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Capture Swift version
         id: swift
         run: echo "ver=$(swift --version | head -n1 | tr -cd '[:alnum:].')" >> "$GITHUB_OUTPUT"
 
       - name: Cache SwiftPM Dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: .build/
           key: ${{ runner.os }}-release-${{ steps.swift.outputs.ver }}-${{ needs.detect-changes.outputs.image-digest }}-${{ hashFiles('Package.resolved', 'Sources/**/*.swift') }}
@@ -220,7 +282,7 @@ jobs:
       # content-only commit hits this cache and skips the release build entirely.
       - name: Cache Release Binary
         id: bincache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: brightdigitwg-Linux-x86_64
           key: bin-${{ runner.os }}-${{ steps.swift.outputs.ver }}-${{ needs.detect-changes.outputs.image-digest }}-${{ hashFiles('Package.resolved', 'Package.swift', 'Sources/**/*.swift') }}
@@ -233,7 +295,7 @@ jobs:
           cp "$BIN_PATH/brightdigitwg" "brightdigitwg-$(uname)-$(arch)"
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: brightdigitwg-binaries
           path: brightdigitwg-*
@@ -300,10 +362,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Download Artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: brightdigitwg-binaries
 
