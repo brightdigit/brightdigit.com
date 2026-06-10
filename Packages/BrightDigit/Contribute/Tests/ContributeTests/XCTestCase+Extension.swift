@@ -12,7 +12,8 @@ extension XCTestCase {
       print(actualError)
       guard
         let actualError = actualError as? TestError,
-        actualError == expectedError else {
+        actualError == expectedError
+      else {
         XCTFail("Expected error of type \(expectedError)")
         return
       }

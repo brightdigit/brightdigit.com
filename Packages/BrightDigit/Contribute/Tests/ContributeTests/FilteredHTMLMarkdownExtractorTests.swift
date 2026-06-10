@@ -1,5 +1,6 @@
-@testable import Contribute
 import XCTest
+
+@testable import Contribute
 
 internal final class FilteredHTMLMarkdownExtractorTests: XCTestCase {
   internal func testSuccessfulHtmlExtract() throws {
@@ -25,7 +26,8 @@ internal final class FilteredHTMLMarkdownExtractorTests: XCTestCase {
     ) { actualError in
       guard
         let actualError = actualError as? TestError,
-        actualError == .htmlExtract else {
+        actualError == .htmlExtract
+      else {
         XCTFail("Expected failed html extract")
         return
       }

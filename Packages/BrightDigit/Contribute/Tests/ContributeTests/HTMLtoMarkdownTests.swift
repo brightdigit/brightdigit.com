@@ -1,5 +1,6 @@
-@testable import Contribute
 import XCTest
+
+@testable import Contribute
 
 internal final class HTMLtoMarkdownTests: XCTestCase {
   private enum MarkdownGeneratorError: Error {
@@ -26,7 +27,8 @@ internal final class HTMLtoMarkdownTests: XCTestCase {
     XCTAssertThrowsError(try sut.markdown(fromHTML: "")) { actualError in
       guard
         let actualError = actualError as? TestError,
-        actualError == .markdownGenerate else {
+        actualError == .markdownGenerate
+      else {
         XCTFail("Expected failed markdown generate")
         return
       }

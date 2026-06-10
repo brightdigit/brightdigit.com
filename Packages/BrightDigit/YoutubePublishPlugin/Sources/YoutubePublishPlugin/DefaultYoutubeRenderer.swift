@@ -1,6 +1,6 @@
 //
-//  FrontMatterTranslator.swift
-//  Contribute
+//  DefaultYoutubeRenderer.swift
+//  YoutubePublishPlugin
 //
 //  Created by Leo Dion.
 //  Copyright © 2026 BrightDigit.
@@ -27,26 +27,12 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import Foundation
+/// A default implementation for YoutubeRenderer.
+/// It just provides the HTML string held by the EmbeddedYoutube.
+public final class DefaultYoutubeRenderer: YoutubeRenderer {
+  /// Initializes a new DefaultYoutubeRenderer.
+  public init() {}
 
-#if canImport(FoundationNetworking)
-  import FoundationNetworking
-#endif
-
-/// A protocol that converts source data to an encodable front matter component.
-public protocol FrontMatterTranslator {
-  /// The type of the source data.
-  associatedtype SourceType
-
-  /// The type of front matter to encode.
-  associatedtype FrontMatterType: Encodable
-
-  /// Initialize a new instance of `FrontMatterTranslator`.
-  init()
-
-  /// Convert source data to front matter.
-  ///
-  /// - Parameter source: The source data.
-  /// - Returns: The resulting front matter.
-  func frontMatter(from source: SourceType) -> FrontMatterType
+  /// Renders an EmbeddedYoutube into a string.
+  public func render(youtube: EmbeddedYoutube) throws -> String { youtube.html }
 }

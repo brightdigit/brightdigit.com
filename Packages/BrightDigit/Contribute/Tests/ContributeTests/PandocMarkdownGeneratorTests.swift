@@ -1,5 +1,6 @@
-@testable import Contribute
 import XCTest
+
+@testable import Contribute
 
 internal final class PandocMarkdownGeneratorTests: XCTestCase {
   internal func testSuccessfulMarkdownGenerate() throws {
@@ -22,7 +23,8 @@ internal final class PandocMarkdownGeneratorTests: XCTestCase {
     XCTAssertThrowsError(try sut.markdown(fromHTML: "<html />")) { actualError in
       guard
         let actualError = actualError as? TestError,
-        actualError == .markdownGenerate else {
+        actualError == .markdownGenerate
+      else {
         XCTFail("Expected failed markdown generate")
         return
       }

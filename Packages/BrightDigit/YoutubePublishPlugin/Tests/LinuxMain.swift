@@ -1,7 +1,6 @@
 import XCTest
-
 import YoutubePublishPluginTests
 
-var tests = [XCTestCaseEntry]()
+internal var tests = [XCTestCaseEntry]()
 tests += YoutubePublishPluginTests.allTests()
 XCTMain(tests)

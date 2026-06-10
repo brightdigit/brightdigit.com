@@ -1,3 +1,32 @@
+//
+//  String.swift
+//  Contribute
+//
+//  Created by Leo Dion.
+//  Copyright © 2026 BrightDigit.
+//
+//  Permission is hereby granted, free of charge, to any person
+//  obtaining a copy of this software and associated documentation
+//  files (the "Software"), to deal in the Software without
+//  restriction, including without limitation the rights to use,
+//  copy, modify, merge, publish, distribute, sublicense, and/or
+//  sell copies of the Software, and to permit persons to whom the
+//  Software is furnished to do so, subject to the following
+//  conditions:
+//
+//  The above copyright notice and this permission notice shall be
+//  included in all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+//  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+//  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+//  NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+//  HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+//  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+//  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+//  OTHER DEALINGS IN THE SOFTWARE.
+//
+
 import Foundation
 
 extension String {
@@ -40,7 +69,7 @@ extension String {
     let startIndex = trimmedString.index(after: trimmedString.startIndex)
     let endIndex = trimmedString.index(before: trimmedString.endIndex)
 
-    return String(trimmedString[startIndex ..< endIndex])
+    return String(trimmedString[startIndex..<endIndex])
   }
 
   /// Pads the left side of the string with the specified character
@@ -66,7 +95,8 @@ extension String {
       // So we're going to do the only thing possible: dump to ASCII and hope for the best
       if let data = data(using: .ascii, allowLossyConversion: true) {
         if let str = String(data: data, encoding: .ascii) {
-          let urlComponents = str
+          let urlComponents =
+            str
             .lowercased()
             .components(separatedBy: String.slugSafeCharacters.inverted)
 
@@ -88,7 +118,8 @@ extension String {
         return nil
       }
 
-      let urlComponents = latin
+      let urlComponents =
+        latin
         .components(separatedBy: String.slugSafeCharacters.inverted)
 
       return urlComponents.filter { $0.isEmpty == false }.joined(separator: "-")

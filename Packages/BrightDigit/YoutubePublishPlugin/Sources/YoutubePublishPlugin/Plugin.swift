@@ -1,6 +1,6 @@
 //
-//  FrontMatterTranslator.swift
-//  Contribute
+//  Plugin.swift
+//  YoutubePublishPlugin
 //
 //  Created by Leo Dion.
 //  Copyright © 2026 BrightDigit.
@@ -28,25 +28,18 @@
 //
 
 import Foundation
+import Ink
+import Publish
 
-#if canImport(FoundationNetworking)
-  import FoundationNetworking
-#endif
-
-/// A protocol that converts source data to an encodable front matter component.
-public protocol FrontMatterTranslator {
-  /// The type of the source data.
-  associatedtype SourceType
-
-  /// The type of front matter to encode.
-  associatedtype FrontMatterType: Encodable
-
-  /// Initialize a new instance of `FrontMatterTranslator`.
-  init()
-
-  /// Convert source data to front matter.
+/// A plugin for Publish that allows you to embed YouTube videos in your blog posts.
+extension Plugin {
+  /// Creates a new YouTube plugin with the specified renderer.
   ///
-  /// - Parameter source: The source data.
-  /// - Returns: The resulting front matter.
-  func frontMatter(from source: SourceType) -> FrontMatterType
+  /// - Parameter renderer: The renderer to use for rendering YouTube blockquotes.
+  /// - Returns: A new YouTube plugin.
+  public static func youtube(renderer: YoutubeRenderer = DefaultYoutubeRenderer()) -> Self {
+    Plugin(name: "Youtube") { context in
+      context.markdownParser.addModifier(.youtubeBlockQuote(using: renderer))
+    }
+  }
 }

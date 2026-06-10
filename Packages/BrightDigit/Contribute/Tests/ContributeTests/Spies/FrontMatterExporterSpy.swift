@@ -15,7 +15,7 @@ internal final class FrontMatterExporterSpy: FrontMatterExporter {
     switch result {
     case .success:
       return "front-matter"
-    case let .failure(failure):
+    case .failure(let failure):
       throw failure
     }
   }

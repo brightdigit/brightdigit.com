@@ -1,6 +1,6 @@
 //
-//  FrontMatterTranslator.swift
-//  Contribute
+//  PostFilters.swift
+//  ContributeWordPress
 //
 //  Created by Leo Dion.
 //  Copyright © 2026 BrightDigit.
@@ -27,26 +27,19 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import Foundation
+import SyndiKit
 
-#if canImport(FoundationNetworking)
-  import FoundationNetworking
-#endif
+private enum PostFilters {
+  // swiftlint:disable:next force_try
+  static let `default` = try! [
+    RegexKeyPostFilter(pattern: "post", keyPath: \.type),
+    RegexKeyPostFilter(pattern: "publish", keyPath: \.status),
+  ]
+}
 
-/// A protocol that converts source data to an encodable front matter component.
-public protocol FrontMatterTranslator {
-  /// The type of the source data.
-  associatedtype SourceType
-
-  /// The type of front matter to encode.
-  associatedtype FrontMatterType: Encodable
-
-  /// Initialize a new instance of `FrontMatterTranslator`.
-  init()
-
-  /// Convert source data to front matter.
-  ///
-  /// - Parameter source: The source data.
-  /// - Returns: The resulting front matter.
-  func frontMatter(from source: SourceType) -> FrontMatterType
+extension Array where Element == PostFilter {
+  /// Default post filters for published posts.
+  public static var `default`: Self {
+    PostFilters.default
+  }
 }

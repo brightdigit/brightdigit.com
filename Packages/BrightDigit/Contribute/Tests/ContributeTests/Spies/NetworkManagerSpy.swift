@@ -5,10 +5,6 @@ import Foundation
   import FoundationNetworking
 #endif
 
-internal enum NetworkManagerTestError: Error, Equatable {
-  case networkDownload
-}
-
 internal final class NetworkManagerSpy: URLSessionable {
   internal static var success: Self { .init(.success(true)) }
   internal static var failure: Self { .init(.failure(.networkDownload)) }
@@ -21,7 +17,7 @@ internal final class NetworkManagerSpy: URLSessionable {
 
   internal func download(
     fromURL: URL,
-    completion: @escaping @Sendable(URL?, URLResponse?, Error?) -> Void
+    completion: @escaping @Sendable (URL?, URLResponse?, Error?) -> Void
   ) {
     switch result {
     case .success:

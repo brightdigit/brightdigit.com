@@ -1,5 +1,6 @@
-@testable import Contribute
 import XCTest
+
+@testable import Contribute
 
 internal final class FileURLDownloaderLocalFileTests: XCTestCase {
   private let networkManager = NetworkManagerSpy.success
