@@ -1,0 +1,332 @@
+name: Packages CI
+
+# CI for the vendored BrightDigit packages, following the BrightDigit CI
+# template (MistKit/SundialKit/SyndiKit workflows) with an extra `package`
+# matrix dimension. In the monorepo checkout every sibling already sits at its
+# relative-path location (../../Publish/*, ../Contribute, ...), so each
+# package resolves in-place with no dependency reconstruction.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'Packages/BrightDigit/**'
+      - '.github/workflows/packages.yaml'
+  pull_request:
+    paths:
+      - 'Packages/BrightDigit/**'
+      - '.github/workflows/packages.yaml'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  configure:
+    name: Configure Matrix
+    runs-on: ubuntu-latest
+    outputs:
+      full-matrix: ${{ steps.check.outputs.full }}
+      packages: ${{ steps.matrix.outputs.packages }}
+      cross-packages: ${{ steps.matrix.outputs.cross-packages }}
+      ubuntu-os: ${{ steps.matrix.outputs.ubuntu-os }}
+      ubuntu-swift: ${{ steps.matrix.outputs.ubuntu-swift }}
+      ubuntu-type: ${{ steps.matrix.outputs.ubuntu-type }}
+    steps:
+      - id: check
+        name: Determine matrix scope
+        run: |
+          FULL=false
+          REF="${{ github.ref }}"
+          EVENT="${{ github.event_name }}"
+          BASE_REF="${{ github.base_ref }}"
+
+          # Full matrix on main
+          if [[ "$REF" == "refs/heads/main" ]]; then
+            FULL=true
+          # Full matrix on semver branches (v1.0.0, 1.2.3-alpha.1, etc.)
+          elif [[ "$REF" =~ ^refs/heads/v?[0-9]+\.[0-9]+\.[0-9]+ ]]; then
+            FULL=true
+          # Full matrix on manual runs
+          elif [[ "$EVENT" == "workflow_dispatch" ]]; then
+            FULL=true
+          # Full matrix on PRs targeting main or semver branches
+          elif [[ "$EVENT" == "pull_request" ]]; then
+            if [[ "$BASE_REF" == "main" || "$BASE_REF" =~ ^v?[0-9]+\.[0-9]+\.[0-9]+ ]]; then
+              FULL=true
+            fi
+          fi
+
+          echo "full=$FULL" >> "$GITHUB_OUTPUT"
+          echo "Full matrix: $FULL (ref=$REF, event=$EVENT, base_ref=$BASE_REF)"
+
+      - id: matrix
+        name: Build matrix values
+        # The package lists live here and only here. `packages` is every
+        # vendored package; `cross-packages` is the pure-Swift subset that can
+        # target Windows/Android/wasm. The Publish-dependent plugins (Files,
+        # ShellOut in their dependency chains) are macOS + Linux only.
+        # SwiftTube and Spinetail are excluded entirely (being rebuilt on the
+        # OpenAPI generator; no Scripts/lint.sh or .mise.toml).
+        run: |
+          {
+            echo 'packages=[{"name":"SyndiKit","path":"Packages/BrightDigit/SyndiKit"},{"name":"Contribute","path":"Packages/BrightDigit/Contribute"},{"name":"ContributeWordPress","path":"Packages/BrightDigit/ContributeWordPress"},{"name":"TransistorPublishPlugin","path":"Packages/BrightDigit/TransistorPublishPlugin"},{"name":"NPMPublishPlugin","path":"Packages/BrightDigit/NPMPublishPlugin"},{"name":"YoutubePublishPlugin","path":"Packages/BrightDigit/YoutubePublishPlugin"}]'
+            echo 'cross-packages=[{"name":"SyndiKit","path":"Packages/BrightDigit/SyndiKit"},{"name":"Contribute","path":"Packages/BrightDigit/Contribute"},{"name":"ContributeWordPress","path":"Packages/BrightDigit/ContributeWordPress"}]'
+          } >> "$GITHUB_OUTPUT"
+
+          if [[ "${{ steps.check.outputs.full }}" == "true" ]]; then
+            {
+              echo 'ubuntu-os=["noble","jammy"]'
+              echo 'ubuntu-swift=[{"version":"6.1"},{"version":"6.2"},{"version":"6.3"}]'
+              echo 'ubuntu-type=["","wasm","wasm-embedded"]'
+            } >> "$GITHUB_OUTPUT"
+          else
+            {
+              echo 'ubuntu-os=["noble"]'
+              echo 'ubuntu-swift=[{"version":"6.3"}]'
+              echo 'ubuntu-type=[""]'
+            } >> "$GITHUB_OUTPUT"
+          fi
+
+  build-ubuntu:
+    name: Build ${{ matrix.package.name }} on Ubuntu
+    needs: configure
+    runs-on: ubuntu-latest
+    container: swift:${{ matrix.swift.version }}-${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        package: ${{ fromJSON(needs.configure.outputs.packages) }}
+        os: ${{ fromJSON(needs.configure.outputs.ubuntu-os) }}
+        swift: ${{ fromJSON(needs.configure.outputs.ubuntu-swift) }}
+        type: ${{ fromJSON(needs.configure.outputs.ubuntu-type) }}
+        exclude:
+          # Exclude Swift 6.1 from wasm builds (not supported)
+          - swift: { version: "6.1" }
+            type: "wasm"
+          - swift: { version: "6.1" }
+            type: "wasm-embedded"
+          # Publish-dependent plugins are macOS + Linux only (Files/ShellOut)
+          - package: { name: TransistorPublishPlugin }
+            type: "wasm"
+          - package: { name: TransistorPublishPlugin }
+            type: "wasm-embedded"
+          - package: { name: NPMPublishPlugin }
+            type: "wasm"
+          - package: { name: NPMPublishPlugin }
+            type: "wasm-embedded"
+          - package: { name: YoutubePublishPlugin }
+            type: "wasm"
+          - package: { name: YoutubePublishPlugin }
+            type: "wasm-embedded"
+    steps:
+      - uses: actions/checkout@v6
+      - uses: brightdigit/swift-build@v1
+        id: build
+        with:
+          working-directory: ${{ matrix.package.path }}
+          type: ${{ matrix.type }}
+      - name: Install curl (required by Codecov uploader)
+        if: steps.build.outputs.contains-code-coverage == 'true'
+        run: |
+          if ! command -v curl &> /dev/null; then
+            apt-get update -q
+            apt-get install -y --no-install-recommends curl ca-certificates
+          fi
+      - uses: sersoft-gmbh/swift-coverage-action@v5
+        if: steps.build.outputs.contains-code-coverage == 'true'
+        id: coverage-files
+        with:
+          search-paths: ${{ matrix.package.path }}/.build
+          fail-on-empty-output: true
+      - name: Upload coverage to Codecov
+        if: steps.build.outputs.contains-code-coverage == 'true'
+        uses: codecov/codecov-action@v7
+        with:
+          # fail_ci_if_error stays false until CODECOV_TOKEN is added to this
+          # repo's secrets (it is not set today).
+          fail_ci_if_error: false
+          flags: ${{ matrix.package.name }},${{ matrix.os }},swift-${{ matrix.swift.version }}
+          verbose: true
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ${{ join(fromJSON(steps.coverage-files.outputs.files), ',') }}
+
+  build-windows:
+    name: Build ${{ matrix.package.name }} on Windows
+    needs: configure
+    if: ${{ needs.configure.outputs.full-matrix == 'true' }}
+    runs-on: ${{ matrix.runs-on }}
+    strategy:
+      fail-fast: false
+      matrix:
+        package: ${{ fromJSON(needs.configure.outputs.cross-packages) }}
+        runs-on: [windows-2022, windows-2025]
+        swift:
+          - version: swift-6.1-release
+            build: 6.1-RELEASE
+          - version: swift-6.2-release
+            build: 6.2-RELEASE
+          - version: swift-6.3-release
+            build: 6.3-RELEASE
+    steps:
+      - uses: actions/checkout@v6
+      - uses: brightdigit/swift-build@v1
+        id: build
+        with:
+          working-directory: ${{ matrix.package.path }}
+          windows-swift-version: ${{ matrix.swift.version }}
+          windows-swift-build: ${{ matrix.swift.build }}
+
+  build-android:
+    name: Build ${{ matrix.package.name }} on Android
+    needs: configure
+    if: ${{ needs.configure.outputs.full-matrix == 'true' }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        package: ${{ fromJSON(needs.configure.outputs.cross-packages) }}
+        swift:
+          - version: "6.2"
+          - version: "6.3"
+        # API 36 dropped: Swift 6.x Android SDK lacks API-36 CRT objects.
+        # See SundialKit's workflow for details.
+        android-api-level: [33, 34, 35]
+    steps:
+      - uses: actions/checkout@v6
+      - name: Free disk space
+        uses: jlumbroso/free-disk-space@v1.3.1
+        with:
+          tool-cache: false
+          android: false
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: true
+          swap-storage: true
+      - uses: brightdigit/swift-build@v1
+        with:
+          working-directory: ${{ matrix.package.path }}
+          type: android
+          android-swift-version: ${{ matrix.swift.version }}
+          android-api-level: ${{ matrix.android-api-level }}
+          android-run-tests: true
+
+  # Minimal macOS build — always runs (SPM, current Xcode)
+  build-macos:
+    name: Build ${{ matrix.package.name }} on macOS
+    needs: configure
+    runs-on: macos-26
+    strategy:
+      fail-fast: false
+      matrix:
+        package: ${{ fromJSON(needs.configure.outputs.packages) }}
+    steps:
+      - uses: actions/checkout@v6
+      - name: Build and Test
+        id: build
+        uses: brightdigit/swift-build@v1
+        with:
+          working-directory: ${{ matrix.package.path }}
+          xcode: "/Applications/Xcode_26.4.app"
+      - name: Process Coverage
+        if: steps.build.outputs.contains-code-coverage == 'true'
+        uses: sersoft-gmbh/swift-coverage-action@v5
+        with:
+          search-paths: ${{ matrix.package.path }}/.build
+      - name: Upload Coverage
+        if: steps.build.outputs.contains-code-coverage == 'true'
+        uses: codecov/codecov-action@v7
+        with:
+          fail_ci_if_error: false
+          token: ${{ secrets.CODECOV_TOKEN }}
+          flags: ${{ matrix.package.name }},spm,macos
+
+  # Full Apple-platform builds — only SyndiKit declares iOS/watchOS/tvOS
+  build-macos-platforms:
+    name: Build SyndiKit on macOS (Platforms)
+    needs: configure
+    if: ${{ needs.configure.outputs.full-matrix == 'true' }}
+    runs-on: ${{ matrix.runs-on }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # macOS
+          - type: macos
+            runs-on: macos-26
+            xcode: "/Applications/Xcode_26.4.app"
+
+          # iOS
+          - type: ios
+            runs-on: macos-26
+            xcode: "/Applications/Xcode_26.4.app"
+            deviceName: "iPhone 17 Pro"
+            osVersion: "26.4.1"
+            download-platform: true
+
+          # watchOS
+          - type: watchos
+            runs-on: macos-26
+            xcode: "/Applications/Xcode_26.4.app"
+            deviceName: "Apple Watch Ultra 3 (49mm)"
+            osVersion: "26.4"
+            download-platform: true
+
+          # tvOS
+          - type: tvos
+            runs-on: macos-26
+            xcode: "/Applications/Xcode_26.4.app"
+            deviceName: "Apple TV"
+            osVersion: "26.4"
+            download-platform: true
+    steps:
+      - uses: actions/checkout@v6
+      - name: Build and Test
+        id: build
+        uses: brightdigit/swift-build@v1
+        with:
+          working-directory: Packages/BrightDigit/SyndiKit
+          type: ${{ matrix.type }}
+          xcode: ${{ matrix.xcode }}
+          deviceName: ${{ matrix.deviceName }}
+          osVersion: ${{ matrix.osVersion }}
+          download-platform: ${{ matrix.download-platform }}
+      - name: Process Coverage
+        if: steps.build.outputs.contains-code-coverage == 'true'
+        uses: sersoft-gmbh/swift-coverage-action@v5
+        with:
+          search-paths: Packages/BrightDigit/SyndiKit/.build
+      - name: Upload Coverage
+        if: steps.build.outputs.contains-code-coverage == 'true'
+        uses: codecov/codecov-action@v7
+        with:
+          fail_ci_if_error: false
+          token: ${{ secrets.CODECOV_TOKEN }}
+          flags: SyndiKit,${{ format('{0}{1}', matrix.type, matrix.osVersion) }}
+
+  lint:
+    name: Lint ${{ matrix.package.name }}
+    # Full-only build jobs are skipped on quick runs; !failure() lets this job
+    # proceed past skipped (not failed) dependencies. lint.sh is non-mutating
+    # under CI ($CI is set) and builds tests itself, resolving siblings
+    # in-place.
+    if: ${{ !cancelled() && !failure() }}
+    needs: [configure, build-ubuntu, build-windows, build-android, build-macos, build-macos-platforms]
+    runs-on: ubuntu-latest
+    container: swift:6.3-noble
+    strategy:
+      fail-fast: false
+      matrix:
+        package: ${{ fromJSON(needs.configure.outputs.packages) }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: jdx/mise-action@v4
+        with:
+          working_directory: ${{ matrix.package.path }}
+          cache: true
+      - name: Lint
+        working-directory: ${{ matrix.package.path }}
+        run: ./Scripts/lint.sh
+        env:
+          LINT_MODE: STRICT

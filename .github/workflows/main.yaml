@@ -25,7 +25,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       code-changed: ${{ steps.filter.outputs.code }}
-      packages-changed: ${{ steps.filter.outputs.packages }}
       image-digest: ${{ steps.image.outputs.digest }}
     steps:
       - name: Checkout code
@@ -46,9 +45,6 @@ jobs:
               - 'Package.resolved'
               - '.swift-version'
               - 'Dockerfile'
-              - '.github/workflows/main.yaml'
-            packages:
-              - 'Packages/BrightDigit/**'
               - '.github/workflows/main.yaml'
 
       - name: Resolve build image digest
@@ -171,81 +167,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
-      - name: Install mise
-        run: |
-          curl https://mise.run | sh
-          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
-
-      # Cache the mise-managed tools (swift-format is built from source via the
-      # spm backend, ~11 min). Keyed on the container image digest + .mise.toml so
-      # it only rebuilds when the toolchain image or a tool version changes.
-      - name: Cache mise tools
-        uses: actions/cache@v5
+      # mise-action installs mise and the .mise.toml tools with its own cache
+      # (swift-format is built from source via the spm backend, ~11 min).
+      - uses: jdx/mise-action@v4
         with:
-          path: ~/.local/share/mise/installs
-          key: mise-${{ runner.os }}-${{ runner.arch }}-${{ needs.detect-changes.outputs.image-digest }}-${{ hashFiles('.mise.toml') }}
-          restore-keys: |
-            mise-${{ runner.os }}-${{ runner.arch }}-
+          cache: true
 
       - name: Lint
-        run: ./Scripts/lint.sh
-        env:
-          LINT_MODE: STRICT
-
-  # Build, test, and lint the vendored BrightDigit packages in-place. In the
-  # monorepo checkout every sibling already sits at its relative-path location
-  # (../../Publish/*, ../Contribute, ...), so each package resolves with no
-  # dependency reconstruction. One matrix = one dashboard for all subrepos.
-  test-packages:
-    name: Package ${{ matrix.package.name }}
-    needs: detect-changes
-    if: ${{ needs.detect-changes.outputs.packages-changed == 'true' }}
-    runs-on: ubuntu-latest
-    container:
-      image: brightdigit/publish-xml:6.4
-    strategy:
-      fail-fast: false
-      matrix:
-        package:
-          - { name: SyndiKit, path: Packages/BrightDigit/SyndiKit }
-          - { name: Contribute, path: Packages/BrightDigit/Contribute }
-          - { name: ContributeWordPress, path: Packages/BrightDigit/ContributeWordPress }
-          - { name: TransistorPublishPlugin, path: Packages/BrightDigit/TransistorPublishPlugin }
-          - { name: NPMPublishPlugin, path: Packages/BrightDigit/NPMPublishPlugin }
-          - { name: YoutubePublishPlugin, path: Packages/BrightDigit/YoutubePublishPlugin }
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-
-      - name: Install mise
-        run: |
-          curl https://mise.run | sh
-          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
-
-      # swift-format is built from source via the spm backend (~11 min). Tool
-      # versions are identical across packages, so the restore-keys prefix lets
-      # every leg reuse a single build.
-      - name: Cache mise tools
-        uses: actions/cache@v5
-        with:
-          path: ~/.local/share/mise/installs
-          key: mise-${{ runner.os }}-${{ runner.arch }}-${{ needs.detect-changes.outputs.image-digest }}-${{ hashFiles(format('{0}/.mise.toml', matrix.package.path)) }}
-          restore-keys: |
-            mise-${{ runner.os }}-${{ runner.arch }}-
-
-      - name: Build & Test
-        working-directory: ${{ matrix.package.path }}
-        run: |
-          swift build --build-tests
-          swift test
-
-      # Always run so the lint signal reports even when tests fail. lint.sh is
-      # non-mutating under CI ($CI is set) and builds tests itself, resolving
-      # siblings in-place.
-      - name: Lint
-        if: ${{ !cancelled() }}
-        working-directory: ${{ matrix.package.path }}
         run: ./Scripts/lint.sh
         env:
           LINT_MODE: STRICT
