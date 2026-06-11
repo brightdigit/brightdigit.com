@@ -69,7 +69,9 @@ extension BrightDigitSiteCommand.ImportCommand {
     }
 
     public func run() throws {
-      let podcastEpisodes = try RSSContent.items(from: rss, id: \.link.lastPathComponent)
+      let podcastEpisodes = try RSSContent.items(
+        from: rss, id: { $0.link?.lastPathComponent ?? "" }
+      )
       let videos = try YouTubeContent.videos(
         byRequest: .init(
           apiKey: youtubeAPIKey,

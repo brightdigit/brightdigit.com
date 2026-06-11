@@ -88,10 +88,11 @@ extension String {
     return "".padding(toLength: toPad, withPad: byString, startingAt: 0) + self
   }
 
-  #if os(Linux)
+  #if !canImport(Darwin)
     private func convertedToSlugBackCompat() -> String? {
-      // On Linux StringTransform doesn't exist and CFStringTransform causes all sorts
-      // of problems because of bridging issues using CFMutableString – d'oh.
+      // On non-Apple platforms (Linux, Windows, Android, wasm) StringTransform
+      // doesn't exist and CFStringTransform causes all sorts of problems because
+      // of bridging issues using CFMutableString – d'oh.
       // So we're going to do the only thing possible: dump to ASCII and hope for the best
       if let data = data(using: .ascii, allowLossyConversion: true) {
         if let str = String(data: data, encoding: .ascii) {
@@ -110,7 +111,7 @@ extension String {
   #endif
 
   private func convertedToSlug() -> String? {
-    #if os(Linux)
+    #if !canImport(Darwin)
       return convertedToSlugBackCompat()
     #else
       guard let latin = applyingTransform(String.latinStringTransform, reverse: false)

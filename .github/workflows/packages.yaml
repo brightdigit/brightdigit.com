@@ -189,9 +189,11 @@ jobs:
         swift:
           - version: "6.2"
           - version: "6.3"
+        # Single API level: tests are disabled (android-run-tests: false), so the
+        # emulator never runs and the level only needs to be a valid build target.
         # API 36 dropped: Swift 6.x Android SDK lacks API-36 CRT objects.
         # See SundialKit's workflow for details.
-        android-api-level: [33, 34, 35]
+        android-api-level: [34]
     steps:
       - uses: actions/checkout@v6
       - name: Free disk space
@@ -210,7 +212,10 @@ jobs:
           type: android
           android-swift-version: ${{ matrix.swift.version }}
           android-api-level: ${{ matrix.android-api-level }}
-          android-run-tests: true
+          # Build-only on Android: SyndiKit's tests load on-disk Data/ fixtures
+          # (Data/OPML, blogs.json) via path lookup, which the emulator test
+          # runner doesn't stage onto the device. Compilation is still verified.
+          android-run-tests: false
 
   # Minimal macOS build — always runs (SPM, current Xcode)
   build-macos:

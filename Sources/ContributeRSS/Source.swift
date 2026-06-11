@@ -50,7 +50,7 @@ private func require<Value>(
 }
 
 extension RSSContent.Source {
-  internal init(item: RSSItem, id: KeyPath<RSSItem, String>) throws {
+  internal init(item: RSSItem, id: (RSSItem) -> String) throws {
     let itemError = RSSError.invalidPodcastEpisodeFromRSSItem(String(describing: item))
     let content = try require(
       item.contentEncoded?.value ?? item.description?.value,
@@ -77,7 +77,7 @@ extension RSSContent.Source {
     self.init(
       episodeNo: episodeNo, slug: title.slugify(), title: title, date: date,
       summary: summary, content: content, audioURL: episode.enclosure.url,
-      imageURL: imageURL, duration: duration, podcastID: item[keyPath: id]
+      imageURL: imageURL, duration: duration, podcastID: id(item)
     )
   }
 }

@@ -9,7 +9,7 @@ public enum RSSContent: ContentType {
 }
 
 extension RSSContent {
-  public static func items(from rssURL: URL, id: KeyPath<RSSItem, String>) throws
+  public static func items(from rssURL: URL, id: (RSSItem) -> String) throws
     -> [Source]
   {
     let decoder = SynDecoder()

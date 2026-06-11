@@ -108,7 +108,7 @@ where
     let htmlFromPost = transformerFromSite?(site)
     try site.posts
       .filter(postFilters.postSatisfiesAll)
-      .map { post in (post, assets.first { $0.parentID == post.ID }) }
+      .map { post in (post, assets.first { $0.parentID == post.id }) }
       .forEach { post, featuredImage in
         _ = try self.contentBuilder.write(
           from: .init(

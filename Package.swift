@@ -40,7 +40,7 @@ let package = Package(
     .package(path: "Packages/BrightDigit/ContributeWordPress"),
     .package(path: "Packages/BrightDigit/TransistorPublishPlugin"),
 
-    .package(url: "https://github.com/jpsim/Yams.git", from: "4.0.4"),
+    .package(url: "https://github.com/jpsim/Yams.git", from: "6.0.0"),
     .package(url: "https://github.com/apple/swift-argument-parser", from: "1.3.0"),
     .package(url: "https://github.com/tid-kijyun/Kanna.git", from: "5.2.2"),
     .package(url: "https://github.com/eneko/MarkdownGenerator.git", from: "0.4.0")
