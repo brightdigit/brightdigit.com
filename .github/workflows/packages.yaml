@@ -132,6 +132,14 @@ jobs:
             type: "wasm"
           - package: { name: ContributeWordPress }
             type: "wasm-embedded"
+          # Publish requires Swift 6.2+ (uses SendableMetatype, introduced in 6.2);
+          # the Publish-dependent plugins can't compile on Swift 6.1.
+          - package: { name: TransistorPublishPlugin }
+            swift: { version: "6.1" }
+          - package: { name: NPMPublishPlugin }
+            swift: { version: "6.1" }
+          - package: { name: YoutubePublishPlugin }
+            swift: { version: "6.1" }
     steps:
       - uses: actions/checkout@v6
       - uses: brightdigit/swift-build@v1
