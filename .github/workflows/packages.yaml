@@ -119,6 +119,19 @@ jobs:
             type: "wasm"
           - package: { name: YoutubePublishPlugin }
             type: "wasm-embedded"
+          # Contribute/ContributeWordPress depend on Yams, which fails on the
+          # Musl/wasm SDK with Swift 6.3 ('DBL_DECIMAL_DIG' not in scope; fixed on
+          # Yams main but unreleased as of 6.2.2). wasm-embedded also lacks
+          # Foundation, which both packages require. Revisit when Yams ships the
+          # Musl fix. They DO build on Windows/Android (Yams 6 + Foundation shims).
+          - package: { name: Contribute }
+            type: "wasm"
+          - package: { name: Contribute }
+            type: "wasm-embedded"
+          - package: { name: ContributeWordPress }
+            type: "wasm"
+          - package: { name: ContributeWordPress }
+            type: "wasm-embedded"
     steps:
       - uses: actions/checkout@v6
       - uses: brightdigit/swift-build@v1

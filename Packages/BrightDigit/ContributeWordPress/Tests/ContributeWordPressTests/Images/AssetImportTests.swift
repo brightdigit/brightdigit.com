@@ -31,7 +31,7 @@ internal final class AssetImportTests: XCTestCase {
 
     assetSampleAsset(
       sut,
-      expectedPostID: post.ID,
+      expectedPostID: post.id,
       expectedFromURL: expectedFromURL,
       expectedAtURL: expectedAtURL
     )
@@ -55,7 +55,7 @@ internal final class AssetImportTests: XCTestCase {
 
     assetSampleAsset(
       sut,
-      expectedPostID: post.ID,
+      expectedPostID: post.id,
       expectedFromURL: expectedFromURL,
       expectedAtURL: expectedAtURL
     )
