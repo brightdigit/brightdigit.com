@@ -77,7 +77,7 @@ jobs:
           if [[ "${{ steps.check.outputs.full }}" == "true" ]]; then
             {
               echo 'ubuntu-os=["noble","jammy"]'
-              echo 'ubuntu-swift=[{"version":"6.1"},{"version":"6.2"},{"version":"6.3"}]'
+              echo 'ubuntu-swift=[{"version":"6.3"}]'
               echo 'ubuntu-type=["","wasm","wasm-embedded"]'
             } >> "$GITHUB_OUTPUT"
           else
@@ -101,11 +101,6 @@ jobs:
         swift: ${{ fromJSON(needs.configure.outputs.ubuntu-swift) }}
         type: ${{ fromJSON(needs.configure.outputs.ubuntu-type) }}
         exclude:
-          # Exclude Swift 6.1 from wasm builds (not supported)
-          - swift: { version: "6.1" }
-            type: "wasm"
-          - swift: { version: "6.1" }
-            type: "wasm-embedded"
           # Publish-dependent plugins are macOS + Linux only (Files/ShellOut)
           - package: { name: TransistorPublishPlugin }
             type: "wasm"
@@ -132,14 +127,6 @@ jobs:
             type: "wasm"
           - package: { name: ContributeWordPress }
             type: "wasm-embedded"
-          # Publish requires Swift 6.2+ (uses SendableMetatype, introduced in 6.2);
-          # the Publish-dependent plugins can't compile on Swift 6.1.
-          - package: { name: TransistorPublishPlugin }
-            swift: { version: "6.1" }
-          - package: { name: NPMPublishPlugin }
-            swift: { version: "6.1" }
-          - package: { name: YoutubePublishPlugin }
-            swift: { version: "6.1" }
     steps:
       - uses: actions/checkout@v6
       - uses: brightdigit/swift-build@v1
@@ -183,10 +170,6 @@ jobs:
         package: ${{ fromJSON(needs.configure.outputs.cross-packages) }}
         runs-on: [windows-2022, windows-2025]
         swift:
-          - version: swift-6.1-release
-            build: 6.1-RELEASE
-          - version: swift-6.2-release
-            build: 6.2-RELEASE
           - version: swift-6.3-release
             build: 6.3-RELEASE
     steps:
@@ -208,7 +191,6 @@ jobs:
       matrix:
         package: ${{ fromJSON(needs.configure.outputs.cross-packages) }}
         swift:
-          - version: "6.2"
           - version: "6.3"
         # Single API level: tests are disabled (android-run-tests: false), so the
         # emulator never runs and the level only needs to be a valid build target.
