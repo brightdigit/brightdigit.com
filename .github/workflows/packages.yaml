@@ -322,12 +322,20 @@ jobs:
     if: ${{ !cancelled() && !failure() }}
     needs: [configure, build-ubuntu, build-windows, build-android, build-macos, build-macos-platforms]
     runs-on: ubuntu-latest
-    container: swift:6.3-noble
+    # Lint on the Swift 6.4 nightly (the project's target toolchain) so swift-format
+    # 604 builds against a matching swift-syntax. On the 6.3 image the 604 tool
+    # crashed in its FileIterator. The bare nightly snapshot lacks curl, which
+    # mise-action needs to bootstrap mise, so install it first.
+    container: swiftlang/swift:nightly-6.4.x-noble
     strategy:
       fail-fast: false
       matrix:
         package: ${{ fromJSON(needs.configure.outputs.packages) }}
     steps:
+      - name: Install curl (required by mise-action)
+        run: |
+          apt-get update -q
+          apt-get install -y --no-install-recommends curl ca-certificates
       - uses: actions/checkout@v6
       - uses: jdx/mise-action@v4
         with:
