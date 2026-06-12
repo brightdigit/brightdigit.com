@@ -1,7 +1,10 @@
+// swift-format-ignore-file
+// swiftlint:disable all
 #if canImport(FoundationNetworking)
   import FoundationNetworking
 #endif
 import Contribute
+@available(*, deprecated, message: "Scheduled for removal; do not use in new code.")
 public extension Newsletter {
   struct FrontMatterTranslator: Contribute.FrontMatterTranslator {
     public init() {}

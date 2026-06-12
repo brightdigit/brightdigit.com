@@ -1,221 +1,48 @@
-import Foundation
+//
+//  RSSItem.swift
+//  SyndiKit
+//
+//  Created by Leo Dion.
+//  Copyright © 2026 BrightDigit.
+//
+//  Permission is hereby granted, free of charge, to any person
+//  obtaining a copy of this software and associated documentation
+//  files (the "Software"), to deal in the Software without
+//  restriction, including without limitation the rights to use,
+//  copy, modify, merge, publish, distribute, sublicense, and/or
+//  sell copies of the Software, and to permit persons to whom the
+//  Software is furnished to do so, subject to the following
+//  conditions:
+//
+//  The above copyright notice and this permission notice shall be
+//  included in all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+//  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+//  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+//  NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+//  HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+//  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+//  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+//  OTHER DEALINGS IN THE SOFTWARE.
+//
+
 import XMLCoder
 
-public struct RSSItem: Codable {
-  public let title: String
-  public let link: URL
-  public let description: CData?
-  public let guid: EntryID
-  public let pubDate: Date?
-  public let contentEncoded: CData?
-  public let categoryTerms: [RSSItemCategory]
-  public let content: String?
-  public let itunesTitle: String?
-  public let itunesEpisode: iTunesEpisode?
-  public let itunesAuthor: String?
-  public let itunesSubtitle: String?
-  public let itunesSummary: CData?
-  public let itunesExplicit: String?
-  public let itunesDuration: iTunesDuration?
-  public let itunesImage: iTunesImage?
-  public let podcastPerson: [PodcastPerson]?
-  public let enclosure: Enclosure?
-  public let creators: [String]
-  public let wpCommentStatus: CData?
-  public let wpPingStatus: CData?
-  public let wpStatus: CData?
-  public let wpPostParent: Int?
-  public let wpMenuOrder: Int?
-  public let wpIsSticky: Int?
-  public let wpPostPassword: CData?
-  public let wpPostID: Int?
-  public let wpPostDate: Date?
-  public let wpPostDateGMT: Date?
-  public let wpModifiedDate: Date?
-  public let wpModifiedDateGMT: Date?
-  public let wpPostName: CData?
-  public let wpPostType: CData?
-  public let wpPostMeta: [WordPressElements.PostMeta]?
-  public let wpAttachmentURL: URL?
-  public let mediaContent: AtomMedia?
-  public let mediaThumbnail: AtomMedia?
+#if swift(<5.7)
+  @preconcurrency import Foundation
+#elseif swift(<6.0)
+  import Foundation
+#else
+  public import Foundation
+#endif
 
-  // swiftlint:disable:next function_body_length
-  public init(
-    title: String,
-    link: URL,
-    description: String?,
-    guid: EntryID,
-    pubDate: Date? = nil,
-    contentEncoded: String? = nil,
-    categoryTerms: [RSSItemCategory] = [],
-    content: String? = nil,
-    itunesTitle: String? = nil,
-    itunesEpisode: Int? = nil,
-    itunesAuthor: String? = nil,
-    itunesSubtitle: String? = nil,
-    itunesSummary: CData? = nil,
-    itunesExplicit: String? = nil,
-    itunesDuration: TimeInterval? = nil,
-    itunesImage: iTunesImage? = nil,
-    podcastPerson: [PodcastPerson]? = nil,
-    enclosure: Enclosure? = nil,
-    creators: [String] = [],
-    wpCommentStatus: String? = nil,
-    wpPingStatus: String? = nil,
-    wpStatus: String? = nil,
-    wpPostParent: Int? = nil,
-    wpMenuOrder: Int? = nil,
-    wpIsSticky: Int? = nil,
-    wpPostPassword: String? = nil,
-    wpPostID: Int? = nil,
-    wpPostDate: Date? = nil,
-    wpPostDateGMT: Date? = nil,
-    wpModifiedDate: Date? = nil,
-    wpModifiedDateGMT: Date? = nil,
-    wpPostName: String? = nil,
-    wpPostType: String? = nil,
-    wpPostMeta: [WordPressElements.PostMeta]? = nil,
-    wpAttachmentURL: URL? = nil,
-    mediaContent: AtomMedia? = nil,
-    mediaThumbnail: AtomMedia? = nil
-  ) {
-    self.title = title
-    self.link = link
-    self.description = description.map(CData.init)
-    self.guid = guid
-    self.pubDate = pubDate
-    self.contentEncoded = contentEncoded.map(CData.init)
-    self.categoryTerms = categoryTerms
-    self.content = content
-    self.itunesTitle = itunesTitle
-    self.itunesEpisode = itunesEpisode.map(iTunesEpisode.init)
-    self.itunesAuthor = itunesAuthor
-    self.itunesSubtitle = itunesSubtitle
-    self.itunesSummary = itunesSummary
-    self.itunesExplicit = itunesExplicit
-    self.itunesDuration = itunesDuration.map(iTunesDuration.init)
-    self.itunesImage = itunesImage
-    self.podcastPerson = podcastPerson
-    self.enclosure = enclosure
-    self.creators = creators
-    self.wpCommentStatus = wpCommentStatus.map(CData.init)
-    self.wpPingStatus = wpPingStatus.map(CData.init)
-    self.wpStatus = wpStatus.map(CData.init)
-    self.wpPostParent = wpPostParent
-    self.wpMenuOrder = wpMenuOrder
-    self.wpIsSticky = wpIsSticky
-    self.wpPostPassword = wpPostPassword.map(CData.init)
-    self.wpPostID = wpPostID
-    self.wpPostDate = wpPostDate
-    self.wpPostDateGMT = wpPostDateGMT
-    self.wpModifiedDate = wpModifiedDate
-    self.wpModifiedDateGMT = wpModifiedDateGMT
-    self.wpPostName = wpPostName.map(CData.init)
-    self.wpPostType = wpPostType.map(CData.init)
-    self.wpPostMeta = wpPostMeta
-    self.wpAttachmentURL = wpAttachmentURL
-    self.mediaContent = mediaContent
-    self.mediaThumbnail = mediaThumbnail
-  }
-
-  // swiftlint:disable:next function_body_length
-  public init(from decoder: Decoder) throws {
-    let container = try decoder.container(keyedBy: CodingKeys.self)
-    title = try container.decode(String.self, forKey: .title)
-    link = try container.decode(URL.self, forKey: .link)
-    description = try container.decodeIfPresent(CData.self, forKey: .description)
-    guid = try container.decode(EntryID.self, forKey: .guid)
-    pubDate = try container.decodeDateIfPresentAndValid(forKey: .pubDate)
-    contentEncoded = try container.decodeIfPresent(CData.self, forKey: .contentEncoded)
-    categoryTerms = try container.decode([RSSItemCategory].self, forKey: .categoryTerms)
-    content = try container.decodeIfPresent(String.self, forKey: .content)
-    itunesTitle = try container.decodeIfPresent(String.self, forKey: .itunesTitle)
-    itunesEpisode = try container.decodeIfPresent(
-      iTunesEpisode.self, forKey: .itunesEpisode
-    )
-    itunesAuthor = try container.decodeIfPresent(String.self, forKey: .itunesAuthor)
-    itunesSubtitle = try container.decodeIfPresent(String.self, forKey: .itunesSubtitle)
-    itunesSummary = try container.decodeIfPresent(CData.self, forKey: .itunesSummary)
-    itunesExplicit = try container.decodeIfPresent(String.self, forKey: .itunesExplicit)
-    itunesDuration = try container.decodeIfPresent(
-      iTunesDuration.self, forKey: .itunesDuration
-    )
-    itunesImage = try container.decodeIfPresent(iTunesImage.self, forKey: .itunesImage)
-
-    podcastPerson = try container.decodeIfPresent(
-      [PodcastPerson].self,
-      forKey: .podcastPerson
-    )
-
-    enclosure = try container.decodeIfPresent(Enclosure.self, forKey: .enclosure)
-    creators = try container.decode([String].self, forKey: .creators)
-
-    mediaContent =
-      try container.decodeIfPresent(AtomMedia.self, forKey: .mediaContent)
-    mediaThumbnail =
-      try container.decodeIfPresent(AtomMedia.self, forKey: .mediaThumbnail)
-
-    wpPostID = try container.decodeIfPresent(Int.self, forKey: .wpPostID)
-    wpPostDate = try container.decodeIfPresent(Date.self, forKey: .wpPostDate)
-    let wpPostDateGMT = try container.decodeIfPresent(
-      String.self, forKey: .wpPostDateGMT
-    )
-    if let wpPostDateGMT = wpPostDateGMT {
-      if wpPostDateGMT == "0000-00-00 00:00:00" {
-        self.wpPostDateGMT = nil
-      } else {
-        self.wpPostDateGMT = try container.decode(
-          Date.self, forKey: .wpPostDateGMT
-        )
-      }
-    } else {
-      self.wpPostDateGMT = nil
-    }
-
-    wpModifiedDate = try container.decodeIfPresent(
-      Date.self, forKey: .wpModifiedDate
-    )
-
-    let wpModifiedDateGMT = try container.decodeIfPresent(
-      String.self, forKey: .wpModifiedDateGMT
-    )
-    if let wpModifiedDateGMT = wpModifiedDateGMT {
-      if wpModifiedDateGMT == "0000-00-00 00:00:00" {
-        self.wpModifiedDateGMT = nil
-      } else {
-        self.wpModifiedDateGMT = try container.decode(
-          Date.self, forKey: .wpModifiedDateGMT
-        )
-      }
-    } else {
-      self.wpModifiedDateGMT = nil
-    }
-
-    let wpAttachmentURLCDData = try container.decodeIfPresent(
-      CData.self,
-      forKey: .wpAttachmentURL
-    )
-    wpAttachmentURL = wpAttachmentURLCDData.map { $0.value }.flatMap(URL.init(string:))
-
-    wpPostName = try container.decodeIfPresent(CData.self, forKey: .wpPostName)
-    wpPostType = try container.decodeIfPresent(CData.self, forKey: .wpPostType)
-    wpPostMeta = try container.decodeIfPresent(
-      [WordPressElements.PostMeta].self,
-      forKey: .wpPostMeta
-    )
-    wpCommentStatus = try container.decodeIfPresent(CData.self, forKey: .wpCommentStatus)
-    wpPingStatus = try container.decodeIfPresent(CData.self, forKey: .wpPingStatus)
-    wpStatus = try container.decodeIfPresent(CData.self, forKey: .wpStatus)
-    wpPostParent = try container.decodeIfPresent(Int.self, forKey: .wpPostParent)
-    wpMenuOrder = try container.decodeIfPresent(Int.self, forKey: .wpMenuOrder)
-    wpIsSticky = try container.decodeIfPresent(Int.self, forKey: .wpIsSticky)
-    wpPostPassword = try container.decodeIfPresent(
-      CData.self, forKey: .wpPostPassword
-    )
-  }
-
-  enum CodingKeys: String, CodingKey {
+/// A struct representing an RSS item/entry.
+/// RSS items contain the individual pieces of content within an RSS feed,
+/// including title, link, description, publication date, and various media attachments.
+public struct RSSItem: Codable, Sendable {
+  /// Coding keys for encoding and decoding RSS item elements.
+  public enum CodingKeys: String, CodingKey {
     case title
     case link
     case description
@@ -231,7 +58,11 @@ public struct RSSItem: Codable {
     case itunesSubtitle = "itunes:subtitle"
     case itunesSummary = "itunes:summary"
     case itunesExplicit = "itunes:explicit"
-    case podcastPerson = "podcast:person"
+    case podcastPeople = "podcast:person"
+    case podcastTranscripts = "podcast:transcript"
+    case podcastChapters = "podcast:chapters"
+    case podcastSoundbites = "podcast:soundbite"
+    case podcastSeason = "podcast:season"
     case itunesDuration = "itunes:duration"
     case itunesImage = "itunes:image"
     case creators = "dc:creator"
@@ -257,51 +88,135 @@ public struct RSSItem: Codable {
     case mediaContent = "media:content"
     case mediaThumbnail = "media:thumbnail"
   }
+
+  /// The title of the RSS item.
+  public let title: String
+  /// The URL of the RSS item.
+  public let link: URL?
+  /// The description of the RSS item.
+  public let description: CData?
+  /// A unique identifier for the RSS item.
+  public let guid: EntryID
+  /// The publication date of the RSS item.
+  public let pubDate: Date?
+  /// The encoded content of the RSS item using the content:encoded element.
+  public let contentEncoded: CData?
+  /// The categories associated with the RSS item.
+  public let categoryTerms: [RSSItemCategory]
+  /// The content of the RSS item.
+  public let content: String?
+  /// The iTunes-specific title for the RSS item.
+  public let itunesTitle: String?
+  /// The iTunes episode number information.
+  public let itunesEpisode: iTunesEpisode?
+  /// The iTunes author of the RSS item.
+  public let itunesAuthor: String?
+  /// The iTunes subtitle for the RSS item.
+  public let itunesSubtitle: String?
+  /// The iTunes summary of the RSS item.
+  public let itunesSummary: CData?
+  /// The iTunes explicit content indicator.
+  public let itunesExplicit: String?
+  /// The iTunes duration of the media content.
+  public let itunesDuration: iTunesDuration?
+  /// The iTunes image for the RSS item.
+  public let itunesImage: iTunesImage?
+  /// The people associated with this podcast episode.
+  public let podcastPeople: [PodcastPerson]
+  /// The transcripts available for this podcast episode.
+  public let podcastTranscripts: [PodcastTranscript]
+  /// The chapters information for this podcast episode.
+  public let podcastChapters: PodcastChapters?
+  /// The soundbites for this podcast episode.
+  public let podcastSoundbites: [PodcastSoundbite]
+  /// The season information for this podcast episode.
+  public let podcastSeason: PodcastSeason?
+  /// The media enclosure for the RSS item.
+  public let enclosure: Enclosure?
+  /// The Dublin Core creators of the RSS item.
+  public let creators: [String]
+  /// The WordPress comment status for the post.
+  public let wpCommentStatus: CData?
+  /// The WordPress ping status for the post.
+  public let wpPingStatus: CData?
+  /// The WordPress post status.
+  public let wpStatus: CData?
+  /// The WordPress parent post ID.
+  public let wpPostParent: Int?
+  /// The WordPress menu order.
+  public let wpMenuOrder: Int?
+  /// Whether the WordPress post is sticky.
+  public let wpIsSticky: Int?
+  /// The WordPress post password.
+  public let wpPostPassword: CData?
+  /// The WordPress post ID.
+  public let wpPostID: Int?
+  /// The WordPress post creation date in local timezone.
+  public let wpPostDate: Date?
+  /// The WordPress post creation date in GMT.
+  public let wpPostDateGMT: Date?
+  /// The WordPress post modification date in local timezone.
+  public let wpModifiedDate: Date?
+  /// The WordPress post modification date in GMT.
+  public let wpModifiedDateGMT: Date?
+  /// The WordPress post slug/name.
+  public let wpPostName: CData?
+  /// The WordPress post type.
+  public let wpPostType: CData?
+  /// The WordPress post metadata.
+  public let wpPostMeta: [WordPressElements.PostMeta]
+  /// The WordPress attachment URL.
+  public let wpAttachmentURL: URL?
+  /// The media content element from Media RSS namespace.
+  public let mediaContent: AtomMedia?
+  /// The media thumbnail element from Media RSS namespace.
+  public let mediaThumbnail: AtomMedia?
 }
 
 extension RSSItem: Entryable {
-  public var categories: [EntryCategory] {
+  /// The categories associated with this RSS item.
+  public var categories: [any EntryCategory] {
     categoryTerms
   }
 
-  public var url: URL {
+  /// The URL associated with this RSS item.
+  public var url: URL? {
     link
   }
 
+  /// The HTML content of this RSS item.
   public var contentHtml: String? {
     contentEncoded?.value ?? content ?? description?.value
   }
 
+  /// The summary of this RSS item.
   public var summary: String? {
     description?.value
   }
 
+  /// The authors of this RSS item, derived from creators or iTunes author.
   public var authors: [Author] {
-    let authors = creators.map(Author.init)
-    guard authors.isEmpty else {
-      return authors
+    let creatorAuthors = creators.map { Author(name: $0) }
+    if !creatorAuthors.isEmpty {
+      return creatorAuthors
     }
-    guard let author = itunesAuthor.map(Author.init) else {
-      return []
-    }
-    return [author]
+    return itunesAuthor.map { [Author(name: $0)] } ?? []
   }
 
-  public var id: EntryID {
-    guid
-  }
+  /// The unique identifier for this RSS item.
+  public var id: EntryID { guid }
 
-  public var published: Date? {
-    pubDate
-  }
+  /// The publication date of this RSS item.
+  public var published: Date? { pubDate }
 
+  /// The media content associated with this RSS item.
   public var media: MediaContent? {
     PodcastEpisodeProperties(rssItem: self).map(MediaContent.podcast)
   }
 
+  /// The image URL associated with this RSS item, derived from iTunes image,
+  /// media thumbnail, or media content.
   public var imageURL: URL? {
-    itunesImage?.href ??
-      mediaThumbnail?.url ??
-      mediaContent?.url
+    itunesImage?.href ?? mediaThumbnail?.url ?? mediaContent?.url
   }
 }

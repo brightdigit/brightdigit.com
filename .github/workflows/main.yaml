@@ -28,12 +28,12 @@ jobs:
       image-digest: ${{ steps.image.outputs.digest }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
       - name: Detect code changes
-        uses: dorny/paths-filter@v3
+        uses: dorny/paths-filter@v4
         id: filter
         with:
           # Anything that affects the compiled binary or the CI logic itself.
@@ -64,7 +64,7 @@ jobs:
 
       steps:
           - name: Checkout code
-            uses: actions/checkout@v4
+            uses: actions/checkout@v6
             with:
               fetch-depth: 0
 
@@ -148,29 +148,36 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
-      - name: Capture Swift version
-        id: swift
-        run: echo "ver=$(swift --version | head -n1 | tr -cd '[:alnum:].')" >> "$GITHUB_OUTPUT"
+      - name: Build and Test
+        uses: brightdigit/swift-build@v1
 
-      - name: Cache SwiftPM Dependencies
-        uses: actions/cache@v4
+  lint:
+    needs: [detect-changes, build-linux]
+    if: ${{ needs.detect-changes.outputs.code-changed == 'true' }}
+    runs-on: ubuntu-latest
+    container:
+      image: brightdigit/publish-xml:6.4
+    concurrency:
+        group: lint-${{ github.ref }}
+        cancel-in-progress: true
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      # mise-action installs mise and the .mise.toml tools with its own cache
+      # (swift-format is built from source via the spm backend, ~11 min).
+      - uses: jdx/mise-action@v4
         with:
-          path: .build/
-          key: ${{ runner.os }}-build-${{ steps.swift.outputs.ver }}-${{ needs.detect-changes.outputs.image-digest }}-${{ hashFiles('Package.resolved') }}
+          cache: true
 
-      - name: Configure Architecture Prefix
-        run: |
-          export ARCH_PREFIX=$(uname -i)
-          echo "ARCH_PREFIX=${ARCH_PREFIX}" >> $GITHUB_ENV
-      
-      - name: Build with Swift
-        run: swift build
+      - name: Lint
+        run: ./Scripts/lint.sh
+        env:
+          LINT_MODE: STRICT
 
-      - name: Run Tests with Swift
-        run: swift test
-  
   package-linux:
     needs: [detect-changes, build-linux]
     # build-linux is skipped on content-only commits; still run as long as it
@@ -185,14 +192,14 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Capture Swift version
         id: swift
         run: echo "ver=$(swift --version | head -n1 | tr -cd '[:alnum:].')" >> "$GITHUB_OUTPUT"
 
       - name: Cache SwiftPM Dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: .build/
           key: ${{ runner.os }}-release-${{ steps.swift.outputs.ver }}-${{ needs.detect-changes.outputs.image-digest }}-${{ hashFiles('Package.resolved', 'Sources/**/*.swift') }}
@@ -203,7 +210,7 @@ jobs:
       # content-only commit hits this cache and skips the release build entirely.
       - name: Cache Release Binary
         id: bincache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: brightdigitwg-Linux-x86_64
           key: bin-${{ runner.os }}-${{ steps.swift.outputs.ver }}-${{ needs.detect-changes.outputs.image-digest }}-${{ hashFiles('Package.resolved', 'Package.swift', 'Sources/**/*.swift') }}
@@ -216,7 +223,7 @@ jobs:
           cp "$BIN_PATH/brightdigitwg" "brightdigitwg-$(uname)-$(arch)"
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: brightdigitwg-binaries
           path: brightdigitwg-*
@@ -283,10 +290,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Download Artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: brightdigitwg-binaries
 

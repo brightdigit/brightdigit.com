@@ -19,7 +19,8 @@ extension Item: IndexArticle where Site == BrightDigitSite {
 
   public var lengthInMinutes: Int {
     if let mediaDuration = metadata.videoDuration ?? metadata.audioDuration,
-       sectionID == .episodes {
+      sectionID == .episodes
+    {
       return Int(mediaDuration / 60.0)
     }
     return readingTime.minutes
@@ -28,7 +29,7 @@ extension Item: IndexArticle where Site == BrightDigitSite {
   public var featuredImageURL: URL {
     URL(staticString: metadata.featuredImage)
   }
-  
+
   public var isAvailable: Bool {
     self.sectionID.isIndexable
   }

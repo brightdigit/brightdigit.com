@@ -3,54 +3,66 @@ import Plot
 import Publish
 import PublishType
 
-struct AboutBuilder: PageBuilder {
-  typealias WebsiteType = BrightDigitSite
+internal struct AboutBuilder: PageBuilder {
+  internal typealias WebsiteType = BrightDigitSite
 
-  typealias LocationType = Page
+  internal typealias LocationType = Page
 
-  let description: String = Strings.About.ctaP1
+  internal let description: String = Strings.About.ctaP1
 
-  var imagePath: Path = "/media/about-us/graphic-attract.jpg"
+  internal var imagePath: Path = "/media/about-us/graphic-attract.jpg"
 
-  func main(forLocation _: LocationType, withContext _: PublishingContext<BrightDigitSite>) -> [Node<HTML.BodyContext>] {
+  internal var bodyClasses: [String] { [] }
+
+  internal func main(
+    forLocation _: LocationType, withContext _: PublishingContext<BrightDigitSite>
+  ) -> [Node<HTML.BodyContext>] {
     [
       .aboutHeader(),
-      .leftImageWithRightTextNoHeader(imageSrc: "/media/about-us/graphic-attract.webm",
-                                      text: Strings.About.section1),
+      .leftImageWithRightTextNoHeader(
+        imageSrc: "/media/about-us/graphic-attract.webm",
+        text: Strings.About.section1
+      ),
 
-      .leftTextWithHeaderRightImage(imageSrc: "/media/about-us/opportunities.webm",
-                                    header: Strings.About.whoWeAreTitle,
-                                    p1: Strings.About.whoWeAreP1,
-                                    p2: Strings.About.whoWeAreP2,
-                                    p3: Strings.About.whoWeAreP3),
+      .leftTextWithHeaderRightImage(
+        imageSrc: "/media/about-us/opportunities.webm",
+        header: Strings.About.whoWeAreTitle,
+        para1: Strings.About.whoWeAreP1,
+        para2: Strings.About.whoWeAreP2,
+        para3: Strings.About.whoWeAreP3
+      ),
 
-      .leftImageRightTextWithHeader(imageSrc: "/media/about-us/communication.webm",
-                                    header: Strings.About.workWithUsTitle,
-                                    p1: Strings.About.workWithusP1,
-                                    p2: Strings.About.workWithusP2,
-                                    p3: Strings.About.workWithusP3),
+      .leftImageRightTextWithHeader(
+        imageSrc: "/media/about-us/communication.webm",
+        header: Strings.About.workWithUsTitle,
+        para1: Strings.About.workWithusP1,
+        para2: Strings.About.workWithusP2,
+        para3: Strings.About.workWithusP3
+      ),
 
-      .leftTextWithHeaderRightImage(imageSrc: "/media/about-us/podcast.webm",
-                                    header: Strings.About.helpingOthersTitle,
-                                    p1: Strings.About.helpingOthersP1,
-                                    p2: Strings.About.helpingOthersP2,
-                                    p3: ""),
+      .leftTextWithHeaderRightImage(
+        imageSrc: "/media/about-us/podcast.webm",
+        header: Strings.About.helpingOthersTitle,
+        para1: Strings.About.helpingOthersP1,
+        para2: Strings.About.helpingOthersP2,
+        para3: ""
+      ),
 
-      .aboutCTA()
+      .aboutCTA(),
     ]
   }
-
-  var bodyClasses: [String] { [] }
 }
 
-public extension Node where Context == HTML.BodyContext {
-  static func aboutHeader() -> Node {
+extension Node where Context == HTML.BodyContext {
+  public static func aboutHeader() -> Node {
     .header(
       .h1("Swift-Based", .br(), "App Development")
     )
   }
 
-  static func leftImageWithRightTextNoHeader(imageSrc: String, text: String) -> Node {
+  public static func leftImageWithRightTextNoHeader(imageSrc: String, text: String)
+    -> Node
+  {
     .section(
       .header(
         .video(
@@ -67,7 +79,9 @@ public extension Node where Context == HTML.BodyContext {
     )
   }
 
-  static func leftTextWithHeaderRightImage(imageSrc: String, header: String, p1: String, p2: String, p3: String) -> Node {
+  public static func leftTextWithHeaderRightImage(
+    imageSrc: String, header: String, para1: String, para2: String, para3: String
+  ) -> Node {
     .section(
       .header(
         .video(
@@ -82,15 +96,17 @@ public extension Node where Context == HTML.BodyContext {
           .h2("\(header)")
         ),
         .main(
-          .markdown(p1),
-          .markdown(p2),
-          .markdown(p3)
+          .markdown(para1),
+          .markdown(para2),
+          .markdown(para3)
         )
       )
     )
   }
 
-  static func leftImageRightTextWithHeader(imageSrc: String, header: String, p1: String, p2: String, p3: String) -> Node {
+  public static func leftImageRightTextWithHeader(
+    imageSrc: String, header: String, para1: String, para2: String, para3: String
+  ) -> Node {
     .section(
       .header(
         .video(
@@ -105,15 +121,15 @@ public extension Node where Context == HTML.BodyContext {
           .h2("\(header)")
         ),
         .main(
-          .markdown(p1),
-          .markdown(p2),
-          .markdown(p3)
+          .markdown(para1),
+          .markdown(para2),
+          .markdown(para3)
         )
       )
     )
   }
 
-  static func aboutCTA() -> Node {
+  public static func aboutCTA() -> Node {
     .section(
       .header(
         .video(

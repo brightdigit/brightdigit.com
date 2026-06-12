@@ -1,5 +1,6 @@
-@testable import Contribute
 import XCTest
+
+@testable import Contribute
 
 internal final class FileURLDownloaderRemoteFileTests: XCTestCase {
   private let fileManager = FileManagerSpy()
@@ -13,7 +14,7 @@ internal final class FileURLDownloaderRemoteFileTests: XCTestCase {
 
     sut.download(
       from: try makeURL(from: "https://www.google.com"),
-      to: .temporaryDirURL,
+      to: .temporaryDir,
       allowOverwrite: true
     ) { error in
       if error == nil {
@@ -36,7 +37,7 @@ internal final class FileURLDownloaderRemoteFileTests: XCTestCase {
 
     sut.download(
       from: try makeURL(from: "https://www.google.com"),
-      to: .temporaryDirURL,
+      to: .temporaryDir,
       allowOverwrite: true
     ) { error in
       guard error != nil else {

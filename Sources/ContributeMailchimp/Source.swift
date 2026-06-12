@@ -1,8 +1,11 @@
+// swift-format-ignore-file
+// swiftlint:disable all
 import Foundation
 
 #if canImport(FoundationNetworking)
   import FoundationNetworking
 #endif
+@available(*, deprecated, message: "Scheduled for removal; do not use in new code.")
 public extension Newsletter {
   struct Source: Sendable {
     init(campaign: Campaign, html: String, markdown: String) {

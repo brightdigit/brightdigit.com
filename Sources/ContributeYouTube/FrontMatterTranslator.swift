@@ -1,6 +1,9 @@
+// swift-format-ignore-file
+// swiftlint:disable all
 import Contribute
 import Foundation
 
+@available(*, deprecated, message: "Scheduled for removal; do not use in new code.")
 public extension YouTubeContent {
   struct FrontMatterTranslator: Contribute.FrontMatterTranslator {
     public typealias SourceType = Source

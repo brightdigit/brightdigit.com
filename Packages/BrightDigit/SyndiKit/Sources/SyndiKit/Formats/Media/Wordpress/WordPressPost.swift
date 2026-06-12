@@ -1,84 +1,56 @@
-import Foundation
+//
+//  WordPressPost.swift
+//  SyndiKit
+//
+//  Created by Leo Dion.
+//  Copyright © 2026 BrightDigit.
+//
+//  Permission is hereby granted, free of charge, to any person
+//  obtaining a copy of this software and associated documentation
+//  files (the "Software"), to deal in the Software without
+//  restriction, including without limitation the rights to use,
+//  copy, modify, merge, publish, distribute, sublicense, and/or
+//  sell copies of the Software, and to permit persons to whom the
+//  Software is furnished to do so, subject to the following
+//  conditions:
+//
+//  The above copyright notice and this permission notice shall be
+//  included in all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+//  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+//  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+//  NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+//  HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+//  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+//  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+//  OTHER DEALINGS IN THE SOFTWARE.
+//
 
-public enum WordPressElements {}
+#if swift(<5.7)
+  @preconcurrency import Foundation
+#elseif swift(<6.0)
+  import Foundation
+#else
+  public import Foundation
+#endif
 
-public struct WordPressPost {
+/// A struct representing a WordPress post.
+public struct WordPressPost: Sendable {
+  /// The type of the post.
   public typealias PostType = String
+
+  /// The comment status of the post.
   public typealias CommentStatus = String
+
+  /// The ping status of the post.
   public typealias PingStatus = String
+
+  /// The status of the post.
   public typealias Status = String
-  init(
-    name: String,
-    title: String,
-    type: PostType,
-    link: URL,
-    pubDate: Date?,
-    creator: String,
-    body: String,
-    tags: [String],
-    categories: [String],
-    meta: [String: String],
-    status: Status,
-    commentStatus: CommentStatus,
-    pingStatus: PingStatus,
-    parentID: Int?,
-    menuOrder: Int?,
-    ID: Int,
-    isSticky: Bool,
-    postDate: Date,
-    postDateGMT: Date?,
-    modifiedDate: Date,
-    modifiedDateGMT: Date?,
-    attachmentURL: URL?
-  ) {
-    self.name = name
-    self.title = title
-    self.type = type
-    self.link = link
-    self.pubDate = pubDate
-    self.creator = creator
-    self.body = body
-    self.tags = tags
-    self.categories = categories
-    self.meta = meta
-    self.status = status
-    self.commentStatus = commentStatus
-    self.pingStatus = pingStatus
-    self.parentID = parentID
-    self.menuOrder = menuOrder
-    self.ID = ID
-    self.isSticky = isSticky
-    self.postDate = postDate
-    self.postDateGMT = postDateGMT
-    self.modifiedDate = modifiedDate
-    self.modifiedDateGMT = modifiedDateGMT
-    self.attachmentURL = attachmentURL
-  }
 
-  public let name: String
-  public let title: String
-  public let type: PostType
-  public let link: URL
-  public let pubDate: Date?
-  public let creator: String
-  public let body: String
-  public let tags: [String]
-  public let categories: [String]
-  public let meta: [String: String]
-  public let status: Status
-  public let commentStatus: CommentStatus
-  public let pingStatus: PingStatus
-  public let parentID: Int?
-  public let menuOrder: Int?
-  public let ID: Int
-  public let isSticky: Bool
-  public let postDate: Date
-  public let postDateGMT: Date?
-  public let modifiedDate: Date
-  public let modifiedDateGMT: Date?
-  public let attachmentURL: URL?
-
-  enum Field: Equatable {
+  /// An enum representing the fields of a WordPress post.
+  public enum Field: Equatable, Sendable {
     case name
     case title
     case type
@@ -94,117 +66,77 @@ public struct WordPressPost {
     case pingStatus
     case parentID
     case menuOrder
-    case ID
+    case id
     case isSticky
     case postDate
     case postDateGMT
     case modifiedDate
     case modifiedDateGMT
   }
-}
 
-enum WordPressError: Error, Equatable {
-  case missingField(WordPressPost.Field)
-}
+  /// The name of the post.
+  public let name: String
 
-public extension WordPressPost {
-  // swiftlint:disable:next cyclomatic_complexity function_body_length
-  init(item: RSSItem) throws {
-    guard let name = item.wpPostName else {
-      throw WordPressError.missingField(.name)
-    }
-    guard let type = item.wpPostType else {
-      throw WordPressError.missingField(.type)
-    }
-    guard let creator = item.creators.first else {
-      throw WordPressError.missingField(.creator)
-    }
-    guard let body = item.contentEncoded else {
-      throw WordPressError.missingField(.body)
-    }
-    guard let status = item.wpStatus else {
-      throw WordPressError.missingField(.status)
-    }
-    guard let commentStatus = item.wpCommentStatus else {
-      throw WordPressError.missingField(.commentStatus)
-    }
-    guard let pingStatus = item.wpPingStatus else {
-      throw WordPressError.missingField(.pingStatus)
-    }
-    guard let parentID = item.wpPostParent else {
-      throw WordPressError.missingField(.parentID)
-    }
-    guard let menuOrder = item.wpMenuOrder else {
-      throw WordPressError.missingField(.menuOrder)
-    }
-    guard let ID = item.wpPostID else {
-      throw WordPressError.missingField(.ID)
-    }
-    guard let isSticky = item.wpIsSticky else {
-      throw WordPressError.missingField(.isSticky)
-    }
-    guard let postDate = item.wpPostDate else {
-      throw WordPressError.missingField(.postDate)
-    }
-    guard let modifiedDate = item.wpModifiedDate else {
-      throw WordPressError.missingField(.modifiedDate)
-    }
+  /// The title of the post.
+  public let title: String
 
-    let title = item.title
-    let link = item.link
-    let categoryTerms = item.categoryTerms
-    let meta = item.wpPostMeta ?? []
-    let pubDate = item.pubDate
+  /// The type of the post.
+  public let type: PostType
 
-    let categoryDictionary = Dictionary(grouping: categoryTerms, by: {
-      $0.domain
-    })
+  /// The link of the post.
+  public let link: URL
 
-    modifiedDateGMT = item.wpModifiedDateGMT
-    self.name = name.value
-    self.title = title
-    self.type = type.value
-    self.link = link
-    self.pubDate = pubDate
-    self.creator = creator
-    self.body = body.value
-    tags = categoryDictionary["post_tag", default: []].map { $0.value }
-    categories = categoryDictionary["category", default: []].map { $0.value }
-    self.meta = Dictionary(grouping: meta, by: {
-      $0.key.value
-    }).compactMapValues {
-      $0.last?.value.value
-    }
-    self.status = status.value
-    self.commentStatus = commentStatus.value
-    self.pingStatus = pingStatus.value
-    self.parentID = parentID
-    self.menuOrder = menuOrder
-    self.ID = ID
-    self.isSticky = (isSticky != 0)
-    self.postDate = postDate
-    postDateGMT = item.wpPostDateGMT
-    self.modifiedDate = modifiedDate
-    attachmentURL = item.wpAttachmentURL
-  }
-}
+  /// The publication date of the post.
+  public let pubDate: Date?
 
-extension WordPressPost: Hashable {
-  public static func == (lhs: WordPressPost, rhs: WordPressPost) -> Bool {
-    lhs.ID == rhs.ID
-  }
+  /// The creator of the post.
+  public let creator: String
 
-  public func hash(into hasher: inout Hasher) {
-    hasher.combine(ID)
-  }
-}
+  /// The body of the post.
+  public let body: String
 
-public extension Entryable {
-  var wpPost: WordPressPost? {
-    guard let rssItem = self as? RSSItem else {
-      return nil
-    }
+  /// The tags of the post.
+  public let tags: [String]
 
-    return try? WordPressPost(item: rssItem)
-  }
+  /// The categories of the post.
+  public let categories: [String]
+
+  /// The meta data of the post.
+  public let meta: [String: String]
+
+  /// The status of the post.
+  public let status: Status
+
+  /// The comment status of the post.
+  public let commentStatus: CommentStatus
+
+  /// The ping status of the post.
+  public let pingStatus: PingStatus
+
+  /// The parent ID of the post.
+  public let parentID: Int?
+
+  /// The menu order of the post.
+  public let menuOrder: Int?
+
+  /// The ID of the post.
+  public let id: Int
+
+  /// A boolean indicating if the post is sticky.
+  public let isSticky: Bool
+
+  /// The post date of the post.
+  public let postDate: Date
+
+  /// The post date in GMT of the post.
+  public let postDateGMT: Date?
+
+  /// The modified date of the post.
+  public let modifiedDate: Date
+
+  /// The modified date in GMT of the post.
+  public let modifiedDateGMT: Date?
+
+  /// The attachment URL of the post.
+  public let attachmentURL: URL?
 }

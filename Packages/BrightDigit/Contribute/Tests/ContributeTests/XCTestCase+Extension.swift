@@ -12,7 +12,8 @@ extension XCTestCase {
       print(actualError)
       guard
         let actualError = actualError as? TestError,
-        actualError == expectedError else {
+        actualError == expectedError
+      else {
         XCTFail("Expected error of type \(expectedError)")
         return
       }
@@ -34,7 +35,7 @@ extension XCTestCase {
     runFileURLDownloader(
       with: fileManager,
       and: networkManager,
-      fromURL: .temporaryDirURL,
+      fromURL: .temporaryDir,
       allowOverwrite: allowOverwrite,
       completion
     )
@@ -52,7 +53,7 @@ extension XCTestCase {
       fileManager: fileManager
     ).download(
       from: fromURL,
-      to: .temporaryDirURL,
+      to: .temporaryDir,
       allowOverwrite: allowOverwrite,
       completion
     )

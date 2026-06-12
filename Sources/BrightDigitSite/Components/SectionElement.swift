@@ -1,21 +1,21 @@
 import Plot
 
-struct SectionElement: Component {
-  let content: ContentProvider
-  init(
+internal struct SectionElement: Component {
+  internal let content: ContentProvider
+  internal var body: Component {
+    Element(name: "section", content: content)
+  }
+
+  internal init(
     @ComponentBuilder content: @escaping ContentProvider
   ) {
     self.content = content
   }
-
-  var body: Component {
-    Element(name: "section", content: content)
-  }
 }
 
-
 extension SectionElement {
-  init(forProduct product: ProductItem) {
+  // swiftlint:disable:next function_body_length
+  internal init(forProduct product: ProductItem) {
     self.init {
       Header {
         Link(url: product.productURL) {
@@ -54,7 +54,7 @@ extension SectionElement {
             }
           }
         }.class("links")
-        
+
         List(product.platforms) { platform in
           ListItem(platform)
         }.class("platforms")
@@ -65,8 +65,8 @@ extension SectionElement {
           ListItem {
             Image(screenshotURL)
           }
-          
         }.class("screenshots \(product.style.rawValue)")
+        // swiftlint:disable:next line_length
         //          List(product.pressCoverage, content: ListItem.init(forPressCoverage:)).class("press-coverage")
       }
       Footer {

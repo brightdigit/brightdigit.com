@@ -1,3 +1,5 @@
+// swift-format-ignore-file
+// swiftlint:disable all
 import Foundation
 import Prch
 import SwiftTube
@@ -8,6 +10,7 @@ import SwiftTube
 
 public typealias YouTubeVideo = SwiftTube.Video
 
+@available(*, deprecated, message: "Scheduled for removal; do not use in new code.")
 internal extension Client where APIType == YouTube.API {
   typealias AccumulatingPlaylist = AccumulatingResult<PlaylistItem>
 

@@ -1,17 +1,8 @@
 import Foundation
 
-protocol SocialShare: Sendable {
-  func shareURL<PostableType: Postable>(for item: PostItem<PostableType>) -> URL
+internal protocol SocialShare: Sendable {
   var actionText: String { get }
   var nameText: String { get }
   var flaticonName: String { get }
-}
-
-enum SocialShares {
-  static let shares: [SocialShare] = [
-    TwitterSocialShare(),
-    LinkedInSocialShare(),
-    BufferSocialShare(),
-    EmailSocialShare()
-  ]
+  func shareURL<PostableType: Postable>(for item: PostItem<PostableType>) -> URL
 }

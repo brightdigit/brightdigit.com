@@ -1,42 +1,53 @@
-import Foundation
 import SyndiKit
-import XCTest
+import Testing
 
-final class RSSGUIDTests: XCTestCase {
-  func testGUIDURL() {
+@testable import SyndiKitTestSupport
+
+#if swift(<6.0)
+  import Foundation
+#else
+  internal import Foundation
+#endif
+
+@Suite("RSS GUID Tests")
+internal struct RSSGUIDTests {
+  @Test("Entry ID parses URL format")
+  internal func guidURL() {
     let urlString = "https://developer.apple.com/news/?id=jxky8h89"
 
     let urlGUID = EntryID(string: urlString)
 
-    guard case let .url(url) = urlGUID else {
-      XCTFail()
+    guard case .url(let url) = urlGUID else {
+      Issue.record("Expected .url case")
       return
     }
-    XCTAssertEqual(url, URL(string: urlString))
+    #expect(url == URL(string: urlString))
   }
 
-  func testGUIDUUID() {
+  @Test("Entry ID parses UUID format")
+  internal func guidUUID() {
     let expectedUUID = UUID()
 
     let expectedUUIDString = expectedUUID.uuidString
     let uuidGUID = EntryID(string: expectedUUIDString)
 
-    guard case let .uuid(actualUUID) = uuidGUID else {
-      XCTFail()
+    guard case .uuid(let actualUUID) = uuidGUID else {
+      Issue.record("Expected .uuid case")
       return
     }
-    XCTAssertEqual(actualUUID, expectedUUID)
+    #expect(actualUUID == expectedUUID)
   }
 
-  func testGUIDYouTube() {
+  @Test("Entry ID parses YouTube path format")
+  internal func guidYouTube() {
     let expectedPath = ["yt", "video", "3hccNoPE59U"]
 
     let pathGUID = EntryID(string: expectedPath.joined(separator: ":"))
 
-    guard case let .path(actualPath, ":") = pathGUID else {
-      XCTFail()
+    guard case .path(let actualPath, ":") = pathGUID else {
+      Issue.record("Expected .path case")
       return
     }
-    XCTAssertEqual(actualPath, expectedPath)
+    #expect(actualPath == expectedPath)
   }
 }

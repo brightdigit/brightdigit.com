@@ -1,7 +1,10 @@
+// swift-format-ignore-file
+// swiftlint:disable all
 import Foundation
 
 public typealias VideoDurations = [String: YouTubeContent.Source]
 
+@available(*, deprecated, message: "Scheduled for removal; do not use in new code.")
 public extension YouTubeContent {
   struct Source: Equatable, Sendable {
     public let title: String

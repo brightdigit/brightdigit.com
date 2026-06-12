@@ -3,10 +3,10 @@
     {
       "identity" : "xmlcoder",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/brightdigit/XMLCoder",
+      "location" : "https://github.com/CoreOffice/XMLCoder",
       "state" : {
-        "revision" : "8ba70f27664ea8c8b7f38fb4c6f2fd4c129eb9c5",
-        "version" : "1.0.0-alpha.1"
+        "revision" : "42f62383dbcd074440cb1f6a750b9c02df9e7325",
+        "version" : "0.18.2"
       }
     },
     {
@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/jpsim/Yams.git",
       "state" : {
-        "revision" : "9ff1cc9327586db4e0c8f46f064b6a82ec1566fa",
-        "version" : "4.0.6"
+        "revision" : "a27b21e0c81c5bf42049b897a62aaf387e80f279",
+        "version" : "6.2.2"
       }
     }
   ],

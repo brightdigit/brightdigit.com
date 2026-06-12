@@ -1,6 +1,9 @@
+// swift-format-ignore-file
+// swiftlint:disable all
 import Foundation
 import Prch
 
+@available(*, deprecated, message: "Scheduled for removal; do not use in new code.")
 public extension Result {
   @inlinable func tryMap<NewSuccess>(_ transform: (Success) throws -> NewSuccess) -> Result<NewSuccess, Failure> where Failure == Error {
     flatMap { success in

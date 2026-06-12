@@ -1,4 +1,39 @@
-import Foundation
+//
+//  Feedable.swift
+//  SyndiKit
+//
+//  Created by Leo Dion.
+//  Copyright © 2026 BrightDigit.
+//
+//  Permission is hereby granted, free of charge, to any person
+//  obtaining a copy of this software and associated documentation
+//  files (the "Software"), to deal in the Software without
+//  restriction, including without limitation the rights to use,
+//  copy, modify, merge, publish, distribute, sublicense, and/or
+//  sell copies of the Software, and to permit persons to whom the
+//  Software is furnished to do so, subject to the following
+//  conditions:
+//
+//  The above copyright notice and this permission notice shall be
+//  included in all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+//  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+//  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+//  NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+//  HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+//  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+//  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+//  OTHER DEALINGS IN THE SOFTWARE.
+//
+
+#if swift(<5.7)
+  @preconcurrency import Foundation
+#elseif swift(<6.0)
+  import Foundation
+#else
+  public import Foundation
+#endif
 
 /// Basic abstract Feed
 /// ## Topics
@@ -9,7 +44,7 @@ import Foundation
 /// - ``siteURL``
 /// - ``summary``
 /// - ``updated``
-/// - ``author``
+/// - ``authors``
 /// - ``copyright``
 /// - ``image``
 /// - ``children``
@@ -18,7 +53,7 @@ import Foundation
 ///
 /// - ``youtubeChannelID``
 /// - ``syndication``
-public protocol Feedable {
+public protocol Feedable: Sendable {
   /// The name of the channel.
   var title: String { get }
   /// The URL to the website corresponding to the channel.
@@ -39,7 +74,7 @@ public protocol Feedable {
   var image: URL? { get }
 
   /// Items or stories attached to the feed.
-  var children: [Entryable] { get }
+  var children: [any Entryable] { get }
 
   /// For YouTube channels, this will be the youtube channel ID.
   var youtubeChannelID: String? { get }

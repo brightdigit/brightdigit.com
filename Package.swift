@@ -34,13 +34,13 @@ let package = Package(
     .package(path: "Packages/BrightDigit/SwiftTube"),
     .package(path: "Packages/BrightDigit/Spinetail"),
     .package(path: "Packages/BrightDigit/SyndiKit"),
-    //.package(url: "https://github.com/BrightDigit/Options.git", from: "0.2.0"),
+    // .package(url: "https://github.com/BrightDigit/Options.git", from: "0.2.0"),
     .package(path: "Packages/BrightDigit/NPMPublishPlugin"),
     .package(path: "Packages/BrightDigit/Contribute"),
     .package(path: "Packages/BrightDigit/ContributeWordPress"),
     .package(path: "Packages/BrightDigit/TransistorPublishPlugin"),
 
-    .package(url: "https://github.com/jpsim/Yams.git", from: "4.0.4"),
+    .package(url: "https://github.com/jpsim/Yams.git", from: "6.0.0"),
     .package(url: "https://github.com/apple/swift-argument-parser", from: "1.3.0"),
     .package(url: "https://github.com/tid-kijyun/Kanna.git", from: "5.2.2"),
     .package(url: "https://github.com/eneko/MarkdownGenerator.git", from: "0.4.0")
@@ -70,7 +70,7 @@ let package = Package(
         "SplashPublishPlugin",
         "YoutubePublishPlugin",
         "ReadingTimePublishPlugin",
-        //"Options",
+        // "Options",
         "PublishType",
         "TransistorPublishPlugin",
         "NPMPublishPlugin"

@@ -1,9 +1,13 @@
-@testable import SyndiKit
-import XCTest
+import Testing
 import XMLCoder
 
-public final class BlogTests: XCTestCase {
-  func testBlogs() throws {
+@testable import SyndiKit
+@testable import SyndiKitTestSupport
+
+@Suite("Blog Tests")
+internal struct BlogTests {
+  @Test("Site category count validation")
+  internal func blogs() throws {
     let blogs = Content.blogs
     let sites = SiteCollectionDirectory(blogs: blogs)
 
@@ -14,9 +18,8 @@ public final class BlogTests: XCTestCase {
           withCategory: category.slug
         )
         .count
-        XCTAssertEqual(
-          category.sites.count,
-          expectedCount,
+        #expect(
+          category.sites.count == expectedCount,
           "mismatch count for \(languageContent.language):\(category.slug)"
         )
       }

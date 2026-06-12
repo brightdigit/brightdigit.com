@@ -14,18 +14,19 @@ public protocol PageContent {
   var canonicalURL: URL? { get }
 }
 
-public extension PageContent {
-  var mainElement: Node<HTML.BodyContext> {
+extension PageContent {
+  public var mainElement: Node<HTML.BodyContext> {
     .main(
       .forEach(main) { $0 }
     )
   }
 
-  var bodyClassValue: String? {
-    let value = bodyClasses
+  public var bodyClassValue: String? {
+    let value =
+      bodyClasses
       .joined(separator: " ")
       .trimmingCharacters(in: .whitespacesAndNewlines)
-    guard value.count > 0 else {
+    guard !value.isEmpty else {
       return nil
     }
 

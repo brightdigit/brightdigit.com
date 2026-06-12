@@ -1,7 +1,10 @@
+// swift-format-ignore-file
+// swiftlint:disable all
 import Kanna
 import MarkdownGenerator
 
 #warning("Should we move it to Contribute package?")
+@available(*, deprecated, message: "Scheduled for removal; do not use in new code.")
 public struct KannaMarkdownGenerator: MarkdownGenerator {
   // swiftlint:disable:next cyclomatic_complexity
   func markdown(from element: Kanna.XMLElement) throws -> MarkdownConvertible? {

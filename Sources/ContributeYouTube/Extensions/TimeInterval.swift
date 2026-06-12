@@ -1,5 +1,8 @@
+// swift-format-ignore-file
+// swiftlint:disable all
 import Foundation
 
+@available(*, deprecated, message: "Scheduled for removal; do not use in new code.")
 extension TimeInterval {
   init(iso6801 duration: String) {
     var duration = duration

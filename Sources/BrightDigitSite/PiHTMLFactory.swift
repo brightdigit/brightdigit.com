@@ -2,22 +2,24 @@ import Foundation
 import Plot
 import Publish
 
-struct PiHTMLFactory: HTMLFactory {
-  static let yearFormatter: DateFormatter = {
+internal struct PiHTMLFactory: HTMLFactory {
+  internal typealias Site = BrightDigitSite
+
+  internal static let yearFormatter: DateFormatter = {
     let formatter = DateFormatter()
     formatter.dateFormat = "yyyy"
     return formatter
   }()
 
-  static let itemFormatter: DateFormatter = {
+  internal static let itemFormatter: DateFormatter = {
     let formatter = DateFormatter()
     formatter.dateFormat = "MMM d, yyyy"
     return formatter
   }()
 
-  static let formatTimeIntervalSufficies = ["h", "m"]
+  internal static let formatTimeIntervalSufficies = ["h", "m"]
 
-  static func formatTimeInterval(_ timeInterval: TimeInterval) -> String {
+  internal static func formatTimeInterval(_ timeInterval: TimeInterval) -> String {
     let hoursDouble = floor(timeInterval / 60.0 / 60.0)
     let minutesDouble = (timeInterval - (hoursDouble * 60.0 * 60.0)) / 60.0
     return [hoursDouble, minutesDouble]
@@ -27,13 +29,14 @@ struct PiHTMLFactory: HTMLFactory {
         guard value > 0 else {
           return nil
         }
-        return ["\(value)", formatTimeIntervalSufficies[index]].joined(separator: "")
-      }.joined(separator: " ")
+        return ["\(value)", formatTimeIntervalSufficies[index]].joined()
+      }
+      .joined(separator: " ")
   }
 
   // MARK: - makeIndexHTML
 
-  func makeIndexHTML(
+  internal func makeIndexHTML(
     for index: Index,
     context: PublishingContext<BrightDigitSite>
   ) throws -> HTML {
@@ -51,7 +54,7 @@ struct PiHTMLFactory: HTMLFactory {
 
   // MARK: - makeSectionHTML
 
-  func makeSectionHTML(
+  internal func makeSectionHTML(
     for section: Section<BrightDigitSite>,
     context: PublishingContext<BrightDigitSite>
   ) throws -> HTML {
@@ -72,7 +75,9 @@ struct PiHTMLFactory: HTMLFactory {
 
   // MARK: - makeItemHTML
 
-  func makeItemHTML(for item: Item<BrightDigitSite>, context: PublishingContext<BrightDigitSite>) throws -> HTML {
+  internal func makeItemHTML(
+    for item: Item<BrightDigitSite>, context: PublishingContext<BrightDigitSite>
+  ) throws -> HTML {
     let content = try Pages.content(forItem: item, withContext: context)
     return HTML(
       .lang(.usEnglish),
@@ -89,7 +94,10 @@ struct PiHTMLFactory: HTMLFactory {
 
   // MARK: - makePageHTML
 
-  func makePageHTML(for page: Page, context: PublishingContext<BrightDigitSite>) throws -> HTML {
+  internal func makePageHTML(for page: Page, context: PublishingContext<BrightDigitSite>)
+    throws
+    -> HTML
+  {
     let content = try Pages.content(basedOnPage: page, withContext: context)
     return HTML(
       .lang(.usEnglish),
@@ -106,23 +114,27 @@ struct PiHTMLFactory: HTMLFactory {
 
   // MARK: - makeTagListHTML
 
-  func makeTagListHTML(for _: TagListPage, context _: PublishingContext<BrightDigitSite>) throws -> HTML? {
+  internal func makeTagListHTML(
+    for _: TagListPage, context _: PublishingContext<BrightDigitSite>
+  )
+    throws -> HTML?
+  {
     nil
   }
 
   // MARK: - makeTagDetailsHTML
 
-  func makeTagDetailsHTML(for _: TagDetailsPage, context _: PublishingContext<BrightDigitSite>) throws -> HTML? {
+  internal func makeTagDetailsHTML(
+    for _: TagDetailsPage, context _: PublishingContext<BrightDigitSite>
+  ) throws -> HTML? {
     nil
   }
-
-  typealias Site = BrightDigitSite
 }
 
 // MARK: - Theme
 
 extension Theme where Site == BrightDigitSite {
-  static var company: Self {
+  internal static var company: Self {
     Theme(htmlFactory: PiHTMLFactory())
   }
 }

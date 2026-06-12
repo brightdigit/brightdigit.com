@@ -1,0 +1,54 @@
+import Foundation
+import Publish
+
+extension String {
+  private static let escUnicodeRegex: NSRegularExpression = {
+    do {
+      return try NSRegularExpression(
+        pattern: "\\\\U([0-9a-f]{8})",
+        options: [.caseInsensitive]
+      )
+    } catch {
+      preconditionFailure("Invalid escUnicodeRegex pattern: \(error)")
+    }
+  }()
+
+  public func fixEmojiis() -> String {
+    let allMatches = Self.escUnicodeRegex.matches(
+      in: self,
+      range: .init(location: 0, length: count)
+    )
+    let matches = allMatches.reversed()
+    var result = self
+    for match in matches {
+      guard let range = Range(match.range, in: result) else {
+        continue
+      }
+      guard let codeRange = Range(match.range(at: 1), in: result) else {
+        continue
+      }
+      let codeString = self[codeRange]
+      guard let value = Int(codeString, radix: 16) else {
+        continue
+      }
+      guard let scalar = UnicodeScalar(value) else {
+        continue
+      }
+      result.replaceSubrange(range, with: String(scalar))
+    }
+    return result
+  }
+}
+
+extension PublishingStep {
+  public static var yamlStringFix: Self {
+    .step(named: "Dequoting YAML Metadata") { context in
+      context.mutateAllSections { section in
+        section.mutateItems { item in
+          item.title = item.title.fixEmojiis().dequote()
+          item.description = item.description.fixEmojiis().dequote()
+        }
+      }
+    }
+  }
+}

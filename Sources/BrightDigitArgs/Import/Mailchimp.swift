@@ -1,3 +1,5 @@
+// swift-format-ignore-file
+// swiftlint:disable all
 //
 //  File.swift
 //
@@ -15,6 +17,7 @@ import Tagscriber
   import FoundationNetworking
 #endif
 
+@available(*, deprecated, message: "Scheduled for removal; do not use in new code.")
 public extension BrightDigitSiteCommand.ImportCommand {
   struct Mailchimp: ParsableCommand {
     public init() {}

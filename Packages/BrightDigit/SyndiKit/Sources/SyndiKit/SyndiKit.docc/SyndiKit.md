@@ -6,13 +6,13 @@ Swift Package for Decoding RSS Feeds.
 
 ![SyndiKit Logo](logo.png)
 
-Built on top of [XMLCoder](https://github.com/CoreOffice/XMLCoder) and , **SyndiKit** provides models and utilities for decoding RSS feeds of various formats and extensions.
+Built on top of [XMLCoder](https://github.com/CoreOffice/XMLCoder), **SyndiKit** provides models and utilities for decoding RSS feeds of various formats and extensions.
 
 ### Features
 
 * Import of RSS 2.0, Atom, and JSONFeed formats
 * Extensions for various formats such as:
-  * iTunes-compatabile podcasts
+  * iTunes-compatible podcasts
   * YouTube channels
   * WordPress export data
 * User-friendly errors 
@@ -22,18 +22,18 @@ Built on top of [XMLCoder](https://github.com/CoreOffice/XMLCoder) and , **Syndi
 
 **Apple Platforms**
 
-- Xcode 13.3 or later
-- Swift 5.5.2 or later
-- iOS 15.4 / watchOS 8.5 / tvOS 15.4 / macOS 12.3 or later deployment targets
+- Xcode 15.3 or later
+- Swift 5.10 or later
+- iOS 13 / watchOS 6 / tvOS 13 / macOS 10.15 or later deployment targets
 
 **Linux**
 
-- Ubuntu 18.04 or later
-- Swift 5.5.2 or later
+- Ubuntu 20.04 or later
+- Swift 5.10 or later
 
 ### Installation
 
-Swift Package Manager is Apple's decentralized dependency manager to integrate libraries to your Swift projects. It is now fully integrated with Xcode 11.
+Swift Package Manager is Apple's decentralized dependency manager to integrate libraries to your Swift projects. It is now fully integrated with Xcode.
 
 To integrate **SyndiKit** into your project using SPM, specify it in your Package.swift file:
 
@@ -41,7 +41,7 @@ To integrate **SyndiKit** into your project using SPM, specify it in your Packag
 let package = Package(
   ...
   dependencies: [
-    .package(url: "https://github.com/brightdigit/SyndiKit", from: "0.3.0")
+    .package(url: "https://github.com/brightdigit/SyndiKit", from: "1.0.0")
   ],
   targets: [
       .target(
@@ -64,7 +64,7 @@ You can get started decoding your feed by creating your first ``SynDecoder``. On
 
 ```swift
 let decoder = SynDecoder()
-let empowerAppsData = Data(contentsOf: "empowerapps-show.xml")!
+let empowerAppsData = try Data(contentsOf: URL(fileURLWithPath: "empowerapps-show.xml"))
 let empowerAppsRSSFeed = try decoder.decode(empowerAppsData)
 ```
 
@@ -76,12 +76,12 @@ Rather than working directly with the various formats, **SyndiKit** abstracts ma
 let decoder = SynDecoder()
 
 // decoding a RSS 2.0 feed
-let empowerAppsData = Data(contentsOf: "empowerapps-show.xml")!
+let empowerAppsData = try Data(contentsOf: URL(fileURLWithPath: "empowerapps-show.xml"))
 let empowerAppsRSSFeed = try decoder.decode(empowerAppsData)
 print(empowerAppsRSSFeed.title) // Prints "Empower Apps"
 
 // decoding a Atom feed from YouTube
-let kiloLocoData = Data(contentsOf: "kilo.youtube.xml")!
+let kiloLocoData = try Data(contentsOf: URL(fileURLWithPath: "kilo.youtube.xml"))
 let kiloLocoAtomFeed = try decoder.decode(kiloLocoData)
 print(kiloLocoAtomFeed.title) // Prints "Kilo Loco"
 ```
@@ -91,8 +91,8 @@ For a mapping of properties:
 Feedable | RSS 2.0 ``RSSFeed/channel`` | Atom ``AtomFeed`` | JSONFeed ``JSONFeed`` 
 --- | --- | --- | ---
 ``Feedable/title`` | ``RSSChannel/title`` | ``AtomFeed/title`` | ``JSONFeed/title``
-``Feedable/siteURL`` | ``RSSChannel/link`` | ``AtomFeed/siteURL``| ``JSONFeed/title``
-``Feedable/summary`` | ``RSSChannel/description`` | ``AtomFeed/summary`` | ``JSONFeed/homePageUrl``
+``Feedable/siteURL`` | ``RSSChannel/link`` | ``AtomFeed/siteURL``| ``JSONFeed/homePageUrl``
+``Feedable/summary`` | ``RSSChannel/description`` | ``AtomFeed/summary`` | ``JSONFeed/description``
 ``Feedable/updated`` | ``RSSChannel/lastBuildDate`` | ``AtomFeed/pubDate`` or ``AtomFeed/published`` | `nil`
 ``Feedable/authors`` | ``RSSChannel/author`` | ``AtomFeed/authors`` | ``JSONFeed/author``
 ``Feedable/copyright`` | ``RSSChannel/copyright`` | `nil` | `nil`
@@ -132,7 +132,7 @@ switch empowerAppsRSSFeed.children.last?.media {
 
 let kiloLocoAtomFeed = try decoder.decode(kiloLocoData)
 switch kiloLocoAtomFeed.children.last?.media {
-  case .video(.youtube(let youtube):
+  case .video(.youtube(let youtube)):
     print(youtube.videoID) // print "SBJFl-3wqx8"
     print(youtube.channelID) // print "UCv75sKQFFIenWHrprnrR9aA"
   default:
@@ -156,7 +156,7 @@ switch kiloLocoAtomFeed.children.last?.media {
 
 ### License 
 
-This code is distributed under the MIT license. See the [LICENSE](https://github.com/brightdigit/SyndiKit/LICENSE) file for more info.
+This code is distributed under the MIT license. See the [LICENSE](https://github.com/brightdigit/SyndiKit/blob/main/LICENSE) file for more info.
 
 ## Topics
 
@@ -182,13 +182,13 @@ Abstract media types which can be pulled for the various ``Entryable`` objects.
 - ``MediaContent``
 - ``Video``
 
-
 ### XML Primitive Types
 
 In many cases, types are encoded in non-matching types but are intended to strong-typed for various formats. These primitives are setup to make XML decoding easier while retaining their intended strong-type.
 
 - ``CData``
 - ``XMLStringInt``
+- ``ListString``
 
 ### Syndication Updates
 
@@ -206,6 +206,7 @@ Specific properties related to the Atom format.
 - ``AtomEntry``
 - ``AtomCategory``
 - ``AtomMedia``
+- ``AtomMediaGroup``
 - ``Link``
 
 ### JSON Feed Format
@@ -214,6 +215,11 @@ Specific properties related to the JSON Feed format.
 
 - ``JSONFeed``
 - ``JSONItem``
+
+### OPML Feed Format
+
+- ``OPML``
+- ``OutlineType``
 
 ### RSS Feed Format
 
@@ -226,12 +232,29 @@ Specific properties related to the RSS Feed format.
 - ``RSSItemCategory``
 - ``Enclosure``
 
+### Podcast Extensions
+
+Specific properties related to [podcasts](https://github.com/Podcastindex-org/podcast-namespace).
+
+- ``PodcastPerson``
+- ``PodcastSeason``
+- ``PodcastChapters``
+- ``PodcastLocation``
+- ``PodcastSoundbite``
+- ``PodcastTranscript``
+- ``PodcastFunding``
+- ``PodcastLocked``
+
 ### WordPress Extensions
 
 Specific extension properties provided by WordPress.
 
 - ``WordPressElements``
 - ``WordPressPost``
+- ``WPTag``
+- ``WPCategory``
+- ``WPPostMeta``
+- ``WordPressError``
 
 ### YouTube Extensions
 

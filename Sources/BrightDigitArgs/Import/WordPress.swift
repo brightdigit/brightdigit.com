@@ -6,17 +6,21 @@ import Foundation
   import FoundationNetworking
 #endif
 
-public extension BrightDigitSiteCommand.ImportCommand {
-  struct WordPress: ParsableCommand {
+extension BrightDigitSiteCommand.ImportCommand {
+  public struct WordPress: ParsableCommand {
     public static let configuration = CommandConfiguration(
       commandName: "wordpress",
       abstract: "Command for import WordPress export file into the BrightDigit site."
     )
 
-    @Argument(help: "Directory which contains a single or multiple imports.", completion: CompletionKind.directory)
+    @Argument(
+      help: "Directory which contains a single or multiple imports.",
+      completion: CompletionKind.directory)
     public var wordpressExportsDirectory: String
 
-    @Option(help: "Directory which contains images, pdf files, and other assets.", completion: CompletionKind.directory)
+    @Option(
+      help: "Directory which contains images, pdf files, and other assets.",
+      completion: CompletionKind.directory)
     public var importAssetsDirectory: String?
 
     @Option(help: "Path to Save Images Relative to Resources.")
@@ -39,7 +43,7 @@ public extension BrightDigitSiteCommand.ImportCommand {
         RegexKeyPostFilter(pattern: "post", keyPath: \.type),
         RegexKeyPostFilter(pattern: "^empowerapps-show", keyPath: \.name, not: true),
         RegexKeyPostFilter(pattern: "^$", keyPath: \.name, not: true),
-        RegexKeyPostFilter(pattern: "publish", keyPath: \.status)
+        RegexKeyPostFilter(pattern: "publish", keyPath: \.status),
       ])
 
       let settings = Settings(
@@ -49,7 +53,7 @@ public extension BrightDigitSiteCommand.ImportCommand {
         overwriteAssets: self.overwriteAssets,
         assetRelativePath: self.assetRelativePath
       )
-      
+
       try processor.begin(withSettings: settings)
     }
   }

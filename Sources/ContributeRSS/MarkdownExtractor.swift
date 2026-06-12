@@ -1,8 +1,8 @@
-import Foundation
 import Contribute
+import Foundation
 
-public extension RSSContent {
-  struct MarkdownExtractor: Contribute.MarkdownExtractor {
+extension RSSContent {
+  public struct MarkdownExtractor: Contribute.MarkdownExtractor {
     public typealias SourceType = Source
 
     public init() {}

@@ -3,28 +3,34 @@ import Plot
 import Publish
 import PublishType
 
-struct ContactBuilder: PageBuilder {
-  let description: String = "Ready to talk about your app and if we can help you build it? Contact us now!"
+internal struct ContactBuilder: PageBuilder {
+  internal let description: String =
+    "Ready to talk about your app and if we can help you build it? Contact us now!"
 
-  var imagePath: Path = "/media/contact-us.png"
+  internal var imagePath: Path = "/media/contact-us.png"
 
-  func main(forLocation _: Page, withContext _: PublishingContext<BrightDigitSite>) -> [Node<HTML.BodyContext>] {
+  internal var bodyClasses: [String] { [] }
+
+  internal func main(
+    forLocation _: Page, withContext _: PublishingContext<BrightDigitSite>
+  )
+    -> [Node<HTML.BodyContext>]
+  {
     [
       .header(
         .h1("Contact Us")
       ),
       .makeContactUsFormWithPicture(),
-      .makeSocialMediaSection()
+      .makeSocialMediaSection(),
     ]
   }
-
-  var bodyClasses: [String] { [] }
 }
 
-public extension Node where Context == HTML.BodyContext {
+extension Node where Context == HTML.BodyContext {
   // MARK: - makeContactUsFormWithPicture
 
-  static func makeContactUsFormWithPicture() -> Node {
+  // swiftlint:disable:next function_body_length
+  public static func makeContactUsFormWithPicture() -> Node {
     .section(
       .id("contact-us-form"),
       .main(
@@ -33,7 +39,10 @@ public extension Node where Context == HTML.BodyContext {
         ),
         .main(
           .div(
-            .p("Want to chat about how we can help you and your company? Let us know how we help."),
+            .p(
+              // swiftlint:disable:next line_length
+              "Want to chat about how we can help you and your company? Let us know how we help."
+            ),
             .form(
               .attribute(named: "name", value: "contact"),
               .method(.post),
@@ -50,7 +59,9 @@ public extension Node where Context == HTML.BodyContext {
               ),
               .div(
                 .div(
-                  .input(.type(.text), .name("email"), .placeholder("leo@brightdigit.com")),
+                  .input(
+                    .type(.text), .name("email"), .placeholder("leo@brightdigit.com")
+                  ),
                   .label("Email")
                 )
               ),
@@ -73,7 +84,7 @@ public extension Node where Context == HTML.BodyContext {
 
   // MARK: - makeSocialMediaSection
 
-  static func makeSocialMediaSection() -> Node {
+  public static func makeSocialMediaSection() -> Node {
     .section(
       .id("social-media"),
       .main(
@@ -102,8 +113,10 @@ public extension Node where Context == HTML.BodyContext {
 
 // MARK: - makeIconWithText
 
-public extension Node where Context == HTML.ListContext {
-  static func makeIconWithText(_ text: String, href: String, flatIcon: String) -> Node {
+extension Node where Context == HTML.ListContext {
+  public static func makeIconWithText(_ text: String, href: String, flatIcon: String)
+    -> Node
+  {
     .li(
       .a(
         .href(href),

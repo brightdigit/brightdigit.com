@@ -1,11 +1,36 @@
 import ArgumentParser
-import BrightDigitSite
 import BrightDigitPodcast
+import BrightDigitSite
 import Foundation
 
-public extension BrightDigitSiteCommand {
-  struct URLCommand: ParsableCommand {
-    public init() {}
+extension BrightDigitSiteCommand {
+  public struct URLCommand: ParsableCommand {
+    internal struct Podcast: ParsableCommand {
+      @Option(help: "Base URL")
+      internal var baseURL: URL = BrightDigitSite.SiteInfo.url
+
+      @Option(help: "Base URL Path")
+      internal var basePath: String = BrightDigitSite.SectionID.episodes.rawValue
+
+      @Option(help: "Episode Number")
+      internal var episodeNumber: Int
+
+      @Option(help: "Episode Title")
+      internal var episodeTitle: String
+
+      internal init() {}
+
+      internal func run() throws {
+        let fileName = BrightDigitPodcast.fileNameWithoutExtensionForEpisode(
+          withNumber: episodeNumber,
+          title: episodeTitle
+        )
+        let url = baseURL.appendingPathComponent(basePath).appendingPathComponent(
+          fileName
+        )
+        print(url)
+      }
+    }
 
     public static let configuration = CommandConfiguration(
       commandName: "url",
@@ -13,26 +38,6 @@ public extension BrightDigitSiteCommand {
       subcommands: [Podcast.self]
     )
 
-    struct Podcast: ParsableCommand {
-      public init() {}
-
-      @Option(help: "Base URL")
-      public var baseURL: URL = BrightDigitSite.SiteInfo.url
-
-      @Option(help: "Base URL Path")
-      public var basePath: String = BrightDigitSite.SectionID.episodes.rawValue
-
-      @Option(help: "Episode Number")
-      public var episodeNumber: Int
-
-      @Option(help: "Episode Title")
-      public var episodeTitle: String
-
-      public func run() throws {
-        let fileName = BrightDigitPodcast.fileNameWithoutExtensionForEpisode(withNumber: episodeNumber, title: episodeTitle)
-        let url = baseURL.appendingPathComponent(basePath).appendingPathComponent(fileName)
-        print(url)
-      }
-    }
+    public init() {}
   }
 }

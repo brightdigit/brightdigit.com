@@ -1,20 +1,20 @@
-import Foundation
 import Contribute
+import Foundation
 
-public extension BrightDigitPodcast {
-  struct FrontMatterTranslator: Contribute.FrontMatterTranslator {
+extension BrightDigitPodcast {
+  public struct FrontMatterTranslator: Contribute.FrontMatterTranslator {
     public typealias SourceType = Source
     public typealias FrontMatterType = FrontMatter
 
     public struct FrontMatter: Codable {
-      let title: String
-      let date: String
-      let description: String
-      let featuredImage: URL
-      let youtubeID: String
-      let audioDuration: Int
-      let videoDuration: Int
-      let podcastID: String
+      internal let title: String
+      internal let date: String
+      internal let description: String
+      internal let featuredImage: URL
+      internal let youtubeID: String
+      internal let audioDuration: Int
+      internal let videoDuration: Int
+      internal let podcastID: String
 
       public init(episode: SourceType) {
         title = episode.title

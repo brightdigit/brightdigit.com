@@ -7,8 +7,8 @@ public protocol MissingField: CustomStringConvertible, Sendable {
   var fieldName: String { get }
 }
 
-public extension MissingField {
-  var description: String {
+extension MissingField {
+  public var description: String {
     [Self.typeName, fieldName].joined(separator: ".")
   }
 }

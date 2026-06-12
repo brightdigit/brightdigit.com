@@ -1,7 +1,7 @@
-import Foundation
-import SyndiKit
 import Contribute
 import ContributeRSS
+import Foundation
+import SyndiKit
 
 public struct BrightDigitPodcast: ContentType {
   public typealias SourceType = Source
@@ -9,8 +9,8 @@ public struct BrightDigitPodcast: ContentType {
   public typealias FrontMatterTranslatorType = FrontMatterTranslator
 }
 
-public extension BrightDigitPodcast {
-  static func write(
+extension BrightDigitPodcast {
+  public static func write(
     episodes: [SourceType],
     atContentPathURL contentPathURL: URL,
     using htmlToMarkdown: @escaping (String) throws -> String,
@@ -25,7 +25,7 @@ public extension BrightDigitPodcast {
     )
   }
 
-  static func fileNameWithoutExtensionForEpisode(
+  public static func fileNameWithoutExtensionForEpisode(
     withNumber episodeNo: Int,
     title: String
   ) -> String {
@@ -46,7 +46,7 @@ public extension BrightDigitPodcast {
     )
   }
 
-  static func fileNameWithoutExtensionForEpisode(
+  public static func fileNameWithoutExtensionForEpisode(
     withNumber episodeNo: Int,
     slug: String
   ) -> String {

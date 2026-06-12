@@ -1,27 +1,53 @@
-/// Specific type abstracting the id properties a YouTube RSS Feed.
-/// ```xml
-/// <yt:videoId>3hccNoPE59U</yt:videoId>
-/// <yt:channelId>UCv75sKQFFIenWHrprnrR9aA</yt:channelId>
-/// ```
-public protocol YouTubeID {
-  /// YouTube video ID.
+//
+//  YouTubeID.swift
+//  SyndiKit
+//
+//  Created by Leo Dion.
+//  Copyright © 2026 BrightDigit.
+//
+//  Permission is hereby granted, free of charge, to any person
+//  obtaining a copy of this software and associated documentation
+//  files (the "Software"), to deal in the Software without
+//  restriction, including without limitation the rights to use,
+//  copy, modify, merge, publish, distribute, sublicense, and/or
+//  sell copies of the Software, and to permit persons to whom the
+//  Software is furnished to do so, subject to the following
+//  conditions:
+//
+//  The above copyright notice and this permission notice shall be
+//  included in all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+//  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+//  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+//  NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+//  HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+//  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+//  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+//  OTHER DEALINGS IN THE SOFTWARE.
+//
+
+#if swift(<6.0)
+  import Foundation
+#else
+  internal import Foundation
+#endif
+
+/// A struct representing an Atom category.
+/// A protocol abstracting the ID properties of a YouTube RSS Feed.
+///
+/// - Note: This protocol is public.
+///
+/// - SeeAlso: ``YouTubeIDProperties``
+///
+/// - Important: This protocol is specific to YouTube.
+///
+/// - Requires: Conforming types must provide a ``videoID`` and a ``channelID``.
+/// - SeeAlso: ``EntryCategory``
+public protocol YouTubeID: Sendable {
+  /// The YouTube video ID.
   var videoID: String { get }
 
-  /// YouTube channel ID.
+  /// The YouTube channel ID.
   var channelID: String { get }
-}
-
-struct YouTubeIDProperties: YouTubeID {
-  public let videoID: String
-
-  public let channelID: String
-
-  init?(entry: AtomEntry) {
-    guard let channelID = entry.youtubeChannelID,
-          let videoID = entry.youtubeVideoID else {
-      return nil
-    }
-    self.channelID = channelID
-    self.videoID = videoID
-  }
 }

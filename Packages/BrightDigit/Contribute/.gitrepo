@@ -6,7 +6,7 @@
 [subrepo]
 	remote = git@github.com:BrightDigit/Contribute.git
 	branch = brightdigit-com-260406
-	commit = 5db9f5d03b9f009702cc4ec508162d8db6b00491
-	parent = 7a201536cca3dce5c2cfb84acb4dc3b000538a3d
+	commit = 810829569c0c14eca0f56a8f8fda554e9fa11f2b
+	parent = 572b016a98a74b96bbb1ab0bde65082bf950d9a7
 	method = merge
 	cmdver = 0.4.9

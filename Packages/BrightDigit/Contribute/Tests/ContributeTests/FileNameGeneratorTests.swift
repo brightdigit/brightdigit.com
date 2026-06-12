@@ -1,5 +1,6 @@
-@testable import Contribute
 import XCTest
+
+@testable import Contribute
 
 internal final class FileNameGeneratorTests: XCTestCase {
   internal func testFileNameGenerate() {
@@ -9,7 +10,7 @@ internal final class FileNameGeneratorTests: XCTestCase {
       return "result"
     }
 
-    _ = sut.destinationURL(from: .init(), atContentPathURL: .temporaryDirURL)
+    _ = sut.destinationURL(from: .init(), atContentPathURL: .temporaryDir)
 
     XCTAssertTrue(isCalled)
   }
