@@ -47,6 +47,11 @@ public protocol FrontMatterFormatter {
 }
 
 extension YAMLEncoder: FrontMatterFormatter {
+  /// Encodes the front matter as YAML, trimming surrounding whitespace.
+  ///
+  /// - Parameter frontMatter: The object containing front matter text.
+  /// - Returns: The formatted YAML string.
+  /// - Throws: An error if the front matter could not be encoded.
   public func format<FrontMatterType>(
     _ frontMatter: FrontMatterType
   ) throws -> String where FrontMatterType: Encodable {

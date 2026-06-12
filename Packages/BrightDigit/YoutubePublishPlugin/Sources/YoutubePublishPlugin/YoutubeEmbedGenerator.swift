@@ -54,7 +54,9 @@ internal struct YoutubeEmbedGenerator {
     }
 
     // condition: www.youtube.com
-    if let videoID = components.queryItems?.compactMap({ $0 }).first(where: { $0.name == "v" })?.value {
+    if let videoID = components.queryItems?.compactMap({ $0 })
+      .first(where: { $0.name == "v" })?.value
+    {
       return .success(
         EmbeddedYoutube(
           width: config.width,

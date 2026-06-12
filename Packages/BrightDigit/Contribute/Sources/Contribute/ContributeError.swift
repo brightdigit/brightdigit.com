@@ -27,4 +27,5 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
+/// A marker protocol for errors thrown by the Contribute library.
 public protocol ContributeError: Error {}

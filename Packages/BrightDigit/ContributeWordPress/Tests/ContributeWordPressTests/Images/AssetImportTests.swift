@@ -40,7 +40,7 @@ internal final class AssetImportTests: XCTestCase {
   internal func testLocalAsset() throws {
     let post: WordPressPost = try .myYearInReviewPost()
 
-    let importPathURL: URL = .temporaryDirURL
+    let importPathURL: URL = .temporaryDir
       .appendingPathComponent("WordPress")
       .appendingPathComponent(WordPressSite.contentUploadsRelativePath)
 

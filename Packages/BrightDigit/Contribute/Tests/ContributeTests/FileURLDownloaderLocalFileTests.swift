@@ -11,8 +11,8 @@ internal final class FileURLDownloaderLocalFileTests: XCTestCase {
     let sut = FileURLDownloader(networkManager: networkManager, fileManager: fileManager)
 
     sut.download(
-      from: .temporaryDirURL,
-      to: .temporaryDirURL,
+      from: .temporaryDir,
+      to: .temporaryDir,
       allowOverwrite: true
     ) { _ in
       // doing nothing

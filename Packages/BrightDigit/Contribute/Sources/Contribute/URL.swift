@@ -36,7 +36,7 @@ extension URL {
   /// which returns the path to the temporary directory on the current device.
   /// The `isDirectory` parameter is set to `true` to indicate that the URL represents
   /// a directory.
-  public static let temporaryDirURL = URL(
+  public static let temporaryDir = URL(
     fileURLWithPath: NSTemporaryDirectory(),
     isDirectory: true
   )

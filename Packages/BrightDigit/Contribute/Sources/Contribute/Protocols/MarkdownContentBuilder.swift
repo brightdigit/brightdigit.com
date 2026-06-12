@@ -64,6 +64,7 @@ extension MarkdownContentBuilder {
   ///   - htmlToMarkdown: A function that converts HTML to markdown.
   ///   - shouldOverwrite: Whether to overwrite the destination file if it already exists.
   /// - Returns: Whether the file already existed.
+  /// - Throws: An error if the content could not be generated or written.
   public func write<URLGeneratorType: ContentURLGenerator>(
     from source: SourceType,
     atContentPathURL contentPathURL: URL,

@@ -29,9 +29,17 @@
 
 import Foundation
 
+/// A `MarkdownGenerator` that returns the HTML string unchanged.
 public struct PassthroughMarkdownGenerator: MarkdownGenerator {
+  /// The shared `PassthroughMarkdownGenerator` instance.
   public static let shared = PassthroughMarkdownGenerator()
   private init() {}
+
+  /// Returns the given HTML string unchanged.
+  ///
+  /// - Parameter htmlString: The HTML string to pass through.
+  /// - Returns: The unmodified HTML string.
+  /// - Throws: Never; the input is always returned as-is.
   public func markdown(fromHTML htmlString: String) throws -> String {
     htmlString
   }

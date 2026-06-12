@@ -65,7 +65,7 @@ extension ContentType {
   ///   - contentPathURL: The content path URL.
   ///   - destinationURLGenerator: A function that generates content URLs from
   ///     the given sources.
-  ///   - using: A function that converts HTML to markdown.
+  ///   - htmlToMarkdown: A function that converts HTML to markdown.
   ///   - options: The options for the markdown content builder.
   /// - Throws: An error if the sources could not be written.
   ///
@@ -96,7 +96,7 @@ extension ContentType {
   ///   - contentPathURL: The content path URL.
   ///   - fileNameWithoutExtension: A function that generates the file name
   ///   without extension for the given source data.
-  ///   - using: A function that converts HTML to Markdown.
+  ///   - htmlToMarkdown: A function that converts HTML to Markdown.
   ///   - options: The options for the Markdown content builder.
   /// - Throws: An error if the sources could not be written.
   public static func write(

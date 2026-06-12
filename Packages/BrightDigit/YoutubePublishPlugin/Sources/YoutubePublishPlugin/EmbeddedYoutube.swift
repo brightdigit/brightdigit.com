@@ -29,8 +29,12 @@
 
 import Foundation
 
+/// An embedded YouTube video, including the HTML markup for the player.
 public struct EmbeddedYoutube: Hashable, Codable {
+  /// The width of the embedded video player, in pixels.
   public let width: Int
+  /// The height of the embedded video player, in pixels.
   public let height: Int
+  /// The HTML markup for embedding the video player.
   public let html: String
 }

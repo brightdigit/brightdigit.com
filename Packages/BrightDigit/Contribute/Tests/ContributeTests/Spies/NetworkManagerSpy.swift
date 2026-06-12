@@ -22,7 +22,7 @@ internal final class NetworkManagerSpy: URLSessionable {
     switch result {
     case .success:
       completion(
-        .temporaryDirURL,
+        .temporaryDir,
         HTTPURLResponse(
           url: fromURL,
           statusCode: 200,

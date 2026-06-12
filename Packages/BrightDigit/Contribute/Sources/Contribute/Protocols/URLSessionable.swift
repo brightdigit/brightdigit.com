@@ -49,6 +49,14 @@ public protocol URLSessionable {
 }
 
 extension URLSession: URLSessionable {
+  /// Downloads data from the specified URL using a download task.
+  ///
+  /// - Parameters:
+  ///   - fromURL: The URL from which the data should be downloaded.
+  ///   - completion: A closure that is called when the download operation
+  ///     completes. It takes three optional parameters: the downloaded
+  ///     data's URL, the URL response, and any error that occurred during
+  ///     the download.
   public func download(
     fromURL: URL,
     completion: @escaping @Sendable (URL?, URLResponse?, Error?) -> Void

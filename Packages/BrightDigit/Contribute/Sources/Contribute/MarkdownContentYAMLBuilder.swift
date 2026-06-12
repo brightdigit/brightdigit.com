@@ -33,6 +33,7 @@ import Foundation
   import FoundationNetworking
 #endif
 
+/// A `MarkdownContentBuilder` that combines YAML front matter with markdown content.
 public struct MarkdownContentYAMLBuilder<
   SourceType,
   ExtractorType: MarkdownExtractor,
@@ -47,6 +48,13 @@ where
   private let frontMatterExporter: ExporterType
   private let markdownExtractor: ExtractorType
 
+  /// Initializes the builder with the given exporter and extractor.
+  ///
+  /// - Parameters:
+  ///   - frontMatterExporter: The exporter that produces front matter text
+  ///     from the source data.
+  ///   - markdownExtractor: The extractor that produces markdown text from
+  ///     the source data.
   public init(
     frontMatterExporter: ExporterType,
     markdownExtractor: ExtractorType
@@ -55,6 +63,13 @@ where
     self.markdownExtractor = markdownExtractor
   }
 
+  /// Builds the content by joining the front matter and markdown text.
+  ///
+  /// - Parameters:
+  ///   - source: The source data from which to generate the content.
+  ///   - htmlToMarkdown: A function that converts HTML to markdown.
+  /// - Returns: The front matter and markdown formatted as a single string.
+  /// - Throws: An error if the front matter export or markdown extraction fails.
   public func content(
     from source: SourceType,
     using htmlToMarkdown: @escaping (String) throws -> String

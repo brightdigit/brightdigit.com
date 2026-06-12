@@ -31,6 +31,7 @@ import Foundation
 
 /// A type that extracts HTML content from markdown.
 public struct FilteredHTMLMarkdownExtractor<SourceType: HTMLSource>: MarkdownExtractor {
+  /// Initializes a new `FilteredHTMLMarkdownExtractor` instance.
   public init() {}
 
   /// Convert the HTML content to markdown.
@@ -39,6 +40,7 @@ public struct FilteredHTMLMarkdownExtractor<SourceType: HTMLSource>: MarkdownExt
   ///   - source: The HTML content source.
   ///   - htmlToMarkdown: Converter for processing the HTML.
   /// - Returns: The resulting markdown.
+  /// - Throws: An error if the HTML to markdown conversion fails.
   public func markdown(
     from source: SourceType,
     using htmlToMarkdown: @escaping (String) throws -> String

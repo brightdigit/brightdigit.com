@@ -31,6 +31,7 @@ import Foundation
 
 /// A type that represents the options that can be used when building markdown content.
 public struct MarkdownContentBuilderOptions: OptionSet {
+  /// The raw value type used to store the option set.
   public typealias RawValue = Int
 
   /// Specifies that any existing markdown content should be overwritten.
@@ -39,8 +40,12 @@ public struct MarkdownContentBuilderOptions: OptionSet {
   /// Specifies that any missing previous markdown content should be included.
   internal static let includeMissingPrevious: Self = .init(rawValue: 2)
 
+  /// The raw value of the option set.
   public let rawValue: Int
 
+  /// Initializes the option set with the given raw value.
+  ///
+  /// - Parameter rawValue: The raw value of the option set.
   public init(rawValue: RawValue) {
     self.rawValue = rawValue
   }

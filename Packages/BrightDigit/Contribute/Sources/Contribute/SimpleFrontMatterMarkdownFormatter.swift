@@ -45,8 +45,9 @@ import Foundation
 public struct SimpleFrontMatterMarkdownFormatter: FrontMatterMarkdownFormatter {
   /// Formats the given front matter text and markdown text into a single string.
   ///
-  /// - Parameter frontMatterText: The front matter text.
-  /// - Parameter markdownText: The markdown text.
+  /// - Parameters:
+  ///   - frontMatterText: The front matter text.
+  ///   - markdownText: The markdown text.
   /// - Returns: The formatted string.
   public func format(
     frontMatterText: String,

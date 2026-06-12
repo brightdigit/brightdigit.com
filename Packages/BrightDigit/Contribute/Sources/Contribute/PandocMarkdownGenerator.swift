@@ -38,7 +38,7 @@ public struct PandocMarkdownGenerator: MarkdownGenerator {
   /// A namespace for temporary file operations.
   public enum Temporary {
     /// The URL of the temporary directory.
-    private static let temporaryDirURL: URL = .temporaryDirURL
+    private static let temporaryDirURL: URL = .temporaryDir
 
     /// Creates a temporary file from the given content.
     ///
@@ -66,8 +66,8 @@ public struct PandocMarkdownGenerator: MarkdownGenerator {
   /// Initializes a new `PandocMarkdownGenerator` instance.
   ///
   /// - Parameters:
-  ///   - temporaryFile: A closure that creates a temporary file from the given content.
   ///   - shellOut: A closure that executes a shell command and returns the output.
+  ///   - temporaryFile: A closure that creates a temporary file from the given content.
   public init(
     shellOut: @escaping @Sendable (String, [String]) throws -> String,
     temporaryFile: @escaping @Sendable (String) throws -> URL = {
@@ -78,6 +78,12 @@ public struct PandocMarkdownGenerator: MarkdownGenerator {
     self.temporaryFile = temporaryFile
   }
 
+  /// Converts the given HTML string to markdown by invoking Pandoc.
+  ///
+  /// - Parameter htmlString: The HTML string to convert.
+  /// - Returns: The markdown produced by Pandoc.
+  /// - Throws: An error if the temporary file cannot be created or the
+  ///   Pandoc command fails.
   public func markdown(fromHTML htmlString: String) throws -> String {
     let temporaryFileURL = try temporaryFile(htmlString)
     return try shellOut(pandocPath, ["-f html -t markdown_strict", temporaryFileURL.path])

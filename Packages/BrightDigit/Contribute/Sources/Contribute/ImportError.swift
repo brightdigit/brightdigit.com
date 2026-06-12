@@ -29,6 +29,8 @@
 
 import Foundation
 
+/// Errors that can occur while importing content from external sources
+/// such as RSS feeds, YouTube, and Mailchimp.
 @available(*, deprecated)
 public enum ImportError: Error {
   case directory(URL)
@@ -46,12 +48,14 @@ public enum ImportError: Error {
   case newsletterMissingField(NewsletterField)
   case missingHTMLForCampaignID(String)
 
+  /// The component of an API response that was missing or invalid.
   public enum ResponseComponent {
     case anyResponse
     case success
     case items
   }
 
+  /// A field that was missing from a video.
   public enum VideoField {
     case snippetTitle
     case id
@@ -59,6 +63,7 @@ public enum ImportError: Error {
     case description
   }
 
+  /// A field that was missing from a podcast episode.
   public enum EpisodeField {
     case duration
     case title
@@ -67,6 +72,7 @@ public enum ImportError: Error {
     case imageHref
   }
 
+  /// A field that was missing from a newsletter campaign.
   public enum NewsletterField {
     case id
     case longArchiveURL

@@ -6,7 +6,7 @@ import XCTest
 internal final class YoutubePublishPluginTests: XCTestCase {
   internal static var allTests = [
     ("testValidYoutubeBlockQuote", testValidYoutubeBlockQuote),
-    ("testInvalidBlockQuotePrefix", testInvalidBlockQuotePrefix)
+    ("testInvalidBlockQuotePrefix", testInvalidBlockQuotePrefix),
   ]
 
   private var parser: MarkdownParser = .init(modifiers: [

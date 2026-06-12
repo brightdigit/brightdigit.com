@@ -35,7 +35,7 @@ extension XCTestCase {
     runFileURLDownloader(
       with: fileManager,
       and: networkManager,
-      fromURL: .temporaryDirURL,
+      fromURL: .temporaryDir,
       allowOverwrite: allowOverwrite,
       completion
     )
@@ -53,7 +53,7 @@ extension XCTestCase {
       fileManager: fileManager
     ).download(
       from: fromURL,
-      to: .temporaryDirURL,
+      to: .temporaryDir,
       allowOverwrite: allowOverwrite,
       completion
     )

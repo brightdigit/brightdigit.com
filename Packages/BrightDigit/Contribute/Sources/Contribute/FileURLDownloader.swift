@@ -38,10 +38,10 @@ public struct FileURLDownloader: URLDownloader {
   private let networkManager: URLSessionable
   private let fileManager: FileManagerProtocol
 
-  /// Initializes the downloader with the given `URLSession` and `FileManager` instances.
+  /// Initializes the downloader with the given network and file managers.
   ///
   /// - Parameters:
-  ///   - session: The `URLSession` instance to use for downloading files.
+  ///   - networkManager: The `URLSessionable` instance to use for downloading files.
   ///   - fileManager: The `FileManager` instance to use for saving downloaded files.
   public init(
     networkManager: URLSessionable = URLSession.shared,

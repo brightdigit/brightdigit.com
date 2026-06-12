@@ -29,6 +29,8 @@
 
 import Foundation
 
+/// A `ContentURLGenerator` that builds destination URLs from a file name,
+/// appending the `md` path extension.
 public protocol BasicContentURLGenerator: ContentURLGenerator {
   /// Returns the file name (without extension) for the given source data.
   ///
