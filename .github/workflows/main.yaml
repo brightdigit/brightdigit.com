@@ -160,7 +160,7 @@ jobs:
     container:
       image: brightdigit/publish-xml:6.4
     concurrency:
-        group: lint
+        group: lint-${{ github.ref }}
         cancel-in-progress: true
 
     steps:

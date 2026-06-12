@@ -12,5 +12,6 @@ public enum RSSError: ContributeError {
     case episode
     case summary
     case imageHref
+    case link
   }
 }

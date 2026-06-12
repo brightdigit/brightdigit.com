@@ -9,7 +9,7 @@ public enum RSSContent: ContentType {
 }
 
 extension RSSContent {
-  public static func items(from rssURL: URL, id: (RSSItem) -> String) throws
+  public static func items(from rssURL: URL, id: (RSSItem) throws -> String) throws
     -> [Source]
   {
     let decoder = SynDecoder()
@@ -18,9 +18,12 @@ extension RSSContent {
     guard let rssFeed = synfeed as? RSSFeed else {
       throw RSSError.invalidRSS(rssURL)
     }
-    return rssFeed.channel.items.compactMap {
+    return try rssFeed.channel.items.compactMap { item in
+      // A missing id makes the whole feed invalid for us, so it throws here
+      // rather than inside the per-item Source init, whose errors are ignored.
+      let id = try id(item)
       #warning("Allow old episode errors to be ignored")
-      return try? Source(item: $0, id: id)
+      return try? Source(item: item, id: id)
     }
   }
 }
