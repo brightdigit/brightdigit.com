@@ -151,7 +151,9 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Build and Test
-        uses: brightdigit/swift-build@v1
+        # TEMP: testing brightdigit/swift-build#110 (nightly cache-key fix, issue #79).
+        # Revert to @v1 once #110 merges and ships in a v1.x release.
+        uses: brightdigit/swift-build@109-invalidate-spm-caches
 
   lint:
     needs: [detect-changes, build-linux]
