@@ -57,18 +57,23 @@ jobs:
       runs-on: ubuntu-latest
       container:
         image: brightdigit/publish-xml:6.4
-      # GITHUB_TOKEN push: bot commits do NOT trigger workflows, so imported
-      # content deploys on the next push or manual dispatch.
-      permissions:
-        contents: write
       concurrency:
           group: automate-content
           cancel-in-progress: true
 
       steps:
+          # The push that lands imported content is authored by an SSH deploy
+          # key (NOT GITHUB_TOKEN), so it DOES trigger CI -> the fast-deploy
+          # path. The Swift container is minimal, so install an SSH client first.
+          - name: Install SSH client
+            run: apt-get update && apt-get install -y openssh-client
+
           - name: Checkout code
             uses: actions/checkout@v6
             with:
+              # Repo deploy key (write access); actions/checkout configures it
+              # for the later git push so that push triggers a new CI run.
+              ssh-key: ${{ secrets.CONTENT_DEPLOY_KEY }}
               fetch-depth: 0
 
           - name: Mark workspace safe for git
@@ -147,8 +152,8 @@ jobs:
                   git add Content/
                   git commit -m "${COMMIT_MESSAGE}"
 
-                  # Pushed with GITHUB_TOKEN (persisted by actions/checkout), so
-                  # this commit does not trigger another CI run.
+                  # Pushed over SSH with the deploy key (configured by
+                  # actions/checkout), so this commit DOES trigger CI -> deploy.
                   git push origin ${{ github.ref_name }}
 
                   echo "Changes pushed successfully."
