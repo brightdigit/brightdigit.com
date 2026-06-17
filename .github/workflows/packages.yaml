@@ -68,15 +68,12 @@ jobs:
         # ShellOut in their dependency chains) are macOS + Linux only.
         # The three swift-openapi-generator clients (Spinetail, ButtondownKit,
         # SwiftTube) each ship committed generated code + Scripts/lint.sh +
-        # .mise.toml, so they build, test, and lint standalone. Spinetail and
-        # ButtondownKit (#83) declare swift-tools-version 6.4 / Swift 6 mode and
-        # build on macOS (Xcode 26.4), lint on the 6.4 nightly, and build on the
-        # Ubuntu (nightly-6.4) leg. SwiftTube (swift-openapi-generator YouTube
-        # client) also gets the macOS build + STRICT lint, but is excluded from
-        # build-ubuntu below because that job pins `swift:6.3-*`, which cannot
-        # parse its swift-tools-version:6.4 manifest. All three stay out of
-        # cross-packages because their swift-openapi-urlsession / Foundation
-        # networking stack is unavailable on the wasm/Windows/Android SDKs.
+        # .mise.toml, so they build, test, and lint standalone like every other
+        # package — on the Ubuntu (nightly-6.4) leg, the macOS build (Swift 6.4
+        # via Xcode), and STRICT lint on the nightly-6.4 container. All three
+        # stay out of cross-packages because their swift-openapi-urlsession /
+        # Foundation networking stack is unavailable on the wasm/Windows/Android
+        # SDKs.
         run: |
           {
             echo 'packages=[{"name":"SyndiKit","path":"Packages/BrightDigit/SyndiKit"},{"name":"Contribute","path":"Packages/BrightDigit/Contribute"},{"name":"ContributeWordPress","path":"Packages/BrightDigit/ContributeWordPress"},{"name":"TransistorPublishPlugin","path":"Packages/BrightDigit/TransistorPublishPlugin"},{"name":"NPMPublishPlugin","path":"Packages/BrightDigit/NPMPublishPlugin"},{"name":"YoutubePublishPlugin","path":"Packages/BrightDigit/YoutubePublishPlugin"},{"name":"Spinetail","path":"Packages/BrightDigit/Spinetail"},{"name":"ButtondownKit","path":"Packages/BrightDigit/ButtondownKit"},{"name":"SwiftTube","path":"Packages/BrightDigit/SwiftTube"}]'
@@ -110,11 +107,6 @@ jobs:
         swift: ${{ fromJSON(needs.configure.outputs.ubuntu-swift) }}
         type: ${{ fromJSON(needs.configure.outputs.ubuntu-type) }}
         exclude:
-          # SwiftTube declares swift-tools-version:6.4 (Swift 6 language mode);
-          # the swift:6.3-* container here cannot parse that manifest. It is
-          # still built on macOS (Swift 6.4 via Xcode) and STRICT-linted on the
-          # nightly-6.4 container by the `lint` job below.
-          - package: { name: SwiftTube }
           # Publish-dependent plugins are macOS + Linux only (Files/ShellOut)
           - package: { name: TransistorPublishPlugin }
             type: "wasm"
