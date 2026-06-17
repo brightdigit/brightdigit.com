@@ -5,8 +5,8 @@
 ;
 [subrepo]
 	remote = git@github.com:brightdigit/ConfigKeyKit.git
-	branch = main
-	commit = a9a8bc8be5b33d4aa732a9d0d06a05e8281b4855
-	parent = f217f89b3b93dd0077bca4bcbfc942aaa341fbd9
+	branch = 1-remove-need-for-extension
+	commit = ff576acff994abf2895566dba5f289c69fb8bb7e
+	parent = e76f99ea5e0efcd60b138588c21b881b382127ff
 	method = merge
 	cmdver = 0.4.9
