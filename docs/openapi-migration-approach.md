@@ -2,156 +2,172 @@
 
 Tracking: #82 (parent) · #37 (SwiftTube + Spinetail) · #45 (remove Prch) · #83 (ButtondownKit greenfield).
 
-This is the **spike-first**, multi-week track. This note records the toolchain
-decision, where the specs come from, the migration order, and the verification
-strategy. It is the durable reference the three parallel sub-tracks (`youtube`,
-`mailchimp`, `buttondown`) work against.
+This is the durable reference the three parallel sub-tracks (`youtube`,
+`mailchimp`, `buttondown`) work against. It records the toolchain decision, where
+the specs come from, how they are filtered + generated, the migration order, and
+the verification strategy.
 
 ### Scope (2026-06-17): all three tracks are greenfield
 
-Per the updated scope on #82/#37, SwiftTube and Spinetail are old enough to be
-treated as **basically greenfield**, exactly like ButtondownKit. We rebuild the
-clients **fresh from the OpenAPI specs** with swift-openapi-generator and do
-**not** preserve the SwagGen/Prch-generated structure. The
-**byte-identical-output bar is dropped for all three tracks** — already-imported
-markdown may legitimately change. Correctness is verified with
-**contract/integration tests against the specs**, not an output diff against the
-old content.
+SwiftTube and Spinetail are old enough to be treated as **basically greenfield**,
+exactly like ButtondownKit. We rebuild the clients **fresh from the OpenAPI
+specs** with swift-openapi-generator and do **not** preserve the SwagGen/Prch
+structure. The **byte-identical-output bar is dropped for all three tracks** —
+already-imported markdown may legitimately change. Correctness is verified with
+**contract tests against the specs**, not an output diff.
 
-## 1. Toolchain
+## 1. Toolchain — generator is a mise-managed CLI, output is committed
 
-Adopt Apple's swift-openapi-generator stack, producing **protocol-based async
-clients** (`APIProtocol` + generated `Client`):
+Adopt Apple's swift-openapi-generator stack, producing protocol-based async
+clients (`APIProtocol` + generated `Client`). The key architectural decision:
+
+- **The generator is a CLI tool installed via mise's SPM backend, NOT a SwiftPM
+  build/command plugin and NOT a `Package.swift` dependency.** It is pinned in
+  each package's `.mise.toml`:
+  `"spm:apple/swift-openapi-generator" = "1.12.2"`.
+- **Generated `Types.swift` + `Client.swift` are produced ahead of time and
+  committed** to the repo under `Sources/<Target>/Generated/` — they are NOT
+  generated into `.build` at build time. This keeps the build hermetic (no
+  plugin sandbox, no per-build codegen) and makes the generated surface
+  reviewable in PRs.
 
 | Package | Repo | Role |
 | --- | --- | --- |
-| `swift-openapi-generator` | apple/swift-openapi-generator | SwiftPM **build plugin**; generates `Types.swift` + `Client.swift` at build time. Latest: 1.12.x. |
-| `swift-openapi-runtime` | apple/swift-openapi-runtime | Runtime types shared by generated code (`Operations`, `Components`, `ClientTransport`). |
+| `swift-openapi-generator` | apple/swift-openapi-generator | **mise CLI tool** (`filter` + `generate` subcommands). Run via `Scripts/generate-openapi.sh`. Pinned 1.12.2. |
+| `swift-openapi-runtime` | apple/swift-openapi-runtime | Runtime dependency of the generated code (`Operations`, `Components`, `ClientTransport`). |
 | `swift-openapi-urlsession` | apple/swift-openapi-urlsession | `URLSessionTransport` — works on macOS **and** Linux (FoundationNetworking). |
+| `swift-http-types` | apple/swift-http-types | Declared so the contract tests can name `HTTPRequest`/`HTTPResponse` in their mock transport. |
 
-Notes:
-- Use the **build-tool plugin** (`.plugin(name: "OpenAPIGenerator", package: "swift-openapi-generator")`)
-  so generated code is never checked in and always tracks the spec. Each target
-  needs `openapi.yaml` + `openapi-generator-config.yaml` in its source dir.
-- `URLSessionTransport` is the single transport for all Apple+Linux builds (the CI
-  gate is Ubuntu in `brightdigit/publish-xml:6.4`). `AsyncHTTPClientTransport` is
-  **not** needed; avoid pulling in swift-nio unless a later track requires it.
-- Generator config: `generate: [types, client]`, `accessModifier: public`.
-- Minimum tools version for plugin host packages: the vendored packages are
-  bumped to `swift-tools-version:6.0+` (they were 5.2).
+Each new client library targets the **latest Swift**: `swift-tools-version:6.4`
+and Swift 6 language mode (`swiftSettings: [.swiftLanguageMode(.v6)]`).
 
-## 2. Where the specs live / how to obtain them
+## 2. Full spec → filter → generate
 
-- **SwiftTube (YouTube Data API v3)** — vendored already at
-  `Packages/BrightDigit/SwiftTube/openapi.yaml` (OpenAPI 3.0.0, 9.4k lines, the
-  full Google discovery doc). Upstream of record:
-  `https://youtube.googleapis.com/$discovery/rest?version=v3` (via APIs.guru).
-- **Spinetail (Mailchimp Marketing API)** — vendored at
-  `Packages/BrightDigit/Spinetail/OpenAPI/openapi.yaml` (OpenAPI 3.0.1, ~207k
-  lines) and `marketing.json`. Upstream of record:
-  `https://github.com/mailchimp/mailchimp-client-lib-codegen` (`spec/marketing.json`).
-- **ButtondownKit (greenfield)** — fetch Buttondown's official OpenAPI **3.0.2**
-  spec from `https://github.com/buttondown/openapi` and vendor it into a new
-  `Packages/BrightDigit/ButtondownKit/openapi.yaml`. API key via
-  `BUTTONDOWN_API_KEY` env var only; **no** subscriber/audience data in the repo.
+Each client ships the **complete** upstream OpenAPI document, then filters it
+down to only the operations brightdigit.com uses before generating.
 
-### Trimmed-spec strategy (important)
+### YouTube (SwiftTube) — implemented
 
-The vendored YouTube and Mailchimp specs are the **entire** Google/Mailchimp
-APIs. The brightdigit.com importers each touch only **two** operations:
+YouTube has no first-party OpenAPI document, so it is derived from Google's
+official **Discovery Document**:
 
-- YouTube: `youtube.playlistItems.list` + `youtube.videos.list`.
-- Mailchimp: `getCampaigns` + `getCampaignsIdContent`.
+1. Fetch `https://youtube.googleapis.com/$discovery/rest?version=v3` →
+   `Packages/BrightDigit/SwiftTube/openapi/youtube-discovery.json` (committed).
+2. Convert Discovery → Swagger 2.0 (`google-discovery-to-swagger`) → OpenAPI 3.0
+   (`swagger2openapi`), then post-process (strip OAuth security since the
+   importer uses an API-key query param, normalise `*/*` response bodies to
+   `application/json`, and rename the verbose dotted operationIds to short
+   names). All of this lives in `Scripts/discovery-to-openapi.mjs`. Output:
+   `openapi/youtube-openapi.json` (the **full** ~80-operation spec, committed).
+3. **Filter** to the operations we use with the generator's `filter` subcommand
+   driven by `openapi/openapi-filter.yaml`:
+   - `listPlaylistItems` (playlistItems.list — paged video ids for a playlist)
+   - `listVideos` (videos.list — batched video-detail lookup)
+   The filter automatically pulls in every schema/parameter those operations
+   depend on, so we don't carry the entire API surface.
+4. **Generate** `Sources/SwiftTube/Generated/{Types,Client}.swift` from the
+   filtered document using `openapi/openapi-generator-config.yaml`
+   (`generate: [types, client]`, `accessModifier: public`,
+   `additionalFileComments: [swift-format-ignore-file, "swiftlint:disable all"]`).
 
-Generating off the full specs produces tens of thousands of lines of unused
-types and is slow/fragile (the Mailchimp doc alone is 207k lines and uses
-constructs the generator warns on). For these two clients we therefore generate
-from a **focused OpenAPI document** that defines only the operations and the
-exact response fields each importer reads. This is safe because:
+The hand-written async `YouTubeClient` (pagination + concurrent id batches via
+`withThrowingTaskGroup`) wraps the generated `Client` and returns a flat,
+`Sendable` `YouTubeVideo` model.
 
-1. The importer field set is small, known, and fully covered by contract tests.
-2. The focused doc is a faithful subset of the upstream spec; the full vendored
-   spec is retained as the source of truth for the contract.
+### Reproducible generation: `Scripts/generate-openapi.sh`
 
-The trimmed doc lives beside the generated target as `openapi.yaml`. (For the
-`youtube` slice this is `Sources/SwiftTubeOpenAPI/openapi.yaml`.)
+One parameterised script regenerates the committed output for any client:
+
+```
+Scripts/generate-openapi.sh SwiftTube            # filter + generate (default)
+Scripts/generate-openapi.sh SwiftTube --refresh  # re-fetch discovery + reconvert first
+Scripts/generate-openapi.sh SwiftTube --check     # regenerate to a temp dir + diff (drift check)
+```
+
+Adding Spinetail / ButtondownKit is a new `case` in the library table at the top
+of the script (`PKG`, `TARGET`, `SPEC`, filter/generate config paths). The
+`--check` mode is the CI/`make`-style drift guard: it regenerates and
+`diff`s against the committed files, failing if they are stale.
+
+### Spinetail (Mailchimp) / ButtondownKit — next
+
+- **Spinetail (Mailchimp Marketing API)** — full spec from
+  `mailchimp/mailchimp-client-lib-codegen` (`spec/marketing.json`). Filter to
+  `getCampaigns` + `getCampaignsIdContent`. Basic-auth transport middleware
+  (`anystring:apikey`). Already-vendored full spec stays as source of truth.
+- **ButtondownKit (greenfield)** — Buttondown ships an official OpenAPI **3.0.2**
+  doc (`github.com/buttondown/openapi`); commit it directly (no discovery
+  conversion needed) and filter to the issue/draft operations #83 needs. API key
+  via `BUTTONDOWN_API_KEY` env var only; no subscriber data in the repo.
 
 ## 3. Migration order
 
-1. **Toolchain + `youtube` slice (this PR).** Smallest viable end-to-end client;
-   establishes the build-plugin pattern, the trimmed-spec pattern, the
-   async/await client, and the contract-test harness. The `SwiftTubeOpenAPI`
-   target builds + tests standalone here; rewiring ContributeYouTube and the
-   `podcast` import command onto it is the next step on this track.
-2. **`mailchimp` slice.** Same pattern; two operations; basic-auth transport
-   middleware (`anystring:apikey`). Replaces `DispatchSemaphore`/`requestSync`.
-3. **`buttondown` slice (#83).** Greenfield; vendored Buttondown 3.0.2 spec;
-   contract tests (sandbox draft round-trip) — no prior output to diff.
-4. **Remove Prch (#45).** Only once **both** SwiftTube and Spinetail no longer
-   reference Prch. Drop the dep from both vendored `Package.swift` files and from
-   the top-level manifest; delete the SwagGen-generated model/request trees.
-
-The three client tracks are independent and parallelizable after step 1.
+1. **YouTube / SwiftTube (this PR).** mise CLI toolchain + full-spec→filter→
+   generate pipeline + committed generated code + async `YouTubeClient` + contract
+   tests. `ContributeYouTube` and the `podcast` import command are rewired onto
+   the async client; the SwagGen tree and SwiftTube's Prch dependency are deleted.
+2. **Mailchimp / Spinetail.** Same recipe; Spinetail keeps Prch only until its own
+   track lands, so the build is not broken in the meantime.
+3. **ButtondownKit (#83).** Greenfield; same recipe.
+4. **Finish removing Prch (#45).** Once Spinetail is also off Prch, drop it from
+   the top-level manifest.
 
 ## 4. Async/await rewrite
 
-- Generated clients are `async throws`. The Prch `requestSync` /
-  `DispatchSemaphore` / `DispatchGroup` patterns are removed.
-- Paged fetch (YouTube playlist pagination, per-50-id video batches) becomes
-  `async` loops + `withThrowingTaskGroup` for the parallel video-detail batches.
-- ArgumentParser `run()` becomes `func run() async throws` (ParsableCommand
-  supports async run).
+- Generated clients are `async throws`; the Prch `requestSync` /
+  `DispatchSemaphore` / `DispatchGroup` patterns are gone.
+- YouTube playlist pagination is an `async` loop; per-50-id video batches run in
+  parallel via `withThrowingTaskGroup`, reassembled in batch order.
+- The `podcast` import command is now an `AsyncParsableCommand` with
+  `func run() async throws` (the root `BrightDigitSiteCommand` already awaits
+  `.main()`).
 
 ## 5. Verification (contract tests, not output diff)
 
-The byte-identical bar is dropped. Every track is verified the same greenfield
-way — **contract/integration tests** that exercise the generated client offline:
+Every track is verified the same greenfield way — **contract tests** that drive
+the generated client offline:
 
-1. A fixture-replaying `ClientTransport` (`MockTransport`) returns recorded JSON
-   bodies keyed by request path, so the generated client is driven
-   deterministically and without network access (CI-safe).
+1. A fixture-replaying `ClientTransport` (`MockTransport`, implemented as an
+   `actor` so it is concurrency-safe without `@unchecked Sendable`) returns
+   recorded JSON bodies keyed by request path — deterministic, no network, CI-safe.
 2. Tests assert the client follows pagination, batches by the API's id limit,
-   maps the response fields the importer reads, and surfaces non-200 responses
-   as errors. (See `SwiftTubeOpenAPITests`.)
-3. ButtondownKit: generated-client unit/contract tests against the spec
-   (decode known payloads; a sandbox draft round-trip when a key is present).
+   maps the response fields the importer reads, and surfaces non-200 responses as
+   errors. (See `Tests/SwiftTubeTests`.)
 
-The CI gate for every commit is the Ubuntu container build+test plus STRICT
-lint — see the PR checklist.
+The CI gate for every commit: Ubuntu container build+test in
+`brightdigit/publish-xml:6.4` plus STRICT lint, plus the standalone package
+matrix in `.github/workflows/packages.yaml`.
 
-## 6. Status (first slice landed)
+## 6. Lint / CI scaffolding
 
-**Done — `youtube` toolchain + client slice:**
-- `SwiftTube/Package.swift` bumped to `swift-tools-version:6.0`; adds
-  `swift-openapi-generator` (build plugin), `swift-openapi-runtime`,
-  `swift-openapi-urlsession`, and `swift-http-types` (for the test transport).
-- New `SwiftTubeOpenAPI` target: trimmed `openapi.yaml` + generator config drive
-  the build plugin (generates `Types.swift`/`Client.swift` into `.build`), wrapped
-  by a hand-written async `YouTubeClient` (pagination + concurrent id batches via
-  `withThrowingTaskGroup`) returning a flat `YouTubeVideo` model.
-- New `SwiftTubeOpenAPITests`: `MockTransport` (fixture-replaying `ClientTransport`)
-  + contract tests for pagination, batching, field mapping, and non-200 handling.
-  Green on Linux in `brightdigit/publish-xml:6.4`.
-- The legacy SwagGen `SwiftTube` target is pinned to Swift 5 language mode and
-  kept intact (ContributeYouTube still imports it); it is deleted with Prch (#45).
+- **Generated code is excluded from lint** two ways: every generated file carries
+  `// swift-format-ignore-file` + `// swiftlint:disable all` (injected via the
+  generator's `additionalFileComments`), and `Sources/SwiftTube/Generated` is in
+  the package `.swiftlint.yml` `excluded:` list. STRICT lint of the package is
+  **clean** — deleting the ~261 SwagGen files also removes the legacy ~1.7k-
+  violation problem. The package adopts the BrightDigit lint template
+  (`.swiftlint.yml`, `.swift-format`, `.mise.toml`, `Scripts/lint.sh`,
+  `Scripts/header.sh`) copied from SyndiKit.
+- **packages.yaml matrix:** SwiftTube is in the `packages` list so it gets the
+  macOS build (Swift 6.4 via Xcode) and the STRICT lint job (nightly-6.4
+  container). It is excluded from `build-ubuntu` because that job pins the
+  `swift:6.3-*` container, which cannot parse a `swift-tools-version:6.4` manifest.
+- **Drift check:** `Scripts/generate-openapi.sh SwiftTube --check` regenerates and
+  diffs against the committed output — wire into CI/make to catch spec drift.
 
-**Remaining on the `youtube` track:**
-- Rewire `ContributeYouTube` (`YouTubeContent`/`Source`) and the `podcast` import
-  command onto `SwiftTubeOpenAPI`; make `run()` async (drop the sync Prch path).
-- Then drop `SwiftTube` (SwagGen) target + Prch dep from this package and the
-  top-level manifest (#45) — only after Spinetail is also off Prch.
+## 7. Status
 
-**`mailchimp` and `buttondown` tracks:** not started — same toolchain, independent.
+**Done — YouTube / SwiftTube under the new architecture:**
+- mise CLI generator pinned in `.mise.toml`; no generator package dep, no plugin.
+- Full discovery-derived spec committed; filtered to 2 ops; generated
+  `Types.swift`/`Client.swift` committed under `Sources/SwiftTube/Generated`.
+- `SwiftTube` rebuilt as a single `swift-tools-version:6.4` / Swift 6 library:
+  async `YouTubeClient` + `YouTubeVideo` + contract tests. SwagGen tree (~261
+  files) and Prch dependency deleted.
+- `ContributeYouTube` de-Prch'd and rewired onto the async client; `podcast`
+  command is async. Builds + tests green on Linux + macOS; STRICT lint clean
+  (top-level and standalone).
 
-### Lint note (vendored SwiftTube package)
-
-The vendored `SwiftTube/.swiftlint.yml` is the original SwagGen-era config and is
-incompatible with the repo's current SwiftFormat config / 6.4 toolchain: the
-~261 generated SwagGen files produce ~1.7k strict violations independent of this
-work (e.g. `discouraged_optional_boolean`, short identifier names), so package
-STRICT SwiftLint was already red. Four opt-in rules that directly conflict with
-the authoritative SwiftFormat output (`explicit_acl`, `explicit_top_level_acl`,
-`type_contents_order`, `indentation_width`) were removed from the config so the
-new greenfield target lints cleanly; the remaining legacy violations live only
-in the SwagGen tree that #45 deletes. The new `SwiftTubeOpenAPI` sources/tests
-pass `swiftlint --strict` and `swiftformat --lint` with zero violations.
+**Remaining:**
+- Mailchimp/Spinetail (#37) and ButtondownKit (#83) — same recipe.
+- Final Prch removal (#45) once Spinetail is migrated.

@@ -17,7 +17,7 @@ extension YouTubeContent.Source: VideoYouTubeItem {
 }
 
 extension BrightDigitSiteCommand.ImportCommand {
-  public struct Podcast: ParsableCommand {
+  public struct Podcast: AsyncParsableCommand {
     public static let configuration = CommandConfiguration(
       commandName: "podcast",
       abstract: "Command for importing a podcast into the BrightDigit site."
@@ -68,7 +68,7 @@ extension BrightDigitSiteCommand.ImportCommand {
         }
     }
 
-    public func run() throws {
+    public func run() async throws {
       let podcastEpisodes = try RSSContent.items(from: rss) { item in
         guard let link = item.link else {
           throw RSSError.missingFieldFromPodcastEpisode(
@@ -77,7 +77,7 @@ extension BrightDigitSiteCommand.ImportCommand {
         }
         return link.lastPathComponent
       }
-      let videos = try YouTubeContent.videos(
+      let videos = try await YouTubeContent.videos(
         byRequest: .init(
           apiKey: youtubeAPIKey,
           playlistID: playlistID

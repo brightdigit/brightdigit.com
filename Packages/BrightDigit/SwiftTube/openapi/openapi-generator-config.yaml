@@ -1,0 +1,15 @@
+# swift-openapi-generator configuration.
+#
+# Produces ahead-of-time Client.swift + Types.swift (committed under
+# Sources/SwiftTube/Generated) from the filtered spec. The generator runs via
+# the mise-managed CLI, NOT a SwiftPM build/command plugin — see
+# Scripts/generate-openapi.sh and docs/openapi-migration-approach.md.
+generate:
+  - types
+  - client
+accessModifier: public
+# Mark every generated file so STRICT swift-format + SwiftLint skip it instead
+# of drowning in violations against machine-generated code.
+additionalFileComments:
+  - "swift-format-ignore-file"
+  - "swiftlint:disable all"
