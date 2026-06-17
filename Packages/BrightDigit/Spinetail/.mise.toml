@@ -12,8 +12,8 @@ experimental = true
 # swift-openapi-generator CLI, used ahead-of-time by
 # Scripts/generate-openapi-spinetail.sh to regenerate the committed
 # Types.swift / Client.swift. NOT a Package.swift dependency / build plugin.
-# 1.7.x aligns with the swift-openapi-runtime 1.8.x the package links against.
-"spm:apple/swift-openapi-generator" = "1.7.2"
+# 1.12.x aligns with the swift-openapi-runtime 1.8.x the package links against.
+"spm:apple/swift-openapi-generator" = "1.12.2"
 
 [tasks]
 swift-format = "swift-format"
