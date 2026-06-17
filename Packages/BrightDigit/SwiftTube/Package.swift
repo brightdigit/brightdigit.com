@@ -1,60 +1,73 @@
-// swift-tools-version:5.2.0
+// swift-tools-version:6.0
 // swiftlint:disable explicit_top_level_acl
 import PackageDescription
 
 let package = Package(
   name: "SwiftTube",
   platforms: [
-    .macOS(.v10_15),
-    .iOS(.v10),
-    .tvOS(.v10),
-    .watchOS(.v3)
+    .macOS(.v13),
+    .iOS(.v16),
+    .tvOS(.v16),
+    .watchOS(.v9)
   ],
   products: [
-    .library(name: "SwiftTube", targets: ["SwiftTube"])
+    // Legacy SwagGen/Prch client. Retained until ContributeYouTube is rewired
+    // onto SwiftTubeOpenAPI (#37), after which it — and Prch (#45) — are removed.
+    .library(name: "SwiftTube", targets: ["SwiftTube"]),
+    // New swift-openapi-generator async client.
+    .library(name: "SwiftTubeOpenAPI", targets: ["SwiftTubeOpenAPI"])
   ],
   dependencies: [
-    .package(url: "https://github.com/shibapm/Komondor", from: "1.1.1"), // dev
-    .package(url: "https://github.com/nicklockwood/SwiftFormat", from: "0.47.0"), // dev
-    .package(url: "https://github.com/realm/SwiftLint", from: "0.41.0"), // dev
-    .package(url: "https://github.com/shibapm/Rocket", from: "1.2.0"), // dev
-    .package(url: "https://github.com/brightdigit/swift-test-codecov", from: "1.0.0"), // dev
-    .package(url: "https://github.com/brightdigit/Prch.git", from: "0.2.1")
+    .package(url: "https://github.com/brightdigit/Prch.git", from: "0.2.1"),
+    .package(
+      url: "https://github.com/apple/swift-openapi-generator",
+      from: "1.7.0"
+    ),
+    .package(
+      url: "https://github.com/apple/swift-openapi-runtime",
+      from: "1.8.0"
+    ),
+    .package(
+      url: "https://github.com/apple/swift-openapi-urlsession",
+      from: "1.0.0"
+    ),
+    // Transitive via swift-openapi-runtime; declared explicitly so the
+    // contract tests can name HTTPRequest/HTTPResponse in their mock transport.
+    .package(
+      url: "https://github.com/apple/swift-http-types",
+      from: "1.0.0"
+    )
   ],
   targets: [
-    .target(name: "SwiftTube", dependencies: ["Prch"]),
-    .testTarget(name: "SwiftTubeTests", dependencies: ["SwiftTube"])
+    // Legacy SwagGen client compiled in Swift 5 mode to avoid churning the
+    // ~261 generated files; it is deleted with Prch (#45) once the OpenAPI
+    // client is wired into ContributeYouTube.
+    .target(
+      name: "SwiftTube",
+      dependencies: ["Prch"],
+      swiftSettings: [.swiftLanguageMode(.v5)]
+    ),
+    .target(
+      name: "SwiftTubeOpenAPI",
+      dependencies: [
+        .product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
+        .product(name: "OpenAPIURLSession", package: "swift-openapi-urlsession")
+      ],
+      plugins: [
+        .plugin(
+          name: "OpenAPIGenerator",
+          package: "swift-openapi-generator"
+        )
+      ]
+    ),
+    .testTarget(name: "SwiftTubeTests", dependencies: ["SwiftTube"]),
+    .testTarget(
+      name: "SwiftTubeOpenAPITests",
+      dependencies: [
+        "SwiftTubeOpenAPI",
+        .product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
+        .product(name: "HTTPTypes", package: "swift-http-types")
+      ]
+    )
   ]
 )
-
-#if canImport(PackageConfig)
-  import PackageConfig
-
-  let requiredCoverage: Int = 85
-
-  let config = PackageConfiguration([
-    "rocket": [
-      "steps": [
-        ["hide_dev_dependencies": ["package_path": "Package@swift-5.5.swift"]],
-        "hide_dev_dependencies",
-        "git_add",
-        "commit",
-        "tag",
-        "unhide_dev_dependencies",
-        ["unhide_dev_dependencies": ["package_path": "Package@swift-5.5.swift"]],
-        "git_add",
-        ["commit": ["message": "Unhide dev dependencies"]]
-      ]
-    ],
-    "komondor": [
-      "pre-commit": [
-        "swift test --generate-linuxmain",
-        "swift run swiftformat .",
-        "swift run swiftlint autocorrect",
-        "git add .",
-        "swift run swiftformat --lint .",
-        "swift run swiftlint"
-      ]
-    ]
-  ]).write()
-#endif
