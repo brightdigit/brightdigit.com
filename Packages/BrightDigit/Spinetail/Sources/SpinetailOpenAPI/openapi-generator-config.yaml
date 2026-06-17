@@ -1,0 +1,21 @@
+# swift-openapi-generator configuration for the Spinetail Mailchimp client.
+#
+# Generation is run AHEAD OF TIME via Scripts/generate-openapi-spinetail.sh
+# (using the `swift-openapi-generator` CLI pinned in .mise.toml), and the
+# resulting Types.swift / Client.swift are committed in this directory. The
+# package does NOT use the build/command plugin.
+#
+# The full Mailchimp Marketing API spec is huge (~207k lines), so we filter it
+# down to only the operations ContributeMailchimp consumes before generating:
+#   - getCampaigns          (GET /campaigns)
+#   - getCampaignsIdContent (GET /campaigns/{campaign_id}/content)
+# The filtered spec is written to filtered-openapi.yaml by the script; the
+# generator runs against that filtered document.
+generate:
+  - types
+  - client
+accessModifier: public
+filter:
+  operations:
+    - getCampaigns
+    - getCampaignsIdContent

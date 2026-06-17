@@ -1,65 +1,63 @@
-// swift-tools-version:5.2.0
+// swift-tools-version:6.4
 // swiftlint:disable explicit_top_level_acl
 import PackageDescription
 
 let package = Package(
   name: "Spinetail",
   platforms: [
-    .macOS(.v10_15),
-    .iOS(.v10),
-    .tvOS(.v10),
-    .watchOS(.v3)
+    .macOS(.v13),
+    .iOS(.v16),
+    .tvOS(.v16),
+    .watchOS(.v9)
   ],
   products: [
-    .library(name: "Spinetail", targets: ["Spinetail"])
+    // swift-openapi-generator async Mailchimp Marketing API client. The legacy
+    // SwagGen/Prch `Spinetail` target has been removed (#37/#45); Types.swift /
+    // Client.swift are generated ahead of time by
+    // Scripts/generate-openapi-spinetail.sh and committed under
+    // Sources/SpinetailOpenAPI (no build plugin).
+    .library(name: "SpinetailOpenAPI", targets: ["SpinetailOpenAPI"])
   ],
   dependencies: [
-    .package(url: "https://github.com/shibapm/Komondor", from: "1.1.2"), // dev
-    .package(url: "https://github.com/nicklockwood/SwiftFormat", from: "0.47.0"), // dev
-    .package(url: "https://github.com/realm/SwiftLint", from: "0.43.0"), // dev
-    .package(url: "https://github.com/brightdigit/swift-test-codecov", from: "1.0.0"), // dev
-    .package(url: "https://github.com/shibapm/Rocket", from: "1.2.0"), // dev
-    .package(url: "https://github.com/brightdigit/Prch.git", from: "0.2.0")
+    .package(
+      url: "https://github.com/apple/swift-openapi-runtime",
+      from: "1.8.0"
+    ),
+    .package(
+      url: "https://github.com/apple/swift-openapi-urlsession",
+      from: "1.0.0"
+    ),
+    // Transitive via swift-openapi-runtime; declared explicitly so the
+    // contract tests can name HTTPRequest/HTTPResponse in their mock transport.
+    .package(
+      url: "https://github.com/apple/swift-http-types",
+      from: "1.0.0"
+    )
   ],
   targets: [
-    .target(name: "Spinetail", dependencies: ["Prch"]),
-    .testTarget(name: "SpinetailTests", dependencies: ["Spinetail"])
+    .target(
+      name: "SpinetailOpenAPI",
+      dependencies: [
+        .product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
+        .product(name: "OpenAPIURLSession", package: "swift-openapi-urlsession"),
+        .product(name: "HTTPTypes", package: "swift-http-types")
+      ],
+      exclude: [
+        // Generator inputs/config live alongside the committed output but are
+        // not Swift sources.
+        "openapi-generator-config.yaml",
+        "filtered-openapi.yaml"
+      ],
+      swiftSettings: [.swiftLanguageMode(.v6)]
+    ),
+    .testTarget(
+      name: "SpinetailOpenAPITests",
+      dependencies: [
+        "SpinetailOpenAPI",
+        .product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
+        .product(name: "HTTPTypes", package: "swift-http-types")
+      ],
+      swiftSettings: [.swiftLanguageMode(.v6)]
+    )
   ]
 )
-
-#if canImport(PackageConfig)
-  import PackageConfig
-
-  let requiredCoverage: Int = 85
-
-  let config = PackageConfiguration([
-    "rocket": [
-      "steps": [
-        ["hide_dev_dependencies": ["package_path": "Package@swift-5.5.swift"]],
-        "hide_dev_dependencies",
-        "git_add",
-        "commit",
-        "tag",
-        "unhide_dev_dependencies",
-        ["unhide_dev_dependencies": ["package_path": "Package@swift-5.5.swift"]],
-        "git_add",
-        ["commit": ["message": "Unhide dev dependencies"]]
-      ]
-    ],
-    "komondor": [
-      "pre-push": [
-        "swift test --enable-code-coverage --enable-test-discovery"
-        // swiftlint:disable:next line_length
-        // "swift run swift-test-codecov .build/debug/codecov/SyndiKit.json --minimum \(requiredCoverage)"
-      ],
-      "pre-commit": [
-        "swift test --enable-code-coverage --enable-test-discovery --generate-linuxmain",
-        "swift run swiftformat .",
-        "swift run swiftlint autocorrect",
-        "git add .",
-        "swift run swiftformat --lint .",
-        "swift run swiftlint"
-      ]
-    ]
-  ]).write()
-#endif

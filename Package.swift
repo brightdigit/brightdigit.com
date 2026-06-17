@@ -82,7 +82,10 @@ let package = Package(
     ),
     .target(
       name: "ContributeMailchimp",
-      dependencies: ["Contribute", "Spinetail"]
+      dependencies: [
+        "Contribute",
+        .product(name: "SpinetailOpenAPI", package: "Spinetail")
+      ]
     ),
     .target(
       name: "ContributeYouTube",
