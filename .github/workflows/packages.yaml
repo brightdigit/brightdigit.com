@@ -73,9 +73,14 @@ jobs:
         # 6.4 nightly, and builds on the Ubuntu (nightly-6.4) leg. It is kept
         # out of cross-packages because its swift-openapi-urlsession / Foundation
         # networking stack is unavailable on the wasm/Windows/Android SDKs.
+        # ButtondownKit is the greenfield swift-openapi-generator newsletter
+        # client (#83); it ships committed generated code + Scripts/lint.sh +
+        # .mise.toml, so it builds, tests, and lints standalone. Like Spinetail
+        # it depends on swift-openapi-runtime/urlsession (Foundation/networking),
+        # so it stays out of cross-packages (Windows/Android/wasm).
         run: |
           {
-            echo 'packages=[{"name":"SyndiKit","path":"Packages/BrightDigit/SyndiKit"},{"name":"Contribute","path":"Packages/BrightDigit/Contribute"},{"name":"ContributeWordPress","path":"Packages/BrightDigit/ContributeWordPress"},{"name":"TransistorPublishPlugin","path":"Packages/BrightDigit/TransistorPublishPlugin"},{"name":"NPMPublishPlugin","path":"Packages/BrightDigit/NPMPublishPlugin"},{"name":"YoutubePublishPlugin","path":"Packages/BrightDigit/YoutubePublishPlugin"},{"name":"Spinetail","path":"Packages/BrightDigit/Spinetail"}]'
+            echo 'packages=[{"name":"SyndiKit","path":"Packages/BrightDigit/SyndiKit"},{"name":"Contribute","path":"Packages/BrightDigit/Contribute"},{"name":"ContributeWordPress","path":"Packages/BrightDigit/ContributeWordPress"},{"name":"TransistorPublishPlugin","path":"Packages/BrightDigit/TransistorPublishPlugin"},{"name":"NPMPublishPlugin","path":"Packages/BrightDigit/NPMPublishPlugin"},{"name":"YoutubePublishPlugin","path":"Packages/BrightDigit/YoutubePublishPlugin"},{"name":"Spinetail","path":"Packages/BrightDigit/Spinetail"},{"name":"ButtondownKit","path":"Packages/BrightDigit/ButtondownKit"}]'
             echo 'cross-packages=[{"name":"SyndiKit","path":"Packages/BrightDigit/SyndiKit"},{"name":"Contribute","path":"Packages/BrightDigit/Contribute"},{"name":"ContributeWordPress","path":"Packages/BrightDigit/ContributeWordPress"}]'
           } >> "$GITHUB_OUTPUT"
 
