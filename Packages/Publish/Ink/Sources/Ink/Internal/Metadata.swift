@@ -2,45 +2,61 @@
 *  Ink
 *  Copyright (c) John Sundell 2019
 *  MIT license, see LICENSE file for details
+*
+*  #40: Ink's leading `---` front-matter block is not part of CommonMark, so
+*  swift-markdown does not parse it. This retained pre-pass strips and decodes the
+*  front matter (line-based, replacing the old `Reader` implementation) before the
+*  body is handed to swift-markdown. `.metadataKeys`/`.metadataValues` modifiers are
+*  applied here exactly as before.
 */
 
-internal struct Metadata: Readable {
+internal struct Metadata {
     var values = [String : String]()
 
-    static func read(using reader: inout Reader) throws -> Metadata {
-        try require(reader.readCount(of: "-") == 3)
-        try reader.read("\n")
+    /// Parse a leading `---` … `---` metadata block from `lines`, returning the parsed
+    /// metadata and the index of the first body line. Returns `nil` if the input does
+    /// not begin with a valid front-matter block.
+    static func parse(lines: [Substring]) -> (metadata: Metadata, bodyLineIndex: Int)? {
+        // Find the first non-empty line; it must be exactly a `---` fence.
+        var index = 0
+        while index < lines.count, lines[index].allSatisfy(\.isWhitespace) {
+            index += 1
+        }
+
+        guard index < lines.count, isFence(lines[index]) else { return nil }
+        index += 1
 
         var metadata = Metadata()
         var lastKey: String?
 
-        while !reader.didReachEnd {
-            reader.discardWhitespacesAndNewlines()
+        while index < lines.count {
+            let line = lines[index]
+            index += 1
 
-            guard reader.currentCharacter != "-" else {
-                try require(reader.readCount(of: "-") == 3)
-                return metadata
+            if isFence(line) {
+                return (metadata, index)
             }
 
-            let key = try trim(reader.read(until: ":", required: false))
-
-            guard reader.previousCharacter == ":" else {
-                if let lastKey = lastKey {
-                    metadata.values[lastKey]?.append(" " + key)
-                }
-
+            if line.allSatisfy(\.isWhitespace) {
                 continue
             }
 
-            let value = trim(reader.readUntilEndOfLine())
+            if let separatorIndex = line.firstIndex(of: ":") {
+                let key = trim(line[..<separatorIndex])
+                let value = trim(line[line.index(after: separatorIndex)...])
 
-            if !value.isEmpty {
-                metadata.values[key] = value
-                lastKey = key
+                if !value.isEmpty {
+                    metadata.values[key] = value
+                    lastKey = key
+                }
+            } else if let lastKey {
+                // Continuation line for the previous value.
+                metadata.values[lastKey]?.append(" " + trim(line))
             }
         }
 
-        throw Reader.Error()
+        // No closing fence: not valid front matter.
+        return nil
     }
 
     func applyingModifiers(_ modifiers: ModifierCollection) -> Self {
@@ -65,10 +81,15 @@ internal struct Metadata: Readable {
 }
 
 private extension Metadata {
+    static func isFence(_ line: Substring) -> Bool {
+        let trimmed = trim(line)
+        return trimmed.count == 3 && trimmed.allSatisfy { $0 == "-" }
+    }
+
     static func trim(_ string: Substring) -> String {
-        String(string
-            .trimmingLeadingWhitespaces()
-            .trimmingTrailingWhitespaces()
-        )
+        var trimmed = string
+        while trimmed.first?.isWhitespace == true { trimmed = trimmed.dropFirst() }
+        while trimmed.last?.isWhitespace == true { trimmed = trimmed.dropLast() }
+        return String(trimmed)
     }
 }

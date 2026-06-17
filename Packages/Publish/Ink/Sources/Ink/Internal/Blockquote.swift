@@ -4,40 +4,25 @@
 *  MIT license, see LICENSE file for details
 */
 
-internal struct Blockquote: Fragment {
+internal struct Blockquote: Modifiable, HTMLConvertible, PlainTextConvertible {
     var modifierTarget: Modifier.Target { .blockquotes }
 
-    private var text: FormattedText
+    /// Pre-rendered HTML of the blockquote's block-level children, produced by the
+    /// swift-markdown visitor (#40). Ink's `Reader` used to build a `FormattedText`
+    /// here; the body now arrives already rendered (CommonMark-correct: the contained
+    /// paragraphs already carry their own `<p>` wrappers).
+    private var renderedBody: String
 
-    static func read(using reader: inout Reader) throws -> Blockquote {
-        try reader.read(">")
-        try reader.readWhitespaces()
-
-        var text = FormattedText.readLine(using: &reader)
-
-        while !reader.didReachEnd {
-            switch reader.currentCharacter {
-            case \.isNewline:
-                return Blockquote(text: text)
-            case ">":
-                reader.advanceIndex()
-            default:
-                break
-            }
-
-            text.append(FormattedText.readLine(using: &reader))
-        }
-
-        return Blockquote(text: text)
+    init(renderedBody: String) {
+        self.renderedBody = renderedBody
     }
 
     func html(usingURLs urls: NamedURLCollection,
               modifiers: ModifierCollection) -> String {
-        let body = text.html(usingURLs: urls, modifiers: modifiers)
-        return "<blockquote><p>\(body)</p></blockquote>"
+        "<blockquote>\(renderedBody)</blockquote>"
     }
 
     func plainText() -> String {
-        text.plainText()
+        renderedBody
     }
 }

@@ -4,51 +4,28 @@
 *  MIT license, see LICENSE file for details
 */
 
-internal struct Heading: Fragment {
+internal struct Heading: Modifiable, HTMLConvertible, PlainTextConvertible {
     var modifierTarget: Modifier.Target { .headings }
     var level: Int
 
-    private var text: FormattedText
+    /// Pre-rendered inline HTML of the heading text (#40).
+    private var renderedBody: String
+    /// Plain-text form, used for document-title inference.
+    private var plainTextValue: String
 
-    static func read(using reader: inout Reader) throws -> Heading {
-        let level = reader.readCount(of: "#")
-        try require(level > 0 && level < 7)
-        try reader.readWhitespaces()
-        let text = FormattedText.read(using: &reader, terminators: ["\n"])
-
-        return Heading(level: level, text: text)
+    init(level: Int, renderedBody: String, plainText: String) {
+        self.level = level
+        self.renderedBody = renderedBody
+        self.plainTextValue = plainText
     }
 
     func html(usingURLs urls: NamedURLCollection,
               modifiers: ModifierCollection) -> String {
-        let body = stripTrailingMarkers(
-            from: text.html(usingURLs: urls, modifiers: modifiers)
-        )
-
         let tagName = "h\(level)"
-        return "<\(tagName)>\(body)</\(tagName)>"
+        return "<\(tagName)>\(renderedBody)</\(tagName)>"
     }
 
     func plainText() -> String {
-        stripTrailingMarkers(from: text.plainText())
-    }
-}
-
-private extension Heading {
-    func stripTrailingMarkers(from text: String) -> String {
-        guard !text.isEmpty else { return text }
-
-        let lastCharacterIndex = text.index(before: text.endIndex)
-        var trimIndex = lastCharacterIndex
-
-        while text[trimIndex] == "#", trimIndex != text.startIndex {
-            trimIndex = text.index(before: trimIndex)
-        }
-
-        if trimIndex != lastCharacterIndex {
-            return String(text[..<trimIndex])
-        }
-
-        return text
+        plainTextValue
     }
 }
