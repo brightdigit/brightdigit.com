@@ -76,14 +76,14 @@ jobs:
 
           if [[ "${{ steps.check.outputs.full }}" == "true" ]]; then
             {
-              echo 'ubuntu-os=["noble","jammy"]'
-              echo 'ubuntu-swift=[{"version":"6.3"}]'
+              echo 'ubuntu-os=["noble"]'
+              echo 'ubuntu-swift=[{"version":"6.4"}]'
               echo 'ubuntu-type=["","wasm","wasm-embedded"]'
             } >> "$GITHUB_OUTPUT"
           else
             {
               echo 'ubuntu-os=["noble"]'
-              echo 'ubuntu-swift=[{"version":"6.3"}]'
+              echo 'ubuntu-swift=[{"version":"6.4"}]'
               echo 'ubuntu-type=[""]'
             } >> "$GITHUB_OUTPUT"
           fi
@@ -92,7 +92,7 @@ jobs:
     name: Build ${{ matrix.package.name }} on Ubuntu
     needs: configure
     runs-on: ubuntu-latest
-    container: swift:${{ matrix.swift.version }}-${{ matrix.os }}
+    container: swiftlang/swift:nightly-6.4.x-${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
@@ -224,7 +224,7 @@ jobs:
   build-macos:
     name: Build ${{ matrix.package.name }} on macOS
     needs: configure
-    runs-on: macos-26
+    runs-on: [self-hosted, macOS]
     strategy:
       fail-fast: false
       matrix:
@@ -236,7 +236,7 @@ jobs:
         uses: brightdigit/swift-build@v1
         with:
           working-directory: ${{ matrix.package.path }}
-          xcode: "/Applications/Xcode_26.4.app"
+          xcode: "/Applications/Xcode-beta.app"
       - name: Process Coverage
         if: steps.build.outputs.contains-code-coverage == 'true'
         uses: sersoft-gmbh/swift-coverage-action@v5
