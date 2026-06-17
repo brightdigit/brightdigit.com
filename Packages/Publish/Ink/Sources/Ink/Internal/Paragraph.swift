@@ -4,22 +4,24 @@
 *  MIT license, see LICENSE file for details
 */
 
-internal struct Paragraph: Fragment {
+internal struct Paragraph: Modifiable, HTMLConvertible, PlainTextConvertible {
     var modifierTarget: Modifier.Target { .paragraphs }
 
-    private var text: FormattedText
+    /// Pre-rendered inline HTML of the paragraph (#40).
+    private var renderedBody: String
+    private var plainTextValue: String
 
-    static func read(using reader: inout Reader) -> Paragraph {
-        return Paragraph(text: .read(using: &reader))
+    init(renderedBody: String, plainText: String) {
+        self.renderedBody = renderedBody
+        self.plainTextValue = plainText
     }
 
     func html(usingURLs urls: NamedURLCollection,
               modifiers: ModifierCollection) -> String {
-        let body = text.html(usingURLs: urls, modifiers: modifiers)
-        return "<p>\(body)</p>"
+        "<p>\(renderedBody)</p>"
     }
 
     func plainText() -> String {
-        text.plainText()
+        plainTextValue
     }
 }

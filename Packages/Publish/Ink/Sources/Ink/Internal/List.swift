@@ -4,130 +4,15 @@
 *  MIT license, see LICENSE file for details
 */
 
-internal struct List: Fragment {
+internal struct List: Modifiable, HTMLConvertible, PlainTextConvertible {
     var modifierTarget: Modifier.Target { .lists }
 
-    private var listMarker: Character
     private var kind: Kind
-    private var items = [Item]()
+    private var items: [Item]
 
-    static func read(using reader: inout Reader) throws -> List {
-        // Calculate initial indentation
-        var indentationLength = 0
-        while reader.previousCharacter?.isSameLineWhitespace == true {
-            indentationLength += 1
-            reader.rewindIndex()
-        }
-        reader.advanceIndex(by: indentationLength)
-        
-        return try read(using: &reader, indentationLength: indentationLength)
-    }
-
-    private static func read(using reader: inout Reader,
-                             indentationLength: Int) throws -> List {
-        let startIndex = reader.currentIndex
-        let isOrdered = reader.currentCharacter.isNumber
-
-        var list: List
-
-        if isOrdered {
-            let firstNumberString = try reader.readCharacters(matching: \.isNumber, max: 9)
-            let firstNumber = Int(firstNumberString) ?? 1
-            
-            let listMarker = try reader.readCharacter(in: List.orderedListMarkers)
-            list = List(listMarker: listMarker, kind: .ordered(firstNumber: firstNumber))
-        } else {
-            let listMarker = reader.currentCharacter
-            list = List(listMarker: listMarker, kind: .unordered)
-        }
-
-        reader.moveToIndex(startIndex)
-
-        func addTextToLastItem() throws {
-            try require(!list.items.isEmpty)
-            let text = FormattedText.readLine(using: &reader)
-            var lastItem = list.items.removeLast()
-            lastItem.text.append(text, separator: " ")
-            list.items.append(lastItem)
-        }
-
-        while !reader.didReachEnd {
-            switch reader.currentCharacter {
-            case \.isNewline:
-                return list
-            case \.isWhitespace:
-                guard !list.items.isEmpty else {
-                    try reader.readWhitespaces()
-                    continue
-                }
-
-                let itemIndentationLength = try reader.readWhitespaces().count
-
-                if itemIndentationLength < indentationLength {
-                    return list
-                } else if itemIndentationLength == indentationLength {
-                    continue
-                }
-
-                let fallbackIndex = reader.currentIndex
-
-                do {
-                    let nestedList = try List.read(
-                        using: &reader, indentationLength:
-                        itemIndentationLength
-                    )
-
-                    var lastItem = list.items.removeLast()
-                    lastItem.nestedList = nestedList
-                    list.items.append(lastItem)
-                } catch {
-                    reader.moveToIndex(fallbackIndex)
-                    try addTextToLastItem()
-                }
-            case \.isNumber:
-                guard case .ordered = list.kind else {
-                    try addTextToLastItem()
-                    continue
-                }
-
-                let startIndex = reader.currentIndex
-
-                do {
-                    try reader.readCharacters(matching: \.isNumber, max: 9)
-                    let foundMarker = try reader.readCharacter(in: List.orderedListMarkers)
-
-                    guard foundMarker == list.listMarker else {
-                        reader.moveToIndex(startIndex)
-                        return list
-                    }
-
-                    try reader.readWhitespaces()
-
-                    list.items.append(Item(text: .readLine(using: &reader)))
-                } catch {
-                    reader.moveToIndex(startIndex)
-                    try addTextToLastItem()
-                }
-            case "-", "*", "+":
-                guard let nextCharacter = reader.nextCharacter,
-                      nextCharacter.isSameLineWhitespace else {
-                    try addTextToLastItem()
-                    continue
-                }
-
-                guard reader.currentCharacter == list.listMarker else {
-                    return list
-                }
-
-                reader.advanceIndex()
-                try reader.readWhitespaces()
-                list.items.append(Item(text: .readLine(using: &reader)))
-            default:
-                try addTextToLastItem()
-            }
-        }
-
-        return list
+    init(kind: Kind, renderedItems: [Item]) {
+        self.kind = kind
+        self.items = renderedItems
     }
 
     func html(usingURLs urls: NamedURLCollection,
@@ -166,21 +51,24 @@ internal struct List: Fragment {
                 string.append(", ")
             }
 
-            string.append(item.text.plainText())
+            string.append(item.plainText())
         }
     }
 }
 
-private extension List {
+internal extension List {
+    /// A single list item, holding its pre-rendered inner HTML (#40). The item's first
+    /// paragraph is rendered "tight" (no `<p>`) and any nested lists/blocks follow.
     struct Item: HTMLConvertible {
-        var text: FormattedText
-        var nestedList: List? = nil
+        var renderedText: String
 
         func html(usingURLs urls: NamedURLCollection,
                   modifiers: ModifierCollection) -> String {
-            let textHTML = text.html(usingURLs: urls, modifiers: modifiers)
-            let listHTML = nestedList?.html(usingURLs: urls, modifiers: modifiers)
-            return "<li>\(textHTML)\(listHTML ?? "")</li>"
+            "<li>\(renderedText)</li>"
+        }
+
+        func plainText() -> String {
+            renderedText
         }
     }
 
@@ -188,6 +76,4 @@ private extension List {
         case unordered
         case ordered(firstNumber: Int)
     }
-
-    static let orderedListMarkers: Set<Character> = [".", ")"]
 }

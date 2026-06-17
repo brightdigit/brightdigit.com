@@ -4,18 +4,10 @@
 *  MIT license, see LICENSE file for details
 */
 
-internal struct HorizontalLine: Fragment {
+internal struct HorizontalLine: Modifiable, HTMLConvertible, PlainTextConvertible {
     var modifierTarget: Modifier.Target { .horizontalLines }
 
-    static func read(using reader: inout Reader) throws -> HorizontalLine {
-        guard reader.currentCharacter.isAny(of: ["-", "*"]) else {
-            throw Reader.Error()
-        }
-
-        try require(reader.readCount(of: reader.currentCharacter) > 2)
-        try require(reader.readUntilEndOfLine().isEmpty)
-        return HorizontalLine()
-    }
+    init() {}
 
     func html(usingURLs urls: NamedURLCollection,
               modifiers: ModifierCollection) -> String {
