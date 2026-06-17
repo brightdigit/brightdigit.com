@@ -45,7 +45,7 @@ let package = Package(
 
     .package(url: "https://github.com/jpsim/Yams.git", from: "6.0.0"),
     .package(url: "https://github.com/apple/swift-argument-parser", from: "1.3.0"),
-    .package(url: "https://github.com/brightdigit/ConfigKeyKit.git", from: "1.0.0-beta.1"),
+    .package(path: "Packages/BrightDigit/ConfigKeyKit"),
     .package(
       url: "https://github.com/apple/swift-configuration",
       from: "1.0.0",
