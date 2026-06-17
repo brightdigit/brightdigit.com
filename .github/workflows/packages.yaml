@@ -78,7 +78,7 @@ jobs:
             {
               echo 'ubuntu-os=["noble"]'
               echo 'ubuntu-swift=[{"version":"6.4"}]'
-              echo 'ubuntu-type=["","wasm","wasm-embedded"]'
+              echo 'ubuntu-type=[""]'  # wasm/wasm-embedded disabled on phase-04-openapi
             } >> "$GITHUB_OUTPUT"
           else
             {
@@ -146,7 +146,10 @@ jobs:
         id: coverage-files
         with:
           search-paths: ${{ matrix.package.path }}/.build
-          fail-on-empty-output: true
+          # Swift 6.4 on Linux emits profdata that swift-coverage-action@v5 cannot
+          # convert (new .build/out/Products layout); macOS converts fine. Keep
+          # Linux coverage best-effort so a conversion miss doesn't fail the build.
+          fail-on-empty-output: false
       - name: Upload coverage to Codecov
         if: steps.build.outputs.contains-code-coverage == 'true'
         uses: codecov/codecov-action@v7
@@ -159,66 +162,11 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ${{ join(fromJSON(steps.coverage-files.outputs.files), ',') }}
 
-  build-windows:
-    name: Build ${{ matrix.package.name }} on Windows
-    needs: configure
-    if: ${{ needs.configure.outputs.full-matrix == 'true' }}
-    runs-on: ${{ matrix.runs-on }}
-    strategy:
-      fail-fast: false
-      matrix:
-        package: ${{ fromJSON(needs.configure.outputs.cross-packages) }}
-        runs-on: [windows-2022, windows-2025]
-        swift:
-          - version: swift-6.3-release
-            build: 6.3-RELEASE
-    steps:
-      - uses: actions/checkout@v6
-      - uses: brightdigit/swift-build@v1
-        id: build
-        with:
-          working-directory: ${{ matrix.package.path }}
-          windows-swift-version: ${{ matrix.swift.version }}
-          windows-swift-build: ${{ matrix.swift.build }}
-
-  build-android:
-    name: Build ${{ matrix.package.name }} on Android
-    needs: configure
-    if: ${{ needs.configure.outputs.full-matrix == 'true' }}
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        package: ${{ fromJSON(needs.configure.outputs.cross-packages) }}
-        swift:
-          - version: "6.3"
-        # Single API level: tests are disabled (android-run-tests: false), so the
-        # emulator never runs and the level only needs to be a valid build target.
-        # API 36 dropped: Swift 6.x Android SDK lacks API-36 CRT objects.
-        # See SundialKit's workflow for details.
-        android-api-level: [34]
-    steps:
-      - uses: actions/checkout@v6
-      - name: Free disk space
-        uses: jlumbroso/free-disk-space@v1.3.1
-        with:
-          tool-cache: false
-          android: false
-          dotnet: true
-          haskell: true
-          large-packages: true
-          docker-images: true
-          swap-storage: true
-      - uses: brightdigit/swift-build@v1
-        with:
-          working-directory: ${{ matrix.package.path }}
-          type: android
-          android-swift-version: ${{ matrix.swift.version }}
-          android-api-level: ${{ matrix.android-api-level }}
-          # Build-only on Android: SyndiKit's tests load on-disk Data/ fixtures
-          # (Data/OPML, blogs.json) via path lookup, which the emulator test
-          # runner doesn't stage onto the device. Compilation is still verified.
-          android-run-tests: false
+  # NOTE: Windows and Android build jobs are disabled on phase-04-openapi.
+  # The OpenAPI integration branch targets Ubuntu (nightly Swift 6.4) + macOS
+  # only; the cross-platform legs (and wasm) are out of scope here. Restore the
+  # build-windows / build-android jobs from git history (or main's packages.yaml)
+  # when reintroducing cross-platform CI.
 
   # Minimal macOS build — always runs (SPM, current Xcode)
   build-macos:
@@ -320,7 +268,7 @@ jobs:
     # under CI ($CI is set) and builds tests itself, resolving siblings
     # in-place.
     if: ${{ !cancelled() && !failure() }}
-    needs: [configure, build-ubuntu, build-windows, build-android, build-macos, build-macos-platforms]
+    needs: [configure, build-ubuntu, build-macos, build-macos-platforms]
     runs-on: ubuntu-latest
     # Lint on the Swift 6.4 nightly (the project's target toolchain) so swift-format
     # 604 builds against a matching swift-syntax. On the 6.3 image the 604 tool
