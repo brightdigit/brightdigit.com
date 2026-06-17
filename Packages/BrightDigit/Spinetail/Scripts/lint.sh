@@ -72,11 +72,9 @@ run_command "$MISE_BIN" install
 # (Types.swift / Client.swift under Sources/SpinetailOpenAPI) is generated
 # ahead of time by Scripts/generate-openapi-spinetail.sh and must not be linted
 # or reformatted — it is excluded from SwiftLint via .swiftlint.yml and from
-# swift-format by enumerating only the hand-written files here.
+# swift-format by formatting only the hand-written Sources/Spinetail target.
 SWIFT_FORMAT_TARGETS=(
-	Sources/SpinetailOpenAPI/AuthenticationMiddleware.swift
-	Sources/SpinetailOpenAPI/MailchimpCampaign.swift
-	Sources/SpinetailOpenAPI/MailchimpClient.swift
+	Sources/Spinetail
 	Tests
 )
 

@@ -1,4 +1,5 @@
 import Foundation
+import SpinetailOpenAPI
 
 /// A Mailchimp campaign, reduced to the fields the newsletter importer reads.
 ///
@@ -47,7 +48,7 @@ public struct MailchimpCampaign: Equatable, Sendable {
 
 extension MailchimpCampaign {
   /// Maps a generated OpenAPI campaign payload into the flat importer model.
-  init(
+  internal init(
     from campaign: Operations.getCampaigns.Output.Ok.Body.jsonPayload
       .campaignsPayloadPayload
   ) {

@@ -4,6 +4,7 @@ import Contribute
   import FoundationNetworking
 #endif
 
+@available(*, deprecated, message: "Scheduled for removal; do not use in new code.")
 extension Newsletter {
   /// Translates a newsletter ``Source`` into its ``FrontMatter``.
   public struct FrontMatterTranslator: Contribute.FrontMatterTranslator {

@@ -11,19 +11,19 @@ import OpenAPIRuntime
 /// Mailchimp's Marketing API authenticates with HTTP Basic, using any string
 /// as the username and the API key as the password. This middleware attaches
 /// the corresponding `Authorization` header to outgoing requests.
-struct AuthenticationMiddleware: ClientMiddleware {
+internal struct AuthenticationMiddleware: ClientMiddleware {
   /// The username component. Mailchimp ignores the value; any non-empty string
   /// works. Defaults to `"anystring"`, matching Mailchimp's documentation.
   private let username: String
   /// The API key, sent as the Basic-auth password.
   private let apiKey: String
 
-  init(apiKey: String, username: String = "anystring") {
+  internal init(apiKey: String, username: String = "anystring") {
     self.apiKey = apiKey
     self.username = username
   }
 
-  func intercept(
+  internal func intercept(
     _ request: HTTPRequest,
     body: HTTPBody?,
     baseURL: URL,

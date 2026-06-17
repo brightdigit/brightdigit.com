@@ -4,6 +4,7 @@ import Foundation
   import FoundationNetworking
 #endif
 
+@available(*, deprecated, message: "Scheduled for removal; do not use in new code.")
 extension Newsletter {
   /// The YAML front matter emitted for a newsletter issue.
   public struct FrontMatter: Codable {

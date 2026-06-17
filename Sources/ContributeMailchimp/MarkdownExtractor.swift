@@ -1,5 +1,6 @@
 import Contribute
 
+@available(*, deprecated, message: "Scheduled for removal; do not use in new code.")
 extension Newsletter {
   /// Extracts the already-rendered Markdown body from a newsletter ``Source``.
   public struct MarkdownExtractor: Contribute.MarkdownExtractor {

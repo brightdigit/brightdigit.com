@@ -11,12 +11,10 @@ let package = Package(
     .watchOS(.v9)
   ],
   products: [
-    // swift-openapi-generator async Mailchimp Marketing API client. The legacy
-    // SwagGen/Prch `Spinetail` target has been removed (#37/#45); Types.swift /
-    // Client.swift are generated ahead of time by
-    // Scripts/generate-openapi-spinetail.sh and committed under
-    // Sources/SpinetailOpenAPI (no build plugin).
-    .library(name: "SpinetailOpenAPI", targets: ["SpinetailOpenAPI"])
+    // The public product is the abstract `Spinetail` layer (async Mailchimp
+    // client, campaign DTO, auth middleware). It wraps the generated
+    // swift-openapi-generator client, which consumers never see directly.
+    .library(name: "Spinetail", targets: ["Spinetail"])
   ],
   dependencies: [
     .package(
@@ -35,6 +33,9 @@ let package = Package(
     )
   ],
   targets: [
+    // GENERATED ONLY: Types.swift / Client.swift are generated ahead of time by
+    // Scripts/generate-openapi-spinetail.sh and committed (no build plugin).
+    // The generator config lives alongside the output but is not a Swift source.
     .target(
       name: "SpinetailOpenAPI",
       dependencies: [
@@ -43,21 +44,28 @@ let package = Package(
         .product(name: "HTTPTypes", package: "swift-http-types")
       ],
       exclude: [
-        // Generator inputs/config live alongside the committed output but are
-        // not Swift sources.
-        "openapi-generator-config.yaml",
-        "filtered-openapi.yaml"
-      ],
-      swiftSettings: [.swiftLanguageMode(.v6)]
+        "openapi-generator-config.yaml"
+      ]
     ),
-    .testTarget(
-      name: "SpinetailOpenAPITests",
+    // Abstract layer: the hand-written async wrapper, campaign DTO, and auth
+    // middleware. The only target consumers depend on.
+    .target(
+      name: "Spinetail",
       dependencies: [
         "SpinetailOpenAPI",
         .product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
+        .product(name: "OpenAPIURLSession", package: "swift-openapi-urlsession"),
         .product(name: "HTTPTypes", package: "swift-http-types")
-      ],
-      swiftSettings: [.swiftLanguageMode(.v6)]
+      ]
+    ),
+    .testTarget(
+      name: "SpinetailTests",
+      dependencies: [
+        "Spinetail",
+        "SpinetailOpenAPI",
+        .product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
+        .product(name: "HTTPTypes", package: "swift-http-types")
+      ]
     )
   ]
 )

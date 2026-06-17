@@ -1,9 +1,10 @@
 import Contribute
 import Foundation
-import SpinetailOpenAPI
+import Spinetail
 
 /// The newsletter content type, importing BrightDigit newsletters from
 /// Mailchimp campaigns via the swift-openapi-generator async client.
+@available(*, deprecated, message: "Scheduled for removal; do not use in new code.")
 public enum Newsletter: ContentType {
   public typealias SourceType = Source
   public typealias ContentURLGeneratorType = BasicContentURLGenerator
@@ -11,6 +12,7 @@ public enum Newsletter: ContentType {
   public typealias FrontMatterTranslatorType = FrontMatterTranslator
 }
 
+@available(*, deprecated, message: "Scheduled for removal; do not use in new code.")
 extension Newsletter {
   /// Builds newsletter sources from the sent campaigns of a Mailchimp list.
   ///

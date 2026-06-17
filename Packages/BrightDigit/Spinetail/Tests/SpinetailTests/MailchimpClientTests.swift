@@ -1,10 +1,11 @@
 import Foundation
 import OpenAPIRuntime
-import XCTest
+import SpinetailOpenAPI
+import Testing
 
-@testable import SpinetailOpenAPI
+@testable import Spinetail
 
-final class MailchimpClientTests: XCTestCase {
+@Suite internal struct MailchimpClientTests {
   private static let listID = "list123"
   private static let campaignsPath = "/campaigns"
   private static let contentPath = "/campaigns/camp1/content"
@@ -22,25 +23,21 @@ final class MailchimpClientTests: XCTestCase {
   }
 
   /// The base URL host is derived from the API key's datacenter suffix.
-  func testServerURLDerivedFromAPIKey() throws {
+  @Test internal func serverURLDerivedFromAPIKey() throws {
     let url = try MailchimpClient.serverURL(forAPIKey: "key-us21")
-    XCTAssertEqual(url.absoluteString, "https://us21.api.mailchimp.com/3.0")
+    #expect(url.absoluteString == "https://us21.api.mailchimp.com/3.0")
   }
 
   /// An API key with no datacenter suffix is rejected.
-  func testServerURLRejectsKeyWithoutDatacenter() {
-    XCTAssertThrowsError(
+  @Test internal func serverURLRejectsKeyWithoutDatacenter() {
+    #expect(throws: MailchimpClient.ClientError.invalidAPIKey) {
       try MailchimpClient.serverURL(forAPIKey: "nodatacenter")
-    ) { error in
-      XCTAssertEqual(
-        error as? MailchimpClient.ClientError, .invalidAPIKey
-      )
     }
   }
 
   /// `sentCampaigns(forListID:)` maps the OK response into flat models and
   /// attaches the Basic-auth header.
-  func testListCampaignsMapsFieldsAndAuthenticates() async throws {
+  @Test internal func listCampaignsMapsFieldsAndAuthenticates() async throws {
     let transport = MockTransport(
       responses: [Self.campaignsPath: [Fixtures.campaigns]]
     )
@@ -48,29 +45,22 @@ final class MailchimpClientTests: XCTestCase {
 
     let campaigns = try await client.sentCampaigns(forListID: Self.listID)
 
-    XCTAssertEqual(campaigns.map(\.id), ["camp1", "camp2"])
-    XCTAssertEqual(
-      campaigns.first?.subjectLine, "BrightDigit Newsletter #1"
-    )
-    XCTAssertEqual(campaigns.first?.title, "Issue One")
-    XCTAssertEqual(campaigns.first?.previewText, "first preview")
-    XCTAssertEqual(
-      campaigns.first?.segmentText, "brightdigit-business"
-    )
-    XCTAssertEqual(
-      campaigns.first?.socialCardImageURL, "https://img/1.jpg"
-    )
-    XCTAssertEqual(
-      campaigns.first?.longArchiveURL, "https://archive/1"
-    )
+    #expect(campaigns.map(\.id) == ["camp1", "camp2"])
+    let first = try #require(campaigns.first)
+    #expect(first.subjectLine == "BrightDigit Newsletter #1")
+    #expect(first.title == "Issue One")
+    #expect(first.previewText == "first preview")
+    #expect(first.segmentText == "brightdigit-business")
+    #expect(first.socialCardImageURL == "https://img/1.jpg")
+    #expect(first.longArchiveURL == "https://archive/1")
 
     let expectedAuth =
       "Basic " + Data("anystring:\(Self.apiKey)".utf8).base64EncodedString()
-    XCTAssertEqual(transport.authorizationHeaders.first, expectedAuth)
+    #expect(transport.authorizationHeaders.first == expectedAuth)
   }
 
   /// `archiveHTML(forCampaignID:)` returns the campaign's `archive_html`.
-  func testArchiveHTMLReturnsArchiveHTML() async throws {
+  @Test internal func archiveHTMLReturnsArchiveHTML() async throws {
     let transport = MockTransport(
       responses: [Self.contentPath: [Fixtures.campaignContent]]
     )
@@ -78,27 +68,26 @@ final class MailchimpClientTests: XCTestCase {
 
     let html = try await client.archiveHTML(forCampaignID: "camp1")
 
-    XCTAssertEqual(html, "<html><body>Hello</body></html>")
+    #expect(html == "<html><body>Hello</body></html>")
   }
 
   /// A content response missing `archive_html` surfaces `missingHTML`.
-  func testArchiveHTMLThrowsWhenMissing() async throws {
+  @Test internal func archiveHTMLThrowsWhenMissing() async throws {
     let transport = MockTransport(
       responses: [Self.contentPath: [Fixtures.campaignContentNoHTML]]
     )
     let client = try makeClient(transport)
 
-    do {
+    await #expect(
+      throws: MailchimpClient.ClientError.missingHTML(campaignID: "camp1")
+    ) {
       _ = try await client.archiveHTML(forCampaignID: "camp1")
-      XCTFail("expected ClientError.missingHTML")
-    } catch let error as MailchimpClient.ClientError {
-      XCTAssertEqual(error, .missingHTML(campaignID: "camp1"))
     }
   }
 
   /// A non-200 (problem+json) response surfaces as
   /// `ClientError.invalidResponse`.
-  func testNon200ResponseThrows() async throws {
+  @Test internal func non200ResponseThrows() async throws {
     let transport = MockTransport(
       responses: [Self.campaignsPath: [Fixtures.problem]],
       status: 500,
@@ -106,11 +95,8 @@ final class MailchimpClientTests: XCTestCase {
     )
     let client = try makeClient(transport)
 
-    do {
+    await #expect(throws: MailchimpClient.ClientError.invalidResponse) {
       _ = try await client.sentCampaigns(forListID: Self.listID)
-      XCTFail("expected ClientError.invalidResponse")
-    } catch let error as MailchimpClient.ClientError {
-      XCTAssertEqual(error, .invalidResponse)
     }
   }
 }

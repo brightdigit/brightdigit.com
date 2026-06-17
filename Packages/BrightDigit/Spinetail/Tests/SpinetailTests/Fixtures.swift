@@ -1,6 +1,6 @@
-enum Fixtures {
+internal enum Fixtures {
   /// A `getCampaigns` OK response with two sent campaigns.
-  static let campaigns = """
+  internal static let campaigns = """
     {"campaigns":[\
     {"id":"camp1","long_archive_url":"https://archive/1",\
     "send_time":"2020-01-01T00:00:00+00:00",\
@@ -18,17 +18,17 @@ enum Fixtures {
     """
 
   /// A `getCampaignsIdContent` OK response carrying archive HTML.
-  static let campaignContent = """
+  internal static let campaignContent = """
     {"archive_html":"<html><body>Hello</body></html>","html":"<p>Hello</p>"}
     """
 
   /// A `getCampaignsIdContent` OK response with no archive HTML.
-  static let campaignContentNoHTML = """
+  internal static let campaignContentNoHTML = """
     {"html":"<p>Hello</p>"}
     """
 
   /// A Mailchimp problem+json error body, returned for non-200 responses.
-  static let problem = """
+  internal static let problem = """
     {"type":"https://mailchimp.com/developer/marketing/docs/errors/",\
     "title":"Internal Server Error","status":500,\
     "detail":"An unexpected internal error occurred.","instance":"abc"}

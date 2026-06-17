@@ -3,7 +3,7 @@ import BrightDigitSite
 import Contribute
 import ContributeMailchimp
 import Foundation
-import SpinetailOpenAPI
+import Spinetail
 import Tagscriber
 
 #if canImport(FoundationNetworking)

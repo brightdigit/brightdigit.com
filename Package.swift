@@ -60,6 +60,7 @@ let package = Package(
         "ContributeMailchimp",
         "ContributeWordPress",
         "Tagscriber",
+        .product(name: "Spinetail", package: "Spinetail"),
         .product(name: "ArgumentParser", package: "swift-argument-parser"),
       ]
     ),
@@ -84,7 +85,7 @@ let package = Package(
       name: "ContributeMailchimp",
       dependencies: [
         "Contribute",
-        .product(name: "SpinetailOpenAPI", package: "Spinetail")
+        .product(name: "Spinetail", package: "Spinetail")
       ]
     ),
     .target(

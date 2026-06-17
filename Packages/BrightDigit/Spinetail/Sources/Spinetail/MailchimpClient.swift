@@ -1,6 +1,7 @@
 import Foundation
 import OpenAPIRuntime
 import OpenAPIURLSession
+import SpinetailOpenAPI
 
 #if canImport(FoundationNetworking)
   import FoundationNetworking
@@ -29,7 +30,7 @@ public struct MailchimpClient: Sendable {
   /// API caps `count` at 1000.
   private static let maxCount = 1_000
 
-  private let underlying: any APIProtocol
+  private let underlying: Client
 
   /// Creates a client from a Mailchimp API key.
   ///
@@ -58,7 +59,7 @@ public struct MailchimpClient: Sendable {
   ///
   /// Primarily used by tests to inject a fixture-replaying transport (the
   /// supplied client is expected to carry its own auth/transport setup).
-  public init(client: any APIProtocol) {
+  public init(client: Client) {
     underlying = client
   }
 
@@ -70,7 +71,7 @@ public struct MailchimpClient: Sendable {
   /// - Parameter apiKey: The Mailchimp API key, including its datacenter suffix.
   /// - Returns: The datacenter-specific base URL.
   /// - Throws: ``ClientError/invalidAPIKey`` if no datacenter can be derived.
-  static func serverURL(forAPIKey apiKey: String) throws -> URL {
+  internal static func serverURL(forAPIKey apiKey: String) throws -> URL {
     guard let datacenter = apiKey.split(separator: "-").last,
       !datacenter.isEmpty,
       datacenter != apiKey[...]
