@@ -1,5 +1,5 @@
 {
-  "originHash" : "7f9d6762f406ae5162bdc17df108b2bda90b2e82db85c7010e6762b20bec8fa4",
+  "originHash" : "15fa28ef45ee35e946de82991531905f933bfabfbc835c4294d2f082bad4726b",
   "pins" : [
     {
       "identity" : "kanna",
@@ -51,8 +51,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swiftlang/swift-cmark.git",
       "state" : {
-        "revision" : "924936d0427cb25a61169739a7660230bffa6ea6",
-        "version" : "0.8.0"
+        "branch" : "gfm",
+        "revision" : "0101bf2c6ff6a218f93150f340fe5ccf76d9f3aa"
       }
     },
     {
@@ -60,8 +60,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swiftlang/swift-markdown.git",
       "state" : {
-        "revision" : "3c6f9523da3a1ec2fd829673e472d95b8097a3b8",
-        "version" : "0.8.0"
+        "branch" : "main",
+        "revision" : "4661b550c55abde97d14e35b89e094084669f40a"
       }
     },
     {
@@ -69,8 +69,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/CoreOffice/XMLCoder",
       "state" : {
-        "revision" : "b2b5d72345bab9e1938a483cf862b498aeed3796",
-        "version" : "0.18.1"
+        "revision" : "42f62383dbcd074440cb1f6a750b9c02df9e7325",
+        "version" : "0.18.2"
       }
     },
     {

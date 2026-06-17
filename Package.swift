@@ -44,9 +44,12 @@ let package = Package(
     .package(url: "https://github.com/apple/swift-argument-parser", from: "1.3.0"),
     .package(url: "https://github.com/tid-kijyun/Kanna.git", from: "5.2.2"),
     .package(url: "https://github.com/eneko/MarkdownGenerator.git", from: "0.4.0"),
-    // #40: swift-markdown will replace Ink as the Publish markdown parser.
+    // #40: swift-markdown will replace Ink's parser as the Publish markdown front end.
     // Added (resolves only) during the spike; not yet wired into any target.
-    .package(url: "https://github.com/swiftlang/swift-markdown.git", from: "0.6.0")
+    // Pinned to `branch: "main"` (standardizing with PR #86): swift-markdown has no
+    // semver tags compatible with the pre-release Swift 6.4 toolchain, so the project
+    // tracks main until a compatible tagged release exists.
+    .package(url: "https://github.com/swiftlang/swift-markdown.git", branch: "main")
   ],
   targets: [
     .executableTarget(
