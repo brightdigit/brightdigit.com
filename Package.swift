@@ -43,7 +43,10 @@ let package = Package(
     .package(url: "https://github.com/jpsim/Yams.git", from: "6.0.0"),
     .package(url: "https://github.com/apple/swift-argument-parser", from: "1.3.0"),
     .package(url: "https://github.com/tid-kijyun/Kanna.git", from: "5.2.2"),
-    .package(url: "https://github.com/eneko/MarkdownGenerator.git", from: "0.4.0")
+    .package(url: "https://github.com/eneko/MarkdownGenerator.git", from: "0.4.0"),
+    // #40: swift-markdown will replace Ink as the Publish markdown parser.
+    // Added (resolves only) during the spike; not yet wired into any target.
+    .package(url: "https://github.com/swiftlang/swift-markdown.git", from: "0.6.0")
   ],
   targets: [
     .executableTarget(
