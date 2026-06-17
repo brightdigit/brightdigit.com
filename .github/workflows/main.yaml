@@ -170,6 +170,12 @@ jobs:
       # mise-action installs mise and the .mise.toml tools with its own cache
       # (swift-format is built from source via the spm backend, ~11 min).
       - uses: jdx/mise-action@v4
+        env:
+          # Raise the default 30s download timeout: GitHub throttles the SwiftLint
+          # release zip when fetched under load. Authenticate via the token to lift
+          # the unauthenticated rate limit.
+          MISE_HTTP_TIMEOUT: 300s
+          MISE_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           cache: true
 
