@@ -143,7 +143,7 @@ jobs:
     container:
       image: brightdigit/publish-xml:6.4
     concurrency:
-        group: build
+        group: build-${{ github.ref }}
         cancel-in-progress: true
 
     steps:
@@ -187,7 +187,7 @@ jobs:
     container:
       image: brightdigit/publish-xml:6.4
     concurrency:
-        group: package
+        group: package-${{ github.ref }}
         cancel-in-progress: true
 
     steps:
