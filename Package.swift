@@ -60,7 +60,9 @@ let package = Package(
     // Pinned to `branch: "main"` (standardizing with PR #86): swift-markdown has no
     // semver tags compatible with the pre-release Swift 6.4 toolchain, so the project
     // tracks main until a compatible tagged release exists.
-    .package(url: "https://github.com/swiftlang/swift-markdown.git", branch: "main")
+    .package(url: "https://github.com/swiftlang/swift-markdown.git", branch: "main"),
+    .package(url: "https://github.com/scinfu/SwiftSoup.git", from: "2.7.0")
+
   ],
   targets: [
     .executableTarget(
@@ -114,9 +116,9 @@ let package = Package(
     .target(
       name: "Tagscriber",
       dependencies: [
-        "Kanna",
+        "SwiftSoup",
         "Contribute",
-        "MarkdownGenerator",
+        .product(name: "Markdown", package: "swift-markdown"),
         "ShellOut"
       ]
     ),
