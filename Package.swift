@@ -9,7 +9,10 @@ import PackageDescription
 let package = Package(
   name: "BrightDigit",
   platforms: [
-    .macOS(.v13)
+    // Raised from .v13 for issue #44: ConfigKeyKit 1.0.0-beta.1 requires macOS 15.
+    // Deploy target is Linux (no platform floor), so this only affects local
+    // macOS development/builds. See Documentation/Migration/44-config-migration.md.
+    .macOS(.v15)
   ],
   products: [
     .executable(
@@ -42,6 +45,12 @@ let package = Package(
 
     .package(url: "https://github.com/jpsim/Yams.git", from: "6.0.0"),
     .package(url: "https://github.com/apple/swift-argument-parser", from: "1.3.0"),
+    .package(url: "https://github.com/brightdigit/ConfigKeyKit.git", from: "1.0.0-beta.1"),
+    .package(
+      url: "https://github.com/apple/swift-configuration",
+      from: "1.0.0",
+      traits: [.defaults, "CommandLineArguments"]
+    ),
     .package(url: "https://github.com/tid-kijyun/Kanna.git", from: "5.2.2"),
     .package(url: "https://github.com/eneko/MarkdownGenerator.git", from: "0.4.0"),
     // #40: swift-markdown is now the Publish markdown front end — it replaced Ink's
@@ -69,6 +78,8 @@ let package = Package(
         "ContributeWordPress",
         "Tagscriber",
         .product(name: "ArgumentParser", package: "swift-argument-parser"),
+        .product(name: "ConfigKeyKit", package: "ConfigKeyKit"),
+        .product(name: "Configuration", package: "swift-configuration"),
       ]
     ),
     .target(
