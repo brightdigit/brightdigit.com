@@ -6,15 +6,18 @@
 # SwiftPM build/command plugin).
 #
 # Usage:
-#   Scripts/generate-openapi.sh <library>            # filter + generate
+#   Scripts/generate-openapi.sh <library>            # generate
 #   Scripts/generate-openapi.sh <library> --refresh  # re-fetch + convert spec first
 #   Scripts/generate-openapi.sh <library> --check     # regenerate to a temp dir and diff
 #
 # Per-library layout (relative to the package root):
 #   openapi/<spec>                       full committed OpenAPI document
-#   openapi/openapi-filter.yaml          filter config (operations we use)
-#   openapi/openapi-generator-config.yaml  generate config (types + client)
+#   openapi/openapi-generator-config.yaml  generate config (types + client +
+#                                          inline `filter:` of the operations we use)
 #   Sources/<Target>/Generated/          committed output
+#
+# `swift-openapi-generator generate` honors the `filter:` key in the config, so
+# the full spec is passed straight to `generate` (no separate filter pre-pass).
 #
 # Designed to generalise to Spinetail (#37) and ButtondownKit (#83): add a new
 # `case` in the library table below.
@@ -53,7 +56,6 @@ case "$library" in
     ;;
 esac
 
-FILTER_CONFIG="$PKG/openapi/openapi-filter.yaml"
 GEN_CONFIG="$PKG/openapi/openapi-generator-config.yaml"
 OUT_DIR="$PKG/Sources/$TARGET/Generated"
 
@@ -75,18 +77,14 @@ if [ "$mode" = "--refresh" ]; then
   rm -rf "$CONV_DIR"
 fi
 
-# ---- Filter the full spec down to the operations we use -----------------------
-FILTERED="$(mktemp -t openapi-filtered.XXXXXX.yaml)"
-trap 'rm -f "$FILTERED"' EXIT
-echo "Filtering $library spec..."
-run_generator filter --config "$FILTER_CONFIG" "$SPEC" > "$FILTERED"
-
 # ---- Generate -----------------------------------------------------------------
+# The generator filters the full spec down to the operations we use via the
+# `filter:` key in $GEN_CONFIG, so the full $SPEC is passed straight to generate.
 if [ "$mode" = "--check" ]; then
   TMP_OUT="$(mktemp -d -t openapi-gen.XXXXXX)"
-  trap 'rm -f "$FILTERED"; rm -rf "$TMP_OUT"' EXIT
+  trap 'rm -rf "$TMP_OUT"' EXIT
   echo "Generating $library client into a temp dir for drift check..."
-  run_generator generate --config "$GEN_CONFIG" --output-directory "$TMP_OUT" "$FILTERED"
+  run_generator generate --config "$GEN_CONFIG" --output-directory "$TMP_OUT" "$SPEC"
   if ! diff -ru "$OUT_DIR" "$TMP_OUT"; then
     echo "ERROR: committed generated code is out of date." >&2
     echo "Run Scripts/generate-openapi.sh $library and commit the result." >&2
@@ -98,5 +96,5 @@ fi
 
 echo "Generating $library client into $OUT_DIR..."
 mkdir -p "$OUT_DIR"
-run_generator generate --config "$GEN_CONFIG" --output-directory "$OUT_DIR" "$FILTERED"
+run_generator generate --config "$GEN_CONFIG" --output-directory "$OUT_DIR" "$SPEC"
 echo "Done. Review and commit $OUT_DIR/{Client,Types}.swift."

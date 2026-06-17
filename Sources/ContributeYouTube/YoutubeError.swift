@@ -3,6 +3,7 @@
 import Foundation
 import Contribute
 
+@available(*, deprecated, message: "Scheduled for removal; do not use in new code.")
 public enum YoutubeError: ContributeError {
   public enum VideoField: Sendable {
     case snippetTitle

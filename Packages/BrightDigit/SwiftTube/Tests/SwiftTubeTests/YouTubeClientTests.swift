@@ -1,10 +1,10 @@
 import Foundation
 import OpenAPIRuntime
-import XCTest
+import Testing
 
 @testable import SwiftTube
 
-internal final class YouTubeClientTests: XCTestCase {
+@Suite internal struct YouTubeClientTests {
   private static let playlistID = "PLtest"
   private static let playlistPath = "/youtube/v3/playlistItems"
   private static let videosPath = "/youtube/v3/videos"
@@ -20,7 +20,7 @@ internal final class YouTubeClientTests: XCTestCase {
 
   /// Two playlist pages (the first carrying `nextPageToken`) are followed, and
   /// a single batched `videos.list` call returns the details in order.
-  internal func testFollowsPaginationAndBatchesVideos() async throws {
+  @Test internal func followsPaginationAndBatchesVideos() async throws {
     let transport = MockTransport(responses: [
       Self.playlistPath: [Fixtures.playlistPage1, Fixtures.playlistPage2],
       Self.videosPath: [Fixtures.videos],
@@ -29,13 +29,13 @@ internal final class YouTubeClientTests: XCTestCase {
 
     let result = try await client.videos(forPlaylistID: Self.playlistID)
 
-    XCTAssertEqual(result.map(\.id), ["vid1", "vid2", "vid3"])
-    XCTAssertEqual(result.map(\.title), ["First", "Second", "Third"])
-    XCTAssertEqual(result.map(\.duration), ["PT10M", "PT20M", "PT30M"])
-    XCTAssertEqual(result.first?.standardThumbnailURL, "https://img/1.jpg")
-    XCTAssertEqual(
-      result.first?.publishedAt,
-      Date(timeIntervalSince1970: 1_577_836_800)  // 2020-01-01T00:00:00Z
+    #expect(result.map(\.id) == ["vid1", "vid2", "vid3"])
+    #expect(result.map(\.title) == ["First", "Second", "Third"])
+    #expect(result.map(\.duration) == ["PT10M", "PT20M", "PT30M"])
+    #expect(result.first?.standardThumbnailURL == "https://img/1.jpg")
+    #expect(
+      result.first?.publishedAt
+        == Date(timeIntervalSince1970: 1_577_836_800)  // 2020-01-01T00:00:00Z
     )
 
     await assertCallCounts(transport, playlist: 2, videos: 1)
@@ -43,18 +43,15 @@ internal final class YouTubeClientTests: XCTestCase {
 
   /// An undocumented (non-200) response surfaces as
   /// `ClientError.invalidResponse`.
-  internal func testNon200ResponseThrows() async throws {
+  @Test internal func non200ResponseThrows() async throws {
     let transport = MockTransport(
       responses: [Self.playlistPath: ["{}"]],
       status: 500
     )
     let client = makeClient(transport)
 
-    do {
+    await #expect(throws: YouTubeClient.ClientError.invalidResponse) {
       _ = try await client.videos(forPlaylistID: Self.playlistID)
-      XCTFail("expected ClientError.invalidResponse")
-    } catch let error as YouTubeClient.ClientError {
-      XCTAssertEqual(error, .invalidResponse)
     }
   }
 
@@ -71,7 +68,7 @@ internal final class YouTubeClientTests: XCTestCase {
     let videoCalls = requestedURLs.filter {
       $0.hasPrefix(Self.videosPath)
     }
-    XCTAssertEqual(playlistCalls.count, playlist)
-    XCTAssertEqual(videoCalls.count, videos)
+    #expect(playlistCalls.count == playlist)
+    #expect(videoCalls.count == videos)
   }
 }

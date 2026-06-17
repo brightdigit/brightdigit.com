@@ -8,12 +8,14 @@ import Contribute
   import FoundationNetworking
 #endif
 
+@available(*, deprecated, message: "Scheduled for removal; do not use in new code.")
 public enum YouTubeContent: ContentType {
   public typealias SourceType = Source
   public typealias MarkdownExtractorType = MarkdownExtractor
   public typealias FrontMatterTranslatorType = FrontMatterTranslator
 }
 
+@available(*, deprecated, message: "Scheduled for removal; do not use in new code.")
 public extension YouTubeContent {
   /// Fetches every video in the request's playlist via the async
   /// swift-openapi-generator `YouTubeClient`, mapping each into a `Source`.

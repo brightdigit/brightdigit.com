@@ -39,8 +39,7 @@ let package = Package(
       dependencies: [
         .product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
         .product(name: "OpenAPIURLSession", package: "swift-openapi-urlsession")
-      ],
-      swiftSettings: [.swiftLanguageMode(.v6)]
+      ]
     ),
     .testTarget(
       name: "SwiftTubeTests",
@@ -48,8 +47,7 @@ let package = Package(
         "SwiftTube",
         .product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
         .product(name: "HTTPTypes", package: "swift-http-types")
-      ],
-      swiftSettings: [.swiftLanguageMode(.v6)]
+      ]
     )
   ]
 )

@@ -13,3 +13,12 @@ accessModifier: public
 additionalFileComments:
   - "swift-format-ignore-file"
   - "swiftlint:disable all"
+# Reduce the full YouTube Data API v3 document (openapi/youtube-openapi.json,
+# ~80 operations) down to only the operations the brightdigit.com podcast
+# importer consumes. `swift-openapi-generator generate` honors this `filter:`
+# key directly, so no separate `filter` pre-pass is needed; the generator
+# automatically pulls in every schema/parameter these operations depend on.
+filter:
+  operations:
+    - listPlaylistItems  # playlistItems.list — paged video ids for a playlist
+    - listVideos         # videos.list — batched video detail lookup
