@@ -1,13 +1,13 @@
 {
-  "originHash" : "15fa28ef45ee35e946de82991531905f933bfabfbc835c4294d2f082bad4726b",
+  "originHash" : "b74fb4a04e8edc42b63ebfe1ae1b5aef1caa0f78386395ea5dd8f4c87c6e667b",
   "pins" : [
     {
       "identity" : "kanna",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tid-kijyun/Kanna.git",
       "state" : {
-        "revision" : "f9e4922223dd0d3dfbf02ca70812cf5531fc0593",
-        "version" : "5.2.7"
+        "revision" : "41c3d28ea0eac07e4551b28def9de1ede702e739",
+        "version" : "5.3.0"
       }
     },
     {
@@ -22,7 +22,7 @@
     {
       "identity" : "prch",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/BrightDigit/Prch.git",
+      "location" : "https://github.com/brightdigit/Prch.git",
       "state" : {
         "revision" : "600b49cc7a77271ea3d2a9f9e449be081562a087",
         "version" : "0.2.1"
@@ -31,7 +31,7 @@
     {
       "identity" : "shellout",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/JohnSundell/ShellOut.git",
+      "location" : "https://github.com/johnsundell/ShellOut.git",
       "state" : {
         "revision" : "e1577acf2b6e90086d01a6d5e2b8efdaae033568",
         "version" : "2.3.0"
@@ -62,6 +62,24 @@
       "state" : {
         "branch" : "main",
         "revision" : "4661b550c55abde97d14e35b89e094084669f40a"
+      }
+    },
+    {
+      "identity" : "swift-subprocess",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/swiftlang/swift-subprocess.git",
+      "state" : {
+        "revision" : "13d087685b95d64d6aac9b94500d347bbe84c39b",
+        "version" : "0.4.0"
+      }
+    },
+    {
+      "identity" : "swift-system",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-system",
+      "state" : {
+        "revision" : "7502b711c92a17741fa625d722b0ccbd595d8ed1",
+        "version" : "1.7.2"
       }
     },
     {
