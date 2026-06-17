@@ -53,14 +53,14 @@ public struct ButtondownClient: Sendable {
   }
 
   /// The generated, transport-backed API client.
-  private let underlying: any APIProtocol
+  private let underlying: Client
 
-  /// Creates a client from a pre-built generated ``APIProtocol``.
+  /// Creates a client from a pre-built generated ``Client``.
   ///
   /// Primarily used by tests to inject a mock transport. Production callers
   /// should prefer ``init(apiKey:)`` or ``fromEnvironment()``.
   /// - Parameter underlying: The generated client to wrap.
-  public init(underlying: any APIProtocol) {
+  public init(underlying: Client) {
     self.underlying = underlying
   }
 

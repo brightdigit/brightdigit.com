@@ -43,6 +43,12 @@ let package = Package(
         .product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
         .product(name: "OpenAPIURLSession", package: "swift-openapi-urlsession"),
         .product(name: "HTTPTypes", package: "swift-http-types")
+      ],
+      // The vendored OpenAPI spec and generator config are inputs to
+      // Scripts/generate-openapi-buttondown.sh, not build resources.
+      exclude: [
+        "OpenAPI/openapi.json",
+        "OpenAPI/openapi-generator-config.yaml"
       ]
     ),
     .testTarget(

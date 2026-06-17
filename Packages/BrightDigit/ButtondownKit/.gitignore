@@ -142,7 +142,3 @@ xcuserdata
 # End of https://www.toptal.com/developers/gitignore/api/macos,swift,SwiftPackageManager,Xcode
 
 .mint
-# Intermediate filtered spec produced by Scripts/generate-openapi-buttondown.sh.
-# Regenerable from openapi.json; the committed source of truth is openapi.json
-# and the generated Sources/ButtondownKit/Generated output.
-Sources/ButtondownKit/OpenAPI/openapi.filtered.json
