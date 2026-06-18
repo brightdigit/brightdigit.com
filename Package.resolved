@@ -1,24 +1,6 @@
 {
-  "originHash" : "3ad3c0435c135a541e7c8acf8e56cb555698dd3fceb429be9c5fc0119144431d",
+  "originHash" : "2bff4599d0695de3ad74ad0ff1c35cba4294d610246c99c47230e617a6f38c52",
   "pins" : [
-    {
-      "identity" : "kanna",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/tid-kijyun/Kanna.git",
-      "state" : {
-        "revision" : "f9e4922223dd0d3dfbf02ca70812cf5531fc0593",
-        "version" : "5.2.7"
-      }
-    },
-    {
-      "identity" : "markdowngenerator",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/eneko/MarkdownGenerator.git",
-      "state" : {
-        "revision" : "1fc31be6b66245187c3f87f35d86b6aeac6dfe7f",
-        "version" : "0.5.0"
-      }
-    },
     {
       "identity" : "prch",
       "kind" : "remoteSourceControl",
@@ -26,15 +8,6 @@
       "state" : {
         "revision" : "600b49cc7a77271ea3d2a9f9e449be081562a087",
         "version" : "0.2.1"
-      }
-    },
-    {
-      "identity" : "shellout",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/JohnSundell/ShellOut.git",
-      "state" : {
-        "revision" : "e1577acf2b6e90086d01a6d5e2b8efdaae033568",
-        "version" : "2.3.0"
       }
     },
     {
