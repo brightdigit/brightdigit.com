@@ -33,9 +33,11 @@ import-output verification, and end-to-end checks before the `phase-04` line rea
 | #44 | swift-argument-parser → ConfigKeyKit + swift-configuration | ✅ done | #87, #102 |
 | #95 | per-ref deploy concurrency | ✅ done | #100 |
 | #96 | single-source packages CI manifest | ✅ done | #100 |
-| **#104** | **content fixes for reader-visible Ink→swift-markdown changes** | 🟡 **remaining** | — |
+| #104 | content fixes for reader-visible Ink→swift-markdown changes | ✅ done | #106 (close issue) |
 | **#94** | **verify SwiftSoupMarkdownGenerator import output (dl/table)** | 🟡 **remaining** | code in #103 |
 | #92 | restore Linux coverage upload under Swift 6.4 | ⏭️ **deferred → Phase 8** | — |
+| #105 | verify `import wordpress` end-to-end | ⏭️ **deferred** (WordPress out of scope) | — |
+| #108 | mailchimp import aborts on a campaign's 503 archive content | ⏭️ **out of Phase 4** | — |
 
 ## 2. What shipped
 
@@ -83,11 +85,12 @@ code-glob false positives (`bushel-launch-part-3.md`, `tuist-xcode-project-setup
 
 ## 4. Remaining work
 
-### #104 — content fixes (highest priority; must land before `phase-04` → production)
-New branch off merged `main`; edit the 23 files; verify with the #104 acceptance grep over
-`Output/**/index.html` (no literal `**` in body prose). Content-only PR.
+### #104 — content fixes ✅ done (#106)
+The 25 files were edited and merged in #106; verified 0 literal `**` in rendered body prose
+across all 441 published pages. Re-run the acceptance grep over `Output/**/index.html` after a
+fresh publish, then close the issue.
 
-### #94 — verify SwiftSoupMarkdownGenerator import output (keep open)
+### #94 — verify SwiftSoupMarkdownGenerator import output (highest priority; keep open)
 dl + layout-`<table>` handling merged (#103). Remaining: spot-check real import output for
 tables / definition lists, decide which gaps matter, add regression tests for any gap closed.
 Folds into the import verification below. Files:
@@ -98,6 +101,13 @@ tests under `…/Contribute/Tests/ContributeTests/`.
 Linux coverage conversion fails under Swift 6.4's `.build/out/Products` layout; CI is green via
 the `fail-on-empty-output: false` mitigation. Restoring real coverage is CI-only and does not
 block shipping Phase 4 — moved to **Phase 8: Final Cleanup**.
+
+### Out of Phase 4 scope (do not block shipping)
+- **#108** — `import mailchimp` aborts on a campaign's 503 archive content (Spinetail decode + no
+  per-campaign skip). A standalone import-robustness bug, **not** a Phase-4 migration item. For
+  the §5.3 mailchimp verification, work around it (skip the offending campaign) rather than
+  blocking on a fix.
+- **#105** — `import wordpress` end-to-end verification: WordPress import is deferred.
 
 ## 5. Verification (imports + publish)
 
