@@ -120,6 +120,13 @@ let package = Package(
         "Yams",
         "BrightDigitSite"
       ]
+    ),
+    .testTarget(
+      name: "BrightDigitArgsTests",
+      dependencies: [
+        "BrightDigitArgs",
+        "BrightDigitPodcast"
+      ]
     )
   ]
 )

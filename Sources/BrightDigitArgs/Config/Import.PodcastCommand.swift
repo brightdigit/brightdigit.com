@@ -75,17 +75,86 @@ extension Import.PodcastCommand {
     )
   }
 
+  private static let youtubeIDRegex: NSRegularExpression = {
+    do {
+      return try NSRegularExpression(
+        pattern:
+          #"(?:youtube\.com/watch\?v=|youtu\.be/|youtube\.com/embed/)"#
+          + #"([A-Za-z0-9_-]{11})"#,
+        options: []
+      )
+    } catch {
+      preconditionFailure("Invalid youtubeIDRegex pattern: \(error)")
+    }
+  }()
+
+  /// Extracts YouTube video ids (in order, de-duplicated) from show-notes HTML.
+  ///
+  /// The RSS episode body embeds the episode's `…/watch?v=<id>` link, which is a
+  /// more reliable join key than the title (RSS and YouTube titles can differ —
+  /// e.g. `Peter Witham` vs `@PeterWitham`).
+  internal static func youtubeIDs(in html: String) -> [String] {
+    let range = NSRange(html.startIndex..., in: html)
+    var ids: [String] = []
+    for match in youtubeIDRegex.matches(in: html, options: [], range: range) {
+      guard let captured = Range(match.range(at: 1), in: html) else {
+        continue
+      }
+      let id = String(html[captured])
+      if !ids.contains(id) {
+        ids.append(id)
+      }
+    }
+    return ids
+  }
+
   internal static func episodesBasedOn(
     rssItems: [RSSContent.Source],
-    withVideoDurations videoDurations: VideoDurations
+    videoDurations: VideoDurations,
+    videosByID: VideoDurations
   ) throws -> [BrightDigitPodcastSource] {
     try BrightDigitPodcastSource
       .episodesBasedOn(
         rssItems: rssItems
       ) { rssItem in
+        // Prefer matching by the YouTube video id embedded in the show-notes.
+        for id in youtubeIDs(in: rssItem.content) where videosByID[id] != nil {
+          return videosByID[id]
+        }
+        // Fall back to an exact-title match.
         let title = rssItem.title.trimmingCharacters(in: .whitespacesAndNewlines)
-        return videoDurations[title]
+        if let video = videoDurations[title] {
+          return video
+        }
+        // No video at all — warn and skip rather than aborting the whole import.
+        FileHandle.standardError.write(
+          Data(
+            """
+            ⚠️  import podcast: no YouTube video for episode \
+            \(rssItem.episodeNo) “\(rssItem.title)” — skipping
+
+            """.utf8
+          )
+        )
+        return nil
       }
+  }
+
+  private static func videoIndices(
+    config: Config
+  ) async throws -> (durations: VideoDurations, byID: VideoDurations) {
+    let videos = try await YouTubeContent.videos(
+      byRequest: .init(
+        apiKey: config.youtubeAPIKey,
+        playlistID: config.playlistID
+      )
+    )
+    let videoDurations = try YouTubeContent.videoDurations(videos)
+    let videosByID = Dictionary(
+      videos.map { ($0.youtubeID, $0) },
+      uniquingKeysWith: { first, _ in first }
+    )
+    return (videoDurations, videosByID)
   }
 
   public func execute() async throws {
@@ -99,18 +168,13 @@ extension Import.PodcastCommand {
       }
       return link.lastPathComponent
     }
-    let videos = try await YouTubeContent.videos(
-      byRequest: .init(
-        apiKey: config.youtubeAPIKey,
-        playlistID: config.playlistID
-      )
-    )
-    let videoDurations = try YouTubeContent.videoDurations(videos)
+    let (videoDurations, videosByID) = try await Self.videoIndices(config: config)
 
     let episodes: [BrightDigitPodcastSource] =
       try Self.episodesBasedOn(
         rssItems: podcastEpisodes,
-        withVideoDurations: videoDurations
+        videoDurations: videoDurations,
+        videosByID: videosByID
       )
       .sorted(by: { lhs, rhs in lhs.episodeNo < rhs.episodeNo })
 
