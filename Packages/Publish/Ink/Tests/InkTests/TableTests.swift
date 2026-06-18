@@ -8,18 +8,16 @@ import XCTest
 import Ink
 
 final class TableTests: XCTestCase {
+    // #40: GFM requires a delimiter row (`| --- |`) to recognise a table. Without one this
+    // is just a paragraph of pipe-separated text. Ink parsed header-less tables; GFM/swift-
+    // markdown does not, so the content renders as a literal paragraph.
     func testTableWithoutHeader() {
         let html = MarkdownParser().html(from: """
         | HeaderA | HeaderB |
         | CellA   | CellB   |
         """)
 
-        XCTAssertEqual(html, """
-        <table><tbody>\
-        <tr><td>HeaderA</td><td>HeaderB</td></tr>\
-        <tr><td>CellA</td><td>CellB</td></tr>\
-        </tbody></table>
-        """)
+        XCTAssertEqual(html, "<p>| HeaderA | HeaderB | | CellA   | CellB   |</p>")
     }
 
     func testTableWithHeader() {
@@ -101,11 +99,10 @@ final class TableTests: XCTestCase {
         Another paragraph.
         """)
 
+        // #40: no delimiter row, so GFM treats the pipe lines as a paragraph.
         XCTAssertEqual(html, """
         <p>A paragraph.</p>\
-        <table><tbody>\
-        <tr><td>A</td><td>B</td></tr><tr><td>C</td><td>D</td></tr>\
-        </tbody></table>\
+        <p>| A | B | | C | D |</p>\
         <p>Another paragraph.</p>
         """)
     }
@@ -119,15 +116,12 @@ final class TableTests: XCTestCase {
         | three |
         """)
 
+        // #40: neither pipe block has a delimiter row, so both render as paragraphs. The
+        // source fixture contains non-breaking spaces (U+00A0) between `four`/`five`/`six`;
+        // GFM-as-paragraph preserves them verbatim (Ink's table parser had split on them).
         XCTAssertEqual(html, """
-        <table><tbody>\
-        <tr><td>one</td><td>two</td><td></td></tr>\
-        <tr><td>three</td><td>four</td><td>five</td></tr>\
-        </tbody></table>\
-        <table><tbody>\
-        <tr><td>one</td><td>two</td></tr>\
-        <tr><td>three</td><td></td></tr>\
-        </tbody></table>
+        <p>| one | two | | three |\u{00A0}four |\u{00A0}five |</p>\
+        <p>| one | two | | three |</p>
         """)
     }
 
@@ -188,6 +182,9 @@ final class TableTests: XCTestCase {
         """)
     }
 
+    // #40: the delimiter row's column count must match the header's in GFM; a 1-column
+    // delimiter under a 2-column header disqualifies the table, so it is a paragraph. Ink
+    // accepted the mismatch and rendered a header-less table.
     func testHeaderNotParsedForColumnCountMismatch() {
         let html = MarkdownParser().html(from: """
         | HeaderA | HeaderB |
@@ -195,13 +192,7 @@ final class TableTests: XCTestCase {
         | CellA   | CellB |
         """)
 
-        XCTAssertEqual(html, """
-        <table><tbody>\
-        <tr><td>HeaderA</td><td>HeaderB</td></tr>\
-        <tr><td>-------</td><td></td></tr>\
-        <tr><td>CellA</td><td>CellB</td></tr>\
-        </tbody></table>
-        """)
+        XCTAssertEqual(html, "<p>| HeaderA | HeaderB | | ------- | | CellA   | CellB |</p>")
     }
 }
 

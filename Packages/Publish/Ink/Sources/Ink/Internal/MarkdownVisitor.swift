@@ -77,7 +77,12 @@ private extension MarkdownVisitor {
         case is ThematicBreak:
             return HorizontalLine()
         case let htmlBlock as HTMLBlock:
-            return HTML(string: htmlBlock.rawHTML)
+            // swift-markdown's `rawHTML` retains the block's trailing newline(s); Ink's
+            // `Reader` stopped at the closing `>`, so it never emitted a trailing newline
+            // after an HTML block. Strip the trailing newline(s) to match Ink — otherwise
+            // every HTML block injects a stray `\n` (at EOF, or between the block and the
+            // following block).
+            return HTML(string: trimTrailingNewlines(htmlBlock.rawHTML))
         case let list as UnorderedList:
             return makeList(items: Array(list.listItems), kind: .unordered)
         case let list as Markdown::OrderedList:
@@ -155,5 +160,15 @@ private extension MarkdownVisitor {
     func format(_ markup: Markup) -> String {
         // Fall back to the verbatim source slice for unsupported block types.
         String(rawString(for: markup))
+    }
+
+    /// Strip trailing newline characters, reproducing Ink's HTML-block behaviour (its
+    /// `Reader` stopped at the closing `>`, never consuming the trailing newline).
+    func trimTrailingNewlines(_ string: String) -> String {
+        var result = Substring(string)
+        while result.last == "\n" || result.last == "\r" {
+            result = result.dropLast()
+        }
+        return String(result)
     }
 }

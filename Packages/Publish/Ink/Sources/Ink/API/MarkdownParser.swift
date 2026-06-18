@@ -63,9 +63,12 @@ public struct MarkdownParser {
         //    we keep the collection as a fallback for unresolved destinations).
         let urls = NamedURLCollection(urlsByName: URLDeclaration.collectURLs(in: body))
 
-        // 3. Parse the body with swift-markdown, with source ranges enabled so each
-        //    node's verbatim source slice can be reconstructed for the modifier contract.
-        let document = Document(parsing: body, options: [])
+        // 3. Parse the body with swift-markdown. Source ranges stay enabled (the visitor
+        //    needs them to reconstruct each node's verbatim `rawString` for the modifier
+        //    contract). `.disableSmartOpts` turns OFF cmark's SmartyPants pass — Ink never
+        //    converted straight quotes/dashes/ellipses, so leaving smart on would rewrite
+        //    `'"...--` into `'"…–` and diverge from Ink's output across nearly all content.
+        let document = Document(parsing: body, options: [.disableSmartOpts])
 
         // 4. Translate the AST into Ink's node IR.
         let visitor = MarkdownVisitor(source: body, urls: urls)
