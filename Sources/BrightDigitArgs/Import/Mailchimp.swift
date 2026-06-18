@@ -1,30 +1,18 @@
-// swift-format-ignore-file
-// swiftlint:disable all
-//
-//  File.swift
-//
-//
-//  Created by Leo Dion on 12/9/21.
-//
 import ArgumentParser
+import BrightDigitSite
 import Contribute
 import ContributeMailchimp
 import Foundation
-import Prch
+import Spinetail
 import Tagscriber
 
 #if canImport(FoundationNetworking)
   import FoundationNetworking
 #endif
 
-@available(*, deprecated, message: "Scheduled for removal; do not use in new code.")
-public extension BrightDigitSiteCommand.ImportCommand {
-  struct Mailchimp: ParsableCommand {
+extension BrightDigitSiteCommand.ImportCommand {
+  public struct Mailchimp: AsyncParsableCommand {
     public init() {}
-
-    var contentPathURL: URL {
-      URL(fileURLWithPath: exportMarkdownDirectory)
-    }
 
     @Option(help: "Destination directory for markdown files.")
     public var exportMarkdownDirectory: String
@@ -41,43 +29,60 @@ public extension BrightDigitSiteCommand.ImportCommand {
     @Flag
     public var includeMissingPrevious: Bool = false
 
-    static func fileNameWithoutExtensionFromSource(_ source: ContributeMailchimp.Newsletter.Source) -> String {
-      "\(source.issueNo.description.padLeft(totalWidth: 3, byString: "0"))-\(source.slug)"
+    var contentPathURL: URL {
+      URL(fileURLWithPath: exportMarkdownDirectory)
     }
-    
+
     static let issueNoRegexPatternString = #"(?:^|\s)#?(\d+)(?:\s|$)"#
-    
+
     static let issueNoRegex: NSRegularExpression = {
       do {
-        return try NSRegularExpression(pattern: issueNoRegexPatternString, options: [])
+        return try NSRegularExpression(
+          pattern: issueNoRegexPatternString,
+          options: []
+        )
       } catch {
         preconditionFailure("Invalid issueNoRegex pattern: \(error)")
       }
     }()
-    
-    static func parseIssueNumber(from subject: String) -> Int? {
-           // Pattern matches either a standalone number or a number with # prefix
-           //let pattern = #"(?:^|\s)#?(\d+)(?:\s|$)"#
-           
-           
-           let range = NSRange(subject.startIndex..<subject.endIndex, in: subject)
-           
-           guard let match = issueNoRegex.firstMatch(in: subject, options: [], range: range),
-                 match.numberOfRanges > 1 else {
-               return nil
-           }
-           
-           let numberRange = match.range(at: 1)
-           guard let range = Range(numberRange, in: subject),
-                 let issueNumber = Int(subject[range]) else {
-             return nil
-           }
-           
-           return issueNumber
-       }
 
-    static func sourceFrom(campaign: MailchimpCampaign) throws -> Newsletter.Source.Campaign? {
-      guard let subjectLine = campaign.settings?.subjectLine else {
+    static func fileNameWithoutExtensionFromSource(
+      _ source: ContributeMailchimp.Newsletter.Source
+    ) -> String {
+      let paddedIssue = source.issueNo.description.padLeft(
+        totalWidth: 3,
+        byString: "0"
+      )
+      return "\(paddedIssue)-\(source.slug)"
+    }
+
+    static func parseIssueNumber(from subject: String) -> Int? {
+      let range = NSRange(subject.startIndex..<subject.endIndex, in: subject)
+      guard
+        let match = issueNoRegex.firstMatch(
+          in: subject,
+          options: [],
+          range: range
+        ),
+        match.numberOfRanges > 1
+      else {
+        return nil
+      }
+
+      let numberRange = match.range(at: 1)
+      guard let range = Range(numberRange, in: subject),
+        let issueNumber = Int(subject[range])
+      else {
+        return nil
+      }
+
+      return issueNumber
+    }
+
+    static func sourceFrom(
+      campaign: MailchimpCampaign
+    ) throws -> Newsletter.Source.Campaign? {
+      guard let subjectLine = campaign.subjectLine else {
         throw ImportError.newsletterMissingField(.subjectLine)
       }
 
@@ -85,7 +90,8 @@ public extension BrightDigitSiteCommand.ImportCommand {
         return nil
       }
 
-      let brightdigitSent = campaign.recipients?.segmentText?.contains("brightdigit-business") == true
+      let brightdigitSent =
+        campaign.segmentText?.contains("brightdigit-business") == true
       let isBrightDigitNewsletter = subjectLine.contains("BrightDigit Newsletter")
 
       guard brightdigitSent || isBrightDigitNewsletter else {
@@ -95,37 +101,60 @@ public extension BrightDigitSiteCommand.ImportCommand {
       guard let campaignID = campaign.id else {
         throw ImportError.newsletterMissingField(.id)
       }
-      guard let longArchiveURL = campaign.longArchiveURL.flatMap(URL.init(string:)) else {
+      guard let longArchiveURL = campaign.longArchiveURL.flatMap(URL.init(string:))
+      else {
         throw ImportError.newsletterMissingField(.longArchiveURL)
       }
-      guard let title = campaign.settings?.title else {
+      guard let title = campaign.title else {
         throw ImportError.newsletterMissingField(.title)
       }
-      let previewText = campaign.settings?.previewText
+      let previewText = campaign.previewText
 
       guard let sendTime = campaign.sendTime else {
         throw ImportError.newsletterMissingField(.sendTime)
       }
 
-      let featuredImageURL = campaign.socialCard?.imageURL.flatMap(URL.init(string:))
+      let featuredImageURL = campaign.socialCardImageURL.flatMap(URL.init(string:))
+      let slug = title.convertedToSlug()
 
-      let slug: String = title.convertedToSlug()
-
-      return Newsletter.Source.Campaign(slug: slug, issueNo: issueNo, campaignID: campaignID, longArchiveURL: longArchiveURL, featuredImageURL: featuredImageURL, title: title, subjectLine: subjectLine, previewText: previewText, sendTime: sendTime)
+      return Newsletter.Source.Campaign(
+        slug: slug,
+        issueNo: issueNo,
+        campaignID: campaignID,
+        longArchiveURL: longArchiveURL,
+        featuredImageURL: featuredImageURL,
+        title: title,
+        subjectLine: subjectLine,
+        previewText: previewText,
+        sendTime: sendTime
+      )
     }
 
-    public func run() throws {
-      let mailchimp = Newsletter.client(withAPIKey: mailchimpAPIKey, usingSession: URLSession.shared)
+    public func run() async throws {
+      let client = try MailchimpClient(apiKey: mailchimpAPIKey)
+      let htmlToMarkdown = BrightDigitSiteCommand.ImportCommand
+        .markdownGenerator.markdown(fromHTML:)
 
-      let campaigns = try mailchimp.campaigns(fromRequest: .init(listID: mailchimpListID))
+      let newsletters = try await Newsletter.sources(
+        from: client,
+        listID: mailchimpListID,
+        withFactory: Self.sourceFrom(campaign:),
+        processedWith: htmlToMarkdown
+      )
+      .sorted { $0.issueNo < $1.issueNo }
 
-      let newsletters = try mailchimp.newsletters(fromCampaigns: campaigns, withFactory: Self.sourceFrom(campaign:), processedWith: BrightDigitSiteCommand.ImportCommand.markdownGenerator.markdown(fromHTML:)).sorted(by: { lhs, rhs in
-        lhs.issueNo < rhs.issueNo
-      })
+      let options = MarkdownContentBuilderOptions(
+        shouldOverwriteExisting: overwriteExisting,
+        includeMissingPrevious: includeMissingPrevious
+      )
 
-      let options: MarkdownContentBuilderOptions = .init(shouldOverwriteExisting: overwriteExisting, includeMissingPrevious: includeMissingPrevious)
-
-      try Newsletter.write(from: newsletters, atContentPathURL: contentPathURL, fileNameWithoutExtension: Self.fileNameWithoutExtensionFromSource(_:), using: BrightDigitSiteCommand.ImportCommand.markdownGenerator.markdown(fromHTML:), options: options)
+      try Newsletter.write(
+        from: newsletters,
+        atContentPathURL: contentPathURL,
+        fileNameWithoutExtension: Self.fileNameWithoutExtensionFromSource(_:),
+        using: htmlToMarkdown,
+        options: options
+      )
     }
   }
 }

@@ -66,11 +66,16 @@ jobs:
         # vendored package; `cross-packages` is the pure-Swift subset that can
         # target Windows/Android/wasm. The Publish-dependent plugins (Files,
         # ShellOut in their dependency chains) are macOS + Linux only.
-        # SwiftTube and Spinetail are excluded entirely (being rebuilt on the
-        # OpenAPI generator; no Scripts/lint.sh or .mise.toml).
+        # SwiftTube is excluded entirely (still being rebuilt on the OpenAPI
+        # generator; no Scripts/lint.sh or .mise.toml). Spinetail has been
+        # rebuilt on swift-openapi-generator: it declares swift-tools-version
+        # 6.4 / Swift 6 mode, so it builds on macOS (Xcode 26.4), lints on the
+        # 6.4 nightly, and builds on the Ubuntu (nightly-6.4) leg. It is kept
+        # out of cross-packages because its swift-openapi-urlsession / Foundation
+        # networking stack is unavailable on the wasm/Windows/Android SDKs.
         run: |
           {
-            echo 'packages=[{"name":"SyndiKit","path":"Packages/BrightDigit/SyndiKit"},{"name":"Contribute","path":"Packages/BrightDigit/Contribute"},{"name":"ContributeWordPress","path":"Packages/BrightDigit/ContributeWordPress"},{"name":"TransistorPublishPlugin","path":"Packages/BrightDigit/TransistorPublishPlugin"},{"name":"NPMPublishPlugin","path":"Packages/BrightDigit/NPMPublishPlugin"},{"name":"YoutubePublishPlugin","path":"Packages/BrightDigit/YoutubePublishPlugin"}]'
+            echo 'packages=[{"name":"SyndiKit","path":"Packages/BrightDigit/SyndiKit"},{"name":"Contribute","path":"Packages/BrightDigit/Contribute"},{"name":"ContributeWordPress","path":"Packages/BrightDigit/ContributeWordPress"},{"name":"TransistorPublishPlugin","path":"Packages/BrightDigit/TransistorPublishPlugin"},{"name":"NPMPublishPlugin","path":"Packages/BrightDigit/NPMPublishPlugin"},{"name":"YoutubePublishPlugin","path":"Packages/BrightDigit/YoutubePublishPlugin"},{"name":"Spinetail","path":"Packages/BrightDigit/Spinetail"}]'
             echo 'cross-packages=[{"name":"SyndiKit","path":"Packages/BrightDigit/SyndiKit"},{"name":"Contribute","path":"Packages/BrightDigit/Contribute"},{"name":"ContributeWordPress","path":"Packages/BrightDigit/ContributeWordPress"}]'
           } >> "$GITHUB_OUTPUT"
 

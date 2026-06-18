@@ -1,5 +1,3 @@
-// swift-format-ignore-file
-// swiftlint:disable all
 import Foundation
 
 #if canImport(FoundationNetworking)
@@ -7,8 +5,9 @@ import Foundation
 #endif
 
 @available(*, deprecated, message: "Scheduled for removal; do not use in new code.")
-public extension Newsletter {
-  struct FrontMatter: Codable {
+extension Newsletter {
+  /// The YAML front matter emitted for a newsletter issue.
+  public struct FrontMatter: Codable {
     let issueNo: Int
     let campaignID: String
     let featuredImage: URL?
