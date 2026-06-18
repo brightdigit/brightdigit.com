@@ -139,17 +139,9 @@ extension Import.PodcastCommand {
       }
   }
 
-  public func execute() async throws {
-    let contentPathURL = URL(fileURLWithPath: config.exportMarkdownDirectory)
-
-    let podcastEpisodes = try RSSContent.items(from: config.rss) { item in
-      guard let link = item.link else {
-        throw RSSError.missingFieldFromPodcastEpisode(
-          String(describing: item), .link
-        )
-      }
-      return link.lastPathComponent
-    }
+  private static func videoIndices(
+    config: Config
+  ) async throws -> (durations: VideoDurations, byID: VideoDurations) {
     let videos = try await YouTubeContent.videos(
       byRequest: .init(
         apiKey: config.youtubeAPIKey,
@@ -161,6 +153,21 @@ extension Import.PodcastCommand {
       videos.map { ($0.youtubeID, $0) },
       uniquingKeysWith: { first, _ in first }
     )
+    return (videoDurations, videosByID)
+  }
+
+  public func execute() async throws {
+    let contentPathURL = URL(fileURLWithPath: config.exportMarkdownDirectory)
+
+    let podcastEpisodes = try RSSContent.items(from: config.rss) { item in
+      guard let link = item.link else {
+        throw RSSError.missingFieldFromPodcastEpisode(
+          String(describing: item), .link
+        )
+      }
+      return link.lastPathComponent
+    }
+    let (videoDurations, videosByID) = try await Self.videoIndices(config: config)
 
     let episodes: [BrightDigitPodcastSource] =
       try Self.episodesBasedOn(
