@@ -10,110 +10,7 @@ import Spinetail
   import FoundationNetworking
 #endif
 
-/// ConfigKeyKit-based command for importing Mailchimp newsletters (issue #44).
-///
-/// Registers under the two-token name `import mailchimp` and is dispatched by
-/// ``CommandDispatcher``. Pulls campaigns from the configured Mailchimp list,
-/// filters them to BrightDigit newsletters, and writes Markdown newsletter files.
-public struct ImportMailchimpCommand: ConfigKeyKit.Command {
-  private enum Keys {
-    static let exportMarkdownDirectory = OptionalConfigKey<String>(
-      "export-markdown-directory"
-    )
-    static let mailchimpAPIKey = OptionalConfigKey<String>(
-      "mailchimp-api-key"
-    )
-    static let mailchimpListID = OptionalConfigKey<String>(
-      "mailchimp-list-id"
-    )
-    static let overwriteExisting = ConfigKey(
-      "overwrite-existing", default: false
-    )
-    static let includeMissingPrevious = ConfigKey(
-      "include-missing-previous", default: false
-    )
-  }
-
-  private static let issueNoRegexPatternString = #"(?:^|\s)#?(\d+)(?:\s|$)"#
-
-  private static let issueNoRegex: NSRegularExpression = {
-    do {
-      return try NSRegularExpression(
-        pattern: issueNoRegexPatternString,
-        options: []
-      )
-    } catch {
-      preconditionFailure("Invalid issueNoRegex pattern: \(error)")
-    }
-  }()
-
-  public static let commandName = "import mailchimp"
-  public static let abstract =
-    "Command for importing Mailchimp newsletters into the BrightDigit site."
-  public static let helpText = """
-    OVERVIEW: Command for importing Mailchimp newsletters into the BrightDigit site.
-
-    USAGE: brightdigitwg import mailchimp --mailchimp-api-key <key> \
-    --mailchimp-list-id <id> --export-markdown-directory <dir> \
-    [--overwrite-existing] [--include-missing-previous]
-
-    OPTIONS:
-      --export-markdown-directory <dir> Destination directory for markdown files. \
-    (required)
-      --mailchimp-api-key <key>         Mailchimp API key. (required)
-      --mailchimp-list-id <id>          Mailchimp list ID. (required)
-      --overwrite-existing              Overwrite existing markdown files.
-      --include-missing-previous        Include newsletters missing a previous entry.
-      -h, --help                        Show help information.
-
-    Each option may also be supplied via an uppercased, underscore-separated
-    environment variable (e.g. MAILCHIMP_API_KEY).
-    """
-
-  private let config: Config
-
-  public init(config: Config) {
-    self.config = config
-  }
-
-  public static func createInstance() async throws -> Self {
-    let reader = Configuration.ConfigReader(providers: [
-      CommandLineArgumentsProvider(),
-      EnvironmentVariablesProvider(),
-    ])
-    let config = try await Config(configuration: reader)
-    return Self(config: config)
-  }
-
-  public func execute() async throws {
-    let contentPathURL = URL(fileURLWithPath: config.exportMarkdownDirectory)
-    let client = try MailchimpClient(apiKey: config.mailchimpAPIKey)
-    let htmlToMarkdown = ImportSupport.markdownGenerator.markdown(fromHTML:)
-
-    let newsletters = try await Newsletter.sources(
-      from: client,
-      listID: config.mailchimpListID,
-      withFactory: Self.sourceFrom(campaign:),
-      processedWith: htmlToMarkdown
-    )
-    .sorted { $0.issueNo < $1.issueNo }
-
-    let options = MarkdownContentBuilderOptions(
-      shouldOverwriteExisting: config.overwriteExisting,
-      includeMissingPrevious: config.includeMissingPrevious
-    )
-
-    try Newsletter.write(
-      from: newsletters,
-      atContentPathURL: contentPathURL,
-      fileNameWithoutExtension: Self.fileNameWithoutExtensionFromSource(_:),
-      using: htmlToMarkdown,
-      options: options
-    )
-  }
-}
-
-extension ImportMailchimpCommand {
+extension Import.MailchimpCommand {
   /// Resolved configuration for the `import mailchimp` command.
   public struct Config: ConfigurationParseable {
     public typealias ConfigReader = Configuration.ConfigReader
@@ -149,9 +46,25 @@ extension ImportMailchimpCommand {
       self.includeMissingPrevious = reader.read(Keys.includeMissingPrevious)
     }
   }
-}
 
-extension ImportMailchimpCommand {
+  private enum Keys {
+    static let exportMarkdownDirectory = OptionalConfigKey<String>(
+      "export-markdown-directory"
+    )
+    static let mailchimpAPIKey = OptionalConfigKey<String>(
+      "mailchimp-api-key"
+    )
+    static let mailchimpListID = OptionalConfigKey<String>(
+      "mailchimp-list-id"
+    )
+    static let overwriteExisting = ConfigKey(
+      "overwrite-existing", default: false
+    )
+    static let includeMissingPrevious = ConfigKey(
+      "include-missing-previous", default: false
+    )
+  }
+
   internal static func fileNameWithoutExtensionFromSource(
     _ source: ContributeMailchimp.Newsletter.Source
   ) -> String {
@@ -246,5 +159,92 @@ extension ImportMailchimpCommand {
       previewText: campaign.previewText,
       sendTime: sendTime
     )
+  }
+
+  public func execute() async throws {
+    let contentPathURL = URL(fileURLWithPath: config.exportMarkdownDirectory)
+    let client = try MailchimpClient(apiKey: config.mailchimpAPIKey)
+    let htmlToMarkdown = ImportSupport.markdownGenerator.markdown(fromHTML:)
+
+    let newsletters = try await Newsletter.sources(
+      from: client,
+      listID: config.mailchimpListID,
+      withFactory: Self.sourceFrom(campaign:),
+      processedWith: htmlToMarkdown
+    )
+    .sorted { $0.issueNo < $1.issueNo }
+
+    let options = MarkdownContentBuilderOptions(
+      shouldOverwriteExisting: config.overwriteExisting,
+      includeMissingPrevious: config.includeMissingPrevious
+    )
+
+    try Newsletter.write(
+      from: newsletters,
+      atContentPathURL: contentPathURL,
+      fileNameWithoutExtension: Self.fileNameWithoutExtensionFromSource(_:),
+      using: htmlToMarkdown,
+      options: options
+    )
+  }
+}
+
+extension Import {
+  /// ConfigKeyKit-based command for importing Mailchimp newsletters (issue #44).
+  ///
+  /// Registers under the two-token name `import mailchimp` and is dispatched by
+  /// ``CommandDispatcher``. Pulls campaigns from the configured Mailchimp list,
+  /// filters them to BrightDigit newsletters, and writes Markdown newsletter files.
+  public struct MailchimpCommand: ConfigKeyKit.Command {
+    public static let commandName = "import mailchimp"
+    public static let abstract =
+      "Command for importing Mailchimp newsletters into the BrightDigit site."
+    public static let helpText = """
+      OVERVIEW: Command for importing Mailchimp newsletters into the BrightDigit site.
+
+      USAGE: brightdigitwg import mailchimp --mailchimp-api-key <key> \
+      --mailchimp-list-id <id> --export-markdown-directory <dir> \
+      [--overwrite-existing] [--include-missing-previous]
+
+      OPTIONS:
+        --export-markdown-directory <dir> Destination directory for markdown files. \
+      (required)
+        --mailchimp-api-key <key>         Mailchimp API key. (required)
+        --mailchimp-list-id <id>          Mailchimp list ID. (required)
+        --overwrite-existing              Overwrite existing markdown files.
+        --include-missing-previous        Include newsletters missing a previous entry.
+        -h, --help                        Show help information.
+
+      Each option may also be supplied via an uppercased, underscore-separated
+      environment variable (e.g. MAILCHIMP_API_KEY).
+      """
+
+    private static let issueNoRegexPatternString = #"(?:^|\s)#?(\d+)(?:\s|$)"#
+
+    private static let issueNoRegex: NSRegularExpression = {
+      do {
+        return try NSRegularExpression(
+          pattern: issueNoRegexPatternString,
+          options: []
+        )
+      } catch {
+        preconditionFailure("Invalid issueNoRegex pattern: \(error)")
+      }
+    }()
+
+    private let config: Config
+
+    public init(config: Config) {
+      self.config = config
+    }
+
+    public static func createInstance() async throws -> Self {
+      let reader = Configuration.ConfigReader(providers: [
+        CommandLineArgumentsProvider(),
+        EnvironmentVariablesProvider(),
+      ])
+      let config = try await Config(configuration: reader)
+      return Self(config: config)
+    }
   }
 }

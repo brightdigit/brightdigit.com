@@ -22,9 +22,9 @@ public enum CommandDispatcher {
     let registry = CommandRegistry.shared
     await registry.register(PublishCommand.self)
     await registry.register(EpisodeURLCommand.self)
-    await registry.register(ImportPodcastCommand.self)
-    await registry.register(ImportMailchimpCommand.self)
-    await registry.register(ImportWordPressCommand.self)
+    await registry.register(Import.PodcastCommand.self)
+    await registry.register(Import.MailchimpCommand.self)
+    await registry.register(Import.WordPressCommand.self)
 
     // argv after the executable name.
     let rawArguments = Array(CommandLine.arguments.dropFirst())
