@@ -8,11 +8,12 @@ generate:
   - types
   - client
 accessModifier: public
-# Mark every generated file so STRICT swift-format + SwiftLint skip it instead
-# of drowning in violations against machine-generated code.
+# Mark every generated file so swift-format and periphery skip it via in-file
+# markers. (SwiftLint can't be suppressed in-file — blanket_disable_command +
+# file_name — so it keeps a path exclude in .swiftlint.yml.)
 additionalFileComments:
-  - "swift-format-ignore-file"
-  - "swiftlint:disable all"
+  - periphery:ignore:all
+  - swift-format-ignore-file
 # Reduce the full YouTube Data API v3 document (openapi/youtube-openapi.json,
 # ~80 operations) down to only the operations the brightdigit.com podcast
 # importer consumes. `swift-openapi-generator generate` honors this `filter:`

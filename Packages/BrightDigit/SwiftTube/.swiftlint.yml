@@ -123,9 +123,10 @@ excluded:
   - Examples
   - Packages
   - Package.swift
-  # Machine-generated swift-openapi-generator output — every file already
-  # carries `// swiftlint:disable all`; excluded here too so analyzer rules and
-  # `--strict` never trip on it.
+  # swift-openapi-generator output. Files carry in-file ignore markers
+  # (additionalFileComments), which handle swift-format; SwiftLint still needs
+  # this path exclude (blanket_disable_command + file_name can't be suppressed
+  # in-file).
   - Sources/SwiftTube/Generated
 indentation_width:
   indentation_width: 2
