@@ -85,7 +85,7 @@ What does that mean? It means they have the knowledge and time available for tho
 
 > transistor https://share.transistor.fm/s/99f236b1
 
-**Asking your teams for multiple ideas when dealing with big issues and giving them the time and resources to do so can pay huge dividends. **Talk to them about why they may want to code things a certain way – it will make it a lot easier when they or you have to explain to management or the customer why things are a certain way and the value that brings.
+**Asking your teams for multiple ideas when dealing with big issues and giving them the time and resources to do so can pay huge dividends.** Talk to them about why they may want to code things a certain way – it will make it a lot easier when they or you have to explain to management or the customer why things are a certain way and the value that brings.
 
 The result should be better goal alignment within your organization and between the organization and the user.
 

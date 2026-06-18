@@ -18,7 +18,7 @@ macOS apps already out there:</span>
 However, many older applications are still built with only 32-bit
 support. This means macOS has had to support both 32-bit and 64-bit
 apps.Until now.</span> Apple has announced that **Mojave will be the
-final OS to support 32-bit.  **With this change in Mojave for
+final OS to support 32-bit.** With this change in Mojave for
 developers, **you have one year to get ready and update your build** for
 10.15, the first 64-bit only OS from Apple. Otherwise your ancient
 32-bit app will no longer work in the fall of 2019.
@@ -26,6 +26,7 @@ developers, **you have one year to get ready and update your build** for
 # Enhanced App Permissions in Mojave for Developers
 
 <img src="/media/wp-images/brightdigit/2018/07/Screen-Shot-2018-07-13-at-2.57.43-PM.png" class="aligncenter size-full wp-image-1257" width="1560" height="1370" />
+
 macOS Mojave now requires your apps to request permission when using the
 **camera, microphone, or any automation** (i.e. AppleScript and Apple
 Events). This means if your app uses any of those functionalities,
@@ -36,10 +37,10 @@ as handle when permission is not granted.**
 
 <span style=";">Dark mode is the ability to change UI to use a more
 *light on dark *theme. Developers love this and it can look slick as
-long as apps are built with this in mind.** To take advatange,
+long as apps are built with this in mind. To take advatange,
 developers can look at [Apple's
 documentation](https://developer.apple.com/documentation/appkit/supporting_dark_mode_in_your_interface) on
-how to support Dark mode.** For websites, make sure your [background
+how to support Dark mode. For websites, make sure your [background
 color is set
 properly](https://twitter.com/kkuldar/status/1006208146464002049) and
 stay up to date on possible queries you can add to your styling to keep

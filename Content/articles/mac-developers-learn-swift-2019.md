@@ -32,11 +32,11 @@ to the App Store.
 
 ## **Under $2200** - **MacBook Pro**… **However**
 
-***With the ***[***recent spate of keyboard
-issues ***](https://www.wsj.com/graphics/apple-still-hasnt-fixed-its-macbook-keyboard-problem/)***as
-well as ***[***the rumored transition to
-ARM***](https://www.macrumors.com/2019/02/21/apple-custom-arm-based-chips-2020/)***, I’d
-highly recommend waiting on purchasing a brand new MacBook Pro***.
+***With the*** [***recent spate of keyboard
+issues***](https://www.wsj.com/graphics/apple-still-hasnt-fixed-its-macbook-keyboard-problem/) ***as
+well as*** [***the rumored transition to
+ARM***](https://www.macrumors.com/2019/02/21/apple-custom-arm-based-chips-2020/), I’d
+highly recommend waiting on purchasing a brand new MacBook Pro.
 
 ## **Above $2200**
 

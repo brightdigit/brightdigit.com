@@ -7,6 +7,7 @@ description: Having an updated, easy to navigate website makes a huge difference
 featuredImage: /media/wp-images/brightdigit/2018/05/tuazpj1uazs.jpg
 ---
 <img src="/media/wp-images/brightdigit/2018/05/frustration_1526581460.jpg" class="size-full wp-image-1144 aligncenter" width="1280" height="854" />
+
 It is incredibly difficult for a business in this day and age to succeed
 without having a good website. Customers expect to be able to find you
 online, see your hours and find ways to contact you.  **When your

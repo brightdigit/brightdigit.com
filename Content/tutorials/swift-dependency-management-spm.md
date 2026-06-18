@@ -122,8 +122,8 @@ the way you modularize and share your code.
 
 There are plenty of reasons to break apart your application or even
 publish your library or executable via Swift Package Manager. For one
-thing, i**t becomes easier to build your application completely in Swift
-- from server to device.**
+thing, it becomes easier to build your application completely in Swift
+- from server to device.
 
 ### Full Stack Swift
 

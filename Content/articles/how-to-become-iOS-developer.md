@@ -32,7 +32,7 @@ You watch a tutorial to learn how to build a specific function. A week later, wh
 
 > I should know this.
 
-It is a myth, one that we tell ourselves more than anything else, that just because we know what code to write doesn’t mean we **know **the code.
+It is a myth, one that we tell ourselves more than anything else, that just because we know what code to write doesn’t mean we **know** the code.
 
 Sean calls this _The Tutorial Trap._ [He may have even coined the term](https://www.youtube.com/watch?v=EgpKu1tAVMY). But it’s a phenomenon that experienced developers are all too familiar with. A tutorial often only gives you a surface-level knowledge of the code, but there’s more going on, and there will always be more you discover is going on the deeper you go.
 
@@ -48,7 +48,7 @@ You’ll likely find that tutorials are most helpful for filling gaps in your kn
 
 ## What does it take to be a professional iOS developer?
 
-If you got this far, knowing how hard it will be to develop professional development skills, and you’re still excited and welcome the challenge, I have good news:** you probably have the personality traits that will make you a great developer**.
+If you got this far, knowing how hard it will be to develop professional development skills, and you’re still excited and welcome the challenge, I have good news: **you probably have the personality traits that will make you a great developer**.
 
 Obstacles in software programming never go away – the people who succeed are those with the temperament and patience to keep at it until they find a way through. That’s essentially what this job is all about.
 

@@ -169,7 +169,7 @@ other challenges ahead.
 There is more for a manager that is both capable of putting aside their
 ego (a challenging task in almost any work environment) and feels
 strongly about what should be done. **Namely, they need to share their
-thoughts while actively asking the team to shoot them down. **
+thoughts while actively asking the team to shoot them down.**
 
 **The benefit of this is not only making the team feel comfortable with
 asserting itself but also it ensures someone will walk away from the

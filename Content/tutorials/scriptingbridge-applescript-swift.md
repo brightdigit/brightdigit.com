@@ -5,19 +5,19 @@ description: You may want to build an app in Xcode with the power of AppleScrip
   without the need for scripts - particularly using Swift with ScriptingBridge.
 featuredImage: /media/wp-images/learningswift/2018/11/0nrlPZlDopn4aHLy6.png
 ---
-**AppleScript **is a great technology on macOS for both developers and
-power users. With **AppleScript, **users can create automated processes
+**AppleScript** is a great technology on macOS for both developers and
+power users. With **AppleScript,** users can create automated processes
 which work other apps. As a developer though, sometimes you want
 a **build an app in Xcode with the power of AppleScript** without the
 need to have separate script files. That's where ScriptingBridge comes
 in. To work with AppleScript in any app, there are two options to do
 this:
 
-1.  **Write a separate AppleScript file **and use the [*NSAppleScript
+1.  **Write a separate AppleScript file** and use the [*NSAppleScript
     API*](https://developer.apple.com/documentation/foundation/scripting_support)
     to execute and run the script.
 2.  **Use ScriptingBridge** to work with AppleScript
-    in **Swift **or **Objective-C**.
+    in **Swift** or **Objective-C**.
 
 We are going to look at the second option: ScriptingBridge. In
 particular, **how to use ScriptingBridge in Swift** without the need for
@@ -49,9 +49,9 @@ here](https://majestysoftware.wordpress.com/2015/03/31/swift-scripting-part-1/).
 
 ## ScriptingBridge with Safari
 
-Now let’s try doing this **by writing **[**an app which pulls the tab
+Now let’s try doing this **by writing** [**an app which pulls the tab
 urls out of a Safari
-window**](https://github.com/brightdigit/jURLnal)**. **The repo for this
+window**](https://github.com/brightdigit/jURLnal). The repo for this
 app can be found [here](https://github.com/brightdigit/jURLnal).
 Building the Swift Code from AppleScript Definition Download the python
 scripting tools from the [SwiftScripting repo on

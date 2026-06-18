@@ -175,3 +175,5 @@ Styling/*.svg
 
 # Claude Code local settings (machine-specific)
 .claude/settings.local.json
+# local secrets for import verification
+.env
