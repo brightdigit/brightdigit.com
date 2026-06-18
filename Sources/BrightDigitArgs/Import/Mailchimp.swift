@@ -11,7 +11,6 @@ import Contribute
 import ContributeMailchimp
 import Foundation
 import Prch
-import Tagscriber
 
 #if canImport(FoundationNetworking)
   import FoundationNetworking

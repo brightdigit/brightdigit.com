@@ -19,7 +19,6 @@ let package = Package(
       name: "brightdigitwg",
       targets: ["brightdigitwg"]
     ),
-    .library(name: "Tagscriber", targets: ["Tagscriber"]),
     .library(name: "ContributeMailchimp", targets: ["ContributeMailchimp"]),
     .library(name: "BrightDigitPodcast", targets: ["BrightDigitPodcast"]),
     .library(name: "ContributeYouTube", targets: ["ContributeYouTube"]),
@@ -32,7 +31,6 @@ let package = Package(
     .package(path: "Packages/Publish/SplashPublishPlugin"),
     .package(path: "Packages/BrightDigit/YoutubePublishPlugin"),
     .package(path: "Packages/Plugins/ReadingTimePublishPlugin"),
-    .package(url: "https://github.com/johnsundell/ShellOut.git", from: "2.3.0"),
 
     .package(path: "Packages/BrightDigit/SwiftTube"),
     .package(path: "Packages/BrightDigit/Spinetail"),
@@ -51,8 +49,6 @@ let package = Package(
       from: "1.0.0",
       traits: [.defaults, "CommandLineArguments"]
     ),
-    .package(url: "https://github.com/tid-kijyun/Kanna.git", from: "5.2.2"),
-    .package(url: "https://github.com/eneko/MarkdownGenerator.git", from: "0.4.0"),
     // #40: swift-markdown is now the Publish markdown front end — it replaced Ink's
     // hand-written `Reader` parser inside the vendored `Ink` package (which declares its
     // own swift-markdown dependency and retains its HTML emitter + public API). Kept here
@@ -60,9 +56,7 @@ let package = Package(
     // Pinned to `branch: "main"` (standardizing with PR #86): swift-markdown has no
     // semver tags compatible with the pre-release Swift 6.4 toolchain, so the project
     // tracks main until a compatible tagged release exists.
-    .package(url: "https://github.com/swiftlang/swift-markdown.git", branch: "main"),
-    .package(url: "https://github.com/scinfu/SwiftSoup.git", from: "2.7.0")
-
+    .package(url: "https://github.com/swiftlang/swift-markdown.git", branch: "main")
   ],
   targets: [
     .executableTarget(
@@ -78,7 +72,6 @@ let package = Package(
         "ContributeRSS",
         "ContributeMailchimp",
         "ContributeWordPress",
-        "Tagscriber",
         .product(name: "ArgumentParser", package: "swift-argument-parser"),
         .product(name: "ConfigKeyKit", package: "ConfigKeyKit"),
         .product(name: "Configuration", package: "swift-configuration"),
@@ -112,15 +105,6 @@ let package = Package(
     .target(
       name: "ContributeRSS",
       dependencies: ["Contribute", "SyndiKit"]
-    ),
-    .target(
-      name: "Tagscriber",
-      dependencies: [
-        "SwiftSoup",
-        "Contribute",
-        .product(name: "Markdown", package: "swift-markdown"),
-        "ShellOut"
-      ]
     ),
     .target(
       name: "PublishType",

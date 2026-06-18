@@ -3,11 +3,10 @@ import Contribute
 import Foundation
 import Publish
 import SyndiKit
-import Tagscriber
 
 extension BrightDigitSiteCommand {
   public struct ImportCommand: ParsableCommand {
-    public static let markdownGenerator = PandocMarkdownGenerator()
+    public static let markdownGenerator = SwiftSoupMarkdownGenerator()
     public static let configuration = CommandConfiguration(
       commandName: "import",
       abstract: "Command for import into the BrightDigit site.",
