@@ -1,0 +1,56 @@
+[
+  {
+    "name": "SyndiKit",
+    "path": "Packages/BrightDigit/SyndiKit",
+    "cross": true,
+    "excludeTypes": []
+  },
+  {
+    "name": "Contribute",
+    "path": "Packages/BrightDigit/Contribute",
+    "cross": true,
+    "excludeTypes": ["wasm", "wasm-embedded"]
+  },
+  {
+    "name": "ContributeWordPress",
+    "path": "Packages/BrightDigit/ContributeWordPress",
+    "cross": true,
+    "excludeTypes": ["wasm", "wasm-embedded"]
+  },
+  {
+    "name": "TransistorPublishPlugin",
+    "path": "Packages/BrightDigit/TransistorPublishPlugin",
+    "cross": false,
+    "excludeTypes": ["wasm", "wasm-embedded"]
+  },
+  {
+    "name": "NPMPublishPlugin",
+    "path": "Packages/BrightDigit/NPMPublishPlugin",
+    "cross": false,
+    "excludeTypes": ["wasm", "wasm-embedded"]
+  },
+  {
+    "name": "YoutubePublishPlugin",
+    "path": "Packages/BrightDigit/YoutubePublishPlugin",
+    "cross": false,
+    "excludeTypes": ["wasm", "wasm-embedded"]
+  },
+  {
+    "name": "Spinetail",
+    "path": "Packages/BrightDigit/Spinetail",
+    "cross": false,
+    "excludeTypes": []
+  },
+  {
+    "name": "ButtondownKit",
+    "path": "Packages/BrightDigit/ButtondownKit",
+    "cross": false,
+    "excludeTypes": []
+  },
+  {
+    "name": "SwiftTube",
+    "path": "Packages/BrightDigit/SwiftTube",
+    "cross": false,
+    "excludeTypes": []
+  }
+]

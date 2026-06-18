@@ -29,10 +29,14 @@ jobs:
       full-matrix: ${{ steps.check.outputs.full }}
       packages: ${{ steps.matrix.outputs.packages }}
       cross-packages: ${{ steps.matrix.outputs.cross-packages }}
+      ubuntu-exclude: ${{ steps.matrix.outputs.ubuntu-exclude }}
       ubuntu-os: ${{ steps.matrix.outputs.ubuntu-os }}
       ubuntu-swift: ${{ steps.matrix.outputs.ubuntu-swift }}
       ubuntu-type: ${{ steps.matrix.outputs.ubuntu-type }}
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
       - id: check
         name: Determine matrix scope
         run: |
@@ -62,22 +66,45 @@ jobs:
 
       - id: matrix
         name: Build matrix values
-        # The package lists live here and only here. `packages` is every
-        # vendored package; `cross-packages` is the pure-Swift subset that can
-        # target Windows/Android/wasm. The Publish-dependent plugins (Files,
-        # ShellOut in their dependency chains) are macOS + Linux only.
-        # The three swift-openapi-generator clients (Spinetail, ButtondownKit,
-        # SwiftTube) each ship committed generated code + Scripts/lint.sh +
-        # .mise.toml, so they build, test, and lint standalone like every other
-        # package — on the Ubuntu (nightly-6.4) leg, the macOS build (Swift 6.4
-        # via Xcode), and STRICT lint on the nightly-6.4 container. All three
-        # stay out of cross-packages because their swift-openapi-urlsession /
-        # Foundation networking stack is unavailable on the wasm/Windows/Android
-        # SDKs.
+        # Single source of truth: .github/packages.json declares each vendored
+        # package exactly once (name + path + capabilities). The three matrix
+        # inputs are DERIVED from it with jq — adding/renaming a package is a
+        # one-line manifest edit (issue #96):
+        #   * packages       — every vendored package ({name, path}).
+        #   * cross-packages — the `cross: true` subset (pure-Swift, can target
+        #     Windows/Android/wasm). The Publish-dependent plugins (Files /
+        #     ShellOut in their dependency chains) and the three
+        #     swift-openapi-generator clients (Spinetail, ButtondownKit,
+        #     SwiftTube — swift-openapi-urlsession / Foundation networking,
+        #     unavailable on the wasm/Windows/Android SDKs) are macOS + Linux
+        #     only, so they carry `cross: false`.
+        #   * ubuntu-exclude — the build-ubuntu strategy `exclude:` set, one
+        #     {package:{name}, type} per package×excludeTypes entry. Today's
+        #     excludeTypes (["wasm","wasm-embedded"] on the three plugins and on
+        #     Contribute/ContributeWordPress) preserve the prior hand-written
+        #     exclusions: the plugins are macOS+Linux only, and Contribute/
+        #     ContributeWordPress depend on Yams (fails on the Musl/wasm SDK —
+        #     'DBL_DECIMAL_DIG' not in scope, unreleased Yams fix) and need
+        #     Foundation, absent under wasm-embedded; both DO build on
+        #     Windows/Android (Yams 6 + Foundation shims).
         run: |
+          MANIFEST=.github/packages.json
+
+          # Validate the manifest loudly: a malformed/incomplete manifest fails
+          # the configure job here rather than silently producing a broken matrix.
+          jq -e '
+            type == "array" and length > 0 and all(.[];
+              (.name | type == "string") and
+              (.path | type == "string") and
+              (.cross | type == "boolean") and
+              (.excludeTypes | type == "array")
+            )
+          ' "$MANIFEST" > /dev/null
+
           {
-            echo 'packages=[{"name":"SyndiKit","path":"Packages/BrightDigit/SyndiKit"},{"name":"Contribute","path":"Packages/BrightDigit/Contribute"},{"name":"ContributeWordPress","path":"Packages/BrightDigit/ContributeWordPress"},{"name":"TransistorPublishPlugin","path":"Packages/BrightDigit/TransistorPublishPlugin"},{"name":"NPMPublishPlugin","path":"Packages/BrightDigit/NPMPublishPlugin"},{"name":"YoutubePublishPlugin","path":"Packages/BrightDigit/YoutubePublishPlugin"},{"name":"Spinetail","path":"Packages/BrightDigit/Spinetail"},{"name":"ButtondownKit","path":"Packages/BrightDigit/ButtondownKit"},{"name":"SwiftTube","path":"Packages/BrightDigit/SwiftTube"}]'
-            echo 'cross-packages=[{"name":"SyndiKit","path":"Packages/BrightDigit/SyndiKit"},{"name":"Contribute","path":"Packages/BrightDigit/Contribute"},{"name":"ContributeWordPress","path":"Packages/BrightDigit/ContributeWordPress"}]'
+            echo "packages=$(jq -c 'map({name, path})' "$MANIFEST")"
+            echo "cross-packages=$(jq -c 'map(select(.cross)) | map({name, path})' "$MANIFEST")"
+            echo "ubuntu-exclude=$(jq -c '[ .[] | {name, t: .excludeTypes[]} | {package: {name: .name}, type: .t} ]' "$MANIFEST")"
           } >> "$GITHUB_OUTPUT"
 
           if [[ "${{ steps.check.outputs.full }}" == "true" ]]; then
@@ -106,33 +133,13 @@ jobs:
         os: ${{ fromJSON(needs.configure.outputs.ubuntu-os) }}
         swift: ${{ fromJSON(needs.configure.outputs.ubuntu-swift) }}
         type: ${{ fromJSON(needs.configure.outputs.ubuntu-type) }}
-        exclude:
-          # Publish-dependent plugins are macOS + Linux only (Files/ShellOut)
-          - package: { name: TransistorPublishPlugin }
-            type: "wasm"
-          - package: { name: TransistorPublishPlugin }
-            type: "wasm-embedded"
-          - package: { name: NPMPublishPlugin }
-            type: "wasm"
-          - package: { name: NPMPublishPlugin }
-            type: "wasm-embedded"
-          - package: { name: YoutubePublishPlugin }
-            type: "wasm"
-          - package: { name: YoutubePublishPlugin }
-            type: "wasm-embedded"
-          # Contribute/ContributeWordPress depend on Yams, which fails on the
-          # Musl/wasm SDK with Swift 6.3 ('DBL_DECIMAL_DIG' not in scope; fixed on
-          # Yams main but unreleased as of 6.2.2). wasm-embedded also lacks
-          # Foundation, which both packages require. Revisit when Yams ships the
-          # Musl fix. They DO build on Windows/Android (Yams 6 + Foundation shims).
-          - package: { name: Contribute }
-            type: "wasm"
-          - package: { name: Contribute }
-            type: "wasm-embedded"
-          - package: { name: ContributeWordPress }
-            type: "wasm"
-          - package: { name: ContributeWordPress }
-            type: "wasm-embedded"
+        # Derived from .github/packages.json's per-package `excludeTypes` by the
+        # configure job (issue #96). Each entry drops one package×type combo —
+        # currently wasm/wasm-embedded for the Publish-dependent plugins
+        # (macOS+Linux only) and for Contribute/ContributeWordPress (Yams Musl
+        # build failure + missing Foundation under wasm-embedded). Edit the
+        # manifest, not this list.
+        exclude: ${{ fromJSON(needs.configure.outputs.ubuntu-exclude) }}
     steps:
       - uses: actions/checkout@v6
       - uses: brightdigit/swift-build@v1

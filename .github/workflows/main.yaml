@@ -317,7 +317,11 @@ jobs:
     container:
       image: brightdigit/publish-xml:6.4
     concurrency:
-        group: deploy
+        # Scope per-ref so a newer push to the same branch supersedes an
+        # in-flight deploy, but deploys on different branches/PRs do NOT cancel
+        # each other (issue #95: a global `deploy` group made passing PRs show a
+        # false red ✗ when a cross-branch deploy cancelled them).
+        group: deploy-${{ github.ref }}
         cancel-in-progress: true
 
     steps:
