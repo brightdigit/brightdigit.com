@@ -7,6 +7,6 @@
 	remote = git@github.com:brightdigit/ConfigKeyKit.git
 	branch = 1-remove-need-for-extension
 	commit = ff576acff994abf2895566dba5f289c69fb8bb7e
-	parent = e76f99ea5e0efcd60b138588c21b881b382127ff
+	parent = 0781fc44b0718c2f16a142f8f9e22b47da8b826e
 	method = merge
 	cmdver = 0.4.9
