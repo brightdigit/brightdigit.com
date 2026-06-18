@@ -16,7 +16,7 @@ You’ve made the decision to build your own iOS app. The app is being built to 
 
 Software architecture is the term developers use to describe how major components of an app work together. Modern software structure and design are usually too complex for one person to easily think about all at once. So **we use _architecture_ as an abstraction, drawing parallels to traditional architecture,** where software has inherited ideas of design patterns and user-centered design. In practice, software architecture means _the parts of the app you need to get right_.
 
-**Well-planned architecture for your iOS app starts with investing lots of time in planning and pays off over time.** If you start early, you can create a clear, shared understanding between you and your developers around your app’s architecture.** If you do it well, you save lots of time and money over the lifecycle of your app.**
+**Well-planned architecture for your iOS app starts with investing lots of time in planning and pays off over time.** If you start early, you can create a clear, shared understanding between you and your developers around your app’s architecture. If you do it well, you save lots of time and money over the lifecycle of your app.
 
 > youtube https://www.youtube.com/watch?v=TQpRYibmyvQ&feature=youtu.be
 

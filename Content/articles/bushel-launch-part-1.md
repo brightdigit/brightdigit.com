@@ -90,8 +90,8 @@ Firstly with a sandboxed app I need a way to keep record of _bookmarks_ for each
 <a id="document-based"></a>
 ## Document-Based?
 
-Despite using the latest technologies, **the Document-Based SwiftUI API ended up becoming more hinderance rather than a benefit**. The Document-Based SwiftUI API was more tailored for smaller files of which the developer had greater control over. In the case of **[Bushel](https://getbushel.app)**Libraries and more so Machines, there are components which are very large but more so I only had control over through the Virtualization framework. These are files like the virtual machine identifier, virtual machine disk and more. Additionally maintaining records of created machines and libraries in UserDefaults along with Combine became a mess. 
+Despite using the latest technologies, **the Document-Based SwiftUI API ended up becoming more hinderance rather than a benefit**. The Document-Based SwiftUI API was more tailored for smaller files of which the developer had greater control over. In the case of **[Bushel](https://getbushel.app)** Libraries and more so Machines, there are components which are very large but more so I only had control over through the Virtualization framework. These are files like the virtual machine identifier, virtual machine disk and more. Additionally maintaining records of created machines and libraries in UserDefaults along with Combine became a mess. 
 
 Lastly **supporting Monterey meant I lost a lot of the new APIs available to me** regarding window management in macOS. macOS SwiftUI has been less of a priority for Apple and so I was creating even more challenges for myself by supporting an older OS.
 
-As more work came in **[Bushel](https://getbushel.app)**took a back seat. However [with WWDC came new opportunities for a serious refresh of Bushel.](/articles/bushel-launch-part-2)
+As more work came in **[Bushel](https://getbushel.app)** took a back seat. However [with WWDC came new opportunities for a serious refresh of Bushel.](/articles/bushel-launch-part-2)

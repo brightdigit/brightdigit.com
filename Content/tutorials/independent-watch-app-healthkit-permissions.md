@@ -10,9 +10,9 @@ In the development of my latest app which is an Independent Watch App
 that uses
 [HealthKit](https://learningswift.brightdigit.com/healthkit-getting-started/),
 I ran into an issue with App Store Connect. **App Store Connect will
-complain about missing** ***Purpose Strings*****, that is the messages
+complain about missing** ***Purpose Strings***, that is the messages
 display to the user when access permission is asked for health
-information.**
+information.
 
 > **ITMS-90683: Missing Purpose String in Info.plist** - Your app's code
 > references one or more APIs that access sensitive user data. The app's

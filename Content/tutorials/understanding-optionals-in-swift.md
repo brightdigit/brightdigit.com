@@ -37,7 +37,7 @@ and have simply abstracted them away. At this point, a programmer
 doesn't really care about what specific address a piece of information
 is stored at? Typically you want the actual info. The problem then is
 **how can you signify null while still containing that information and
-not using pointers. ** Most languages assume all objects can be null and
+not using pointers.** Most languages assume all objects can be null and
 should be checked programmatically. However a language like C\# doesn’t
 do this with value types (Int, Float, Char, Structs, etc…). It assumes
 all value type objects are in fact not null and later created Nullable

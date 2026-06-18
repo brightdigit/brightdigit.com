@@ -73,7 +73,7 @@ And while some argue that [good code doesn’t require comments](https://www.ama
 
 ![/media/articles/humane-code/syndikit-docc-getting-started.webp](/media/articles/humane-code/syndikit-docc-getting-started.webp)
 
-**While comments may not be needed, they can be really helpful for adding context to your code when they’re done thoughtfully and without creating too much ‘noise.’ **Take advantage of [Swift’s DocC native comment system](https://www.hackingwithswift.com/articles/238/how-to-document-your-project-with-docc). It’s easy to use, looks great, and ensures future developers can understand.
+**While comments may not be needed, they can be really helpful for adding context to your code when they’re done thoughtfully and without creating too much ‘noise.’** Take advantage of [Swift’s DocC native comment system](https://www.hackingwithswift.com/articles/238/how-to-document-your-project-with-docc). It’s easy to use, looks great, and ensures future developers can understand.
 
 
 ### Code reviews

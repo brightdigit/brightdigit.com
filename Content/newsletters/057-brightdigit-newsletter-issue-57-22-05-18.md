@@ -95,8 +95,8 @@ width="564"
 alt="In-App Purchases and the StoreKit API with Andy Boedo" /></a>
 
 In our next article, we’ll be talking about [**In-App
-Purchases.**](https://www.youtube.com/watch?v=_3sIBHZPhx8) **  
-**Have any questions for us about getting started? Let me know!
+Purchases.**](https://www.youtube.com/watch?v=_3sIBHZPhx8)  
+**Have any questions for us about getting started? Let me know!**
 
 Thanks,  
 Leo

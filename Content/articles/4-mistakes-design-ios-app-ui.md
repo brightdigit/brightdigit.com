@@ -12,7 +12,7 @@ uncomfortably close to the launch date.
 
 It’s also common, in scenarios like this, to have designers not
 specifically familiar with iOS, **creating UIs that look great on other
-platforms, but end up looking messy and buggy when ported to iOS. **
+platforms, but end up looking messy and buggy when ported to iOS.**
 
 This is understandable. **iOS UI design can be difficult**. But, as
 understandable as it is, neglecting the app UI can sabotage even the

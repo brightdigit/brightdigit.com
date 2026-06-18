@@ -65,7 +65,7 @@ must achieve a specific result.
 With SwiftUI, we do away with storyboards altogether. Rather than using
 imperative programming, SwiftUI uses a different style: declarative
 programming. **Declarative programming expresses what the result the
-software must achieve, but doesn’t describe how this must be done. **
+software must achieve, but doesn’t describe how this must be done.**
 
 As a result, SwiftUI minimizes unintended results. Additionally, the
 code is more flexible because it's not limited to a specific procedure.
@@ -106,8 +106,8 @@ other Apple OS too.
 
 If you’re going to build an app on for any Apple platform, you might as
 well start using SwiftUI. You will have all the functionality that Apple
-is able to provide within a single framework**. This also goes for
-anyone with an app who wants to migrate it to other Apple systems.**
+is able to provide within a single framework. This also goes for
+anyone with an app who wants to migrate it to other Apple systems.
 
 ### For Tech-Savvy Users Using the Latest Apple Products
 
