@@ -1,6 +1,6 @@
-/// Errors surfaced while resolving and running `url podcast` via the
+/// Errors surfaced while resolving and running `episode-url` via the
 /// swift-configuration stack (issue #44).
-public enum URLPodcastError: Error, CustomStringConvertible {
+public enum EpisodeURLError: Error, CustomStringConvertible {
   case missingRequiredOption(String)
   case invalidBaseURL(String)
 

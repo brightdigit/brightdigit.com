@@ -4,17 +4,19 @@ import ConfigKeyKit
 import Configuration
 import Foundation
 
-/// ConfigKeyKit-based replacement for `url podcast`.
+/// ConfigKeyKit-based command for previewing a podcast episode's URL.
 ///
 /// This is the first slice of the swift-argument-parser -> swift-configuration
 /// migration (see issue #44 and `Documentation/Migration/44-config-migration.md`).
-/// Each option is described once as a ``ConfigKeyKit/ConfigKey``, which yields
-/// both a CLI flag name (e.g. `--episode-number`) and a `BRIGHTDIGIT_`-prefixed
-/// environment variable name (e.g. `BRIGHTDIGIT_EPISODE_NUMBER`). A single
+/// It registers with ``ConfigKeyKit/CommandRegistry`` under the single-token name
+/// `episode-url` and is dispatched by ``BrightDigitWGRunner``. Each option is
+/// described once as a ``ConfigKeyKit/ConfigKey``, which yields both a CLI flag
+/// name (e.g. `--episode-number`) and a `BRIGHTDIGIT_`-prefixed environment
+/// variable name (e.g. `BRIGHTDIGIT_EPISODE_NUMBER`). A single
 /// ``Configuration/ConfigReader`` (CLI first, then environment) resolves every
 /// key via ConfigKeyKit's ``ConfigKeyKit/ConfigValueReading/read(_:)``, with the
 /// per-key default as the final fallback.
-public struct URLPodcastCommand: ConfigKeyKit.Command {
+public struct EpisodeURLCommand: ConfigKeyKit.Command {
   // ConfigKeyKit keys: one declaration drives both the CLI flag and env var.
   private enum Keys {
     static let baseURL = ConfigKey(
@@ -50,31 +52,31 @@ public struct URLPodcastCommand: ConfigKeyKit.Command {
     ) async throws {
       let baseURLString = reader.read(Keys.baseURL)
       guard let baseURL = URL(string: baseURLString) else {
-        throw URLPodcastError.invalidBaseURL(baseURLString)
+        throw EpisodeURLError.invalidBaseURL(baseURLString)
       }
       self.baseURL = baseURL
 
       self.basePath = reader.read(Keys.basePath)
 
       guard let episodeNumber = reader.read(Keys.episodeNumber) else {
-        throw URLPodcastError.missingRequiredOption("--episode-number")
+        throw EpisodeURLError.missingRequiredOption("--episode-number")
       }
       self.episodeNumber = episodeNumber
 
       guard let episodeTitle = reader.read(Keys.episodeTitle) else {
-        throw URLPodcastError.missingRequiredOption("--episode-title")
+        throw EpisodeURLError.missingRequiredOption("--episode-title")
       }
       self.episodeTitle = episodeTitle
     }
   }
 
-  public static let commandName = "url podcast"
+  public static let commandName = "episode-url"
   public static let abstract =
     "Command for previewing urls for the BrightDigit site."
   public static let helpText = """
     OVERVIEW: Command for previewing urls for the BrightDigit site.
 
-    USAGE: brightdigitwg url podcast --episode-number <n> \
+    USAGE: brightdigitwg episode-url --episode-number <n> \
     --episode-title <title> [--base-url <url>] [--base-path <path>]
 
     OPTIONS:
