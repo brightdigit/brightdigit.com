@@ -42,7 +42,6 @@ let package = Package(
     .package(path: "Packages/BrightDigit/TransistorPublishPlugin"),
 
     .package(url: "https://github.com/jpsim/Yams.git", from: "6.0.0"),
-    .package(url: "https://github.com/apple/swift-argument-parser", from: "1.3.0"),
     .package(path: "Packages/BrightDigit/ConfigKeyKit"),
     .package(
       url: "https://github.com/apple/swift-configuration",
@@ -73,7 +72,6 @@ let package = Package(
         "ContributeMailchimp",
         "ContributeWordPress",
         .product(name: "Spinetail", package: "Spinetail"),
-        .product(name: "ArgumentParser", package: "swift-argument-parser"),
         .product(name: "ConfigKeyKit", package: "ConfigKeyKit"),
         .product(name: "Configuration", package: "swift-configuration"),
       ]
