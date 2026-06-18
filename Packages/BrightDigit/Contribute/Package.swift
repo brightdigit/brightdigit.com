@@ -17,10 +17,12 @@ let package = Package(
       url: "https://github.com/jpsim/Yams.git",
       from: "6.0.0"
     ),
-    .package(
-      url: "https://github.com/scinfu/SwiftSoup.git",
-      from: "2.7.0"
-    ),
+    // Vendored fork of scinfu/SwiftSoup `main` (f474b11, 2026-06-15) with one patch: dropped
+    // `@inline(__always)` from `StringUtil.appendNormalisedWhitespaceBytes`, whose forced inlining
+    // into `Element.appendNormalisedText` crashes the Swift 6.4 nightly optimizer in
+    // `swift build -c release`. Restore the upstream remote once the toolchain stabilises / the
+    // fix lands upstream. See CI run 27729200662.
+    .package(path: "../../scinfu/SwiftSoup"),
     // Tracks `main` to match the swift-cmark `gfm` branch used across this
     // monorepo and the Swift 6.4 toolchain; pin to a tagged release once the
     // toolchain stabilises. URL standardised on `swiftlang` (matches the root
