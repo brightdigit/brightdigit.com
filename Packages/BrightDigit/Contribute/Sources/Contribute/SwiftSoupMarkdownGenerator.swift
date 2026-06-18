@@ -38,11 +38,25 @@ import SwiftSoup
 /// Unlike `PandocMarkdownGenerator` (removed), this requires no external
 /// `pandoc` binary, making it portable across Linux and CI environments.
 ///
-/// ## Known limitations
+/// ## Coverage
 /// The converter targets the common subset of post HTML (headings, paragraphs,
-/// inline emphasis/links/code, lists, block quotes, images, code blocks). It
-/// does **not** handle `<dl>`/`<dt>`/`<dd>`, `<table>`, or arbitrarily deep
-/// mixed block nesting, and does not aim for full Pandoc parity.
+/// inline emphasis/links/code, lists, block quotes, images, code blocks).
+///
+/// `<dl>`/`<dt>`/`<dd>` and `<table>` are also handled, but lossily, because
+/// CommonMark/swift-markdown have no node for either:
+/// - A `<dl>` renders each `<dt>` as a bold-term paragraph followed by its
+///   `<dd>` content, preserving the term/definition pairing as plain prose.
+/// - A `<table>` is treated as layout (our only real-world use, e.g. Mailchimp
+///   newsletters) and flattened to its cells' block content in document order.
+///   This deliberately does **not** emit a GFM data table; genuine
+///   `<th>`-headed data tables are not part of our content and are not
+///   specially handled.
+///
+/// ## Known limitations
+/// The converter does not aim for full Pandoc parity. It does not preserve
+/// semantic `<dl>`/`<table>` structure (see Coverage), does not emit GFM data
+/// tables, and `Link`/`Image` nested inside `<strong>`/`<em>`/`<a>` are dropped
+/// because swift-markdown's inline type model cannot represent them.
 ///
 /// Block and inline rendering lives in `SwiftSoupMarkdownGenerator+Markup.swift`.
 public struct SwiftSoupMarkdownGenerator: MarkdownGenerator {
