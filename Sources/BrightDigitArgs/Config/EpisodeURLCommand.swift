@@ -8,11 +8,11 @@ import Foundation
 ///
 /// This is the first slice of the swift-argument-parser -> swift-configuration
 /// migration (see issue #44 and `Documentation/Migration/44-config-migration.md`).
-/// It registers with ``ConfigKeyKit/CommandRegistry`` under the single-token name
-/// `episode-url` and is dispatched by ``BrightDigitWGRunner``. Each option is
+/// It registers with ``ConfigKeyKit/CommandRegistry`` under the two-token name
+/// `url podcast` and is dispatched by ``CommandDispatcher``. Each option is
 /// described once as a ``ConfigKeyKit/ConfigKey``, which yields both a CLI flag
-/// name (e.g. `--episode-number`) and a `BRIGHTDIGIT_`-prefixed environment
-/// variable name (e.g. `BRIGHTDIGIT_EPISODE_NUMBER`). A single
+/// name (e.g. `--episode-number`) and an uppercased, underscore-separated
+/// environment variable name (e.g. `EPISODE_NUMBER`). A single
 /// ``Configuration/ConfigReader`` (CLI first, then environment) resolves every
 /// key via ConfigKeyKit's ``ConfigKeyKit/ConfigValueReading/read(_:)``, with the
 /// per-key default as the final fallback.
@@ -21,19 +21,17 @@ public struct EpisodeURLCommand: ConfigKeyKit.Command {
   private enum Keys {
     static let baseURL = ConfigKey(
       "base-url",
-      envPrefix: "BRIGHTDIGIT",
       default: BrightDigitSite.SiteInfo.url.absoluteString
     )
     static let basePath = ConfigKey(
       "base-path",
-      envPrefix: "BRIGHTDIGIT",
       default: BrightDigitSite.SectionID.episodes.rawValue
     )
     static let episodeNumber = OptionalConfigKey<Int>(
-      "episode-number", envPrefix: "BRIGHTDIGIT"
+      "episode-number"
     )
     static let episodeTitle = OptionalConfigKey<String>(
-      "episode-title", envPrefix: "BRIGHTDIGIT"
+      "episode-title"
     )
   }
 
@@ -70,13 +68,13 @@ public struct EpisodeURLCommand: ConfigKeyKit.Command {
     }
   }
 
-  public static let commandName = "episode-url"
+  public static let commandName = "url podcast"
   public static let abstract =
     "Command for previewing urls for the BrightDigit site."
   public static let helpText = """
     OVERVIEW: Command for previewing urls for the BrightDigit site.
 
-    USAGE: brightdigitwg episode-url --episode-number <n> \
+    USAGE: brightdigitwg url podcast --episode-number <n> \
     --episode-title <title> [--base-url <url>] [--base-path <path>]
 
     OPTIONS:
@@ -88,8 +86,8 @@ public struct EpisodeURLCommand: ConfigKeyKit.Command {
       --episode-title <title>   Episode Title. (required)
       -h, --help                Show help information.
 
-    Each option may also be supplied via environment variable using the
-    BRIGHTDIGIT_ prefix (e.g. BRIGHTDIGIT_EPISODE_NUMBER).
+    Each option may also be supplied via an uppercased, underscore-separated
+    environment variable (e.g. EPISODE_NUMBER).
     """
 
   private let config: Config
