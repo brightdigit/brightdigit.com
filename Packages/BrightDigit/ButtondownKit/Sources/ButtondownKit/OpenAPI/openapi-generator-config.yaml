@@ -13,6 +13,12 @@ generate:
   - types
   - client
 accessModifier: public
+# Mark every generated file so swift-format and periphery skip it via in-file
+# markers. (SwiftLint can't be suppressed in-file — blanket_disable_command +
+# file_name — so it keeps a path exclude in .swiftlint.yml.)
+additionalFileComments:
+  - periphery:ignore:all
+  - swift-format-ignore-file
 filter:
   operations:
     - create_email      # POST /emails               — create a draft
