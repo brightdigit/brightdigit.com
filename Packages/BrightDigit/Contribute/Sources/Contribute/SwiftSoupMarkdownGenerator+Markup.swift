@@ -45,7 +45,7 @@ extension SwiftSoupMarkdownGenerator {
   }
 
   /// Renders a single element as zero or more block-level nodes.
-  private func blockMarkup(for element: SwiftSoup.Element) throws -> [any BlockMarkup] {
+  internal func blockMarkup(for element: SwiftSoup.Element) throws -> [any BlockMarkup] {
     let tag = element.tagName()
     switch tag {
     case "h1", "h2", "h3", "h4", "h5", "h6":
@@ -81,7 +81,13 @@ extension SwiftSoupMarkdownGenerator {
       let inline = try inlineMarkup(for: element)
       return inline.isEmpty ? [] : [Paragraph(inline)]
 
-    case "script", "style", "iframe", "figure", "ins", "noscript", "dl", "table":
+    case "dl":
+      return try definitionList(from: element)
+
+    case "table":
+      return try tableBlocks(from: element)
+
+    case "script", "style", "iframe", "figure", "ins", "noscript":
       // Intentionally dropped (non-content or unsupported, see Known limitations).
       return []
 
@@ -148,7 +154,7 @@ extension SwiftSoupMarkdownGenerator {
 
   /// Renders the inline content of `element`, walking child text and inline
   /// elements recursively while skipping block-level children.
-  private func inlineChildren(
+  internal func inlineChildren(
     of element: SwiftSoup.Element
   ) throws -> [any InlineMarkup] {
     var result: [any InlineMarkup] = []

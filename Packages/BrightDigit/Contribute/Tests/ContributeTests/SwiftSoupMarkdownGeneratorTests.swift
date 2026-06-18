@@ -89,6 +89,91 @@ internal final class SwiftSoupMarkdownGeneratorTests: XCTestCase {
     XCTAssertFalse(markdown.contains("```swift"), markdown)
   }
 
+  // MARK: Definition lists
+
+  internal func testDefinitionListRendersTermsAndDefinitions() throws {
+    let html = """
+      <dl>
+        <dt>package.json</dt>
+        <dd>for what node modules need to be installed</dd>
+        <dt>Gruntfile.js</dt>
+        <dd>the "make" file</dd>
+      </dl>
+      """
+    let markdown = try sut.markdown(fromHTML: html)
+    // Regression: <dl> used to be dropped entirely, losing all content.
+    XCTAssertTrue(markdown.contains("**package.json**"), markdown)
+    XCTAssertTrue(markdown.contains("for what node modules need to be installed"), markdown)
+    XCTAssertTrue(markdown.contains("**Gruntfile.js**"), markdown)
+    XCTAssertTrue(markdown.contains("the \"make\" file"), markdown)
+  }
+
+  internal func testDefinitionListPreservesInlineFormattingInTerm() throws {
+    let html = """
+      <dl>
+        <dt><a href="http://nodejs.org/">NodeJS</a></dt>
+        <dd>for building the project</dd>
+      </dl>
+      """
+    let markdown = try sut.markdown(fromHTML: html)
+    XCTAssertTrue(markdown.contains("[NodeJS](http://nodejs.org/)"), markdown)
+    XCTAssertTrue(markdown.contains("for building the project"), markdown)
+  }
+
+  internal func testDefinitionListPreservesNestedBlockInDefinition() throws {
+    let html = """
+      <dl>
+        <dt>Grunt</dt>
+        <dd>install grunt globally
+          <pre><code class="language-bash">npm -g install grunt</code></pre>
+        </dd>
+      </dl>
+      """
+    let markdown = try sut.markdown(fromHTML: html)
+    XCTAssertTrue(markdown.contains("**Grunt**"), markdown)
+    XCTAssertTrue(markdown.contains("install grunt globally"), markdown)
+    // The nested code block inside the <dd> must survive.
+    XCTAssertTrue(markdown.contains("npm -g install grunt"), markdown)
+    XCTAssertTrue(markdown.contains("```bash"), markdown)
+  }
+
+  // MARK: Tables
+
+  internal func testLayoutTableFlattensCellContent() throws {
+    // Mailchimp newsletters wrap nearly all body content in layout tables.
+    let html = """
+      <table><tbody>
+        <tr><td><p>First cell</p></td></tr>
+        <tr><td><p>Second cell</p></td></tr>
+      </tbody></table>
+      """
+    let markdown = try sut.markdown(fromHTML: html)
+    // Regression: <table> used to be dropped, erasing the whole newsletter body.
+    XCTAssertTrue(markdown.contains("First cell"), markdown)
+    XCTAssertTrue(markdown.contains("Second cell"), markdown)
+  }
+
+  internal func testTablePreservesInlineFormattingAndLinks() throws {
+    let html = """
+      <table><tr><td><p>see <a href="https://example.com">the docs</a></p></td></tr></table>
+      """
+    let markdown = try sut.markdown(fromHTML: html)
+    XCTAssertTrue(markdown.contains("[the docs](https://example.com)"), markdown)
+  }
+
+  internal func testNestedTableContentEmittedExactlyOnce() throws {
+    let html = """
+      <table><tr><td>
+        <table><tr><td><p>inner only</p></td></tr></table>
+      </td></tr></table>
+      """
+    let markdown = try sut.markdown(fromHTML: html)
+    let occurrences = markdown.components(separatedBy: "inner only").count - 1
+    // Regression guard: descendant-cell selection must not double-emit nested
+    // table content.
+    XCTAssertEqual(occurrences, 1, markdown)
+  }
+
   // MARK: Stripped / empty content
 
   internal func testScriptAndIframeAreStripped() throws {
