@@ -79,7 +79,8 @@ extension Import.PodcastCommand {
     do {
       return try NSRegularExpression(
         pattern:
-          #"(?:youtube\.com/watch\?v=|youtu\.be/|youtube\.com/embed/)([A-Za-z0-9_-]{11})"#,
+          #"(?:youtube\.com/watch\?v=|youtu\.be/|youtube\.com/embed/)"#
+          + #"([A-Za-z0-9_-]{11})"#,
         options: []
       )
     } catch {

@@ -3,25 +3,25 @@ import Testing
 
 @testable import BrightDigitPodcast
 
-private struct StubAudio: AudioPodcastItem {
-  let podcastID = "pod"
-  let episodeNo: Int
-  let slug: String
-  let title: String
-  let date = Date(timeIntervalSince1970: 0)
-  let summary = ""
-  let content: String
-  let duration: TimeInterval = 100
-  let imageURL = URL(fileURLWithPath: "/image.png")
-  let audioURL = URL(fileURLWithPath: "/audio.mp3")
-}
-
-private struct StubVideo: VideoYouTubeItem {
-  let youtubeID: String
-  let duration: TimeInterval = 200
-}
-
 internal struct PodcastMatchingTests {
+  private struct StubAudio: AudioPodcastItem {
+    let podcastID = "pod"
+    let episodeNo: Int
+    let slug: String
+    let title: String
+    let date = Date(timeIntervalSince1970: 0)
+    let summary = ""
+    let content: String
+    let duration: TimeInterval = 100
+    let imageURL = URL(fileURLWithPath: "/image.png")
+    let audioURL = URL(fileURLWithPath: "/audio.mp3")
+  }
+
+  private struct StubVideo: VideoYouTubeItem {
+    let youtubeID: String
+    let duration: TimeInterval = 200
+  }
+
   /// An episode whose `fetchVideo` returns nil is skipped, not fatal — the rest
   /// of the import still completes.
   @Test internal func skipsEpisodesWithoutAVideoAndKeepsTheRest() throws {
