@@ -119,7 +119,6 @@ excluded:
   # ignore directives); excluded so it does not block lint while awaiting removal.
   - Sources/ContributeMailchimp
   - Sources/ContributeYouTube
-  - Sources/BrightDigitArgs/Import/Mailchimp.swift
 indentation_width:
   indentation_width: 2
 file_name:

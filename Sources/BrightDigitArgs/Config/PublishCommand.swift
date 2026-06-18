@@ -61,15 +61,6 @@ public struct PublishCommand: ConfigKeyKit.Command {
     self.config = config
   }
 
-  public static func createInstance() async throws -> Self {
-    let reader = Configuration.ConfigReader(providers: [
-      CommandLineArgumentsProvider(),
-      EnvironmentVariablesProvider(),
-    ])
-    let config = try await Config(configuration: reader)
-    return Self(config: config)
-  }
-
   public func execute() async throws {
     try await BrightDigitSite().publish(includeDrafts: config.mode == .drafts)
   }

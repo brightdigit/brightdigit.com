@@ -47,15 +47,13 @@ let package = Package(
       url: "https://github.com/apple/swift-configuration",
       from: "1.0.0",
       traits: [.defaults, "CommandLineArguments"]
-    ),
-    // #40: swift-markdown is now the Publish markdown front end — it replaced Ink's
-    // hand-written `Reader` parser inside the vendored `Ink` package (which declares its
-    // own swift-markdown dependency and retains its HTML emitter + public API). Kept here
-    // so the whole-workspace resolution pins the same revision.
-    // Pinned to `branch: "main"` (standardizing with PR #86): swift-markdown has no
-    // semver tags compatible with the pre-release Swift 6.4 toolchain, so the project
-    // tracks main until a compatible tagged release exists.
-    .package(url: "https://github.com/swiftlang/swift-markdown.git", branch: "main")
+    )
+    // #40: swift-markdown is the Publish markdown front end — it replaced Ink's
+    // hand-written `Reader` parser inside the vendored `Ink` package, which
+    // declares its own swift-markdown dependency (pinned to `branch: "main"`) and
+    // retains its HTML emitter + public API. That transitive dependency pins the
+    // revision for the whole workspace, so no root-level declaration is needed
+    // here (a redundant one is "not used by any target" and SwiftPM warns on it).
   ],
   targets: [
     .executableTarget(

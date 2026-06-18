@@ -121,15 +121,6 @@ extension Import {
       self.config = config
     }
 
-    public static func createInstance() async throws -> Self {
-      let reader = Configuration.ConfigReader(providers: [
-        CommandLineArgumentsProvider(),
-        EnvironmentVariablesProvider(),
-      ])
-      let config = try await Config(configuration: reader)
-      return Self(config: config)
-    }
-
     public func execute() async throws {
       let processor = try MarkdownProcessor(postFilters: [
         RegexKeyPostFilter(pattern: "post", keyPath: \.type),

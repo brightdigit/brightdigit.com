@@ -126,16 +126,9 @@ extension Import.PodcastCommand {
         if let video = videoDurations[title] {
           return video
         }
-        // No video at all — warn and skip rather than aborting the whole import.
-        FileHandle.standardError.write(
-          Data(
-            """
-            ⚠️  import podcast: no YouTube video for episode \
-            \(rssItem.episodeNo) “\(rssItem.title)” — skipping
-
-            """.utf8
-          )
-        )
+        // No video at all: return nil so `episodesBasedOn` throws
+        // `MediaError.missingVideoForEpisode` and the import fails loudly rather
+        // than silently dropping the episode.
         return nil
       }
   }
@@ -227,15 +220,6 @@ extension Import {
 
     public init(config: Config) {
       self.config = config
-    }
-
-    public static func createInstance() async throws -> Self {
-      let reader = Configuration.ConfigReader(providers: [
-        CommandLineArgumentsProvider(),
-        EnvironmentVariablesProvider(),
-      ])
-      let config = try await Config(configuration: reader)
-      return Self(config: config)
     }
   }
 }

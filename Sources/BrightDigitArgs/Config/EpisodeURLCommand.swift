@@ -50,19 +50,19 @@ public struct EpisodeURLCommand: ConfigKeyKit.Command {
     ) async throws {
       let baseURLString = reader.read(Keys.baseURL)
       guard let baseURL = URL(string: baseURLString) else {
-        throw EpisodeURLError.invalidBaseURL(baseURLString)
+        throw CommandError.invalidURL(baseURLString)
       }
       self.baseURL = baseURL
 
       self.basePath = reader.read(Keys.basePath)
 
       guard let episodeNumber = reader.read(Keys.episodeNumber) else {
-        throw EpisodeURLError.missingRequiredOption("--episode-number")
+        throw CommandError.missingRequiredOption("--episode-number")
       }
       self.episodeNumber = episodeNumber
 
       guard let episodeTitle = reader.read(Keys.episodeTitle) else {
-        throw EpisodeURLError.missingRequiredOption("--episode-title")
+        throw CommandError.missingRequiredOption("--episode-title")
       }
       self.episodeTitle = episodeTitle
     }
@@ -94,15 +94,6 @@ public struct EpisodeURLCommand: ConfigKeyKit.Command {
 
   public init(config: Config) {
     self.config = config
-  }
-
-  public static func createInstance() async throws -> Self {
-    let reader = Configuration.ConfigReader(providers: [
-      CommandLineArgumentsProvider(),
-      EnvironmentVariablesProvider(),
-    ])
-    let config = try await Config(configuration: reader)
-    return Self(config: config)
   }
 
   public func execute() async throws {

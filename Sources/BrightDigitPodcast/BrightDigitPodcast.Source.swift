@@ -25,17 +25,22 @@ extension BrightDigitPodcast.Source {
     )
   }
 
-  /// Builds a podcast source for each RSS item that has a matching video.
+  /// Builds a podcast source for every RSS item, pairing it with its video.
   ///
-  /// Items for which `fetchVideo` returns `nil` are skipped rather than fatal,
-  /// so one episode without a published video doesn't abort the whole import.
+  /// A missing video is fatal: if `fetchVideo` returns `nil` for any item this
+  /// throws ``MediaError/missingVideoForEpisode(episodeNo:title:)`` rather than
+  /// silently dropping the episode, so the import never publishes a site that is
+  /// missing an episode without anyone noticing.
   public static func episodesBasedOn(
     rssItems: [AudioPodcastItem],
     fetchVideo: @escaping (AudioPodcastItem) -> VideoYouTubeItem?
   ) throws -> [BrightDigitPodcastSource] {
-    try rssItems.compactMap { rssItem in
+    try rssItems.map { rssItem in
       guard let video = fetchVideo(rssItem) else {
-        return nil
+        throw MediaError.missingVideoForEpisode(
+          episodeNo: rssItem.episodeNo,
+          title: rssItem.title
+        )
       }
       return try .init(
         podcastID: rssItem.podcastID,

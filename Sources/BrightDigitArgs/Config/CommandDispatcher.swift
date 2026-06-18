@@ -38,7 +38,7 @@ public enum CommandDispatcher {
         from: Array(leadingTokens), in: registry
       )
     else {
-      printTopLevelHelp(availableCommands: await registry.availableCommands)
+      await printHelp(forUnmatchedLeadingTokens: Array(leadingTokens), in: registry)
       return
     }
 
@@ -74,6 +74,24 @@ public enum CommandDispatcher {
     return nil
   }
 
+  /// Prints help when no full command matched: namespace help if the leading
+  /// token names a command namespace (e.g. `import`, `url`), otherwise the full
+  /// top-level help.
+  private static func printHelp(
+    forUnmatchedLeadingTokens tokens: [String],
+    in registry: CommandRegistry
+  ) async {
+    let available = await registry.availableCommands
+    if let name = tokens.first {
+      let subcommands = available.filter { $0.hasPrefix(name + " ") }
+      if !subcommands.isEmpty {
+        printNamespaceHelp(namespace: name, subcommands: subcommands)
+        return
+      }
+    }
+    printTopLevelHelp(availableCommands: available)
+  }
+
   /// Prints a hand-written top-level usage listing every registered command.
   private static func printTopLevelHelp(availableCommands: [String]) {
     var lines = [
@@ -88,6 +106,28 @@ public enum CommandDispatcher {
     }
     lines.append("")
     lines.append("Run 'brightdigitwg <command> --help' for command-specific options.")
+    print(lines.joined(separator: "\n"))
+  }
+
+  /// Prints usage for a command namespace (e.g. `import`), listing only the
+  /// subcommands registered under it. Used when a leading token names a
+  /// namespace but no full command (e.g. `brightdigitwg import`).
+  private static func printNamespaceHelp(
+    namespace: String,
+    subcommands: [String]
+  ) {
+    var lines = [
+      "USAGE: brightdigitwg \(namespace) <subcommand> [options]",
+      "",
+      "SUBCOMMANDS:",
+    ]
+    for subcommand in subcommands {
+      lines.append("  \(subcommand)")
+    }
+    lines.append("")
+    lines.append(
+      "Run 'brightdigitwg <subcommand> --help' for subcommand-specific options."
+    )
     print(lines.joined(separator: "\n"))
   }
 }
