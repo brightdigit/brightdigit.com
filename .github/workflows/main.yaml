@@ -11,10 +11,6 @@ on:
         description: "Set automate_content to trigger automate-content job"
         required: false
         default: ""
-      skip_build:
-        description: "Skip swift build (use prebuilt binary in .build)"
-        required: false
-        default: "false"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -57,30 +53,58 @@ jobs:
 
   automate-content:
       if: ${{ inputs.automate_content != '' }}
-      runs-on: [self-hosted, macOS]
+      needs: detect-changes
+      runs-on: ubuntu-latest
+      container:
+        image: brightdigit/publish-xml:6.4
       concurrency:
           group: automate-content
           cancel-in-progress: true
 
       steps:
+          # The push that lands imported content is authored by an SSH deploy
+          # key (NOT GITHUB_TOKEN), so it DOES trigger CI -> the fast-deploy
+          # path. The Swift container is minimal, so install an SSH client first.
+          - name: Install SSH client
+            run: apt-get update && apt-get install -y openssh-client
+
           - name: Checkout code
             uses: actions/checkout@v6
             with:
+              # Repo deploy key (write access); actions/checkout configures it
+              # for the later git push so that push triggers a new CI run.
+              ssh-key: ${{ secrets.CONTENT_DEPLOY_KEY }}
               fetch-depth: 0
 
-          - name: Determine Skip Build Option
-            env:
-              INPUT_SKIP_BUILD: ${{ github.event.inputs.skip_build }}
+          - name: Mark workspace safe for git
+            run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+          - name: Capture Swift version
+            id: swift
+            run: echo "ver=$(swift --version | head -n1 | tr -cd '[:alnum:].')" >> "$GITHUB_OUTPUT"
+
+          - name: Cache SwiftPM Dependencies
+            uses: actions/cache@v5
+            with:
+              path: .build/
+              key: ${{ runner.os }}-release-${{ steps.swift.outputs.ver }}-${{ needs.detect-changes.outputs.image-digest }}-${{ hashFiles('Package.resolved', 'Sources/**/*.swift') }}
+
+          # Same key as package-linux, so the two jobs share the prebuilt binary.
+          # The image digest keeps a stale-ABI binary from being reused (issue #65).
+          - name: Cache Release Binary
+            id: bincache
+            uses: actions/cache@v5
+            with:
+              path: brightdigitwg-Linux-x86_64
+              key: bin-${{ runner.os }}-${{ steps.swift.outputs.ver }}-${{ needs.detect-changes.outputs.image-digest }}-${{ hashFiles('Package.resolved', 'Package.swift', 'Sources/**/*.swift') }}
+
+          - name: Build Release Product
+            if: ${{ steps.bincache.outputs.cache-hit != 'true' }}
             run: |
-              if [[ "${INPUT_SKIP_BUILD}" == "true" ]]; then
-                echo "Build will be skipped (--skip-build option will be used)"
-                echo "SKIP_BUILD_OPTION=--skip-build" >> $GITHUB_ENV
-              
-                else
-                echo "Build will NOT be skipped (--skip-build option will be empty)"
-                echo "SKIP_BUILD_OPTION=" >> $GITHUB_ENV
-              fi
-              
+              swift build -c release --product brightdigitwg
+              BIN_PATH=$(swift build -c release --product brightdigitwg --show-bin-path)
+              cp "$BIN_PATH/brightdigitwg" "brightdigitwg-$(uname)-$(arch)"
+
           - name: Import Mailchimp
             env:
                 MAILCHIMP_API_KEY: ${{ secrets.MAILCHIMP_API_KEY }}
@@ -88,7 +112,8 @@ jobs:
             run: |
                 echo "Importing Mailchimp..."
 
-                swift run $SKIP_BUILD_OPTION brightdigitwg \
+                chmod +x ./brightdigitwg-Linux-x86_64
+                ./brightdigitwg-Linux-x86_64 \
                   import mailchimp \
                     --mailchimp-api-key=$MAILCHIMP_API_KEY \
                     --mailchimp-list-id=$MAILCHIMP_LIST_ID \
@@ -102,11 +127,11 @@ jobs:
             run: |
                 echo "Importing Podcast..."
 
-                swift run $SKIP_BUILD_OPTION brightdigitwg \
+                ./brightdigitwg-Linux-x86_64 \
                   import podcast \
                     --youtube-api-key=$YOUTUBE_API_KEY \
                     --export-markdown-directory Content/episodes
-                
+
                     echo "Podcast import finished."
 
           - name: Configure Git
@@ -116,20 +141,21 @@ jobs:
 
           - name: Check Changes, Commit, and Push
             run: |
-                # Check if there are any changes (staged or unstaged)
-                # git status --porcelain will output lines if there are changes
-                if [[ -n "$(git status --porcelain)" ]]; then
+                # Only Content/ is committed; the prebuilt binary and .build/
+                # stay out of the bot commit by construction.
+                if [[ -n "$(git status --porcelain Content/)" ]]; then
                   echo "Changes detected. Proceeding with commit and push."
-      
+
                   TODAY_DATE=$(date '+%y%m%d%H%M')
-                  CHANGES_COUNT=$(git status --porcelain | wc -l | xargs)
-                  COMMIT_MESSAGE="Bot:- ${TODAY_DATE} - ${CHANGES_COUNT} new changes"        
-                  git add .
+                  CHANGES_COUNT=$(git status --porcelain Content/ | wc -l | xargs)
+                  COMMIT_MESSAGE="Bot:- ${TODAY_DATE} - ${CHANGES_COUNT} new changes"
+                  git add Content/
                   git commit -m "${COMMIT_MESSAGE}"
-      
-                  # Ensure your runner has credentials (PAT via checkout or SSH key) to push
+
+                  # Pushed over SSH with the deploy key (configured by
+                  # actions/checkout), so this commit DOES trigger CI -> deploy.
                   git push origin ${{ github.ref_name }}
-      
+
                   echo "Changes pushed successfully."
 
                 else
