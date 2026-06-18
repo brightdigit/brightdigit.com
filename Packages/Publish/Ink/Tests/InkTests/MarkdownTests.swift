@@ -106,12 +106,14 @@ final class MarkdownTests: XCTestCase {
         XCTAssertEqual(markdown.title, "Hello, world!")
     }
 
+    // #40: the title's plain text is now derived from swift-markdown's `plainText`, which
+    // preserves inline-code backticks (Ink stripped them).
     func testConvertingFormattedTitleTextToPlainText() {
         let markdown = MarkdownParser().parse("""
         # *Italic* **Bold** [Link](url) ![Image](url) `Code`
         """)
 
-        XCTAssertEqual(markdown.title, "Italic Bold Link Image Code")
+        XCTAssertEqual(markdown.title, "Italic Bold Link Image `Code`")
     }
 
     func testTreatingFirstHeadingAsTitle() {

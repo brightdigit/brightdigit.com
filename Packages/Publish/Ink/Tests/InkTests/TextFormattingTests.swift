@@ -33,9 +33,11 @@ final class TextFormattingTests: XCTestCase {
         XCTAssertEqual(html, "<p>Hello, <strong>world</strong>!</p>")
     }
 
+    // #40: CommonMark's emphasis algorithm nests `<em>` outside `<strong>` for `***x***`;
+    // Ink nested them the other way around.
     func testItalicBoldText() {
         let html = MarkdownParser().html(from: "Hello, ***world***!")
-        XCTAssertEqual(html, "<p>Hello, <strong><em>world</em></strong>!</p>")
+        XCTAssertEqual(html, "<p>Hello, <em><strong>world</strong></em>!</p>")
     }
 
     func testItalicBoldTextWithSeparateStartMarkers() {
@@ -58,9 +60,10 @@ final class TextFormattingTests: XCTestCase {
         XCTAssertEqual(html, "<p>*<em>Hello</em></p>")
     }
 
+    // #40: CommonMark leaves the unmatched leading `*` as a literal before the `<strong>`.
     func testBoldTextWithExtraLeadingMarkers() {
         let html = MarkdownParser().html(from: "***Hello**")
-        XCTAssertEqual(html, "<p><strong>*Hello</strong></p>")
+        XCTAssertEqual(html, "<p>*<strong>Hello</strong></p>")
     }
 
     func testItalicTextWithExtraTrailingMarkers() {
@@ -93,14 +96,16 @@ final class TextFormattingTests: XCTestCase {
         XCTAssertEqual(html, "<p>***Hello</p>")
     }
 
+    // #40: CommonMark's emphasis-matching resolves these nested-unterminated cases
+    // differently from Ink's hand-written marker scanner.
     func testUnterminatedItalicMarkerWithinBoldText() {
         let html = MarkdownParser().html(from: "**Hello, *world!**")
-        XCTAssertEqual(html, "<p><strong>Hello, *world!</strong></p>")
+        XCTAssertEqual(html, "<p>*<em>Hello, <em>world!</em></em></p>")
     }
 
     func testUnterminatedBoldMarkerWithinItalicText() {
         let html = MarkdownParser().html(from: "*Hello, **world!*")
-        XCTAssertEqual(html, "<p><em>Hello, **world!</em></p>")
+        XCTAssertEqual(html, "<p>*Hello, *<em>world!</em></p>")
     }
 
     func testStrikethroughText() {
