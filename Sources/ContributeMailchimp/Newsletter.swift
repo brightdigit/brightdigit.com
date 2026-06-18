@@ -1,10 +1,9 @@
-// swift-format-ignore-file
-// swiftlint:disable all
 import Contribute
 import Foundation
-import Prch
 import Spinetail
 
+/// The newsletter content type, importing BrightDigit newsletters from
+/// Mailchimp campaigns via the swift-openapi-generator async client.
 @available(*, deprecated, message: "Scheduled for removal; do not use in new code.")
 public enum Newsletter: ContentType {
   public typealias SourceType = Source
@@ -14,9 +13,66 @@ public enum Newsletter: ContentType {
 }
 
 @available(*, deprecated, message: "Scheduled for removal; do not use in new code.")
-public extension Newsletter {
-  static func client<SessionType: Session>(withAPIKey mailchimpAPIKey: String, usingSession session: SessionType) -> Client<SessionType, Mailchimp.API> {
-    let api = Spinetail.Mailchimp.API(apiKey: mailchimpAPIKey)!
-    return Client(api: api, session: session)
+extension Newsletter {
+  /// Builds newsletter sources from the sent campaigns of a Mailchimp list.
+  ///
+  /// Lists the list's sent campaigns, then concurrently fetches and processes
+  /// each campaign that the `factory` accepts into a ``Source``.
+  ///
+  /// - Parameters:
+  ///   - client: The Mailchimp client.
+  ///   - listID: The Mailchimp list (audience) id.
+  ///   - factory: Maps a campaign into ``Source/Campaign`` metadata, or `nil`
+  ///     to skip the campaign.
+  ///   - htmlToMarkdown: Converts a campaign's archive HTML into Markdown.
+  /// - Returns: The built newsletter sources.
+  public static func sources(
+    from client: MailchimpClient,
+    listID: String,
+    withFactory factory:
+      @escaping @Sendable (MailchimpCampaign) throws -> Source
+      .Campaign?,
+    processedWith htmlToMarkdown: @escaping @Sendable (String) throws -> String
+  ) async throws -> [Source] {
+    let campaigns = try await client.sentCampaigns(forListID: listID)
+    return try await withThrowingTaskGroup(
+      of: Source?.self
+    ) { group in
+      for campaign in campaigns {
+        group.addTask {
+          try await source(
+            from: campaign,
+            client: client,
+            withFactory: factory,
+            processedWith: htmlToMarkdown
+          )
+        }
+      }
+      var sources: [Source] = []
+      for try await source in group {
+        if let source {
+          sources.append(source)
+        }
+      }
+      return sources
+    }
+  }
+
+  /// Builds a single newsletter source from a campaign, or `nil` if the factory
+  /// rejects the campaign.
+  private static func source(
+    from campaign: MailchimpCampaign,
+    client: MailchimpClient,
+    withFactory factory: @Sendable (MailchimpCampaign) throws -> Source.Campaign?,
+    processedWith htmlToMarkdown: @Sendable (String) throws -> String
+  ) async throws -> Source? {
+    guard let campaignProperties = try factory(campaign) else {
+      return nil
+    }
+    let html = try await client.archiveHTML(
+      forCampaignID: campaignProperties.campaignID
+    )
+    let markdown = try htmlToMarkdown(html)
+    return Source(campaign: campaignProperties, html: html, markdown: markdown)
   }
 }

@@ -1,6 +1,5 @@
 // swift-format-ignore-file
 // swiftlint:disable all
-import Prch
 import Foundation
 import SwiftTube
 import Contribute
@@ -18,35 +17,31 @@ public enum YouTubeContent: ContentType {
 
 @available(*, deprecated, message: "Scheduled for removal; do not use in new code.")
 public extension YouTubeContent {
-  static func videos(byRequest request: YouTubePlaylistRequest) throws -> [SourceType] {
-    let youtubeClient = Prch.Client(
-      api: YouTube.API(),
-      session: URLSession.shared
-    )
+  /// Fetches every video in the request's playlist via the async
+  /// swift-openapi-generator `YouTubeClient`, mapping each into a `Source`.
+  static func videos(
+    byRequest request: YouTubePlaylistRequest
+  ) async throws -> [SourceType] {
+    let client = YouTubeClient(apiKey: request.apiKey)
+    let videos = try await client.videos(forPlaylistID: request.playlistID)
 
-    return try youtubeClient.videos(
-      fromRequest: .init(
-        apiKey: request.apiKey,
-        playlistID: request.playlistID
-      )
-    )
-    .map { video in
+    return try videos.map { video in
       guard let id = video.id else {
         throw YoutubeError.missingFieldForVideo(String(describing: video), .id)
       }
-      guard let title = video.snippet?.title?.trimmingCharacters(in: .whitespacesAndNewlines) else {
+      guard let title = video.title?.trimmingCharacters(in: .whitespacesAndNewlines) else {
         throw YoutubeError.missingFieldForVideo(String(describing: video), .snippetTitle)
       }
-      guard let description = video.snippet?.description else {
+      guard let description = video.description else {
         throw YoutubeError.missingFieldForVideo(String(describing: video), .description)
       }
-      guard let durationString = video.contentDetails?.duration else {
+      guard let durationString = video.duration else {
         throw YoutubeError.missingFieldForVideo(String(describing: video), .duration)
       }
-      guard let publishedAt = video.snippet?.publishedAt else {
+      guard let publishedAt = video.publishedAt else {
         throw YoutubeError.missingFieldForVideo(String(describing: video), .publishedAt)
       }
-      guard let imageUrl = video.snippet?.thumbnails?.standard?.url else {
+      guard let imageUrl = video.standardThumbnailURL else {
         throw YoutubeError.missingFieldForVideo(String(describing: video), .thumbnailUrl)
       }
       return .init(

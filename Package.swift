@@ -72,6 +72,7 @@ let package = Package(
         "ContributeRSS",
         "ContributeMailchimp",
         "ContributeWordPress",
+        .product(name: "Spinetail", package: "Spinetail"),
         .product(name: "ArgumentParser", package: "swift-argument-parser"),
         .product(name: "ConfigKeyKit", package: "ConfigKeyKit"),
         .product(name: "Configuration", package: "swift-configuration"),
@@ -96,7 +97,10 @@ let package = Package(
     ),
     .target(
       name: "ContributeMailchimp",
-      dependencies: ["Contribute", "Spinetail"]
+      dependencies: [
+        "Contribute",
+        .product(name: "Spinetail", package: "Spinetail")
+      ]
     ),
     .target(
       name: "ContributeYouTube",
