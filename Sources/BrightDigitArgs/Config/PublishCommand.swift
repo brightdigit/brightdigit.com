@@ -8,7 +8,7 @@ import Publish
 ///
 /// Part of the swift-argument-parser -> swift-configuration migration (issue #44).
 /// Registers under the single-token name `publish` and is dispatched by
-/// ``BrightDigitWGRunner``. The required `--mode` option (or `BRIGHTDIGIT_MODE`)
+/// ``CommandDispatcher``. The required `--mode` option (or `MODE`)
 /// selects between `drafts` (includes future-dated content) and `production`
 /// (filters future-dated content).
 public struct PublishCommand: ConfigKeyKit.Command {
@@ -17,7 +17,7 @@ public struct PublishCommand: ConfigKeyKit.Command {
   }
 
   private enum Keys {
-    static let mode = OptionalConfigKey<String>("mode", envPrefix: "BRIGHTDIGIT")
+    static let mode = OptionalConfigKey<String>("mode")
   }
 
   public struct Config: ConfigurationParseable {
@@ -31,10 +31,10 @@ public struct PublishCommand: ConfigKeyKit.Command {
       base _: Never?
     ) async throws {
       guard let modeString = reader.read(Keys.mode) else {
-        throw BrightDigitArgsError.missingRequiredOption("--mode")
+        throw CommandError.missingRequiredOption("--mode")
       }
       guard let mode = Mode(rawValue: modeString) else {
-        throw BrightDigitArgsError.invalidValue(option: "--mode", value: modeString)
+        throw CommandError.invalidValue(option: "--mode", value: modeString)
       }
       self.mode = mode
     }
@@ -51,7 +51,7 @@ public struct PublishCommand: ConfigKeyKit.Command {
       --mode <mode>   Publishing mode: 'drafts' or 'production'. (required)
       -h, --help      Show help information.
 
-    The --mode option may also be supplied via the BRIGHTDIGIT_MODE environment
+    The --mode option may also be supplied via the MODE environment
     variable.
     """
 

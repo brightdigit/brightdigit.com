@@ -89,7 +89,7 @@ required), `overwrite-existing`, `include-missing-previous` flags.
 
 All `url podcast` inputs are `--key value` options with no positional args, so
 this subcommand migrates cleanly and was chosen as the first slice. Each option
-also gains an env var (`BRIGHTDIGIT_EPISODE_NUMBER`, etc.) for free.
+also gains an env var (`EPISODE_NUMBER`, etc.) for free.
 
 ## `--help` / usage-text parity — VERDICT
 

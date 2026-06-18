@@ -14,31 +14,29 @@ import SyndiKit
 /// ConfigKeyKit-based command for importing podcast episodes (issue #44).
 ///
 /// Registers under the two-token name `import podcast` and is dispatched by
-/// ``BrightDigitWGRunner``. Pulls episodes from the Transistor RSS feed, enriches
+/// ``CommandDispatcher``. Pulls episodes from the Transistor RSS feed, enriches
 /// them with YouTube video durations, and writes Markdown episode files.
 public struct ImportPodcastCommand: ConfigKeyKit.Command {
   private enum Keys {
     static let playlistID = ConfigKey(
       "playlist-id",
-      envPrefix: "BRIGHTDIGIT",
       default: "PLmpJxPaZbSnBvpnEdaX78wSM1d9BVvMfI"
     )
     static let youtubeAPIKey = OptionalConfigKey<String>(
-      "youtube-api-key", envPrefix: "BRIGHTDIGIT"
+      "youtube-api-key"
     )
     static let rss = ConfigKey(
       "rss",
-      envPrefix: "BRIGHTDIGIT",
       default: "https://feeds.transistor.fm/empowerapps-show"
     )
     static let exportMarkdownDirectory = OptionalConfigKey<String>(
-      "export-markdown-directory", envPrefix: "BRIGHTDIGIT"
+      "export-markdown-directory"
     )
     static let overwriteExisting = ConfigKey(
-      "overwrite-existing", envPrefix: "BRIGHTDIGIT", default: false
+      "overwrite-existing", default: false
     )
     static let includeMissingPrevious = ConfigKey(
-      "include-missing-previous", envPrefix: "BRIGHTDIGIT", default: false
+      "include-missing-previous", default: false
     )
   }
 
@@ -62,8 +60,8 @@ public struct ImportPodcastCommand: ConfigKeyKit.Command {
       --include-missing-previous        Include episodes missing a previous entry.
       -h, --help                        Show help information.
 
-    Each option may also be supplied via environment variable using the
-    BRIGHTDIGIT_ prefix (e.g. BRIGHTDIGIT_YOUTUBE_API_KEY).
+    Each option may also be supplied via an uppercased, underscore-separated
+    environment variable (e.g. YOUTUBE_API_KEY).
     """
 
   private let config: Config
@@ -154,19 +152,19 @@ extension ImportPodcastCommand {
       self.playlistID = reader.read(Keys.playlistID)
 
       guard let youtubeAPIKey = reader.read(Keys.youtubeAPIKey) else {
-        throw BrightDigitArgsError.missingRequiredOption("--youtube-api-key")
+        throw CommandError.missingRequiredOption("--youtube-api-key")
       }
       self.youtubeAPIKey = youtubeAPIKey
 
       let rssString = reader.read(Keys.rss)
       guard let rss = URL(string: rssString) else {
-        throw BrightDigitArgsError.invalidURL(rssString)
+        throw CommandError.invalidURL(rssString)
       }
       self.rss = rss
 
       guard let exportMarkdownDirectory = reader.read(Keys.exportMarkdownDirectory)
       else {
-        throw BrightDigitArgsError.missingRequiredOption("--export-markdown-directory")
+        throw CommandError.missingRequiredOption("--export-markdown-directory")
       }
       self.exportMarkdownDirectory = exportMarkdownDirectory
 

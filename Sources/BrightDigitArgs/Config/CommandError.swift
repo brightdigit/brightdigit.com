@@ -5,7 +5,7 @@
 /// `import mailchimp`, `import wordpress`). Each command resolves its options
 /// through a ``Configuration/ConfigReader`` and throws one of these cases when a
 /// required option is missing or a supplied value cannot be parsed.
-public enum BrightDigitArgsError: Error, CustomStringConvertible {
+public enum CommandError: Error, CustomStringConvertible {
   /// A required option was not supplied via CLI or environment.
   case missingRequiredOption(String)
   /// A supplied option value could not be parsed into the expected type.

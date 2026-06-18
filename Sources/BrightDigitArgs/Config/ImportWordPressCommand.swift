@@ -11,24 +11,24 @@ import Foundation
 /// ConfigKeyKit-based command for importing a WordPress export (issue #44).
 ///
 /// Registers under the two-token name `import wordpress` and is dispatched by
-/// ``BrightDigitWGRunner``. Processes a WordPress export directory into Markdown
+/// ``CommandDispatcher``. Processes a WordPress export directory into Markdown
 /// articles, optionally downloading or copying referenced assets.
 public struct ImportWordPressCommand: ConfigKeyKit.Command {
   private enum Keys {
     static let wordpressExportsDirectory = OptionalConfigKey<String>(
-      "wordpress-exports-directory", envPrefix: "BRIGHTDIGIT"
+      "wordpress-exports-directory"
     )
     static let importAssetsDirectory = OptionalConfigKey<String>(
-      "import-assets-directory", envPrefix: "BRIGHTDIGIT"
+      "import-assets-directory"
     )
     static let assetRelativePath = ConfigKey(
-      "asset-relative-path", envPrefix: "BRIGHTDIGIT", default: "media/wp-images"
+      "asset-relative-path", default: "media/wp-images"
     )
     static let overwriteAssets = ConfigKey(
-      "overwrite-assets", envPrefix: "BRIGHTDIGIT", default: false
+      "overwrite-assets", default: false
     )
     static let skipDownload = ConfigKey(
-      "skip-download", envPrefix: "BRIGHTDIGIT", default: false
+      "skip-download", default: false
     )
   }
 
@@ -52,8 +52,8 @@ public struct ImportWordPressCommand: ConfigKeyKit.Command {
       --skip-download                     Skip downloading assets.
       -h, --help                          Show help information.
 
-    Each option may also be supplied via environment variable using the
-    BRIGHTDIGIT_ prefix (e.g. BRIGHTDIGIT_WORDPRESS_EXPORTS_DIRECTORY).
+    Each option may also be supplied via an uppercased, underscore-separated
+    environment variable (e.g. WORDPRESS_EXPORTS_DIRECTORY).
     """
 
   private let config: Config
@@ -140,7 +140,7 @@ extension ImportWordPressCommand {
       guard
         let wordpressExportsDirectory = reader.read(Keys.wordpressExportsDirectory)
       else {
-        throw BrightDigitArgsError.missingRequiredOption("--wordpress-exports-directory")
+        throw CommandError.missingRequiredOption("--wordpress-exports-directory")
       }
       self.wordpressExportsDirectory = wordpressExportsDirectory
       self.importAssetsDirectory = reader.read(Keys.importAssetsDirectory)

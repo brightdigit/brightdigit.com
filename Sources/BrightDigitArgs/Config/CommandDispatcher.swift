@@ -12,7 +12,7 @@ import Foundation
 /// non-option tokens: it first tries the joined first two tokens, then the first
 /// token alone. Anything that doesn't name a registered command prints top-level
 /// help (there is no implicit default command).
-public enum BrightDigitWGRunner {
+public enum CommandDispatcher {
   /// The maximum number of whitespace-joined tokens that can form a command name.
   private static let maxCommandTokens = 2
 

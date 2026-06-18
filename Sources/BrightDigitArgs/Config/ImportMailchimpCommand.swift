@@ -13,24 +13,24 @@ import Spinetail
 /// ConfigKeyKit-based command for importing Mailchimp newsletters (issue #44).
 ///
 /// Registers under the two-token name `import mailchimp` and is dispatched by
-/// ``BrightDigitWGRunner``. Pulls campaigns from the configured Mailchimp list,
+/// ``CommandDispatcher``. Pulls campaigns from the configured Mailchimp list,
 /// filters them to BrightDigit newsletters, and writes Markdown newsletter files.
 public struct ImportMailchimpCommand: ConfigKeyKit.Command {
   private enum Keys {
     static let exportMarkdownDirectory = OptionalConfigKey<String>(
-      "export-markdown-directory", envPrefix: "BRIGHTDIGIT"
+      "export-markdown-directory"
     )
     static let mailchimpAPIKey = OptionalConfigKey<String>(
-      "mailchimp-api-key", envPrefix: "BRIGHTDIGIT"
+      "mailchimp-api-key"
     )
     static let mailchimpListID = OptionalConfigKey<String>(
-      "mailchimp-list-id", envPrefix: "BRIGHTDIGIT"
+      "mailchimp-list-id"
     )
     static let overwriteExisting = ConfigKey(
-      "overwrite-existing", envPrefix: "BRIGHTDIGIT", default: false
+      "overwrite-existing", default: false
     )
     static let includeMissingPrevious = ConfigKey(
-      "include-missing-previous", envPrefix: "BRIGHTDIGIT", default: false
+      "include-missing-previous", default: false
     )
   }
 
@@ -66,8 +66,8 @@ public struct ImportMailchimpCommand: ConfigKeyKit.Command {
       --include-missing-previous        Include newsletters missing a previous entry.
       -h, --help                        Show help information.
 
-    Each option may also be supplied via environment variable using the
-    BRIGHTDIGIT_ prefix (e.g. BRIGHTDIGIT_MAILCHIMP_API_KEY).
+    Each option may also be supplied via an uppercased, underscore-separated
+    environment variable (e.g. MAILCHIMP_API_KEY).
     """
 
   private let config: Config
@@ -131,17 +131,17 @@ extension ImportMailchimpCommand {
     ) async throws {
       guard let exportMarkdownDirectory = reader.read(Keys.exportMarkdownDirectory)
       else {
-        throw BrightDigitArgsError.missingRequiredOption("--export-markdown-directory")
+        throw CommandError.missingRequiredOption("--export-markdown-directory")
       }
       self.exportMarkdownDirectory = exportMarkdownDirectory
 
       guard let mailchimpAPIKey = reader.read(Keys.mailchimpAPIKey) else {
-        throw BrightDigitArgsError.missingRequiredOption("--mailchimp-api-key")
+        throw CommandError.missingRequiredOption("--mailchimp-api-key")
       }
       self.mailchimpAPIKey = mailchimpAPIKey
 
       guard let mailchimpListID = reader.read(Keys.mailchimpListID) else {
-        throw BrightDigitArgsError.missingRequiredOption("--mailchimp-list-id")
+        throw CommandError.missingRequiredOption("--mailchimp-list-id")
       }
       self.mailchimpListID = mailchimpListID
 
