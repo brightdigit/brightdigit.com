@@ -28,8 +28,9 @@ jobs:
     outputs:
       full-matrix: ${{ steps.check.outputs.full }}
       packages: ${{ steps.matrix.outputs.packages }}
-      cross-packages: ${{ steps.matrix.outputs.cross-packages }}
-      ubuntu-exclude: ${{ steps.matrix.outputs.ubuntu-exclude }}
+      # cross-packages disabled on phase-04-openapi (Windows/Android jobs are
+      # off — see the NOTE in build-ubuntu). Re-enable with those jobs.
+      # cross-packages: ${{ steps.matrix.outputs.cross-packages }}
       ubuntu-os: ${{ steps.matrix.outputs.ubuntu-os }}
       ubuntu-swift: ${{ steps.matrix.outputs.ubuntu-swift }}
       ubuntu-type: ${{ steps.matrix.outputs.ubuntu-type }}
@@ -67,26 +68,16 @@ jobs:
       - id: matrix
         name: Build matrix values
         # Single source of truth: .github/packages.json declares each vendored
-        # package exactly once (name + path + capabilities). The three matrix
-        # inputs are DERIVED from it with jq — adding/renaming a package is a
-        # one-line manifest edit (issue #96):
-        #   * packages       — every vendored package ({name, path}).
-        #   * cross-packages — the `cross: true` subset (pure-Swift, can target
-        #     Windows/Android/wasm). The Publish-dependent plugins (Files /
-        #     ShellOut in their dependency chains) and the three
-        #     swift-openapi-generator clients (Spinetail, ButtondownKit,
-        #     SwiftTube — swift-openapi-urlsession / Foundation networking,
-        #     unavailable on the wasm/Windows/Android SDKs) are macOS + Linux
-        #     only, so they carry `cross: false`.
-        #   * ubuntu-exclude — the build-ubuntu strategy `exclude:` set, one
-        #     {package:{name}, type} per package×excludeTypes entry. Today's
-        #     excludeTypes (["wasm","wasm-embedded"] on the three plugins and on
-        #     Contribute/ContributeWordPress) preserve the prior hand-written
-        #     exclusions: the plugins are macOS+Linux only, and Contribute/
-        #     ContributeWordPress depend on Yams (fails on the Musl/wasm SDK —
-        #     'DBL_DECIMAL_DIG' not in scope, unreleased Yams fix) and need
-        #     Foundation, absent under wasm-embedded; both DO build on
-        #     Windows/Android (Yams 6 + Foundation shims).
+        # package exactly once (name + path). The matrix inputs are DERIVED from
+        # it with jq — adding/renaming a package is a one-line manifest edit
+        # (issue #96):
+        #   * packages — every vendored package ({name, path}).
+        # Two axes are disabled GLOBALLY on phase-04-openapi rather than
+        # per-package:
+        #   * wasm/wasm-embedded — kept out of `ubuntu-type` below.
+        #   * cross-platform (Windows/Android) — `cross-packages` derivation is
+        #     commented out, alongside the disabled build-windows/build-android
+        #     jobs. Restore both together when reintroducing cross-platform CI.
         run: |
           MANIFEST=.github/packages.json
 
@@ -95,31 +86,29 @@ jobs:
           jq -e '
             type == "array" and length > 0 and all(.[];
               (.name | type == "string") and
-              (.path | type == "string") and
-              (.cross | type == "boolean") and
-              (.excludeTypes | type == "array")
+              (.path | type == "string")
             )
           ' "$MANIFEST" > /dev/null
 
           {
             echo "packages=$(jq -c 'map({name, path})' "$MANIFEST")"
-            echo "cross-packages=$(jq -c 'map(select(.cross)) | map({name, path})' "$MANIFEST")"
-            echo "ubuntu-exclude=$(jq -c '[ .[] | {name, t: .excludeTypes[]} | {package: {name: .name}, type: .t} ]' "$MANIFEST")"
+            # cross-packages — the pure-Swift subset that can target
+            # Windows/Android/wasm. Disabled with the cross-platform jobs; when
+            # restoring, reintroduce a per-package `cross` flag in the manifest:
+            # echo "cross-packages=$(jq -c 'map(select(.cross)) | map({name, path})' "$MANIFEST")"
           } >> "$GITHUB_OUTPUT"
 
-          if [[ "${{ steps.check.outputs.full }}" == "true" ]]; then
-            {
-              echo 'ubuntu-os=["noble"]'
-              echo 'ubuntu-swift=[{"version":"6.4"}]'
-              echo 'ubuntu-type=[""]'  # wasm/wasm-embedded disabled on phase-04-openapi
-            } >> "$GITHUB_OUTPUT"
-          else
-            {
-              echo 'ubuntu-os=["noble"]'
-              echo 'ubuntu-swift=[{"version":"6.4"}]'
-              echo 'ubuntu-type=[""]'
-            } >> "$GITHUB_OUTPUT"
-          fi
+          # ubuntu-type — the build types every package runs. wasm/wasm-embedded
+          # are disabled globally on phase-04-openapi: the Publish-dependent
+          # plugins are macOS+Linux only, and Contribute/ContributeWordPress
+          # depend on Yams (fails on the Musl/wasm SDK — 'DBL_DECIMAL_DIG' not in
+          # scope, unreleased Yams fix) and need Foundation (absent under
+          # wasm-embedded). Uncomment the wasm entries to reintroduce them.
+          {
+            echo 'ubuntu-os=["noble"]'
+            echo 'ubuntu-swift=[{"version":"6.4"}]'
+            echo 'ubuntu-type=[""]'  # ,"wasm","wasm-embedded"
+          } >> "$GITHUB_OUTPUT"
 
   build-ubuntu:
     name: Build ${{ matrix.package.name }} on Ubuntu
@@ -133,13 +122,6 @@ jobs:
         os: ${{ fromJSON(needs.configure.outputs.ubuntu-os) }}
         swift: ${{ fromJSON(needs.configure.outputs.ubuntu-swift) }}
         type: ${{ fromJSON(needs.configure.outputs.ubuntu-type) }}
-        # Derived from .github/packages.json's per-package `excludeTypes` by the
-        # configure job (issue #96). Each entry drops one package×type combo —
-        # currently wasm/wasm-embedded for the Publish-dependent plugins
-        # (macOS+Linux only) and for Contribute/ContributeWordPress (Yams Musl
-        # build failure + missing Foundation under wasm-embedded). Edit the
-        # manifest, not this list.
-        exclude: ${{ fromJSON(needs.configure.outputs.ubuntu-exclude) }}
     steps:
       - uses: actions/checkout@v6
       - uses: brightdigit/swift-build@v1

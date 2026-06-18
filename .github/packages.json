@@ -1,56 +1,38 @@
 [
   {
     "name": "SyndiKit",
-    "path": "Packages/BrightDigit/SyndiKit",
-    "cross": true,
-    "excludeTypes": []
+    "path": "Packages/BrightDigit/SyndiKit"
   },
   {
     "name": "Contribute",
-    "path": "Packages/BrightDigit/Contribute",
-    "cross": true,
-    "excludeTypes": ["wasm", "wasm-embedded"]
+    "path": "Packages/BrightDigit/Contribute"
   },
   {
     "name": "ContributeWordPress",
-    "path": "Packages/BrightDigit/ContributeWordPress",
-    "cross": true,
-    "excludeTypes": ["wasm", "wasm-embedded"]
+    "path": "Packages/BrightDigit/ContributeWordPress"
   },
   {
     "name": "TransistorPublishPlugin",
-    "path": "Packages/BrightDigit/TransistorPublishPlugin",
-    "cross": false,
-    "excludeTypes": ["wasm", "wasm-embedded"]
+    "path": "Packages/BrightDigit/TransistorPublishPlugin"
   },
   {
     "name": "NPMPublishPlugin",
-    "path": "Packages/BrightDigit/NPMPublishPlugin",
-    "cross": false,
-    "excludeTypes": ["wasm", "wasm-embedded"]
+    "path": "Packages/BrightDigit/NPMPublishPlugin"
   },
   {
     "name": "YoutubePublishPlugin",
-    "path": "Packages/BrightDigit/YoutubePublishPlugin",
-    "cross": false,
-    "excludeTypes": ["wasm", "wasm-embedded"]
+    "path": "Packages/BrightDigit/YoutubePublishPlugin"
   },
   {
     "name": "Spinetail",
-    "path": "Packages/BrightDigit/Spinetail",
-    "cross": false,
-    "excludeTypes": []
+    "path": "Packages/BrightDigit/Spinetail"
   },
   {
     "name": "ButtondownKit",
-    "path": "Packages/BrightDigit/ButtondownKit",
-    "cross": false,
-    "excludeTypes": []
+    "path": "Packages/BrightDigit/ButtondownKit"
   },
   {
     "name": "SwiftTube",
-    "path": "Packages/BrightDigit/SwiftTube",
-    "cross": false,
-    "excludeTypes": []
+    "path": "Packages/BrightDigit/SwiftTube"
   }
 ]
