@@ -122,7 +122,7 @@ extension Import.PodcastCommand {
     try BrightDigitPodcast.write(
       episodes: episodes,
       atContentPathURL: contentPathURL,
-      using: ImportSupport.markdownGenerator.markdown(fromHTML:),
+      using: Import.markdownGenerator.markdown(fromHTML:),
       options: options
     )
   }

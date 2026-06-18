@@ -164,7 +164,7 @@ extension Import.MailchimpCommand {
   public func execute() async throws {
     let contentPathURL = URL(fileURLWithPath: config.exportMarkdownDirectory)
     let client = try MailchimpClient(apiKey: config.mailchimpAPIKey)
-    let htmlToMarkdown = ImportSupport.markdownGenerator.markdown(fromHTML:)
+    let htmlToMarkdown = Import.markdownGenerator.markdown(fromHTML:)
 
     let newsletters = try await Newsletter.sources(
       from: client,
