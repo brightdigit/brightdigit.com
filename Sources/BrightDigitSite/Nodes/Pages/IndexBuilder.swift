@@ -245,39 +245,4 @@ extension Node where Context == HTML.ListContext {
       )
     )
   }
-
-  public static func latestArticle(_ article: IndexArticle) -> Node {
-    .li(
-      .header(
-        .a(
-          .href(article.rootRelativeURL),
-          .img(.src(article.featuredImageURL)),
-          .h3(.text(article.title))
-        ),
-        .ol(
-          .forEach(article.tags) { tag in
-            .li(.text(tag.string))
-          }
-        )
-      ),
-      .main(
-        .p(.text(article.description))
-      ),
-      .footer(
-        .a(
-          .href(article.rootRelativeURL),
-          .div(
-            .class("publishedAt"),
-            .text(
-              PiHTMLFactory.itemFormatter.string(from: article.publishedAt)
-            )
-          ),
-          .div(
-            .class("readTime"),
-            .text("\(article.lengthInMinutes) mins")
-          )
-        )
-      )
-    )
-  }
 }
