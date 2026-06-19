@@ -1,5 +1,5 @@
 {
-  "originHash" : "79db71161b0e0b812edda0b6a1007cb8b29a3eacd40c23a3498dd24fdd29b346",
+  "originHash" : "23b423173615e1fb5c592755ec5c7d3f1fe8d76f84e230e0d6504f1dccfcffb4",
   "pins" : [
     {
       "identity" : "swift-async-algorithms",
@@ -107,6 +107,15 @@
       "state" : {
         "revision" : "7502b711c92a17741fa625d722b0ccbd595d8ed1",
         "version" : "1.7.2"
+      }
+    },
+    {
+      "identity" : "swiftsoup",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/brightdigit/SwiftSoup.git",
+      "state" : {
+        "branch" : "fix/swift-6.4-inline-crash",
+        "revision" : "5d5d9ec29b5ba0b046944f9ad3ff668bb4996e08"
       }
     },
     {
