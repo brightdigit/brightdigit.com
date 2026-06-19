@@ -1,19 +1,58 @@
-// swift-format-ignore-file
-// swiftlint:disable all
+//
+//  FrontMatterTranslator.swift
+//  BrightDigit
+//
+//  Created by Leo Dion.
+//  Copyright © 2026 BrightDigit.
+//
+//  Permission is hereby granted, free of charge, to any person
+//  obtaining a copy of this software and associated documentation
+//  files (the "Software"), to deal in the Software without
+//  restriction, including without limitation the rights to use,
+//  copy, modify, merge, publish, distribute, sublicense, and/or
+//  sell copies of the Software, and to permit persons to whom the
+//  Software is furnished to do so, subject to the following
+//  conditions:
+//
+//  The above copyright notice and this permission notice shall be
+//  included in all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+//  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+//  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+//  NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+//  HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+//  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+//  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+//  OTHER DEALINGS IN THE SOFTWARE.
+//
+
+import Contribute
+
 #if canImport(FoundationNetworking)
   import FoundationNetworking
 #endif
-import Contribute
+
 @available(*, deprecated, message: "Scheduled for removal; do not use in new code.")
-public extension Newsletter {
-  struct FrontMatterTranslator: Contribute.FrontMatterTranslator {
-    public init() {}
-    public func frontMatter(from source: Source) -> FrontMatter {
-      FrontMatter(issueNo: source.issueNo, campaignID: source.campaignID, featuredImage: source.featuredImageURL, longArchiveURL: source.longArchiveURL, newsletterTitle: source.title, title: source.subjectLine, date: YAML.dateFormatter.string(from: source.sendTime), description: source.previewText)
-    }
-
+extension Newsletter {
+  /// Translates a newsletter ``Source`` into its ``FrontMatter``.
+  public struct FrontMatterTranslator: Contribute.FrontMatterTranslator {
     public typealias FrontMatterType = FrontMatter
-
     public typealias SourceType = Source
+
+    public init() {}
+
+    public func frontMatter(from source: Source) -> FrontMatter {
+      FrontMatter(
+        issueNo: source.issueNo,
+        campaignID: source.campaignID,
+        featuredImage: source.featuredImageURL,
+        longArchiveURL: source.longArchiveURL,
+        newsletterTitle: source.title,
+        title: source.subjectLine,
+        date: YAML.dateFormatter.string(from: source.sendTime),
+        description: source.previewText
+      )
+    }
   }
 }

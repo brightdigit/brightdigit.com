@@ -9,14 +9,16 @@ import PackageDescription
 let package = Package(
   name: "BrightDigit",
   platforms: [
-    .macOS(.v13)
+    // Raised from .v13 for issue #44: ConfigKeyKit 1.0.0-beta.1 requires macOS 15.
+    // Deploy target is Linux (no platform floor), so this only affects local
+    // macOS development/builds. See Documentation/Migration/44-config-migration.md.
+    .macOS(.v15)
   ],
   products: [
     .executable(
       name: "brightdigitwg",
       targets: ["brightdigitwg"]
     ),
-    .library(name: "Tagscriber", targets: ["Tagscriber"]),
     .library(name: "ContributeMailchimp", targets: ["ContributeMailchimp"]),
     .library(name: "BrightDigitPodcast", targets: ["BrightDigitPodcast"]),
     .library(name: "ContributeYouTube", targets: ["ContributeYouTube"]),
@@ -29,7 +31,6 @@ let package = Package(
     .package(path: "Packages/Publish/SplashPublishPlugin"),
     .package(path: "Packages/BrightDigit/YoutubePublishPlugin"),
     .package(path: "Packages/Plugins/ReadingTimePublishPlugin"),
-    .package(url: "https://github.com/johnsundell/ShellOut.git", from: "2.3.0"),
 
     .package(path: "Packages/BrightDigit/SwiftTube"),
     .package(path: "Packages/BrightDigit/Spinetail"),
@@ -41,9 +42,18 @@ let package = Package(
     .package(path: "Packages/BrightDigit/TransistorPublishPlugin"),
 
     .package(url: "https://github.com/jpsim/Yams.git", from: "6.0.0"),
-    .package(url: "https://github.com/apple/swift-argument-parser", from: "1.3.0"),
-    .package(url: "https://github.com/tid-kijyun/Kanna.git", from: "5.2.2"),
-    .package(url: "https://github.com/eneko/MarkdownGenerator.git", from: "0.4.0")
+    .package(path: "Packages/BrightDigit/ConfigKeyKit"),
+    .package(
+      url: "https://github.com/apple/swift-configuration",
+      from: "1.0.0",
+      traits: [.defaults, "CommandLineArguments"]
+    )
+    // #40: swift-markdown is the Publish markdown front end — it replaced Ink's
+    // hand-written `Reader` parser inside the vendored `Ink` package, which
+    // declares its own swift-markdown dependency (pinned to `branch: "main"`) and
+    // retains its HTML emitter + public API. That transitive dependency pins the
+    // revision for the whole workspace, so no root-level declaration is needed
+    // here (a redundant one is "not used by any target" and SwiftPM warns on it).
   ],
   targets: [
     .executableTarget(
@@ -59,8 +69,9 @@ let package = Package(
         "ContributeRSS",
         "ContributeMailchimp",
         "ContributeWordPress",
-        "Tagscriber",
-        .product(name: "ArgumentParser", package: "swift-argument-parser"),
+        .product(name: "Spinetail", package: "Spinetail"),
+        .product(name: "ConfigKeyKit", package: "ConfigKeyKit"),
+        .product(name: "Configuration", package: "swift-configuration"),
       ]
     ),
     .target(
@@ -82,7 +93,10 @@ let package = Package(
     ),
     .target(
       name: "ContributeMailchimp",
-      dependencies: ["Contribute", "Spinetail"]
+      dependencies: [
+        "Contribute",
+        .product(name: "Spinetail", package: "Spinetail")
+      ]
     ),
     .target(
       name: "ContributeYouTube",
@@ -91,15 +105,6 @@ let package = Package(
     .target(
       name: "ContributeRSS",
       dependencies: ["Contribute", "SyndiKit"]
-    ),
-    .target(
-      name: "Tagscriber",
-      dependencies: [
-        "Kanna",
-        "Contribute",
-        "MarkdownGenerator",
-        "ShellOut"
-      ]
     ),
     .target(
       name: "PublishType",
@@ -112,6 +117,13 @@ let package = Package(
       dependencies: [
         "Yams",
         "BrightDigitSite"
+      ]
+    ),
+    .testTarget(
+      name: "BrightDigitArgsTests",
+      dependencies: [
+        "BrightDigitArgs",
+        "BrightDigitPodcast"
       ]
     )
   ]

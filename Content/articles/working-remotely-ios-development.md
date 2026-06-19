@@ -86,7 +86,7 @@ disease](https://www.nationalgeographic.com/science/article/will-coronavirus-end
 it bears repeating. If you’re a manager, keen to implement remote work
 for your team, you need to make the change collaborative. If you want
 your developers to be effective with a remote work policy, **have them
-be a part in creating it. **
+be a part in creating it.**
 
 The pandemic imposed this way of work on millions in a way that they
 never got to have a say in, let alone prepare for.

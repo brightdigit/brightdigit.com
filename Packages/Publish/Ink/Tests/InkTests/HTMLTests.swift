@@ -52,9 +52,11 @@ final class HTMLTests: XCTestCase {
         XCTAssertEqual(html, "<div>_Hello_</div>")
     }
 
+    // #40: CommonMark does not suppress emphasis inside inline HTML, so `_World_` between
+    // `<span>` tags is parsed as emphasis. Ink's parser left it verbatim.
     func testIgnoringTextFormattingWithinInlineHTML() {
         let html = MarkdownParser().html(from: "Hello <span>_World_</span>")
-        XCTAssertEqual(html, "<p>Hello <span>_World_</span></p>")
+        XCTAssertEqual(html, "<p>Hello <span><em>World</em></span></p>")
     }
 
     func testIgnoringListsWithinInlineHTML() {
@@ -62,9 +64,11 @@ final class HTMLTests: XCTestCase {
         XCTAssertEqual(html, "<h2>1. Hello</h2><h2>- World</h2>")
     }
 
+    // #40: an inline `<p>` tag inside running text is treated as inline HTML by
+    // CommonMark (it does not break the paragraph). Ink split the paragraph at it.
     func testInlineParagraphTagEndingCurrentParagraph() {
         let html = MarkdownParser().html(from: "One <p>Two</p> Three")
-        XCTAssertEqual(html, "<p>One</p><p>Two</p><p>Three</p>")
+        XCTAssertEqual(html, "<p>One <p>Two</p> Three</p>")
     }
 
     func testTopLevelSelfClosingHTMLElement() {
@@ -84,6 +88,8 @@ final class HTMLTests: XCTestCase {
         XCTAssertEqual(html, #"<p>Hello <img src="image.png"/> World</p>"#)
     }
 
+    // #40: a `<br/>` on its own line between two text lines is inline HTML inside a single
+    // paragraph under CommonMark (lines join with soft breaks). Ink split it into three blocks.
     func testTopLevelHTMLLineBreak() {
         let html = MarkdownParser().html(from: """
         Hello
@@ -91,7 +97,7 @@ final class HTMLTests: XCTestCase {
         World
         """)
 
-        XCTAssertEqual(html, "<p>Hello</p><br/><p>World</p>")
+        XCTAssertEqual(html, "<p>Hello <br/> World</p>")
     }
 
     func testHTMLComment() {

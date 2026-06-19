@@ -60,4 +60,16 @@ internal final class StringExtensionTests: XCTestCase {
 
     XCTAssertEqual(actualSlug, expectedSlug)
   }
+
+  internal func testSlugifyFoldsDiacriticsAndDropsSymbols() {
+    // Diacritics fold to their ASCII base ("ü" -> "u") and symbols are dropped.
+    // Must yield the SAME slug on macOS and Linux — the Linux backcompat path
+    // previously returned this title unchanged, producing a broken filename.
+    let string = "120% Likely with Cihat Gündüz"
+
+    let expectedSlug = "120-likely-with-cihat-gunduz"
+    let actualSlug = string.slugify()
+
+    XCTAssertEqual(actualSlug, expectedSlug)
+  }
 }

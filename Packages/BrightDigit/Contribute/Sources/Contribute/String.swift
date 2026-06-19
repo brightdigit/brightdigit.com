@@ -90,23 +90,26 @@ extension String {
 
   #if !canImport(Darwin)
     private func convertedToSlugBackCompat() -> String? {
-      // On non-Apple platforms (Linux, Windows, Android, wasm) StringTransform
-      // doesn't exist and CFStringTransform causes all sorts of problems because
-      // of bridging issues using CFMutableString – d'oh.
-      // So we're going to do the only thing possible: dump to ASCII and hope for the best
-      if let data = data(using: .ascii, allowLossyConversion: true) {
-        if let str = String(data: data, encoding: .ascii) {
-          let urlComponents =
-            str
-            .lowercased()
-            .components(separatedBy: String.slugSafeCharacters.inverted)
+      // `StringTransform` ("Any-Latin; Latin-ASCII; Lower") is unavailable on
+      // non-Apple platforms (Linux, Windows, Android, wasm). Fold diacritics to
+      // their ASCII base (e.g. "ü" -> "u") so the result matches the Darwin
+      // `latinStringTransform` output for Latin titles — keeping slugs identical
+      // across platforms — then keep only slug-safe characters.
+      //
+      // The previous lossy `.ascii` conversion was unreliable: for some strings
+      // it returned nil, so `slugify()` silently fell back to the un-slugified
+      // title (e.g. "120% Likely with Cihat Gündüz" was used verbatim as a
+      // filename instead of "120-likely-with-cihat-gunduz").
+      let folded = folding(
+        options: .diacriticInsensitive,
+        locale: Locale(identifier: "en_US_POSIX")
+      )
+      let urlComponents =
+        folded
+        .lowercased()
+        .components(separatedBy: String.slugSafeCharacters.inverted)
 
-          return urlComponents.filter { $0.isEmpty == false }.joined(separator: "-")
-        }
-      }
-
-      // still here? Something went disastrously wrong!
-      return nil
+      return urlComponents.filter { $0.isEmpty == false }.joined(separator: "-")
     }
   #endif
 

@@ -29,7 +29,6 @@
 
 import Foundation
 import Publish
-import ShellOut
 
 #if canImport(FoundationNetworking)
   import FoundationNetworking

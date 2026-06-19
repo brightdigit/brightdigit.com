@@ -82,7 +82,7 @@ Therefore, **Cairo**, for instance, would be located at:
 Once it's copied to your project, there are three spots the files need
 to be under **build phases:**
 
--   **Link With Libraries - **all **.dylib** files need to be listed
+-   **Link With Libraries -** all **.dylib** files need to be listed
 -   **Copy Files -** all **.dylib** files need to be copied to the
     **Frameworks** folder
 -   **Headers -** all **.h** files need to be listed under **Project**

@@ -272,7 +272,7 @@ In many cases, you don't have any control. Unfortunately you simply need to wait
 Cannot form key path to main actor-isolated property 'requestReview'; this is an error in Swift 6
 ```
 
-In many cases, there are pieces which haven't completed yet. In this case, [it's currently a bug in Swift.](https://github.com/apple/swift/issues/72181) Hopefully these will be updated in time for WWDC 2024 and most importantly I'll follow through and update this post. In any case, **you should take the time file a Feedback Assistant.* **
+In many cases, there are pieces which haven't completed yet. In this case, [it's currently a bug in Swift.](https://github.com/apple/swift/issues/72181) Hopefully these will be updated in time for WWDC 2024 and most importantly I'll follow through and update this post. In any case, **you should take the time file a Feedback Assistant.**
 
 ### It uses DispatchQueue
 

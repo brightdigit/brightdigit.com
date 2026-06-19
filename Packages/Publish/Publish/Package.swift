@@ -12,15 +12,13 @@ let package = Package(
     name: "Publish",
     platforms: [.macOS(.v12)],
     products: [
-        .library(name: "Publish", targets: ["Publish"]),
-        .executable(name: "publish-cli", targets: ["PublishCLI"])
+        .library(name: "Publish", targets: ["Publish"])
     ],
     dependencies: [
         .package(path: "../Ink"),
         .package(path: "../Plot"),
         .package(path: "../Files"),
         .package(path: "../Codextended"),
-        .package(name: "ShellOut", url: "https://github.com/johnsundell/shellout.git", from: "2.3.0"),
         .package(path: "../Sweep"),
         .package(path: "../CollectionConcurrencyKit")
     ],
@@ -29,20 +27,12 @@ let package = Package(
             name: "Publish",
             dependencies: [
                 "Ink", "Plot", "Files", "Codextended",
-                "ShellOut", "Sweep", "CollectionConcurrencyKit"
+                "Sweep", "CollectionConcurrencyKit"
             ]
-        ),
-        .executableTarget(
-            name: "PublishCLI",
-            dependencies: ["PublishCLICore"]
-        ),
-        .target(
-            name: "PublishCLICore",
-            dependencies: ["Publish"]
         ),
         .testTarget(
             name: "PublishTests",
-            dependencies: ["Publish", "PublishCLICore"]
+            dependencies: ["Publish"]
         )
     ]
 )

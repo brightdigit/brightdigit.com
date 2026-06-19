@@ -21,7 +21,7 @@ useful device for everyone.
 </figure>
 
 If you’re thinking about building an app for the Watch, read on: **this
-article is for you. **
+article is for you.**
 
 I’ll be covering:
 
@@ -130,7 +130,7 @@ unfamiliar](https://brightdigit.com/blog/2020/02/04/swiftui-everything-is-possib
 **The key takeaway is if you’re able to work within the restrictions of
 SwiftUI, it will make it easier (and probably cheaper) to create and
 deliver an app to your customers where they will find the same quality
-experience on their Macs, iPhones, iPads, and Watches. **
+experience on their Macs, iPhones, iPads, and Watches.**
 
 ### Think about your customer’s wallet
 

@@ -43,6 +43,22 @@ swift run brightdigitwg publish --mode drafts
 # .swiftformat - code formatting rules
 ```
 
+## Coding Conventions (always apply)
+
+1. **Strict concurrency is mandatory.** Every Swift target enables complete strict
+   concurrency checking (`swift-tools-version:6.4`, Swift 6 language mode, i.e.
+   `-strict-concurrency=complete`). When a strict-concurrency error surfaces, **fix it
+   properly** (add `Sendable`/`@Sendable`, isolate with actors/`@MainActor`, restructure
+   ownership) — do **not** lower the language mode, relax the setting, or silence the
+   diagnostic to make it build.
+
+2. **Resolve module-name collisions in the call site, not by renaming our own types.**
+   When two modules export the same symbol (e.g. swift-markdown's `Markdown` vs. Publish's
+   `Markdown`), disambiguate with — in order of preference — SwiftPM `moduleAliases:`, the
+   Swift 6.4 module selector (`Module::Symbol`), a `typealias`, or a selective
+   `import struct Module.Symbol`. Never work around a collision by renaming our own
+   first-party type.
+
 ## Architecture
 
 ### Core Components

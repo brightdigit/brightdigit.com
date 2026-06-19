@@ -5,10 +5,11 @@ date: 2017-06-09 16:38
 featuredImage: /media/wp-images/brightdigit/2017/06/scriptingbridge-with-swift-communicating-with-apps-using-applescript-and-swift.png
 ---
 <img src="https://www.brightdigit.com/wp-content/uploads/2017/06/scriptingbridge-with-swift-communicating-with-apps-using-applescript-and-swift-300x105.png" class="alignnone size-medium wp-image-276" width="300" height="105" />
+
 **AppleScript** is a great technology on macOS for both developers and
 power users. It allows users to create automated processes which work
 other apps. As a developer though, sometimes you want a **build an app
-in Xcode with the power of AppleScript**without the need to have
+in Xcode with the power of AppleScript** without the need to have
 separate script files. To work with AppleScript in any app, there are
 two options to do this:
 
