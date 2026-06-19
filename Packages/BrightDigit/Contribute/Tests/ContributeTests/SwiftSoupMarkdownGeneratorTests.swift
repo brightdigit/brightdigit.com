@@ -202,7 +202,7 @@ internal struct SwiftSoupMarkdownGeneratorTests {
 
   @Test("Empty input")
   internal func emptyInput() throws {
-    #expect(try sut.markdown(fromHTML: "") == "")
-    #expect(try sut.markdown(fromHTML: "   ") == "")
+    #expect(try sut.markdown(fromHTML: "").isEmpty)
+    #expect(try sut.markdown(fromHTML: "   ").isEmpty)
   }
 }
