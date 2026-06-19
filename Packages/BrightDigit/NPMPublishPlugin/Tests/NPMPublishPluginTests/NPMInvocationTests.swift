@@ -19,4 +19,23 @@ internal final class NPMInvocationTests: XCTestCase {
 
     XCTAssertEqual(npmCommand.string, commandString)
   }
+
+  internal func testNPMResolvesArgumentsAndOutputPaths() throws {
+    let cssName = UUID().uuidString
+    let outputPath: OutputPath = .file(.init(cssName))
+
+    let invocation: NPMInvocation = try .npm(
+      .init(
+        subcommand: .run,
+        outputRelativePaths: [outputPath],
+        arguments: [.string("build"), .path(outputPath)]
+      ),
+      withSettings: NPM.Settings(location: .folder(Folder.temporary)),
+      andContext: MockPublishingContextable()
+    )
+
+    XCTAssertEqual(invocation.npmPath, "npm")
+    XCTAssertEqual(invocation.arguments, ["run", "build", "\"\(cssName)\""])
+    XCTAssertEqual(invocation.string, "npm run build \"\(cssName)\"")
+  }
 }
