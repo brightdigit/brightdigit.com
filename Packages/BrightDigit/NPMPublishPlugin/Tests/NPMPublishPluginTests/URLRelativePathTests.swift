@@ -1,34 +1,39 @@
 import Foundation
-import XCTest
+import Testing
 
 @testable import NPMPublishPlugin
 
-internal final class URLRelativePathTests: XCTestCase {
-  internal func testNestedChildRelativeToAncestor() {
+@Suite("URL Relative Path")
+internal struct URLRelativePathTests {
+  @Test("Nested child resolves relative to its ancestor")
+  internal func nestedChildRelativeToAncestor() {
     let base = URL(fileURLWithPath: "/a/b", isDirectory: true)
     let dest = URL(fileURLWithPath: "/a/b/c/d", isDirectory: true)
 
-    XCTAssertEqual(dest.relativePath(from: base), "c/d")
+    #expect(dest.relativePath(from: base) == "c/d")
   }
 
-  internal func testSiblingPathsClimbWithDotDot() {
+  @Test("Sibling paths climb with ..")
+  internal func siblingPathsClimbWithDotDot() {
     let base = URL(fileURLWithPath: "/a/b/c", isDirectory: true)
     let dest = URL(fileURLWithPath: "/a/b/d", isDirectory: true)
 
-    XCTAssertEqual(dest.relativePath(from: base), "../d")
+    #expect(dest.relativePath(from: base) == "../d")
   }
 
-  internal func testIdenticalURLsReturnEmptyString() {
+  @Test("Identical URLs return an empty string")
+  internal func identicalURLsReturnEmptyString() {
     let url = URL(fileURLWithPath: "/a/b/c", isDirectory: true)
 
-    XCTAssertEqual(url.relativePath(from: url), "")
+    #expect(url.relativePath(from: url)?.isEmpty == true)
   }
 
-  internal func testNonFileURLReturnsNil() throws {
+  @Test("Non-file URLs return nil")
+  internal func nonFileURLReturnsNil() throws {
     let base = URL(fileURLWithPath: "/a/b", isDirectory: true)
-    let remote = try XCTUnwrap(URL(string: "https://example.com/a/b"))
+    let remote = try #require(URL(string: "https://example.com/a/b"))
 
-    XCTAssertNil(remote.relativePath(from: base))
-    XCTAssertNil(base.relativePath(from: remote))
+    #expect(remote.relativePath(from: base) == nil)
+    #expect(base.relativePath(from: remote) == nil)
   }
 }

@@ -1,41 +1,45 @@
-import Foundation
 import Publish
-import XCTest
+import Testing
 
 @testable import NPMPublishPlugin
 
-internal final class ArgumentTests: XCTestCase {
-  internal func testStringArgumentReturnsValueUnchanged() {
+@Suite("NPM Argument")
+internal struct ArgumentTests {
+  @Test("String argument returns its value unchanged")
+  internal func stringArgumentReturnsValueUnchanged() {
     let argument: NPM.Argument = .string("--yes")
 
-    XCTAssertEqual(argument.relativePath(basedOn: [:]), "--yes")
+    #expect(argument.relativePath(basedOn: [:]) == "--yes")
   }
 
-  internal func testStringLiteralInitProducesStringCase() {
+  @Test("String literal initializer produces a .string case")
+  internal func stringLiteralInitProducesStringCase() {
     let argument: NPM.Argument = "--flag"
 
     guard case .string(let value) = argument else {
-      return XCTFail("expected .string case")
+      Issue.record("expected .string case")
+      return
     }
-    XCTAssertEqual(value, "--flag")
+    #expect(value == "--flag")
   }
 
-  internal func testPathArgumentResolvesAndQuotesMappedValue() {
+  @Test("Path argument resolves and quotes the mapped value")
+  internal func pathArgumentResolvesAndQuotesMappedValue() {
     let path: OutputPath = .file(.init("output.css"))
     let map: [OutputPath: String] = [path: "build/output.css"]
     let argument: NPM.Argument = .path(path)
 
-    XCTAssertEqual(argument.relativePath(basedOn: map), "\"build/output.css\"")
+    #expect(argument.relativePath(basedOn: map) == "\"build/output.css\"")
   }
 
-  internal func testPathArgumentFallsBackToQuotedDefaultWhenMissing() {
+  @Test("Path argument falls back to the quoted default when missing")
+  internal func pathArgumentFallsBackToQuotedDefaultWhenMissing() {
     let path: OutputPath = .folder(.init("dist"))
     let argument: NPM.Argument = .path(path)
 
-    XCTAssertEqual(argument.relativePath(basedOn: [:]), "\"\"")
-    XCTAssertEqual(
-      argument.relativePath(basedOn: [:], withDefaultValue: "fallback"),
-      "\"fallback\""
+    #expect(argument.relativePath(basedOn: [:]) == "\"\"")
+    #expect(
+      argument.relativePath(basedOn: [:], withDefaultValue: "fallback") == "\"fallback\""
     )
   }
 }

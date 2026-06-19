@@ -1,39 +1,43 @@
 import Files
-import Foundation
 import Publish
-import XCTest
+import Testing
 
 @testable import NPMPublishPlugin
 
-internal final class SettingsTests: XCTestCase {
-  internal func testNpmPathDefaultsToNpm() {
-    XCTAssertEqual(NPM.Settings(location: .folder(.temporary)).npmPath, "npm")
-    XCTAssertEqual(NPM.Settings(folder: .temporary).npmPath, "npm")
-    XCTAssertEqual(NPM.Settings(path: Path(".")).npmPath, "npm")
+@Suite("NPM Settings")
+internal struct SettingsTests {
+  @Test("npmPath defaults to \"npm\"")
+  internal func npmPathDefaultsToNpm() {
+    #expect(NPM.Settings(location: .folder(.temporary)).npmPath == "npm")
+    #expect(NPM.Settings(folder: .temporary).npmPath == "npm")
+    #expect(NPM.Settings(path: Path(".")).npmPath == "npm")
   }
 
-  internal func testCustomNpmPathIsPreserved() {
-    XCTAssertEqual(
-      NPM.Settings(npmPath: "/usr/local/bin/npm", folder: .temporary).npmPath,
-      "/usr/local/bin/npm"
+  @Test("Custom npmPath is preserved")
+  internal func customNpmPathIsPreserved() {
+    #expect(
+      NPM.Settings(npmPath: "/usr/local/bin/npm", folder: .temporary).npmPath
+        == "/usr/local/bin/npm"
     )
   }
 
-  internal func testFolderLocationReturnsFolderDirectly() throws {
+  @Test("Folder location returns the folder directly")
+  internal func folderLocationReturnsFolderDirectly() throws {
     let settings = NPM.Settings(location: .folder(.temporary))
 
     let resolved = try settings.folder(usingContext: MockPublishingContextable())
 
-    XCTAssertEqual(resolved.path, Folder.temporary.path)
+    #expect(resolved.path == Folder.temporary.path)
   }
 
-  internal func testPathLocationDelegatesToContext() throws {
+  @Test("Path location delegates resolution to the context")
+  internal func pathLocationDelegatesToContext() throws {
     let context = FolderResolvingContext(resolved: .temporary)
     let settings = NPM.Settings(path: Path("some/where"))
 
     let resolved = try settings.folder(usingContext: context)
 
-    XCTAssertEqual(resolved.path, Folder.temporary.path)
-    XCTAssertEqual(context.requestedPath?.string, "some/where")
+    #expect(resolved.path == Folder.temporary.path)
+    #expect(context.requestedPath?.string == "some/where")
   }
 }

@@ -1,12 +1,15 @@
+import Foundation
 import Publish
-import XCTest
+import Testing
 
 import struct Files.Folder
 
 @testable import NPMPublishPlugin
 
-internal final class NPMInvocationTests: XCTestCase {
-  internal func testNPM() throws {
+@Suite("NPM Invocation")
+internal struct NPMInvocationTests {
+  @Test("Builds the expected command string")
+  internal func buildsExpectedCommandString() throws {
     let commandString = "npm init --yes"
 
     let npmCommand: NPMInvocation = try .npm(
@@ -17,10 +20,11 @@ internal final class NPMInvocationTests: XCTestCase {
       andContext: MockPublishingContextable()
     )
 
-    XCTAssertEqual(npmCommand.string, commandString)
+    #expect(npmCommand.string == commandString)
   }
 
-  internal func testNPMResolvesArgumentsAndOutputPaths() throws {
+  @Test("Resolves arguments and output paths")
+  internal func resolvesArgumentsAndOutputPaths() throws {
     let cssName = UUID().uuidString
     let outputPath: OutputPath = .file(.init(cssName))
 
@@ -34,8 +38,8 @@ internal final class NPMInvocationTests: XCTestCase {
       andContext: MockPublishingContextable()
     )
 
-    XCTAssertEqual(invocation.npmPath, "npm")
-    XCTAssertEqual(invocation.arguments, ["run", "build", "\"\(cssName)\""])
-    XCTAssertEqual(invocation.string, "npm run build \"\(cssName)\"")
+    #expect(invocation.npmPath == "npm")
+    #expect(invocation.arguments == ["run", "build", "\"\(cssName)\""])
+    #expect(invocation.string == "npm run build \"\(cssName)\"")
   }
 }

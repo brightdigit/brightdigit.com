@@ -1,21 +1,24 @@
-import Foundation
-import XCTest
+import Testing
 
 @testable import NPMPublishPlugin
 
-internal final class CommandTests: XCTestCase {
-  internal func testPredefinedCommands() {
-    XCTAssertEqual(NPM.Command.ci.string, "ci")
-    XCTAssertEqual(NPM.Command.run.string, "run")
+@Suite("NPM Command")
+internal struct CommandTests {
+  @Test("Predefined commands expose their strings")
+  internal func predefinedCommands() {
+    #expect(NPM.Command.ci.string == "ci")
+    #expect(NPM.Command.run.string == "run")
   }
 
-  internal func testInitWithString() {
-    XCTAssertEqual(NPM.Command("install").string, "install")
+  @Test("Initializer stores the command string")
+  internal func initWithString() {
+    #expect(NPM.Command("install").string == "install")
   }
 
-  internal func testStringLiteralInit() {
+  @Test("String literal initializer stores the command string")
+  internal func stringLiteralInit() {
     let command: NPM.Command = "test"
 
-    XCTAssertEqual(command.string, "test")
+    #expect(command.string == "test")
   }
 }

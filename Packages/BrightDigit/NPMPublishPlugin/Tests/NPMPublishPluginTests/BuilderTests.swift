@@ -1,58 +1,65 @@
-import Foundation
 import Publish
-import XCTest
+import Testing
 
 @testable import NPMPublishPlugin
 
-internal final class BuilderTests: XCTestCase {
-  internal func testArgumentBuilderWrapsSingleArgument() {
+@Suite("NPM Builders")
+internal struct BuilderTests {
+  @Test("ArgumentBuilder wraps a single argument")
+  internal func argumentBuilderWrapsSingleArgument() {
     let result = NPM.ArgumentBuilder.buildExpression(.string("--yes"))
 
-    XCTAssertEqual(result.count, 1)
+    #expect(result.count == 1)
     guard case .string(let value) = result[0] else {
-      return XCTFail("expected .string case")
+      Issue.record("expected .string case")
+      return
     }
-    XCTAssertEqual(value, "--yes")
+    #expect(value == "--yes")
   }
 
-  internal func testArgumentBuilderWrapsOutputPathAsPathArgument() {
+  @Test("ArgumentBuilder wraps an output path as a path argument")
+  internal func argumentBuilderWrapsOutputPathAsPathArgument() {
     let path: OutputPath = .file(.init("a.css"))
 
     let result = NPM.ArgumentBuilder.buildExpression(path)
 
-    XCTAssertEqual(result.count, 1)
+    #expect(result.count == 1)
     guard case .path(let wrapped) = result[0] else {
-      return XCTFail("expected .path case")
+      Issue.record("expected .path case")
+      return
     }
-    XCTAssertEqual(wrapped, path)
+    #expect(wrapped == path)
   }
 
-  internal func testArgumentBuilderBlockFlattensComponents() {
+  @Test("ArgumentBuilder block flattens its components")
+  internal func argumentBuilderBlockFlattensComponents() {
     let result = NPM.ArgumentBuilder.buildBlock(
       [.string("a")],
       [.string("b"), .string("c")]
     )
 
-    XCTAssertEqual(result.count, 3)
+    #expect(result.count == 3)
   }
 
-  internal func testJobBuilderCollectsJobs() {
+  @Test("JobBuilder collects jobs in order")
+  internal func jobBuilderCollectsJobs() {
     let jobs = NPM.JobBuilder.buildBlock(
       .init(subcommand: .ci),
       .init(subcommand: .run)
     )
 
-    XCTAssertEqual(jobs.count, 2)
-    XCTAssertEqual(jobs[0].subcommand.string, "ci")
-    XCTAssertEqual(jobs[1].subcommand.string, "run")
+    #expect(jobs.count == 2)
+    #expect(jobs[0].subcommand.string == "ci")
+    #expect(jobs[1].subcommand.string == "run")
   }
 
-  internal func testJobBuilderInitAppliesArgumentBuilder() {
+  @Test("Job builder initializer applies the ArgumentBuilder")
+  internal func jobBuilderInitAppliesArgumentBuilder() {
     let job = NPM.Job(subcommand: .run) {
       "--silent"
       OutputPath.file(.init("out.css"))
     }
 
-    XCTAssertEqual(job.arguments.count, 2)
+    #expect(job.arguments.count == 2)
   }
 }
