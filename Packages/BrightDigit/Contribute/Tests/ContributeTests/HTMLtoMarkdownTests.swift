@@ -3,20 +3,12 @@ import XCTest
 @testable import Contribute
 
 internal final class HTMLtoMarkdownTests: XCTestCase {
-  private enum MarkdownGeneratorError: Error {
-    case invalidHtmlString
-  }
-
   internal func testSuccessfulMarkdownGenerate() throws {
-    var isCalled: Bool = false
-    let sut = HTMLtoMarkdown { _ in
-      isCalled = true
-      return "#markdown"
-    }
+    let sut = HTMLtoMarkdown { _ in "#markdown" }
 
-    _ = try sut.markdown(fromHTML: "<html />")
+    let actualMarkdown = try sut.markdown(fromHTML: "<html />")
 
-    XCTAssertTrue(isCalled)
+    XCTAssertEqual(actualMarkdown, "#markdown")
   }
 
   internal func testFailedMarkdownGenerate() throws {

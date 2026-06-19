@@ -3,8 +3,6 @@ import XCTest
 @testable import Contribute
 
 internal final class SimpleFrontMatterMarkdownFormatterTests: XCTestCase {
-  private let formatter: SimpleFrontMatterMarkdownFormatter = .simple
-
   internal func testFormatting() {
     let sut = SimpleFrontMatterMarkdownFormatter()
 

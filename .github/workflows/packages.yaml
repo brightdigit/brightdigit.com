@@ -136,15 +136,20 @@ jobs:
             apt-get update -q
             apt-get install -y --no-install-recommends curl ca-certificates
           fi
-      - uses: sersoft-gmbh/swift-coverage-action@v5
+      # brightdigit fork of swift-coverage-action: upstream @v5 can't pair the
+      # profdata with the test binary under Swift 6.4's new swiftbuild layout
+      # (.build/out/Products/<config>-linux-<arch>/<Name>.so + <Name>-test-runner,
+      # no .xctest), so Linux coverage silently dropped (issue #92). The fork
+      # detects the .so test bundle; pinned by SHA. Re-upstream and switch back
+      # to a tagged sersoft-gmbh release once merged.
+      - uses: brightdigit/swift-coverage-action@2f8538f723b99ab2406ac3a0e5b3355a9de4cf6c
         if: steps.build.outputs.contains-code-coverage == 'true'
         id: coverage-files
         with:
           search-paths: ${{ matrix.package.path }}/.build
-          # Swift 6.4 on Linux emits profdata that swift-coverage-action@v5 cannot
-          # convert (new .build/out/Products layout); macOS converts fine. Keep
-          # Linux coverage best-effort so a conversion miss doesn't fail the build.
-          fail-on-empty-output: false
+          # Guard restored: a conversion miss is fatal again so a Linux-coverage
+          # regression can't slip through silently (issue #92).
+          fail-on-empty-output: true
       - name: Upload coverage to Codecov
         if: steps.build.outputs.contains-code-coverage == 'true'
         uses: codecov/codecov-action@v7

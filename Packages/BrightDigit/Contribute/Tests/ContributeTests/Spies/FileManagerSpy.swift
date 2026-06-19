@@ -40,7 +40,7 @@ internal final class FileManagerSpy: FileManagerProtocol {
   internal func fileExists(atPath _: String) -> Bool {
     fileExistsIsCalled = true
 
-    guard let fileExists = try? fileExistsResult?.get() else {
+    guard let fileExists = fileExistsResult?.get() else {
       return false
     }
 
