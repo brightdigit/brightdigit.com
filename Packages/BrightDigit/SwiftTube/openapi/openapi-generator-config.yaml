@@ -3,7 +3,7 @@
 # Produces ahead-of-time Client.swift + Types.swift (committed under
 # Sources/SwiftTube/Generated) from the filtered spec. The generator runs via
 # the mise-managed CLI, NOT a SwiftPM build/command plugin — see
-# Scripts/generate-openapi.sh and docs/openapi-migration-approach.md.
+# Scripts/generate-openapi-swifttube.sh.
 generate:
   - types
   - client

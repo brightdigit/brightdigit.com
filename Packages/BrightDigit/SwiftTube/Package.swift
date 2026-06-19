@@ -15,7 +15,7 @@ let package = Package(
   ],
   dependencies: [
     // Runtime only — swift-openapi-generator is a mise-managed CLI tool
-    // (see .mise.toml / Scripts/generate-openapi.sh), NOT a package dependency
+    // (see .mise.toml / Scripts/generate-openapi-swifttube.sh), NOT a package dependency
     // or build/command plugin. Generated code is committed under
     // Sources/SwiftTube/Generated.
     .package(

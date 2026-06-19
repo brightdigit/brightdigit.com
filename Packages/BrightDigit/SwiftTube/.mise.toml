@@ -11,8 +11,8 @@ experimental = true
 "spm:peripheryapp/periphery" = "3.7.4"
 # OpenAPI client codegen CLI (NOT a SwiftPM dependency/plugin). The generated
 # Client.swift/Types.swift are produced ahead of time and committed; regenerate
-# with ../../../Scripts/generate-openapi.sh SwiftTube. Keep this version in sync
-# with that script's GENERATOR pin.
+# with `mise run generate-openapi` (Scripts/generate-openapi-swifttube.sh). Keep
+# this version in sync with that script's GENERATOR pin.
 "spm:apple/swift-openapi-generator" = "1.12.2"
 
 [tasks]
@@ -20,3 +20,4 @@ swift-format = "swift-format"
 swiftlint = "swiftlint"
 periphery = "periphery"
 swift-openapi-generator = "swift-openapi-generator"
+generate-openapi = "./Scripts/generate-openapi-swifttube.sh"
