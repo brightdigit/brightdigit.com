@@ -1,3 +1,32 @@
+//
+//  Import.MailchimpCommand+Selection.swift
+//  BrightDigit
+//
+//  Created by Leo Dion.
+//  Copyright © 2026 BrightDigit.
+//
+//  Permission is hereby granted, free of charge, to any person
+//  obtaining a copy of this software and associated documentation
+//  files (the "Software"), to deal in the Software without
+//  restriction, including without limitation the rights to use,
+//  copy, modify, merge, publish, distribute, sublicense, and/or
+//  sell copies of the Software, and to permit persons to whom the
+//  Software is furnished to do so, subject to the following
+//  conditions:
+//
+//  The above copyright notice and this permission notice shall be
+//  included in all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+//  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+//  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+//  NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+//  HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+//  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+//  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+//  OTHER DEALINGS IN THE SOFTWARE.
+//
+
 import BrightDigitSite
 import Contribute
 import ContributeMailchimp
@@ -76,7 +105,8 @@ extension Import.MailchimpCommand {
   internal static func selectCampaigns(
     _ campaigns: [MailchimpCampaign]
   ) throws -> [Newsletter.Source.Campaign] {
-    let newsletters = campaigns
+    let newsletters =
+      campaigns
       .compactMap { campaign -> (campaign: MailchimpCampaign, sendTime: Date)? in
         let subjectLine = campaign.subjectLine ?? ""
         guard
@@ -140,7 +170,8 @@ extension Import.MailchimpCommand {
     let numbers = newsletters.compactMap {
       parseIssueNumber(from: $0.campaign.subjectLine ?? "")
     }
-    let lastNumberedDate = newsletters
+    let lastNumberedDate =
+      newsletters
       .filter { parseIssueNumber(from: $0.campaign.subjectLine ?? "") != nil }
       .map(\.sendTime)
       .max()

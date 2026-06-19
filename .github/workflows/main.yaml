@@ -143,7 +143,11 @@ jobs:
             run: |
                 # Only Content/ is committed; the prebuilt binary and .build/
                 # stay out of the bot commit by construction.
-                if [[ -n "$(git status --porcelain Content/)" ]]; then
+                # POSIX `[` (not bash `[[`): this step runs under the container's
+                # /bin/sh (dash), where `[[` errors with "[[: not found" and the
+                # test silently fails to the else branch — so a real change would
+                # never be committed.
+                if [ -n "$(git status --porcelain Content/)" ]; then
                   echo "Changes detected. Proceeding with commit and push."
 
                   TODAY_DATE=$(date '+%y%m%d%H%M')
