@@ -20,10 +20,18 @@ extension RSSContent {
     }
     return try rssFeed.channel.items.compactMap { item in
       // A missing id makes the whole feed invalid for us, so it throws here
-      // rather than inside the per-item Source init, whose errors are ignored.
+      // rather than inside the per-item Source init.
       let id = try id(item)
-      #warning("Allow old episode errors to be ignored")
-      return try? Source(item: item, id: id)
+      // Per-item parse failures are skipped (old/malformed episodes lack fields
+      // we require) but logged, so a dropped episode is never silent.
+      do {
+        return try Source(item: item, id: id)
+      } catch {
+        FileHandle.standardError.write(
+          Data("import: skipping RSS item id=\(id): \(error)\n".utf8)
+        )
+        return nil
+      }
     }
   }
 }
