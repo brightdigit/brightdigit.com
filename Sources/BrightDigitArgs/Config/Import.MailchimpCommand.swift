@@ -65,111 +65,20 @@ extension Import.MailchimpCommand {
     )
   }
 
-  internal static func fileNameWithoutExtensionFromSource(
-    _ source: ContributeMailchimp.Newsletter.Source
-  ) -> String {
-    let paddedIssue = source.issueNo.description.padLeft(
-      totalWidth: 3,
-      byString: "0"
-    )
-    return "\(paddedIssue)-\(source.slug)"
-  }
-
-  internal static func parseIssueNumber(from subject: String) -> Int? {
-    let range = NSRange(subject.startIndex..<subject.endIndex, in: subject)
-    guard
-      let match = issueNoRegex.firstMatch(
-        in: subject,
-        options: [],
-        range: range
-      ),
-      match.numberOfRanges > 1
-    else {
-      return nil
-    }
-
-    let numberRange = match.range(at: 1)
-    guard let range = Range(numberRange, in: subject),
-      let issueNumber = Int(subject[range])
-    else {
-      return nil
-    }
-
-    return issueNumber
-  }
-
-  /// Builds a newsletter campaign source from a Mailchimp campaign, or `nil`
-  /// when the campaign is not a BrightDigit newsletter issue.
-  internal static func sourceFrom(
-    campaign: MailchimpCampaign
-  ) throws -> Newsletter.Source.Campaign? {
-    guard let subjectLine = campaign.subjectLine else {
-      throw ImportError.newsletterMissingField(.subjectLine)
-    }
-    guard let issueNo = parseIssueNumber(from: subjectLine) else {
-      return nil
-    }
-    guard isBrightDigitNewsletter(campaign: campaign, subjectLine: subjectLine) else {
-      return nil
-    }
-    return try campaignSource(
-      from: campaign, subjectLine: subjectLine, issueNo: issueNo
-    )
-  }
-
-  /// Whether a campaign is a BrightDigit newsletter, by segment or subject line.
-  private static func isBrightDigitNewsletter(
-    campaign: MailchimpCampaign,
-    subjectLine: String
-  ) -> Bool {
-    let brightdigitSent =
-      campaign.segmentText?.contains("brightdigit-business") == true
-    let isBrightDigitNewsletter = subjectLine.contains("BrightDigit Newsletter")
-    return brightdigitSent || isBrightDigitNewsletter
-  }
-
-  /// Extracts the required campaign fields into a newsletter source.
-  private static func campaignSource(
-    from campaign: MailchimpCampaign,
-    subjectLine: String,
-    issueNo: Int
-  ) throws -> Newsletter.Source.Campaign {
-    guard let campaignID = campaign.id else {
-      throw ImportError.newsletterMissingField(.id)
-    }
-    guard let longArchiveURL = campaign.longArchiveURL.flatMap(URL.init(string:))
-    else {
-      throw ImportError.newsletterMissingField(.longArchiveURL)
-    }
-    guard let title = campaign.title else {
-      throw ImportError.newsletterMissingField(.title)
-    }
-    guard let sendTime = campaign.sendTime else {
-      throw ImportError.newsletterMissingField(.sendTime)
-    }
-    let featuredImageURL = campaign.socialCardImageURL.flatMap(URL.init(string:))
-    return Newsletter.Source.Campaign(
-      slug: title.convertedToSlug(),
-      issueNo: issueNo,
-      campaignID: campaignID,
-      longArchiveURL: longArchiveURL,
-      featuredImageURL: featuredImageURL,
-      title: title,
-      subjectLine: subjectLine,
-      previewText: campaign.previewText,
-      sendTime: sendTime
-    )
-  }
-
   public func execute() async throws {
     let contentPathURL = URL(fileURLWithPath: config.exportMarkdownDirectory)
     let client = try MailchimpClient(apiKey: config.mailchimpAPIKey)
     let htmlToMarkdown = Import.markdownGenerator.markdown(fromHTML:)
 
+    let overwriteExisting = config.overwriteExisting
     let newsletters = try await Newsletter.sources(
       from: client,
       listID: config.mailchimpListID,
-      withFactory: Self.sourceFrom(campaign:),
+      selectingWith: {
+        try Self.missingCampaigns(
+          from: $0, in: contentPathURL, overwriteExisting: overwriteExisting
+        )
+      },
       processedWith: htmlToMarkdown
     )
     .sorted { $0.issueNo < $1.issueNo }
@@ -218,19 +127,6 @@ extension Import {
       Each option may also be supplied via an uppercased, underscore-separated
       environment variable (e.g. MAILCHIMP_API_KEY).
       """
-
-    private static let issueNoRegexPatternString = #"(?:^|\s)#?(\d+)(?:\s|$)"#
-
-    private static let issueNoRegex: NSRegularExpression = {
-      do {
-        return try NSRegularExpression(
-          pattern: issueNoRegexPatternString,
-          options: []
-        )
-      } catch {
-        preconditionFailure("Invalid issueNoRegex pattern: \(error)")
-      }
-    }()
 
     private let config: Config
 
