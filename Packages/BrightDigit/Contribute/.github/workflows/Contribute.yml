@@ -127,6 +127,36 @@ jobs:
           windows-swift-version: ${{ matrix.swift.version }}
           windows-swift-build: ${{ matrix.swift.build }}
 
+  # Full Apple-platform suite (iOS/watchOS/tvOS). Contribute's graph (Yams,
+  # SwiftSoup fork, swift-markdown main @ tools-version 6.2) resolves under the
+  # RELEASED Xcode_26.4 on macos-26 — so, like SyndiKit, this runs on hosted
+  # runners and validates source compatibility on released Xcode (not nightly 6.4).
+  # continue-on-error: first time these fork/main deps are built for iOS/watch/tv.
+  build-macos-platforms:
+    name: Build on macOS (Platforms)
+    needs: configure
+    if: ${{ needs.configure.outputs.full-matrix == 'true' }}
+    runs-on: ${{ matrix.runs-on }}
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { type: ios,     runs-on: macos-26, xcode: "/Applications/Xcode_26.4.app", deviceName: "iPhone 17 Pro",              osVersion: "26.4.1", download-platform: true }
+          - { type: watchos, runs-on: macos-26, xcode: "/Applications/Xcode_26.4.app", deviceName: "Apple Watch Ultra 3 (49mm)", osVersion: "26.4",   download-platform: true }
+          - { type: tvos,    runs-on: macos-26, xcode: "/Applications/Xcode_26.4.app", deviceName: "Apple TV",                   osVersion: "26.4",   download-platform: true }
+    steps:
+      - uses: actions/checkout@v6
+      - name: Build and Test
+        id: build
+        uses: brightdigit/swift-build@v1
+        with:
+          type: ${{ matrix.type }}
+          xcode: ${{ matrix.xcode }}
+          deviceName: ${{ matrix.deviceName }}
+          osVersion: ${{ matrix.osVersion }}
+          download-platform: ${{ matrix.download-platform }}
+
   # WASM is permanently N/A for Contribute: Yams fails on the Musl/wasm SDK
   # ('DBL_DECIMAL_DIG' not in scope) and wasm-embedded lacks Foundation. No build-wasm job.
 
@@ -168,7 +198,7 @@ jobs:
   lint:
     name: Linting
     if: ${{ !cancelled() && !failure() && !contains(github.event.head_commit.message, 'ci skip') }}
-    needs: [build-ubuntu, build-macos, build-windows]
+    needs: [build-ubuntu, build-macos, build-windows, build-macos-platforms]
     runs-on: ubuntu-latest
     # Lint on the Swift 6.4 nightly so swift-format 604 builds against a matching
     # swift-syntax. The bare nightly snapshot lacks curl, which mise-action needs

@@ -5,7 +5,15 @@ import PackageDescription
 
 let package = Package(
   name: "Contribute",
-  platforms: [.macOS(.v12)],
+  // All Apple platforms supported. Minimums satisfy the only platform-constrained
+  // dependency, SwiftSoup (.macOS(.v10_15)/.iOS(.v13)/.tvOS(.v13)/.watchOS(.v6));
+  // Yams and swift-markdown declare none.
+  platforms: [
+    .macOS(.v12),
+    .iOS(.v13),
+    .tvOS(.v13),
+    .watchOS(.v6)
+  ],
   products: [
     .library(
       name: "Contribute",
