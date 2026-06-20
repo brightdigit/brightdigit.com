@@ -1,49 +1,161 @@
 name: Contribute
+
+# Standalone CI for Contribute, following the BrightDigit CI template. Migrated
+# from Swift 6.3 to the nightly 6.4 toolchain: the SwiftSoup fork it depends on
+# (brightdigit/SwiftSoup, branch fix/swift-6.4-inline-crash) targets 6.4, and the
+# macOS leg now runs on the self-hosted runner with /Applications/Xcode-beta.app.
 on:
   push:
     branches: [main, brightdigit-com-260406]
     tags: ['v*.*.*']
+    paths-ignore:
+      - '**.md'
+      - 'LICENSE'
   pull_request:
+    paths-ignore:
+      - '**.md'
+      - 'LICENSE'
+  workflow_dispatch:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
 jobs:
   build-ubuntu:
     name: Build on Ubuntu
     runs-on: ubuntu-latest
-    container: swift:6.3-noble
+    container: swiftlang/swift:nightly-6.4.x-noble
+    if: ${{ !contains(github.event.head_commit.message, 'ci skip') }}
     steps:
       - uses: actions/checkout@v6
       - uses: brightdigit/swift-build@v1
+        id: build
+      - name: Install curl (required by Codecov uploader)
+        if: steps.build.outputs.contains-code-coverage == 'true'
+        run: |
+          if ! command -v curl &> /dev/null; then
+            apt-get update -q
+            apt-get install -y --no-install-recommends curl ca-certificates
+          fi
+      # brightdigit fork of swift-coverage-action: upstream @v5 can't pair the
+      # profdata with the test binary under Swift 6.4's swiftbuild layout
+      # (.so + <Name>-test-runner, no .xctest) — issue #92. Pinned by SHA.
+      - uses: brightdigit/swift-coverage-action@2f8538f723b99ab2406ac3a0e5b3355a9de4cf6c
+        if: steps.build.outputs.contains-code-coverage == 'true'
+        id: coverage-files
+        with:
+          search-paths: .build
+          fail-on-empty-output: true
+      - name: Upload coverage to Codecov
+        if: steps.build.outputs.contains-code-coverage == 'true'
+        uses: codecov/codecov-action@v7
+        with:
+          fail_ci_if_error: false
+          flags: noble,swift-6.4
+          verbose: true
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ${{ join(fromJSON(steps.coverage-files.outputs.files), ',') }}
 
+  configure:
+    name: Configure Matrix
+    runs-on: ubuntu-latest
+    outputs:
+      full-matrix: ${{ steps.check.outputs.full }}
+    steps:
+      - uses: actions/checkout@v6
+      - id: check
+        name: Determine matrix scope
+        run: |
+          FULL=false
+          REF="${{ github.ref }}"; EVENT="${{ github.event_name }}"; BASE_REF="${{ github.base_ref }}"
+          if [[ "$REF" == "refs/heads/main" ]]; then FULL=true
+          elif [[ "$REF" =~ ^refs/heads/v?[0-9]+\.[0-9]+\.[0-9]+ ]]; then FULL=true
+          elif [[ "$EVENT" == "workflow_dispatch" ]]; then FULL=true
+          elif [[ "$EVENT" == "pull_request" && ( "$BASE_REF" == "main" || "$BASE_REF" =~ ^v?[0-9]+\.[0-9]+\.[0-9]+ ) ]]; then FULL=true
+          fi
+          echo "full=$FULL" >> "$GITHUB_OUTPUT"
+
+  # Self-hosted macOS runner ships /Applications/Xcode-beta.app (Swift 6.4) — the
+  # only path to a 6.4 toolchain on macOS today (migrated from macos-15). Always runs.
   build-macos:
     name: Build on macOS
-    runs-on: macos-15
+    runs-on: [self-hosted, macOS]
+    if: ${{ !contains(github.event.head_commit.message, 'ci skip') }}
     steps:
       - uses: actions/checkout@v6
       - uses: brightdigit/swift-build@v1
+        id: build
+        with:
+          xcode: "/Applications/Xcode-beta.app"
+      - name: Process coverage
+        if: steps.build.outputs.contains-code-coverage == 'true'
+        uses: sersoft-gmbh/swift-coverage-action@v5
+        with:
+          search-paths: .build
+      - name: Upload coverage to Codecov
+        if: steps.build.outputs.contains-code-coverage == 'true'
+        uses: codecov/codecov-action@v7
+        with:
+          fail_ci_if_error: false
+          flags: spm,macos
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+  # Windows nightly 6.4 via swift.org development snapshot (compnerd/gha-setup-swift
+  # under swift-build). Hosted runners — the only self-hosted runner is macOS.
+  # Gated to full-matrix runs (main / semver / dispatch / PRs into those).
+  # continue-on-error: Contribute's Yams + SwiftSoup-fork + swift-markdown(main)
+  # chain is unverified on Windows; drop continue-on-error once a run is green.
+  build-windows:
+    name: Build on Windows
+    needs: configure
+    if: ${{ needs.configure.outputs.full-matrix == 'true' }}
+    runs-on: ${{ matrix.runs-on }}
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        runs-on: [windows-2022, windows-2025]
+        swift:
+          - version: swift-6.4.x-branch
+            build: 6.4.x-DEVELOPMENT-SNAPSHOT-2026-06-01-a
+    steps:
+      - uses: actions/checkout@v6
+      - uses: brightdigit/swift-build@v1
+        id: build
+        with:
+          windows-swift-version: ${{ matrix.swift.version }}
+          windows-swift-build: ${{ matrix.swift.build }}
+
+  # WASM + Android legs deferred: no nightly Swift 6.4 support yet.
+  #  - WASM: permanently N/A for Contribute — Yams fails on the Musl/wasm SDK
+  #    ('DBL_DECIMAL_DIG' not in scope), and wasm-embedded lacks Foundation.
+  #    (Separately, swift-build can't target a nightly wasm SDK: https://github.com/brightdigit/swift-build/issues/115.)
+  #  - Android: blocked upstream — no nightly 6.4 Android SDK published yet.
+  # Add build-android (type: android) once the nightly Android SDK ships;
+  # job body lives in git history of the monorepo .github/workflows/packages.yaml.
 
   lint:
     name: Linting
-    needs: [build-ubuntu]
+    if: ${{ !cancelled() && !failure() && !contains(github.event.head_commit.message, 'ci skip') }}
+    needs: [build-ubuntu, build-macos, build-windows]
     runs-on: ubuntu-latest
-    container: swift:6.3-noble
+    # Lint on the Swift 6.4 nightly so swift-format 604 builds against a matching
+    # swift-syntax. The bare nightly snapshot lacks curl, which mise-action needs
+    # to bootstrap mise, so install it first.
+    container: swiftlang/swift:nightly-6.4.x-noble
     steps:
-      - uses: actions/checkout@v6
-      - name: Install mise
+      - name: Install curl (required by mise-action)
         run: |
-          apt-get update && apt-get install -y --no-install-recommends curl ca-certificates
-          curl https://mise.run | sh
-          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
-      - name: Cache mise tools
-        uses: actions/cache@v5
+          apt-get update -q
+          apt-get install -y --no-install-recommends curl ca-certificates
+      - uses: actions/checkout@v6
+      - uses: jdx/mise-action@v4
+        env:
+          MISE_HTTP_TIMEOUT: 300s
+          MISE_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          path: ~/.local/share/mise/installs
-          key: mise-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml') }}
-          restore-keys: |
-            mise-${{ runner.os }}-${{ runner.arch }}-
+          cache: true
       - name: Lint
         run: ./Scripts/lint.sh
         env:
