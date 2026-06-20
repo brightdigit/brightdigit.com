@@ -6,7 +6,7 @@ name: Contribute
 # macOS leg now runs on the self-hosted runner with /Applications/Xcode-beta.app.
 on:
   push:
-    branches: [main, brightdigit-com-260406]
+    branches: [main]
     tags: ['v*.*.*']
     paths-ignore:
       - '**.md'
