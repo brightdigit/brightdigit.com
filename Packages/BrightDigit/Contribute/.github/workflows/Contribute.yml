@@ -1,9 +1,13 @@
 name: Contribute
 
-# Standalone CI for Contribute, following the BrightDigit CI template. Migrated
-# from Swift 6.3 to the nightly 6.4 toolchain: the SwiftSoup fork it depends on
-# (brightdigit/SwiftSoup, branch fix/swift-6.4-inline-crash) targets 6.4, and the
-# macOS leg now runs on the self-hosted runner with /Applications/Xcode-beta.app.
+# Standalone CI for this BrightDigit Swift package on Swift 6.4 (the BrightDigit
+# CI template). These five workflows are kept byte-identical except the name above;
+# the only per-package difference is externalized to the ENABLE_WASM repo variable.
+# Linux + wasm run in the nightly-6.4 container; macOS + the Apple-platform suite
+# run on the self-hosted runner with /Applications/Xcode-beta.app (Xcode 27 /
+# Swift 6.4); Windows on a swift.org nightly snapshot; Android via a swift.org SDK
+# bundle. The wasm step is gated on ENABLE_WASM — set it to 'false' where a
+# dependency can't build for wasm (e.g. Yams).
 on:
   push:
     branches: [main]
@@ -56,6 +60,25 @@ jobs:
           verbose: true
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ${{ join(fromJSON(steps.coverage-files.outputs.files), ',') }}
+      # WASM build, folded into the Ubuntu job (same nightly-6.4.x-noble container,
+      # one spin-up). Gated on the ENABLE_WASM repo variable — set it to 'false'
+      # where a dependency can't build for wasm (e.g. Yams; see that package's issue
+      # tracker). continue-on-error while the swift-build wasm-sdk-url path is
+      # validated. Bump the snapshot SDK URL/checksum periodically.
+      - name: Build on WASM
+        id: wasm
+        if: ${{ vars.ENABLE_WASM != 'false' }}
+        continue-on-error: true
+        uses: brightdigit/swift-build@sdk-url-checksum-nightly-6.4
+        with:
+          type: wasm
+          wasm-sdk-url: https://download.swift.org/swift-6.4.x-branch/wasm-sdk/swift-6.4.x-DEVELOPMENT-SNAPSHOT-2026-06-15-a/swift-6.4.x-DEVELOPMENT-SNAPSHOT-2026-06-15-a_wasm.artifactbundle.tar.gz
+          wasm-sdk-checksum: c014a0162de6eeeef4f07904ce096ccee5405c1478a12c99a3a9750bd42d7702
+          wasm-swift-flags: >-
+            -Xcc -D_WASI_EMULATED_SIGNAL -Xcc -D_WASI_EMULATED_MMAN
+            -Xlinker -lwasi-emulated-signal -Xlinker -lwasi-emulated-mman
+            -Xlinker -lwasi-emulated-getpid
+            -Xlinker --initial-memory=536870912 -Xlinker --max-memory=536870912
 
   configure:
     name: Configure Matrix
@@ -68,7 +91,7 @@ jobs:
       - id: check
         name: Determine matrix scope
         run: |
-          # Three tiers: small set (build-ubuntu/build-macos/lint, always) <
+          # Three tiers: small set (build-ubuntu[+wasm]/build-macos/lint, always) <
           # full-matrix (macOS-platforms/android) < +Windows. full-matrix runs on
           # main / semver / dispatch / PRs into main or semver. Windows is the most
           # expensive leg, so run-windows is the same MINUS PRs into semver branches.
@@ -85,8 +108,7 @@ jobs:
           echo "full=$FULL" >> "$GITHUB_OUTPUT"
           echo "windows=$WIN" >> "$GITHUB_OUTPUT"
 
-  # Self-hosted macOS runner ships /Applications/Xcode-beta.app (Swift 6.4) — the
-  # only path to a 6.4 toolchain on macOS today (migrated from macos-15). Always runs.
+  # macOS on Swift 6.4 via the self-hosted runner with /Applications/Xcode-beta.app.
   build-macos:
     name: Build on macOS
     runs-on: [self-hosted, macOS]
@@ -110,19 +132,15 @@ jobs:
           flags: spm,macos
           token: ${{ secrets.CODECOV_TOKEN }}
 
-  # Windows nightly 6.4 via swift.org development snapshot (compnerd/gha-setup-swift
-  # under swift-build). Hosted runners — the only self-hosted runner is macOS.
-  # Most expensive leg — own tier (run-windows): main / semver / dispatch / PRs
-  # into main, but NOT PRs into semver branches (those still get the rest of the
-  # full matrix, just not Windows).
-  # continue-on-error: Contribute's Yams + SwiftSoup-fork + swift-markdown(main)
-  # chain is unverified on Windows; drop continue-on-error once a run is green.
+  # Windows nightly 6.4 via a swift.org development snapshot (compnerd/gha-setup-swift
+  # under swift-build), on hosted runners. Own tier (run-windows): the most
+  # expensive leg, so it runs on main / semver / dispatch / PRs into main, but NOT
+  # PRs into semver branches. Bump the snapshot id periodically (swift.org GCs them).
   build-windows:
     name: Build on Windows
     needs: configure
     if: ${{ needs.configure.outputs.run-windows == 'true' }}
     runs-on: ${{ matrix.runs-on }}
-    continue-on-error: true
     strategy:
       fail-fast: false
       matrix:
@@ -138,12 +156,10 @@ jobs:
           windows-swift-version: ${{ matrix.swift.version }}
           windows-swift-build: ${{ matrix.swift.build }}
 
-  # Full Apple-platform suite (iOS/watchOS/tvOS) on Swift 6.4. Runs on the
-  # self-hosted runner with /Applications/Xcode-beta.app (Xcode 27 / Swift 6.4),
-  # using the iOS/watchOS/tvOS 27.0 simulator runtimes installed there.
-  # continue-on-error: first time the SwiftSoup-fork / swift-markdown-main deps are
-  # built for iOS/watchOS/tvOS, on the nightly toolchain. Bump deviceName/osVersion
-  # as the runner's Xcode-beta moves.
+  # Full Apple-platform suite (iOS/watchOS/tvOS) on Swift 6.4, on the self-hosted
+  # runner with /Applications/Xcode-beta.app (Xcode 27), using the 27.0 simulator
+  # runtimes installed there. continue-on-error: simulator runs on the nightly
+  # toolchain are the most fragile leg. Bump deviceName/osVersion as Xcode-beta moves.
   build-macos-platforms:
     name: Build on macOS (Platforms)
     needs: configure
@@ -180,13 +196,10 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           flags: ${{ format('{0}{1}', matrix.type, matrix.osVersion) }}
 
-  # WASM is permanently N/A for Contribute: Yams fails on the Musl/wasm SDK
-  # ('DBL_DECIMAL_DIG' not in scope) and wasm-embedded lacks Foundation. No build-wasm job.
-
   # Android on nightly 6.4 via a swift.org swift-6.4.x-branch snapshot SDK bundle
-  # (custom-sdk-url path, needs brightdigit/swift-build#116). continue-on-error
-  # until that ships in @v1 and the leg goes green — Contribute's Yams + SwiftSoup-fork
-  # + swift-markdown(main) chain on Android is unverified. build-only. Bump the snapshot.
+  # (custom-sdk-url path through swift-build → skiptools/swift-android-action).
+  # continue-on-error until the leg goes green. build-only (android-run-tests: false).
+  # Bump the snapshot id periodically.
   build-android:
     name: Build on Android
     needs: configure
@@ -223,9 +236,6 @@ jobs:
     if: ${{ !cancelled() && !failure() && !contains(github.event.head_commit.message, 'ci skip') }}
     needs: [build-ubuntu, build-macos, build-windows, build-macos-platforms]
     runs-on: ubuntu-latest
-    # Lint on the Swift 6.4 nightly so swift-format 604 builds against a matching
-    # swift-syntax. The bare nightly snapshot lacks curl, which mise-action needs
-    # to bootstrap mise, so install it first.
     container: swiftlang/swift:nightly-6.4.x-noble
     steps:
       - name: Install curl (required by mise-action)
