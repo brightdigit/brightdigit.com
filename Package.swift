@@ -42,7 +42,7 @@ let package = Package(
     .package(path: "Packages/BrightDigit/TransistorPublishPlugin"),
 
     .package(url: "https://github.com/jpsim/Yams.git", from: "6.0.0"),
-    .package(path: "Packages/BrightDigit/ConfigKeyKit"),
+    .package(url: "https://github.com/brightdigit/ConfigKeyKit.git", branch: "main"),
     .package(
       url: "https://github.com/apple/swift-configuration",
       from: "1.0.0",

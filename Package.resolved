@@ -1,6 +1,15 @@
 {
-  "originHash" : "23b423173615e1fb5c592755ec5c7d3f1fe8d76f84e230e0d6504f1dccfcffb4",
+  "originHash" : "c56a6ab83313cc8a63fe259f8ddb3c463205bc586c5d036c32825b8324adf4c4",
   "pins" : [
+    {
+      "identity" : "configkeykit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/brightdigit/ConfigKeyKit.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "6949abb4b7f3e50f7f81d668e6c11aa4721e97fd"
+      }
+    },
     {
       "identity" : "swift-async-algorithms",
       "kind" : "remoteSourceControl",
