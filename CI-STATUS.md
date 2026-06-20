@@ -15,16 +15,17 @@ Legend: ✅ pass · ❌ fail (**now blocking** — `continue-on-error` removed) 
 
 | Repo | PR → base | mergeable | Ubuntu | WASM¹ | macOS | iOS | watchOS | tvOS | Windows² | Android³ | Lint | Run |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
-| ButtondownKit | #1 → main | ✅ | ✅ | ✅ | ✅ | ✅ | ❌⁴ | ✅ | ✅✅ | ⏳ | ✅ | ⏳ |
-| SwiftTube | #12 → main | ✅ | ✅ | ✅ | ✅ | ✅ | ❌⁴ | ✅ | ✅✅ | ⏳ | ✅ | ⏳ |
-| Contribute | #9 → v1.0.0 | ✅ | ✅ | n/a | ✅ | ✅ | ❌⁴ | ✅ | ⏭️ | ⏳ | ✅ | ⏳ |
-| SyndiKit | #127 → v1.0.0 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ⏭️ | ⏳ | ✅ | ⏳ |
-| Spinetail | #29 → v1.0.0 | ✅ **resolved** | ⏳ | ⏳ | ⏳ | ⏳ | ⏳ | ⏳ | ⏭️ | ⏳ | ⏳ | ⏳ |
+| ButtondownKit | #1 → main | ✅ | ✅ | ✅ | ✅ | ✅ | ❌⁴ | ✅ | ✅✅ | ✅ | ✅ | ❌⁴ |
+| SwiftTube | #12 → main | ✅ | ✅ | ✅ | ✅ | ✅ | ❌⁴ | ✅ | ✅✅ | ✅ᵉ | ✅ | ❌⁴ |
+| Contribute | #9 → v1.0.0 | ✅ | ✅ | n/a | ✅ | ✅ | ❌⁴ | ✅ | ⏭️ | ✅ᵉ | ✅ | ❌⁴ |
+| SyndiKit | #127 → v1.0.0 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ⏭️ | ✅ᵉ | ✅ | ✅ |
+| Spinetail | #29 → v1.0.0 | ✅ **resolved** | ⏳ | ⏳ | ⏳ | ⏳ | ⏳ | ⏳ | ⏭️ | ✅ | ⏳ | ⏳ |
 
 ¹ WASM runs as a step inside `build-ubuntu`. Disabled on Contribute via `ENABLE_WASM=false` (Yams — see Contribute#10).
 ² Windows is **blocking** and **green where it runs**. ⏭️ on semver-base PRs (`run-windows` tier excludes PRs into semver). Not yet exercised on Spinetail/Contribute/SyndiKit.
-³ Android passthrough fixed on swift-build #116 (forward `installed-sdk`, drop `cache-avd`); re-running to confirm green. Now **blocking**.
-⁴ watchOS still fails (transitive-dep floor, not fixable in-repo) and is **now blocking** these PRs — see Known Issues.
+³ Android passthrough fixed on swift-build #116 (forward `installed-sdk`, drop `cache-avd`). **Confirmed green** on ButtondownKit (main base) + Spinetail (semver base); now **blocking**.
+⁴ watchOS still fails (transitive-dep floor, not fixable in-repo) and is **now blocking** these PRs — so the overall Run is ❌ for the 4 affected repos. See Known Issues.
+ᵉ Android expected-green — identical action+inputs to the two confirmed repos; not yet individually re-confirmed.
 
 ## Spinetail — #29 conflict resolved
 
@@ -36,7 +37,7 @@ Legend: ✅ pass · ❌ fail (**now blocking** — `continue-on-error` removed) 
 
 ## Known issues
 
-- **Android — fix applied, validating.** `skiptools/swift-android-action@v2` exits 1 when `custom-sdk-url` is set but `installed-sdk` is empty, and does not accept `cache-avd`. swift-build #116 now forwards `installed-sdk` (via a new `android-sdk-target` input, default `aarch64-unknown-linux-android28` when a custom SDK URL is set) and no longer passes `cache-avd`. Confirm the default triple matches the bundle's registered triple on the first green run; adjust if needed.
+- **Android — fixed and confirmed green.** `skiptools/swift-android-action@v2` exits 1 when `custom-sdk-url` is set but `installed-sdk` is empty, and does not accept `cache-avd`. swift-build #116 now forwards `installed-sdk` (via a new `android-sdk-target` input, default `aarch64-unknown-linux-android28` when a custom SDK URL is set) and no longer passes `cache-avd`. The default triple matched the 2026-06-15 bundle — `build-android` is green on ButtondownKit + Spinetail.
 - **watchOS — fails on the OpenAPI repos + Contribute, passes on SyndiKit. NOW BLOCKING.** Transitive deps `swift-http-types` / `swift-collections` declare `WATCHOS_DEPLOYMENT_TARGET=8.0`, below the watchOS-27 SDK floor (9.0). SyndiKit (XMLCoder only) has no such dep, so it passes. Not fixable in our repos; depends on the deps raising their watchOS minimums. **Since `continue-on-error` was removed, this now blocks the affected PRs** — re-add `continue-on-error: true` to `build-macos-platforms` (or exclude the watchOS matrix leg) if these PRs must stay green before the deps are fixed.
 - **swift-build osVersion pin** — simulator destinations hardcode `OS={osVersion}` (no `latest`), so the self-hosted Apple-platform legs pin `osVersion: 27.0` and will rot when the runner's Xcode-beta bumps its runtime. (Not yet filed on swift-build.)
 
@@ -56,7 +57,7 @@ Legend: ✅ pass · ❌ fail (**now blocking** — `continue-on-error` removed) 
 - [x] **swift-build #116:** Android passthrough fixed (forward `installed-sdk`, drop `cache-avd`). Still to do: confirm green, then **merge #116 + move `v1`**.
 - [x] **Promote `continue-on-error` legs to blocking** — removed from all 5 workflows (WASM, Apple-platforms, Android now blocking).
 - [ ] **watchOS now blocks** the 4 affected PRs — decide whether to re-add `continue-on-error` to `build-macos-platforms` / drop the watchOS leg until the transitive deps raise their watchOS minimums.
-- [ ] **Confirm Android green** on the next runs; adjust `android-sdk-target` default if the bundle registers a different triple.
+- [x] **Confirm Android green** — `build-android` passes on ButtondownKit + Spinetail with the default `aarch64-unknown-linux-android28` triple.
 - [ ] **Revert workflows from `@sdk-url-checksum-nightly-6.4` → `@v1`** after #116 ships.
 - [ ] **Spinetail `.gitrepo` resync** (`git subrepo pull`) — upstream branch was rewritten by the rebase.
 - [ ] **Contribute#10:** fix Yams-on-wasm, then set `ENABLE_WASM=true` (or remove the var).
