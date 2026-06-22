@@ -6,7 +6,7 @@
 [subrepo]
 	remote = git@github.com:BrightDigit/Spinetail.git
 	branch = brightdigit-com-260621
-	commit = 203a60390ba4ae703fff6c2c98663fd37ce9f962
-	parent = cc5d0c1bec540a1da3304aee982977ca421c88b7
+	commit = 122aff491c184347ec957efb394a98d53efe8db2
+	parent = ce46a44f4497fa8bf5ffd19986add2ba99343e46
 	method = merge
 	cmdver = 0.4.9
