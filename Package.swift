@@ -9,7 +9,7 @@ import PackageDescription
 let package = Package(
   name: "BrightDigit",
   platforms: [
-    // Raised from .v13 for issue #44: ConfigKeyKit 1.0.0-beta.1 requires macOS 15.
+    // Raised from .v13 for issue #44: ConfigKeyKit 1.0.0-beta.2 requires macOS 15.
     // Deploy target is Linux (no platform floor), so this only affects local
     // macOS development/builds. See Documentation/Migration/44-config-migration.md.
     .macOS(.v15)
@@ -42,7 +42,7 @@ let package = Package(
     .package(path: "Packages/BrightDigit/TransistorPublishPlugin"),
 
     .package(url: "https://github.com/jpsim/Yams.git", from: "6.0.0"),
-    .package(path: "Packages/BrightDigit/ConfigKeyKit"),
+    .package(url: "https://github.com/brightdigit/ConfigKeyKit.git", exact: "1.0.0-beta.2"),
     .package(
       url: "https://github.com/apple/swift-configuration",
       from: "1.0.0",

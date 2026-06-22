@@ -4,9 +4,9 @@
 ; git-subrepo command. See https://github.com/ingydotnet/git-subrepo#readme
 ;
 [subrepo]
-	remote = git@github.com:BrightDigit/TransistorPublishPlugin.git
-	branch = brightdigit-com-260406
-	commit = ce16e0c6c2670ffdf95c6896f95139c8a5060a93
-	parent = dbbbb276adbb702143c34a7a2236f6db964ac401
+	remote = git@github.com:brightdigit/ButtondownKit.git
+	branch = brightdigit-com-260621
+	commit = e2ad243b78ad906e3d293aa11b7be4934c010068
 	method = merge
 	cmdver = 0.4.9
+	parent = 63b4fb71f2ada4971ed29074036d5e60aef34a4e

@@ -1,6 +1,15 @@
 {
-  "originHash" : "79db71161b0e0b812edda0b6a1007cb8b29a3eacd40c23a3498dd24fdd29b346",
+  "originHash" : "a6b7201f1197477f7dfd9c1a6791edd8231a9a51846cf6001ec72f4301bbd030",
   "pins" : [
+    {
+      "identity" : "configkeykit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/brightdigit/ConfigKeyKit.git",
+      "state" : {
+        "revision" : "6949abb4b7f3e50f7f81d668e6c11aa4721e97fd",
+        "version" : "1.0.0-beta.2"
+      }
+    },
     {
       "identity" : "swift-async-algorithms",
       "kind" : "remoteSourceControl",
@@ -107,6 +116,15 @@
       "state" : {
         "revision" : "7502b711c92a17741fa625d722b0ccbd595d8ed1",
         "version" : "1.7.2"
+      }
+    },
+    {
+      "identity" : "swiftsoup",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/brightdigit/SwiftSoup.git",
+      "state" : {
+        "branch" : "fix/swift-6.4-inline-crash",
+        "revision" : "5d5d9ec29b5ba0b046944f9ad3ff668bb4996e08"
       }
     },
     {

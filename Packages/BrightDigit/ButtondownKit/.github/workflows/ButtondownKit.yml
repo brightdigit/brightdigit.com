@@ -1,4 +1,4 @@
-name: Contribute
+name: ButtondownKit
 
 # Standalone CI for this BrightDigit Swift package on Swift 6.4 (the BrightDigit
 # CI template). These five workflows are kept byte-identical except the name above;
