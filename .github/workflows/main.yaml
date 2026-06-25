@@ -317,6 +317,13 @@ jobs:
 
   deploy:
     needs: package-linux
+    # package-linux survives build-linux being skipped (content-/packages-only
+    # commits) via its own `if`, but `deploy` had only the implicit `if:
+    # success()`, which propagates the skipped build-linux down the needs graph
+    # and skipped deploy too — so bot content pushes built a binary but never
+    # deployed. An explicit status-function `if` breaks that propagation and
+    # deploys whenever package-linux actually succeeded.
+    if: ${{ !cancelled() && needs.package-linux.result == 'success' }}
     runs-on: ubuntu-latest
     container:
       image: brightdigit/publish-xml:6.4
