@@ -1,0 +1,27 @@
+---
+title: Everyone Thinks They're Good at Prompting with Joe Fabisevich
+date: 2026-06-25 13:55
+description: Software development has changed a lot. On today's episode, Joe Fabisevich talks about building with AI without falling into the trap of "work slop," why prompting is a communication skill, where Apple fits in, and Broadcast — his new Swift logging library for developers and AI agents.
+featuredImage: https://img.transistorcdn.com/pVulIATF1qTjbjNcWnZEMPXX9rhYZL0OlR2JwtmQNnc/rs:fill:0:0:1/w:1400/h:1400/q:60/mb:500000/aHR0cHM6Ly9pbWct/dXBsb2FkLXByb2R1/Y3Rpb24udHJhbnNp/c3Rvci5mbS9iYWRk/NzI4NTRkMTM1YzI5/NzRkZWIzMjRjNDM3/MGM5YS5qcGc.jpg
+youtubeID: yFPlov0UTZ4
+audioDuration: 5313
+videoDuration: 5509
+podcastID: bbf892fb
+---
+<p>Software development has changed a lot. On today's episode, Joe Fabisevich talks about building with AI without falling into the trap of "work slop," why prompting is a communication skill, where Apple fits in, and Broadcast — his new Swift logging library for developers and AI agents.</p><p><strong>Guest</strong></p><ul><li><a href="https://build.ms/">Build.ms</a></li><li><a href="https://macaw.social/@mergesort">Joe Fabisevich :verified: (@mergesort@macaw.social) - Macaw-Social</a></li><li><a href="https://bsky.app/profile/mergesort.me">Joe Fabisevich (@mergesort.me) — Bluesky</a></li><li><a href="https://github.com/mergesort">Github (@mergesort)</a></li><li><a href="https://www.threads.net/@mergesort">https://www.threads.net/@mergesort</a></li><li><a href="https://fabisevi.ch/">fabisevi.ch</a></li></ul><p><strong>Related Links</strong></p><ul><li><a href="https://fabisevi.ch/2025/07/23/artifacts/">Artifacts | Fabisevi.ch</a></li><li><a href="https://build.ms/2026/2/2/supporting-markdown-search-for-llms/">Supporting Markdown Search For LLMs</a></li><li><a href="https://build.ms/2025/12/24/ai-without-the-hype-ns-spain-2025/">AI (Without the Hype)</a></li><li><a href="https://build.ms/2026/3/23/workslop/">Workslop</a></li><li><a href="https://build.ms/2026/5/26/being-a-1-5-10x-developer/">Being A 1.5-10x Developer</a></li><li><a href="https://github.com/mergesort/Broadcast">mergesort/Broadcast: Simple and composable logging for Swift apps, servers, and coding agents.</a></li><li><a href="https://atleast.app/">AtLeast — Passive Timer for Apple Watch</a></li><li><a href="https://month.bar/">MonthBar - Track your month's progress</a></li></ul><p><strong>Related Episodes</strong></p><ul><li><a href="https://brightdigit.com/episodes/207-120-likely-with-cihat-gunduz/">120% Likely with Cihat Gündüz</a></li><li><a href="https://brightdigit.com/episodes/206-platforms-state-of-the-union-2026-with-peter-witham/">Platforms State of the Union 2026 with Peter Witham</a></li><li><a href="https://brightdigit.com/episodes/205-who-s-wendy-with-joannis-orlandos/">Who's Wendy with Joannis Orlandos</a></li><li><a href="https://brightdigit.com/episodes/204-actually-really-useful/">Actually Really Useful</a></li><li><a href="https://brightdigit.com/episodes/192-practical-year-part-1-with-donny-wals/">Practical Year - Part 1 with Donny Wals</a></li><li><a href="https://brightdigit.com/episodes/177-plinky-with-joe-fabisevich/">Plinky with Joe Fabisevich</a></li><li><a href="https://brightdigit.com/episodes/171-chatgptovski-with-kris-slazinski/">ChatGPTovski with Kris Slazinski</a></li></ul><p><strong>Chapters</strong><br></p><ul><li>(00:00) - Work Slop</li>
+<li>(13:02) - Verifiable Tasks</li>
+<li>(25:51) - Building Agents</li>
+<li>(32:06) - Careers &amp; Hiring</li>
+<li>(43:31) - Daily Setup</li>
+<li>(53:00) - WWDC 2026</li>
+<li>(01:09:07) - AI Economics</li>
+<li>(01:20:33) - Broadcast Logging</li>
+</ul><p><br><strong>Watch</strong><br><a href="https://www.youtube.com/watch?v=yFPlov0UTZ4" title="Click here to watch a video of this episode.">Click here to watch a video of this episode.</a><br>
+</p><p><br><strong>Transcript</strong><br><a href="https://share.transistor.fm/s/bbf892fb/transcript" title="Click here to view the episode transcript.">Click here to view the episode transcript.</a><br>
+</p><p><br><strong>Support the Show</strong></p><p><strong>
+  <a href="https://www.patreon.com/brightdigit" rel="payment" title="★ Support this podcast on Patreon ★">★ Support this podcast on Patreon ★</a>
+</strong> </p><p>Thanks to our supporters: <strong>Thanks to our monthly supporters</strong>
+</p><ul>
+  <li>Steven Lipton</li>
+</ul> <br>Welcome new supporters: <p><br><strong>Social Media</strong></p><ul><li><a href="https://www.linkedin.com/in/leogdion/">LinkedIn - @leogdion</a></li><li><a href="https://github.com/brightdigit">GitHub - @brightdigit</a></li><li><a href="https://github.com/leogdion/">GitHub - @leogdion</a></li><li><a href="https://c.im/@leogdion">Mastodon - @leogdion@c.im</a></li><li><a href="http://youtube.com/@brightdigit">YouTube - @brightdigit</a></li><li><a href="https://x.com/leogdion">X - @leogdion</a></li><li><a href="https://x.com/brightdigit">X - @brightdigit</a></li></ul><p><strong>Credits</strong></p><p>Music from <a href="https://filmmusic.io/">https://filmmusic.io</a> "Blippy Trance" by Kevin MacLeod (<a href="https://incompetech.com/">https://incompetech.com</a>) License: CC BY (<a href="http://creativecommons.org/licenses/by/4.0/">http://creativecommons.org/licenses/by/4.0/</a>)</p>
+      
