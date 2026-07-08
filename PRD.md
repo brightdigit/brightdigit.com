@@ -23,11 +23,24 @@ Phase 1 (Monorepo cleanup) ──────────── prerequisite: [#
 Phase 2 (Swift 6.3 main package) ────── requires Phase 1
 Phase 3 (AI-CITE schema + validation) ─ requires Phase 2 (intentional: implement after Swift 6.3 upgrade)
 Phase 4 (OpenAPI migration) ─────────── requires Phase 2 — Swift 6.3-only toolchain
-Phase 5 (Swift 6.3 subrepos + components) requires Phase 4
+Phase 5 (Swift 6.3 subrepos + components) requires Phase 4  [+ high-priority Buttondown email work pulled forward — see note]
 Phase 6 (Publishing infra) ──────────── requires Phase 4 (swift-openapi-generator toolchain)
 Phase 7 (Platform migration) ────────── requires Phase 5/6
 Phase 8 (Final cleanup) ─────────────── anytime, low priority
 ```
+
+> **Note (Buttondown priority):** Phase 5 and Phase 6 are siblings — both require only Phase 4,
+> neither requires the other. Because the Buttondown newsletter/email work is now high priority,
+> the email-import + hosted-HTML-cleanup chain ([#124](https://github.com/brightdigit/brightdigit.com/issues/124)
+> → [#122](https://github.com/brightdigit/brightdigit.com/issues/122),
+> [#127](https://github.com/brightdigit/brightdigit.com/issues/127)) and the subscribe form
+> ([#126](https://github.com/brightdigit/brightdigit.com/issues/126)) have been pulled forward
+> into **Phase 5** to run concurrently with the component migration. The outbound publishing leg
+> ([#33](https://github.com/brightdigit/brightdigit.com/issues/33),
+> [#31](https://github.com/brightdigit/brightdigit.com/issues/31)) and social/video
+> ([#30](https://github.com/brightdigit/brightdigit.com/issues/30),
+> [#32](https://github.com/brightdigit/brightdigit.com/issues/32),
+> [#49](https://github.com/brightdigit/brightdigit.com/issues/49)) remain in Phase 6.
 
 ---
 
@@ -218,6 +231,15 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 | [#24](https://github.com/brightdigit/brightdigit.com/issues/24) | YouTube Video Content Strategy | Open |
 | [#25](https://github.com/brightdigit/brightdigit.com/issues/25) | Create Unique BrightDigit Frameworks/Methodologies | Open |
 
+**Buttondown newsletter/email work (pulled forward from Phase 6 — high priority; sibling phase, both gated only on Phase 4):**
+
+| # | Title | Priority | Status |
+|---|-------|----------|--------|
+| [#124](https://github.com/brightdigit/brightdigit.com/issues/124) | ButtondownClient: expose `listEmails` (paged) | P0-critical | Open — foundational; blocks #122, #127 |
+| [#122](https://github.com/brightdigit/brightdigit.com/issues/122) | Import published newsletters from Buttondown (`import buttondown`) | P1-high | Open — blocked by #124; new issues only |
+| [#127](https://github.com/brightdigit/brightdigit.com/issues/127) | Fix HTML of MailChimp-imported emails hosted in Buttondown (REST API) | P1-high | Open — needs #124 + `updateEmail` wrapper |
+| [#126](https://github.com/brightdigit/brightdigit.com/issues/126) | Point subscribe form at Buttondown | P1-high | Open — decoupled from the component migration (uses Plot static factories, not the `Node()` init restricted by #53) |
+
 **Swift 6.3 subrepo upgrades (17 total):**
 - Publish ecosystem (8): Publish, Plot, Files, Codextended, Sweep, CollectionConcurrencyKit, Splash, SplashPublishPlugin
 - BrightDigit packages (7): SwiftTube 2.0.0, Spinetail 2.0.0, SyndiKit 1.0.0, NPMPublishPlugin, Contribute 2.0.0, ContributeWordPress, TransistorPublishPlugin
@@ -256,6 +278,14 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 **Goal:** Replace the Mailchimp-based newsletter workflow with a Buttondown + Buffer Swift CLI. Enable video podcast publishing.
 
 **Dependency:** Phase 4 (swift-openapi-generator toolchain available).
+
+> **Moved to Phase 5:** The inbound email-import + hosted-HTML-cleanup chain
+> ([#124](https://github.com/brightdigit/brightdigit.com/issues/124),
+> [#122](https://github.com/brightdigit/brightdigit.com/issues/122),
+> [#127](https://github.com/brightdigit/brightdigit.com/issues/127)) and the subscribe form
+> ([#126](https://github.com/brightdigit/brightdigit.com/issues/126)) were pulled forward into
+> Phase 5 as high-priority Buttondown work. This phase retains the **outbound** publishing leg
+> and social/video below.
 
 | # | Title | Status |
 |---|-------|--------|
