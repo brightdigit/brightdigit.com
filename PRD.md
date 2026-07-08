@@ -21,7 +21,7 @@ This document organizes all open GitHub issues into sequential phases and milest
 Phase 0 (housekeeping) ─────────────── independent, can run at any time
 Phase 1 (Monorepo cleanup) ──────────── prerequisite: [#36](https://github.com/brightdigit/brightdigit.com/issues/36) ✓ (complete)
 Phase 2 (Swift 6.3 main package) ────── requires Phase 1
-Phase 3 (AI-CITE schema + validation) ─ requires Phase 2 (intentional: implement after Swift 6.3 upgrade)
+Phase 3 (AI-CITE content optimization) ─ requires Phase 2 (intentional: implement after Swift 6.3 upgrade)
 Phase 4 (OpenAPI migration) ─────────── requires Phase 2 — Swift 6.3-only toolchain
 Phase 5 (Swift 6.3 subrepos + components) requires Phase 4
 Phase 6 (Publishing infra) ──────────── requires Phase 4 (swift-openapi-generator toolchain)
@@ -102,51 +102,46 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 
 ## Phase 3: AI-CITE Optimization
 
-**Milestone:** AI-CITE Phase 1 (target: Feb 28, 2026)  
-**Branch:** `ai-cite-optimization` (PR [#39](https://github.com/brightdigit/brightdigit.com/issues/39))  
-**Goal:** Implement structured schema markup and optimize priority articles so BrightDigit content is cited by AI systems (ChatGPT, Google AI Overview, etc.). AI-CITE is fundamentally an integration into the Swift site-building code (`PublishType` protocol + `BrightDigitSite` implementation) — not just article-level content edits. Intentionally sequenced after Phase 2 to avoid doing this work twice across a Swift 6.3 boundary.
+**Goal:** Get BrightDigit content cited by AI systems (ChatGPT, Claude, Perplexity, Google AI Overview) by optimizing content around the **evidence-backed** AI-citation levers, plus the small set of site-level tasks that support them. Sequenced after Phase 2 (Swift 6.3) so content/code work isn't redone across that boundary.
 
-**Framework:** AI-CITE — Answer-first, Intent-matched headings, Clear structure, Indexed schema, Trusted sources, Exclusive POV.  
-**Target:** 60% of priority articles get AI mentions within 1 week of optimization.
+> **⚠️ Evidence reframe (2026-07).** This phase was originally schema-markup-first (JSON-LD in `PiHTMLFactory`). The GEO Evidence Review in the `llm-ready-web` research repo ([`brightdigit/llm-ready-web`](https://github.com/brightdigit/llm-ready-web) `main`) — 300k+ domain studies + Google's own guidance — establishes that **schema/JSON-LD is not a proven AI-citation lever** (Google: *"there's no special schema.org markup you need to add"*; FAQ rich results deprecated 2023–24) and that **`llms.txt` has null effect**. The AI-CITE framework consequently **removed its "Indexed Schema" element**. The old schema issues (#19 FAQ, #20 HowTo, #56 schema-types, #18 seomachine.io) are **closed as `wontfix`**, and the retired `PiHTMLFactory` JSON-LD plan is gone. This phase now tracks the proven levers instead.
 
-### 3A: Schema Implementation
+**Framework:** AI-CITE (5 elements) — **A**nswer-first · **I**ntent-matched headings · **C**lear structure (lists/tables) · **T**rusted sources (citations) · **E**xclusive POV.
+**Proven levers (ranked):** citations/quotes/statistics (up to +40%) · answer-first placement (first third of page) · question-style headings · crawlability (the one technical must-have).
+**Target:** 6/10 priority queries surface a BrightDigit mention within 2–3 weeks of optimization (source-reported "60% in a week" is a directional target, not independently verified).
 
-| # | Title | Priority | Status |
-|---|-------|----------|--------|
-| [#56](https://github.com/brightdigit/brightdigit.com/issues/56) | Evaluate correct schema.org types for each content section | P0-critical | Open |
-| [#18](https://github.com/brightdigit/brightdigit.com/issues/18) | Add seomachine.io integration | P1-high | Open |
-| [#19](https://github.com/brightdigit/brightdigit.com/issues/19) | Implement FAQ Schema Markup in `PiHTMLFactory` | P0-critical | In Progress |
-| [#20](https://github.com/brightdigit/brightdigit.com/issues/20) | Implement HowTo Schema Markup in `PiHTMLFactory` | P1-high | Open |
+### 3A: Content optimization (per-article — the proven levers)
 
-**Note:** [#56](https://github.com/brightdigit/brightdigit.com/issues/56) must be resolved before [#19](https://github.com/brightdigit/brightdigit.com/issues/19) and [#20](https://github.com/brightdigit/brightdigit.com/issues/20) — schema type selection drives the implementation.
-
-**Implementation files:**
-- `Sources/PublishType/PageContent.swift` — add `schemaMarkup: String?` requirement (`PublishType` owns the protocol contract)
-- `Sources/BrightDigitSite/Nodes/PiHTMLFactory.HTML.swift` — `head(forPage:)` emits `<script type="application/ld+json">` when `schemaMarkup` is non-nil
-- `Sources/BrightDigitSite/PiHTMLFactory.swift` — main factory (not a protocol)
-- `Sources/BrightDigitSite/BrightDigitSite.swift` — extend `ItemMetadata` with `faqItems: [FAQItem]?`, `howToSteps: [HowToStep]?`
-- Each `Sources/BrightDigitSite/Nodes/Section/*.swift` — implement `schemaMarkup` (the `BrightDigitSite` layer provides the concrete values)
-
-**Integration architecture:**
-- `PublishType` defines the requirement; `BrightDigitSite` types fulfill it — consistent with the existing layering throughout the codebase
-- Adding `schemaMarkup: String?` to `PageContent` is additive and does not conflict with the Phase 5 component migration (which rewrites how content is built, not the protocol shape)
-- Schema types per section (auto-generated from existing metadata unless noted):
-  - Articles → `Article` (title, description, date, featuredImage — zero new front matter)
-  - Tutorials → `HowTo` (requires `howToSteps` front matter array, or extracted from `##` headings)
-  - Products → `SoftwareApplication` (platforms, technologies, appStoreURL, githubRepoName)
-  - FAQ pages → `FAQPage` (requires `faqItems` front matter array)
-  - Index / About-Us → `Organization` (hardcoded BrightDigit metadata)
-- The `.claude/ai-cite-optimization/` docs already define `FAQSchema`, `HowToSchema`, `ArticleSchema`, `Person`, `Organization`, `ImageObject` structures — wire these to the Swift build
-
-**Note:** FAQ and HowTo schemas are most valuable for AI citations. `Article` and `SoftwareApplication` schemas provide additional richness at zero content-authoring cost since all required fields already exist in `ItemMetadata`.
-
-### 3B: Validation
+Answer-first rewrites, question-style headings, comparison tables, and authoritative citations on the priority "money articles." Moved into Phase 3 from the former "Post-Migration: Content & Articles" milestone (the schema dependency gate is gone, so these are immediately actionable).
 
 | # | Title | Priority | Status |
 |---|-------|----------|--------|
-| [#23](https://github.com/brightdigit/brightdigit.com/issues/23) | Test AI-CITE Baseline and Validate Schema | P1-high | Open |
+| [#21](https://github.com/brightdigit/brightdigit.com/issues/21) | Optimize Mise Setup Guide for AI-CITE | P1-high | Open |
+| [#22](https://github.com/brightdigit/brightdigit.com/issues/22) | Optimize Best Backend Article for AI-CITE | P1-high | Open |
+| [#26](https://github.com/brightdigit/brightdigit.com/issues/26) | Optimize iOS CI/CD Article for AI-CITE | P1-high | Open |
+| [#27](https://github.com/brightdigit/brightdigit.com/issues/27) | Optimize iOS Architecture Article for AI-CITE | P1-high | Open |
+| [#28](https://github.com/brightdigit/brightdigit.com/issues/28) | Optimize Remaining Priority Articles (Batch) | P1-high | Open |
+| [#130](https://github.com/brightdigit/brightdigit.com/issues/130) | Split `dependency-management-swift` into two answer-first pages | P1-high | Open |
 
-**Reference:** `.claude/ai-cite-optimization/`
+### 3B: Site-level tasks
+
+| # | Title | Priority | Status |
+|---|-------|----------|--------|
+| [#129](https://github.com/brightdigit/brightdigit.com/issues/129) | Fix misleading freshness signal: real publish/`dateModified` dates sitewide | P0-critical | Open |
+| [#131](https://github.com/brightdigit/brightdigit.com/issues/131) | Add `robots.txt` with a `Sitemap:` line | P2-medium | Open |
+| [#132](https://github.com/brightdigit/brightdigit.com/issues/132) | Normalize brand name ("BrightDigit") sitewide | P2-medium | Open |
+
+**#129 is the one surviving `PiHTMLFactory` code task:** the footer at `Sources/BrightDigitSite/Nodes/Node+HTML.swift:187-191` renders `.year()` (current build year) as a false freshness signal; replace it and surface real per-page dates (`item.metadata.date` already exists across `Nodes/Section/*`). Crawlability is otherwise good (server-rendered, `index,follow` meta emitted, valid sitemap); #131 just adds the `Sitemap:` pointer.
+
+### 3C: Measurement
+
+| # | Title | Priority | Status |
+|---|-------|----------|--------|
+| [#23](https://github.com/brightdigit/brightdigit.com/issues/23) | Establish AI-citation baseline test | P1-high | Open |
+
+Run the 10-query baseline (ChatGPT/Claude/Perplexity + Google AI Overview) **before** the content work lands, then re-test weekly. No schema validation.
+
+**Reference:** `brightdigit/llm-ready-web` `main` — `resources/geo-evidence-review.md`, `resources/ai-cite-framework.md`, `case-studies/brightdigit-ai-cite/`.
 
 ---
 
@@ -202,7 +197,7 @@ Phase 8 (Final cleanup) ─────────────── anytime, l
 
 **Plot API context:** Plot has two coexisting APIs. The **Node API** (`Node<HTML.BodyContext>`) is lower-level and functional — used throughout `Nodes/`. The **Component API** (`Component` protocol, SwiftUI-style `var body: Component`) is declarative and already used in `Components/` (SectionElement, ServiceBox, Icon, ListItem) and in `ServicesBuilder.swift` and `ProductItem.swift`. Nodes conform to `Component`; components bridge back via `.convertToNode()`.
 
-**Migration approach:** Keep `PageContent.main` as `[Node<HTML.BodyContext>]`; leaf components call `.convertToNode()` at the boundary. This matches the pattern already established in `ProductItem.swift` and avoids a `PageContent` protocol break. The `schemaMarkup: String?` property added to `PageContent` in Phase 3 carries forward unchanged.
+**Migration approach:** Keep `PageContent.main` as `[Node<HTML.BodyContext>]`; leaf components call `.convertToNode()` at the boundary. This matches the pattern already established in `ProductItem.swift` and avoids a `PageContent` protocol break. (The `schemaMarkup: String?` property once planned for Phase 3 is no longer being added — the schema work was retired in the 2026-07 evidence reframe — so there is nothing extra to carry through this migration.)
 
 **Migration order:** (1) header/footer in `PiHTMLFactory.HTML.swift` (affects every page), (2) `Nodes/Section/` item content files, (3) `Nodes/Pages/` builders.
 
@@ -316,7 +311,7 @@ New source modules (local to this repo, not subrepos):
 
 ## Post-Migration Content Tasks
 
-**Goal:** Pure content edits and article optimization — no code changes required. Deferred until the schema pipeline (Phase 3A + Swift migration) is stable.
+**Goal:** Pure content edits — no code changes required. (The AI-CITE **article optimization** issues formerly listed here — #21/#22/#26/#27/#28 — moved into **Phase 3** as part of the 2026-07 evidence reframe; see Phase 3 §3A.)
 
 **Note:** Apply the `article-edit` GitHub label to all issues below to distinguish from migration/code issues.
 
@@ -327,18 +322,6 @@ New source modules (local to this repo, not subrepos):
 | [#3](https://github.com/brightdigit/brightdigit.com/issues/3) | Add Additional Local Storage Options | Open |
 | [#4](https://github.com/brightdigit/brightdigit.com/issues/4) | Add Main Actor to Swift 6 Article Solution | Open |
 | [#13](https://github.com/brightdigit/brightdigit.com/issues/13) | Clarify String vs Reference design choice in MistKit article | Open |
-
-### Article Optimization (formerly Phase 1B)
-
-| # | Title | Priority | Status |
-|---|-------|----------|--------|
-| [#21](https://github.com/brightdigit/brightdigit.com/issues/21) | Optimize Mise Setup Guide for AI-CITE | P1-high | Open |
-| [#22](https://github.com/brightdigit/brightdigit.com/issues/22) | Optimize Best Backend Article for AI-CITE | P1-high | Open |
-| [#26](https://github.com/brightdigit/brightdigit.com/issues/26) | Optimize iOS CI/CD Article for AI-CITE | P1-high | Open |
-| [#27](https://github.com/brightdigit/brightdigit.com/issues/27) | Optimize iOS Architecture Article for AI-CITE | P1-high | Open |
-| [#28](https://github.com/brightdigit/brightdigit.com/issues/28) | Optimize Remaining Priority Articles (Batch) | P1-high | Open |
-
-**Dependency:** Phase 3A ([#19](https://github.com/brightdigit/brightdigit.com/issues/19) schema implementation) must be complete and stable before article optimization begins.
 
 ---
 
@@ -357,11 +340,11 @@ New source modules (local to this repo, not subrepos):
 | Phase 0 | 2 | Quick wins |
 | Phase 1 | 0 | Monorepo cleanup ([#36](https://github.com/brightdigit/brightdigit.com/issues/36) already done; MarkdownGenerator removal folded into Phase 4 [#40](https://github.com/brightdigit/brightdigit.com/issues/40); [#47](https://github.com/brightdigit/brightdigit.com/issues/47) retitled and moved to Phase 4) |
 | Phase 2 | 4 | Swift 6.3 main package + lint config ([#54](https://github.com/brightdigit/brightdigit.com/issues/54)) + CI cache ([#65](https://github.com/brightdigit/brightdigit.com/issues/65)) + rebuild-avoidance (TBD) |
-| Phase 3 | 5 | AI-CITE schema ([#56](https://github.com/brightdigit/brightdigit.com/issues/56), [#18](https://github.com/brightdigit/brightdigit.com/issues/18), [#19](https://github.com/brightdigit/brightdigit.com/issues/19), [#20](https://github.com/brightdigit/brightdigit.com/issues/20)) + validation ([#23](https://github.com/brightdigit/brightdigit.com/issues/23)) |
+| Phase 3 | 10 | AI-CITE content optimization (evidence reframe): articles [#21](https://github.com/brightdigit/brightdigit.com/issues/21)/[#22](https://github.com/brightdigit/brightdigit.com/issues/22)/[#26](https://github.com/brightdigit/brightdigit.com/issues/26)/[#27](https://github.com/brightdigit/brightdigit.com/issues/27)/[#28](https://github.com/brightdigit/brightdigit.com/issues/28) + split [#130](https://github.com/brightdigit/brightdigit.com/issues/130); site-level dates [#129](https://github.com/brightdigit/brightdigit.com/issues/129)/robots [#131](https://github.com/brightdigit/brightdigit.com/issues/131)/brand [#132](https://github.com/brightdigit/brightdigit.com/issues/132); baseline [#23](https://github.com/brightdigit/brightdigit.com/issues/23). Schema issues #19/#20/#56/#18 **closed as wontfix** |
 | Phase 4 | 7 | OpenAPI migration + Kanna → SwiftSoup ([#47](https://github.com/brightdigit/brightdigit.com/issues/47)) |
 | Phase 5 | 5 | Swift 6.3 subrepos + components + Tailwind (TBD) + AI-CITE content strategy ([#24](https://github.com/brightdigit/brightdigit.com/issues/24), [#25](https://github.com/brightdigit/brightdigit.com/issues/25)) |
 | Phase 6 | 5 | Publishing infrastructure + AT Protocol ([#49](https://github.com/brightdigit/brightdigit.com/issues/49)) feeds Buffer |
 | Phase 7 | 2 | Platform migration + form integration (TBD) |
 | Phase 8 | 3 | Deferred cleanup |
-| Post-Migration | 8 | Article edits ([#3](https://github.com/brightdigit/brightdigit.com/issues/3), [#4](https://github.com/brightdigit/brightdigit.com/issues/4), [#13](https://github.com/brightdigit/brightdigit.com/issues/13)) + article optimization ([#21](https://github.com/brightdigit/brightdigit.com/issues/21), [#22](https://github.com/brightdigit/brightdigit.com/issues/22), [#26](https://github.com/brightdigit/brightdigit.com/issues/26), [#27](https://github.com/brightdigit/brightdigit.com/issues/27), [#28](https://github.com/brightdigit/brightdigit.com/issues/28)) |
-| **Total** | **41** | Excludes [#12](https://github.com/brightdigit/brightdigit.com/issues/12) (done), [#36](https://github.com/brightdigit/brightdigit.com/issues/36) (done), [#43](https://github.com/brightdigit/brightdigit.com/issues/43) (dropped); includes 3 TBD issues awaiting GitHub creation (Phase 2 rebuild-avoidance, Phase 5 Tailwind, Phase 7 form integration) |
+| Post-Migration | 3 | Article edits ([#3](https://github.com/brightdigit/brightdigit.com/issues/3), [#4](https://github.com/brightdigit/brightdigit.com/issues/4), [#13](https://github.com/brightdigit/brightdigit.com/issues/13)); article-optimization issues moved to Phase 3 |
+| **Total** | **41** | Excludes [#12](https://github.com/brightdigit/brightdigit.com/issues/12) (done), [#36](https://github.com/brightdigit/brightdigit.com/issues/36) (done), [#43](https://github.com/brightdigit/brightdigit.com/issues/43) (dropped), and the 4 schema issues [#19](https://github.com/brightdigit/brightdigit.com/issues/19)/[#20](https://github.com/brightdigit/brightdigit.com/issues/20)/[#56](https://github.com/brightdigit/brightdigit.com/issues/56)/[#18](https://github.com/brightdigit/brightdigit.com/issues/18) (closed wontfix, 2026-07); Phase 3 gained 4 new issues ([#129](https://github.com/brightdigit/brightdigit.com/issues/129)–[#132](https://github.com/brightdigit/brightdigit.com/issues/132)) — net unchanged. Includes 3 TBD issues awaiting GitHub creation (Phase 2 rebuild-avoidance, Phase 5 Tailwind, Phase 7 form integration) |
