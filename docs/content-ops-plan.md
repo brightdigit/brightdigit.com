@@ -27,7 +27,9 @@ refactor will separate `Content/*.md` from `Sources/*.swift` — the front-matte
 contract is unchanged by that split.
 
 **Goal:** define the GitHub issues (in `brightdigit.com`) that build a content-planning /
-scaffolding infrastructure, aligned to the existing migration phases.
+scaffolding infrastructure, aligned to the existing migration phases. See
+[How it works end-to-end](#how-it-works-end-to-end) for a concrete walkthrough of the whole system in
+motion before the issue catalog.
 
 ## Design decisions
 
@@ -48,6 +50,144 @@ scaffolding infrastructure, aligned to the existing migration phases.
 6. **Topic entity is private-only for now:** the topic/campaign record is a first-class entity, but
    its records live **only in year-in-review**. brightdigit.com published items carry only the
    cross-media **link fields**; the public site never hosts topic records.
+
+## How it works end-to-end
+
+The issue set above (I1–I6) is a parts list. This section shows the machine running: how the repos
+are arranged, and one concrete topic traveling from a mining hit to published-and-fanned-out content
+across media. It describes the **target** arrangement — the Swift-package split and the Phase-6
+fan-out are planned, not yet shipped; the language below flags what is future work.
+
+### The repo arrangement
+
+The plan splits along **two axes at once**: private-vs-public *and* content-vs-Swift-code. Today
+`brightdigit.com` is a single repo mixing `Content/*.md` with `Sources/*.swift`. The target pulls the
+Swift packages out into their own repo(s), leaving the content + site repo depending on them — three
+homes joined by two seams.
+
+- **`leogdion/year-in-review` (private) — the planning hub.** Holds the topic/campaign **records** (I3
+  shape), the `/content-topic-mining` skill, the three pillars (AI+Swift, Opinion/Reflection, OSS
+  Releases), the per-platform voice guides (`social-posts/README.md`, `newsletters/README.md`,
+  `planning/content-strategy-2026.md`), and per-medium **draft** copy. This is where a human plus
+  Claude Code plan and write.
+
+- **`brightdigit.com` (public) — the content + site repo.** After the split it keeps `Content/*.md`
+  plus site config in place and **depends on** the extracted Swift package repo(s). It holds the
+  published items — front matter carrying only the cross-media **link fields** (I1), never topic
+  records — and the **derived companion spec** (I2 output, pulled from the package repo). It runs the
+  Publish pipeline that renders, publishes, and fans out. It no longer *owns* the metadata types.
+
+- **Extracted Swift package repo(s) — the contract + the engine.** `BrightDigitSite`, `PublishType`,
+  and the Phase-6 modules (`PublishKit` / `ButtondownKit` / `BufferKit` / `ATProtoKit`) move here as
+  standalone Swift packages. **The authoritative front-matter↔Swift-struct contract (`ItemMetadata` /
+  `PublishType`) travels with them** — so the schema lives in the package repo and the content repo
+  consumes it as a versioned dependency. This is the single source of truth I2 reads from.
+
+**Two seams keep everything in sync:**
+
+- **The contract seam (package repo → everywhere).** I2's "pull latest Swift type → emit current spec"
+  now means *pull from the package repo* — a clean versioned dependency boundary, not reaching into a
+  subfolder. The generated spec flows into both the content repo (validation at publish time) and
+  `year-in-review` (so drafts are authored against the current fields). Splitting the packages out
+  actually *strengthens* I2: the source of truth is a released package, not a path.
+- **The content seam (year-in-review → brightdigit.com).** Only **finished items plus their I1 link
+  fields** land in `Content/`. Topic records, briefs, and voice guides stay private.
+
+The **`/content-plan` skill (I5) is portable** — the *same* skill package runs in both the private and
+public repos, which is what lets both seams stay clean: identical rules on both sides. And because the
+contract is optional Codable fields on a struct, the repo split changes *which repo owns
+`ItemMetadata`*, not the field vocabulary — I1's fields travel with the packages unchanged (the same
+[Refactor-proof](#alignment-notes) logic, extended from a `Content/`↔`Sources/` folder split to a full
+repo split).
+
+### The walkthrough: mining hit → money article → newsletter → social
+
+One topic, eight beats. **Beats 1–4 are private planning, beat 5 is the boundary crossing, beats 6–8
+are the public pipeline.** Throughout, the system **guides and scaffolds — it never ghost-writes the
+long-form copy**; that stays a human/`prose-editor` step (beat 4).
+
+1. **Mining hit** *(year-in-review · Claude Code · existing `/content-topic-mining`)*. Mining surfaces
+   a candidate: *"developers keep asking how to wire up mise for a Swift CI toolchain."*
+
+2. **Topic record created** *(year-in-review · `/content-plan`, I5 → I3)*. The skill turns the hit into
+   a canonical **topic entity**: slug `mise-swift-ci`, source (the mining hit / a related PR), pillar
+   `AI+Swift`, status, and a **fan-out map** — the media/platforms this topic will spawn (article →
+   newsletter → X/LinkedIn/Mastodon). No drafts yet. The record lives only here.
+
+3. **Briefs generated** *(year-in-review · `/content-plan`, I4 + I2 spec)*. The skill emits per-medium
+   **briefs** — the article brief (hook, angle, AI-CITE key points, CTA, links), the newsletter brief,
+   the social variants. **Scaffolds, not copy.** Their link fields are validated against the
+   **I2-derived spec** so they will conform to what the Swift renderer expects.
+
+4. **Article drafted + AI-CITE optimized** *(year-in-review · human/Claude Code + `prose-editor`)*. The
+   "money article" is written from the brief, applying the Phase-3 AI-CITE levers — **A**nswer-first,
+   **I**ntent-matched (question) headings, **C**lear structure, **T**rusted sources (citations),
+   **E**xclusive POV. The `prose-editor` agent reviews. The long-form copy lives privately until ready.
+
+5. **Item crosses into `brightdigit.com` with link fields** *(the boundary · I1)*. The finished article
+   moves to `Content/articles/…md`, and its front matter now carries the **proposed I1 cross-media link
+   fields** — additive, optional, Codable, decoded by `ItemMetadata`:
+
+   ```yaml
+   # today — bare front matter (Content/articles/2020-apple-watch.md)
+   title: Why 2020 will be amazing for the Apple Watch
+   date: 2020-04-13 06:30
+   description: …
+   tags: Apple Hardware, Apple Watch, apple-development, swiftui
+   featuredImage: /media/…/daniel-canibano-….jpg
+   ```
+
+   ```yaml
+   # with the proposed I1 fields (additive — nothing above changes)
+   title: Wiring up mise for a Swift CI toolchain
+   date: 2026-08-01 06:30
+   description: …
+   featuredImage: /media/…/mise-swift-ci.jpg
+   topicSlug: mise-swift-ci                              # I1 (proposed)
+   sourceRef: year-in-review#mise-swift-ci              # I1 (proposed)
+   related:                                              # I1 (proposed)
+     newsletter: /newsletters/2026-08-mise-swift-ci/
+     social: https://bsky.app/profile/…/post/…
+   ```
+
+   Additive safety is already proven in this repo: content files carry YAML keys `ItemMetadata` does
+   not model (`campaignID`, `newsletterTitle`, `tags`) and Publish decodes them without failure — the
+   same rationale the PRD gave the (retired) `schemaMarkup` field.
+
+6. **Staged as a draft via future-dating** *(brightdigit.com)*. Because **"draft" = future-dated
+   only**, the item ships with a future `date:` — visible in `--mode drafts` builds, stripped from
+   production by the `item.date > now` filter (`Sources/BrightDigitSite/BrightDigitSite.swift:196`) —
+   until launch day. No `draft:` flag is needed; this is the existing mechanism I6 leans on.
+
+7. **Published** *(brightdigit.com · Swift pipeline)*. On or after the date, `--mode production` renders
+   the article; the renderer reads the I1 fields; the item goes live at `brightdigit.com/articles/…`.
+
+8. **Fan-out** *(brightdigit.com · I6, Phase 6 — later)*. The topic's fan-out map plus the item's I1
+   link fields drive the outbound leg: newsletter via `ButtondownKit`, social via `BufferKit` /
+   `ATProtoKit` (a canonical `app.bsky.feed.post` record → a single GraphQL mutation → all networks).
+   The published article is the hub the newsletter and posts link back to. This beat **depends on
+   #33/#31/#30/#49** and the Phase-6 modules existing.
+
+### Which issue powers which beat
+
+| Beat | Issue | Repo | New capability |
+|---|---|---|---|
+| 2 topic record | I3 | year-in-review | canonical topic entity (records private) |
+| 3 briefs | I4 (+ I2 spec) | year-in-review | per-medium scaffolds, spec-validated |
+| 2–5 orchestration | I5 | both (portable) | `/content-plan` skill |
+| 5 link fields | I1 | package repo (fields) → brightdigit.com (values) | additive `ItemMetadata` fields |
+| 3 / 5 spec | I2 | package repo → content repo + year-in-review | Swift-type → spec generator (pull latest package) |
+| 8 fan-out | I6 | brightdigit.com + package repo | publish + Buttondown/Buffer/AT wiring |
+
+### Why this arrangement
+
+Records stay private because a content strategy and backlog is not something to publish. The **Swift
+package repo owns the contract** because the Swift program is what actually renders HTML and fans out —
+the fields it needs are the fields that matter — while the content repo depends on that package and
+carries only link-field *values*. The portable `/content-plan` skill and the package-derived spec are
+the two seams that keep private planning and public publishing in sync without duplicating the
+vocabulary. The repo split makes that contract a **versioned dependency rather than a folder**, which
+is exactly what lets the spec generator (I2) stay honest.
 
 ## Proposed issues
 
