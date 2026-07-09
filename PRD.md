@@ -1,7 +1,7 @@
 # BrightDigit.com — Product Requirements Document
 
 **Repository:** brightdigit/brightdigit.com  
-**Last Updated:** 2026-04-13  
+**Last Updated:** 2026-07-09  
 **Status:** Living document — reflects current open issues
 
 ---
@@ -355,6 +355,26 @@ New source modules (local to this repo, not subrepos):
 
 ---
 
+## Content Ops
+
+**Goal:** Build a content-planning / scaffolding infrastructure so Claude Code can *guide* future content across every medium/platform without writing full drafts. Full design in [`docs/content-ops-plan.md`](docs/content-ops-plan.md).
+
+**Milestone:** Content Ops — a post-migration milestone that runs alongside the migration phases where related, and is **not** gated on the active Phase 3 AI-CITE article work. The planning layer (schema/spec/briefs/skill) lands here; the publish/fan-out leg ([#140](https://github.com/brightdigit/brightdigit.com/issues/140)) lives in **Phase 6** because it depends on the Buttondown/Buffer/AT modules.
+
+| # | Title | Priority | Depends on |
+|---|-------|----------|-----------|
+| [#135](https://github.com/brightdigit/brightdigit.com/issues/135) | Cross-media link schema on published items (Swift types) | P1-high | — (foundational) |
+| [#136](https://github.com/brightdigit/brightdigit.com/issues/136) | Swift-type → companion-spec generator | P1-high | #135 |
+| [#137](https://github.com/brightdigit/brightdigit.com/issues/137) | Canonical topic-entity definition (private-only records) | P2-medium | relates #135 |
+| [#138](https://github.com/brightdigit/brightdigit.com/issues/138) | Per-medium/platform content briefs (scaffolds, not drafts) | P1-high | #135, #136 |
+| [#139](https://github.com/brightdigit/brightdigit.com/issues/139) | Portable `/content-plan` skill | P1-high | #135, #136, #138 |
+
+**Note (#135 / Phase 5 overlap):** #135 adds additive `ItemMetadata` fields — coordinate with the Phase 5 component migration ([#67](https://github.com/brightdigit/brightdigit.com/issues/67), [#53](https://github.com/brightdigit/brightdigit.com/issues/53)); additive fields don't conflict with the component rewrite (same rationale the PRD used for the retired `schemaMarkup` field).
+
+**Phase 6 leg:** [#140](https://github.com/brightdigit/brightdigit.com/issues/140) — Wire the content plan to the publish + fan-out pipeline (depends on #135–#139 + [#33](https://github.com/brightdigit/brightdigit.com/issues/33)/[#31](https://github.com/brightdigit/brightdigit.com/issues/31)/[#30](https://github.com/brightdigit/brightdigit.com/issues/30)/[#49](https://github.com/brightdigit/brightdigit.com/issues/49)).
+
+---
+
 ## Excluded Issues
 
 | # | Title | Reason |
@@ -373,8 +393,9 @@ New source modules (local to this repo, not subrepos):
 | Phase 3 | 10 | AI-CITE content optimization (evidence reframe): articles [#21](https://github.com/brightdigit/brightdigit.com/issues/21)/[#22](https://github.com/brightdigit/brightdigit.com/issues/22)/[#26](https://github.com/brightdigit/brightdigit.com/issues/26)/[#27](https://github.com/brightdigit/brightdigit.com/issues/27)/[#28](https://github.com/brightdigit/brightdigit.com/issues/28) + split [#130](https://github.com/brightdigit/brightdigit.com/issues/130); site-level dates [#129](https://github.com/brightdigit/brightdigit.com/issues/129)/robots [#131](https://github.com/brightdigit/brightdigit.com/issues/131)/brand [#132](https://github.com/brightdigit/brightdigit.com/issues/132); baseline [#23](https://github.com/brightdigit/brightdigit.com/issues/23). Schema issues #19/#20/#56/#18 **closed as wontfix** |
 | Phase 4 | 7 | OpenAPI migration + Kanna → SwiftSoup ([#47](https://github.com/brightdigit/brightdigit.com/issues/47)) |
 | Phase 5 | 5 | Swift 6.3 subrepos + components + Tailwind (TBD) + AI-CITE content strategy ([#24](https://github.com/brightdigit/brightdigit.com/issues/24), [#25](https://github.com/brightdigit/brightdigit.com/issues/25)) |
-| Phase 6 | 5 | Publishing infrastructure + AT Protocol ([#49](https://github.com/brightdigit/brightdigit.com/issues/49)) feeds Buffer |
+| Phase 6 | 6 | Publishing infrastructure + AT Protocol ([#49](https://github.com/brightdigit/brightdigit.com/issues/49)) feeds Buffer; + content-plan fan-out wiring ([#140](https://github.com/brightdigit/brightdigit.com/issues/140)) |
 | Phase 7 | 2 | Platform migration + form integration (TBD) |
 | Phase 8 | 3 | Deferred cleanup |
 | Post-Migration | 3 | Article edits ([#3](https://github.com/brightdigit/brightdigit.com/issues/3), [#4](https://github.com/brightdigit/brightdigit.com/issues/4), [#13](https://github.com/brightdigit/brightdigit.com/issues/13)); article-optimization issues moved to Phase 3 |
-| **Total** | **41** | Excludes [#12](https://github.com/brightdigit/brightdigit.com/issues/12) (done), [#36](https://github.com/brightdigit/brightdigit.com/issues/36) (done), [#43](https://github.com/brightdigit/brightdigit.com/issues/43) (dropped), and the 4 schema issues [#19](https://github.com/brightdigit/brightdigit.com/issues/19)/[#20](https://github.com/brightdigit/brightdigit.com/issues/20)/[#56](https://github.com/brightdigit/brightdigit.com/issues/56)/[#18](https://github.com/brightdigit/brightdigit.com/issues/18) (closed wontfix, 2026-07); Phase 3 gained 4 new issues ([#129](https://github.com/brightdigit/brightdigit.com/issues/129)–[#132](https://github.com/brightdigit/brightdigit.com/issues/132)) — net unchanged. Includes 3 TBD issues awaiting GitHub creation (Phase 2 rebuild-avoidance, Phase 5 Tailwind, Phase 7 form integration) |
+| Content Ops | 5 | Content-planning infrastructure ([docs/content-ops-plan.md](docs/content-ops-plan.md)): cross-media link schema ([#135](https://github.com/brightdigit/brightdigit.com/issues/135)), spec generator ([#136](https://github.com/brightdigit/brightdigit.com/issues/136)), topic entity ([#137](https://github.com/brightdigit/brightdigit.com/issues/137)), briefs ([#138](https://github.com/brightdigit/brightdigit.com/issues/138)), `/content-plan` skill ([#139](https://github.com/brightdigit/brightdigit.com/issues/139)). Post-migration milestone; fan-out leg ([#140](https://github.com/brightdigit/brightdigit.com/issues/140)) lives in Phase 6 |
+| **Total** | **47** | Excludes [#12](https://github.com/brightdigit/brightdigit.com/issues/12) (done), [#36](https://github.com/brightdigit/brightdigit.com/issues/36) (done), [#43](https://github.com/brightdigit/brightdigit.com/issues/43) (dropped), and the 4 schema issues [#19](https://github.com/brightdigit/brightdigit.com/issues/19)/[#20](https://github.com/brightdigit/brightdigit.com/issues/20)/[#56](https://github.com/brightdigit/brightdigit.com/issues/56)/[#18](https://github.com/brightdigit/brightdigit.com/issues/18) (closed wontfix, 2026-07); Phase 3 gained 4 new issues ([#129](https://github.com/brightdigit/brightdigit.com/issues/129)–[#132](https://github.com/brightdigit/brightdigit.com/issues/132)). New **Content Ops** milestone + 6 content-plan issues ([#135](https://github.com/brightdigit/brightdigit.com/issues/135)–[#140](https://github.com/brightdigit/brightdigit.com/issues/140)) added 2026-07-09. Includes 3 TBD issues awaiting GitHub creation (Phase 2 rebuild-avoidance, Phase 5 Tailwind, Phase 7 form integration) |
