@@ -1,5 +1,5 @@
 ---
-title: Practical Agents with Donny Wall
+title: Practical Agents with Donny Wals
 date: 2026-07-12 16:12
 description: 'Donny Wals returns to talk through a year of agentic coding. We go through how it has changed his architecture decisions, reviewing PRs he didn''t write himself, managing tasks and context across parallel agents, and the gym-workout crash he fixed from his phone mid-set — plus where he still doesn''t trust the agent: SwiftData migrations.'
 featuredImage: https://img.transistorcdn.com/_ztiwhi4w6vHV-jhbuUfPSkP3BVJckGJZykpFC7L3mk/rs:fill:0:0:1/w:1400/h:1400/q:60/mb:500000/aHR0cHM6Ly9pbWct/dXBsb2FkLXByb2R1/Y3Rpb24udHJhbnNp/c3Rvci5mbS9mOTlj/ZjE1MmFjY2NlMzky/MThiNjAyZDgzNGMy/YjIwNy5qcGc.jpg
