@@ -6,7 +6,7 @@
 [subrepo]
 	remote = git@github.com:brightdigit/Splash.git
 	branch = brightdigit-com-260406
-	commit = 2e3f17c2d09689c8bf175c4a84ff7f2ad3353301
-	parent = 4f2dc7164d2df36f0d81d6eee7b7323d239c93b5
+	commit = d7c437aaef7257af9b7f685905f8fa761e4d131a
+	parent = 61029c3e5b444024e37e112ec8fa3d8ff16c06f1
 	method = merge
 	cmdver = 0.4.9
