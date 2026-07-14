@@ -1,4 +1,4 @@
-// swift-tools-version:5.5
+// swift-tools-version:6.4
 
 /**
 *  CollectionConcurrencyKit
@@ -10,7 +10,7 @@ import PackageDescription
 
 let package = Package(
     name: "CollectionConcurrencyKit",
-    platforms: [.iOS(.v13), .macOS(.v12), .watchOS(.v6), .tvOS(.v13)],
+    platforms: [.iOS(.v15), .macOS(.v12), .watchOS(.v9), .tvOS(.v15)],
     products: [
         .library(
             name: "CollectionConcurrencyKit",

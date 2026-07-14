@@ -24,7 +24,7 @@ final class ForEachTests: TestCase {
 
     func testThrowingAsyncForEachThatThrows() {
         runAsyncTest { array, collector in
-            await self.verifyErrorThrown { error in
+            await Self.verifyErrorThrown { error in
                 try await array.asyncForEach { int in
                     try await collector.tryCollect(
                         int,
@@ -53,7 +53,7 @@ final class ForEachTests: TestCase {
 
     func testThrowingConcurrentForEachThatThrows() {
         runAsyncTest { array, collector in
-            await self.verifyErrorThrown { error in
+            await Self.verifyErrorThrown { error in
                 try await array.concurrentForEach { int in
                     try await collector.tryCollect(
                         int,

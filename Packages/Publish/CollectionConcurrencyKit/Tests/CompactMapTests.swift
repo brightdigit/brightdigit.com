@@ -30,7 +30,7 @@ final class CompactMapTests: TestCase {
 
     func testThrowingAsyncCompactMapThatThrows() {
         runAsyncTest { array, collector in
-            await self.verifyErrorThrown { error in
+            await Self.verifyErrorThrown { error in
                 try await array.asyncCompactMap { int in
                     int == 2 ? nil : try await collector.tryCollectAndTransform(
                         int,
@@ -65,9 +65,9 @@ final class CompactMapTests: TestCase {
 
     func testThrowingConcurrentCompactMapThatThrows() {
         runAsyncTest { array, collector in
-            await self.verifyErrorThrown { error in
+            await Self.verifyErrorThrown { error in
                 try await array.concurrentCompactMap { int in
-                    try await self.collector.tryCollectAndTransform(
+                    try await collector.tryCollectAndTransform(
                         int,
                         throwError: int == 3 ? error : nil
                     )

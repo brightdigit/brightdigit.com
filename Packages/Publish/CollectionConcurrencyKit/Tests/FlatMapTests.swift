@@ -30,7 +30,7 @@ final class FlatMapTests: TestCase {
 
     func testThrowingAsyncFlatMapThatThrows() {
         runAsyncTest { array, collector in
-            await self.verifyErrorThrown { error in
+            await Self.verifyErrorThrown { error in
                 try await array.asyncFlatMap { int in
                     try await collector.tryCollectAndDuplicate(
                         int,
@@ -65,7 +65,7 @@ final class FlatMapTests: TestCase {
 
     func testThrowingConcurrentFlatMapThatThrows() {
         runAsyncTest { array, collector in
-            await self.verifyErrorThrown { error in
+            await Self.verifyErrorThrown { error in
                 try await array.concurrentFlatMap { int in
                     try await collector.tryCollectAndDuplicate(
                         int,

@@ -6,17 +6,13 @@
 
 import XCTest
 
+@MainActor
 class TestCase: XCTestCase {
     let array = Array(0..<5)
-    private(set) var collector: Collector!
+    let collector = Collector()
 
-    override func setUp() {
-        super.setUp()
-        collector = Collector()
-    }
-
-    func verifyErrorThrown<T>(
-        in file: StaticString = #file,
+    static func verifyErrorThrown<T>(
+        in file: StaticString = #filePath,
         at line: UInt = #line,
         from closure: (Error) async throws -> T
     ) async {
@@ -32,23 +28,25 @@ class TestCase: XCTestCase {
         }
     }
 
+    @MainActor
     func runAsyncTest(
         named testName: String = #function,
-        in file: StaticString = #file,
+        in file: StaticString = #filePath,
         at line: UInt = #line,
         withTimeout timeout: TimeInterval = 10,
-        test: @escaping ([Int], Collector) async throws -> Void
+        test: @escaping @Sendable ([Int], Collector) async throws -> Void
     ) {
         // This method is needed since Linux doesn't yet support async test methods.
-        var thrownError: Error?
-        let errorHandler = { thrownError = $0 }
+        let thrownError = LockedError()
         let expectation = expectation(description: testName)
+        let array = self.array
+        let collector = self.collector
 
-        Task {
+        Task.detached {
             do {
                 try await test(array, collector)
             } catch {
-                errorHandler(error)
+                thrownError.value = error
             }
 
             expectation.fulfill()
@@ -56,15 +54,17 @@ class TestCase: XCTestCase {
 
         waitForExpectations(timeout: timeout)
 
-        if let error = thrownError {
+        if let error = thrownError.value {
             XCTFail("Async error thrown: \(error)", file: file, line: line)
         }
     }
 }
 
 extension TestCase {
-    // Note: This is not an actor because we want it to execute concurrently
-    class Collector {
+    // Note: This is not an actor because we want it to execute concurrently.
+    // Thread safety is provided manually by serializing all mutable access
+    // through `queue`, so the unchecked Sendable conformance is sound.
+    final class Collector: @unchecked Sendable {
         var values = [Int]()
         private let queue = DispatchQueue(label: "Collector")
 
@@ -124,5 +124,17 @@ extension TestCase {
 private extension TestCase {
     struct IdentifiableError: Error, Equatable {
         let id = UUID()
+    }
+}
+
+// A tiny lock-protected box so the async `Task` can report a thrown error
+// back to the synchronous `runAsyncTest` body without capturing `self`.
+private final class LockedError: @unchecked Sendable {
+    private let lock = NSLock()
+    private var storage: Error?
+
+    var value: Error? {
+        get { lock.withLock { storage } }
+        set { lock.withLock { storage = newValue } }
     }
 }

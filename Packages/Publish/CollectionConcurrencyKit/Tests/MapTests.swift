@@ -27,7 +27,7 @@ final class MapTests: TestCase {
 
     func testThrowingAsyncMapThatThrows() {
         runAsyncTest { array, collector in
-            await self.verifyErrorThrown { error in
+            await Self.verifyErrorThrown { error in
                 try await array.asyncMap { int in
                     try await collector.tryCollectAndTransform(
                         int,
@@ -62,7 +62,7 @@ final class MapTests: TestCase {
 
     func testThrowingConcurrentMapThatThrows() {
         runAsyncTest { array, collector in
-            await self.verifyErrorThrown { error in
+            await Self.verifyErrorThrown { error in
                 try await array.concurrentMap { int in
                     try await collector.tryCollectAndTransform(
                         int,
