@@ -90,6 +90,20 @@ node Scripts/check-content.js
 # --strict        exit non-zero when defects exist (reserved for a future CI gate)
 ```
 Always exits 0 by default (never gates a build). Not wired into CI yet.
+### Subrepos (`Packages/`)
+
+All vendored dependencies under `Packages/` are [git-subrepo](https://github.com/ingydotnet/git-subrepo)
+subrepos (git-subrepo 0.4.9), each marked by a `.gitrepo` file. Pull or push **all** of them at once:
+
+```bash
+git subrepo pull --all   # working tree must be clean first
+git subrepo push --all
+```
+
+`--all` **aborts on the first failure** (so it can silently under-report). The usual failure is a
+stale `.gitrepo` `parent` after a squash-merge or rebase — `fatal: Not a valid commit name …`.
+Recover by running `./fix-subrepo-parents.sh` (resets every `.gitrepo` `parent` to `HEAD` and
+commits), then re-run the pull/push.
 
 ## Coding Conventions (always apply)
 
