@@ -145,6 +145,65 @@ public struct ButtondownClient: Sendable {
     }
   }
 
+  /// Retrieves a single page of emails. Maps to `GET /emails`.
+  ///
+  /// Buttondown paginates the email list with a 1-based `page` query parameter;
+  /// the returned ``Components/Schemas/EmailPage`` carries `results` for the page
+  /// plus the total `count` across all pages. Use ``listAllEmails(status:)`` to
+  /// transparently walk every page.
+  /// - Parameters:
+  ///   - status: If non-empty, only return emails with one of the given
+  ///     statuses (server-side filter, e.g. `[.sent]`).
+  ///   - page: The 1-based page number to fetch. Defaults to the first page.
+  /// - Returns: The ``Components/Schemas/EmailPage`` for the requested page.
+  /// - Throws: ``ClientError/unexpectedResponse`` on a non-200 response, or a
+  ///   transport/decoding error.
+  public func listEmails(
+    status: [Components.Schemas.EmailStatus] = [],
+    page: Int? = nil
+  ) async throws -> Components.Schemas.EmailPage {
+    let output = try await underlying.list_emails(
+      query: .init(
+        status: status.isEmpty ? nil : status,
+        page: page
+      )
+    )
+    switch output {
+    case .ok(let response):
+      return try response.body.json
+    default:
+      throw ClientError.unexpectedResponse
+    }
+  }
+
+  /// Enumerates every email across all pages. Maps to repeated `GET /emails`.
+  ///
+  /// Walks pages starting at 1, accumulating `results`, and stops once the
+  /// collected count reaches the reported total `count` or a page comes back
+  /// empty (guarding against an unexpected count). Paging is 1-based per the
+  /// Buttondown API; the page size is server-determined.
+  /// - Parameter status: If non-empty, only return emails with one of the given
+  ///   statuses (server-side filter, e.g. `[.sent]`).
+  /// - Returns: All ``Components/Schemas/Email`` values across every page, in
+  ///   the order the API returns them.
+  /// - Throws: ``ClientError/unexpectedResponse`` on a non-200 response, or a
+  ///   transport/decoding error.
+  public func listAllEmails(
+    status: [Components.Schemas.EmailStatus] = []
+  ) async throws -> [Components.Schemas.Email] {
+    var collected: [Components.Schemas.Email] = []
+    var page = 1
+    while true {
+      let result = try await listEmails(status: status, page: page)
+      collected.append(contentsOf: result.results)
+      if result.results.isEmpty || collected.count >= result.count {
+        break
+      }
+      page += 1
+    }
+    return collected
+  }
+
   /// Retrieves a single email by id. Maps to `GET /emails/{id}`.
   /// - Parameter id: The email id.
   /// - Returns: The ``Components/Schemas/Email``.
