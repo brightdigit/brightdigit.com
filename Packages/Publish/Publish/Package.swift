@@ -17,17 +17,13 @@ let package = Package(
     dependencies: [
         .package(path: "../Ink"),
         .package(path: "../Plot"),
-        .package(path: "../Files"),
-        .package(path: "../Codextended"),
-        .package(path: "../Sweep"),
-        .package(path: "../CollectionConcurrencyKit")
+        .package(path: "../Files")
     ],
     targets: [
         .target(
             name: "Publish",
             dependencies: [
-                "Ink", "Plot", "Files", "Codextended",
-                "Sweep", "CollectionConcurrencyKit"
+                "Ink", "Plot", "Files"
             ]
         ),
         .testTarget(
