@@ -28,8 +28,4 @@ final class SplashPublishPluginTests: XCTestCase {
         </code></pre>
         """)
     }
-
-    static var allTests = [
-        ("testHighlightingMarkdown", testHighlightingMarkdown)
-    ]
 }
