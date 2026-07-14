@@ -16,5 +16,5 @@ public protocol ElementDefinition {
     /// The context that the element's own node should have.
     associatedtype OutputContext
     /// A closure that can be used to wrap a list of nodes into an element node.
-    static var wrapper: (Node<InputContext>...) -> Node<OutputContext> { get }
+    static var wrapper: @Sendable (Node<InputContext>...) -> Node<OutputContext> { get }
 }

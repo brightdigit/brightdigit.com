@@ -10,7 +10,7 @@ import Plot
 func assertEqualHTMLContent(
     _ document: HTML,
     _ content: String,
-    file: StaticString = #file,
+    file: StaticString = #filePath,
     line: UInt = #line
 ) {
     let html = document.render()
@@ -54,7 +54,7 @@ func assertEqualHTMLContent(
 func assertEqualSiteMapContent(
     _ document: SiteMap,
     _ content: String,
-    file: StaticString = #file,
+    file: StaticString = #filePath,
     line: UInt = #line
 ) {
     let map = document.render()
@@ -103,7 +103,7 @@ func assertEqualSiteMapContent(
 func assertEqualXMLContent(
     _ document: XML,
     _ content: String,
-    file: StaticString = #file,
+    file: StaticString = #filePath,
     line: UInt = #line
 ) {
     let xml = document.render()
@@ -131,7 +131,7 @@ func assertEqualXMLContent(
 func assertEqualPodcastFeedContent(
     _ feed: PodcastFeed,
     _ content: String,
-    file: StaticString = #file,
+    file: StaticString = #filePath,
     line: UInt = #line
 ) {
     assertEqualRSSFeedContent(
@@ -152,7 +152,7 @@ func assertEqualPodcastFeedContent(
 func assertEqualRSSFeedContent(
     _ feed: RSS,
     _ content: String,
-    file: StaticString = #file,
+    file: StaticString = #filePath,
     line: UInt = #line
 ) {
     assertEqualRSSFeedContent(
