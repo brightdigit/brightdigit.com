@@ -23,10 +23,16 @@ let package = Package(
     .library(name: "BrightDigitPodcast", targets: ["BrightDigitPodcast"]),
     .library(name: "ContributeYouTube", targets: ["ContributeYouTube"]),
     .library(name: "ContributeRSS", targets: ["ContributeRSS"]),
-    .library(name: "PublishType", targets: ["PublishType"])
+    .library(name: "PublishType", targets: ["PublishType"]),
+    .library(name: "TailwindKit", targets: ["TailwindKit"])
   ],
   dependencies: [
     .package(path: "Packages/Publish/Publish"),
+    // #69: TailwindKit's single Plot sugar bridges to the vendored Plot.
+    // The core value builder is Plot-free; only `TailwindStyle+Plot.swift`
+    // imports Plot. Same package/path Publish already resolves, so SwiftPM
+    // dedupes it by identity.
+    .package(path: "Packages/Publish/Plot"),
 
     .package(path: "Packages/Publish/SplashPublishPlugin"),
     .package(path: "Packages/BrightDigit/YoutubePublishPlugin"),
@@ -112,6 +118,12 @@ let package = Package(
         "Publish"
       ]
     ),
+    .target(
+      name: "TailwindKit",
+      dependencies: [
+        .product(name: "Plot", package: "Plot")
+      ]
+    ),
     .testTarget(
       name: "BrightDigitSiteTests",
       dependencies: [
@@ -124,6 +136,13 @@ let package = Package(
       dependencies: [
         "BrightDigitArgs",
         "BrightDigitPodcast"
+      ]
+    ),
+    // Plot-independent: tests assert `.rendered == expected` strings only.
+    .testTarget(
+      name: "TailwindKitTests",
+      dependencies: [
+        "TailwindKit"
       ]
     )
   ]
