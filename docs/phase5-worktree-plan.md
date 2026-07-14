@@ -6,7 +6,7 @@
 
 ## Context
 
-**Goal:** Work through the code issues in [Milestone 5 — "Phase 5: Swift 6.3 Subrepos + Components"](https://github.com/brightdigit/brightdigit.com/milestone/5), organized into parallel tracks using **grove** worktrees and branches.
+**Goal:** Work through the code issues in [Milestone 5 — "Phase 5: Swift 6.4 Subrepos + Components"](https://github.com/brightdigit/brightdigit.com/milestone/5), organized into parallel tracks using **grove** worktrees and branches.
 
 **Environment:** grove bare-clone + worktree layout. Grove root is
 `/Users/leo/Documents/Projects/brightdigit.com/`, bare clone is `brightdigit.com.git/`, each
