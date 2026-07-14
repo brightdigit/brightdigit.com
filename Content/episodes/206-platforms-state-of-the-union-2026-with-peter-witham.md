@@ -1,7 +1,7 @@
 ---
 title: Platforms State of the Union 2026 with Peter Witham
 date: 2026-06-08 23:06
-description: Peter Witham joins us to talk about today's Platforms State of the Union. Is Apple Intelligence here? Is Liquid Glass here? Where's <br>John Ternus? 
+description: Peter Witham joins us to talk about today's Platforms State of the Union. Is Apple Intelligence here? Is Liquid Glass here? Where's John Ternus?
 featuredImage: https://img.transistorcdn.com/EWz044uyuO6OZ8irqgLypu7iTcdchua-68NEeKrRJXQ/rs:fill:0:0:1/w:1400/h:1400/q:60/mb:500000/aHR0cHM6Ly9pbWct/dXBsb2FkLXByb2R1/Y3Rpb24udHJhbnNp/c3Rvci5mbS83ZTI1/MDc0Zjk2MmM4OTJi/OTBmZjgwOGMwMGUx/MzQ3NS5wbmc.jpg
 youtubeID: 1U3pXddDYo0
 audioDuration: 2409

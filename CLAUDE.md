@@ -66,6 +66,31 @@ swift run brightdigitwg publish --mode drafts
 # .swiftformat - code formatting rules
 ```
 
+### Content Quality Check
+`Scripts/check-content.js` (Node, no dependencies) scans for content-quality
+defects — raw/broken HTML tags in front-matter `title`/`description`, escaped
+tags / MailChimp merge-fields that render as literal text (e.g. `<<First Name>>`),
+double-escaped entities (`&amp;amp;`), and UTF-8 mojibake (`â€™`). It scans the
+built `Output/` HTML first (the rendered ground truth), then the `Content/`
+markdown sources to locate where each defect originates. Report-only — see issue
+#142.
+```bash
+# Scan Content/ sources (no build needed). Add Output/ automatically if present.
+node Scripts/check-content.js
+
+# Include the rendered site too: build Output/ first, then scan.
+swift run brightdigitwg publish --mode production
+node Scripts/check-content.js
+
+# --quotes        also report straight vs. curly quote inconsistency (noisy)
+# --newsletters   include the imported MailChimp newsletter archive, which is
+#                 suppressed by default (low-priority cruft, e.g. literal
+#                 <<First Name>> merge fields); the summary still reports the
+#                 suppressed count
+# --strict        exit non-zero when defects exist (reserved for a future CI gate)
+```
+Always exits 0 by default (never gates a build). Not wired into CI yet.
+
 ## Coding Conventions (always apply)
 
 1. **Strict concurrency is mandatory.** Every Swift target enables complete strict
