@@ -30,14 +30,14 @@ references in the milestone/PRD/issues are stale. Remaining subrepo work is the 
 
 | # | Worktree | Track | Hosts |
 |---|----------|-------|-------|
-| 1 | `phase5-spinetail-openapi` | A | Spinetail read-path verify/finish |
+| 1 | `phase5-spinetail-openapi` | A | #146 (Spinetail read-path verify/finish) |
 | 2 | `phase5-buttondown` | A | #124, #127, #122, #126 (one worktree, separate PRs) |
 | 3 | `phase5-publish-upgrade` | B | #121 |
-| 4 | `phase5-tailwind-upgrade` | B | Tailwind v2→v4 site migration |
+| 4 | `phase5-tailwind-upgrade` | B | #145 (Tailwind v2→v4 site migration) |
 | 5 | `phase5-tailwindkit` | B | #69 |
 | 6 | `phase5-component-migration` | B | #67 then #53 |
 
-~10 PRs: spinetail, #124, #127, #122, #126, #121, v4-upgrade, #69, #67, #53.
+~10 PRs: #146, #124, #127, #122, #126, #121, #145, #69, #67, #53.
 
 The four Track-A inbound issues share one worktree (same ButtondownKit surface); #67+#53 share
 one worktree (#53 can't compile until #67 done, same rendering surface). **#31/#33** are a
@@ -66,7 +66,7 @@ path.
 - **#124 — `listEmails` wrapper.** Paged public wrapper over `Operations.list_emails` on
   `ButtondownClient`. Fixture-tested (mirror existing ButtondownKit tests). The read primitive
   everything else uses. → `phase5-buttondown`.
-- **Spinetail read path** — `phase5-spinetail-openapi`. `sentCampaigns`/`archiveHTML` already
+- **#146 Spinetail read path** — `phase5-spinetail-openapi`. `sentCampaigns`/`archiveHTML` already
   implemented against real spec ops (`getCampaigns`, `getCampaignsIdContent`); **likely
   verify-only** — scope to whatever's actually missing. **Gate before #127.**
 - **#127 — archive one-shot (fix at source).** Self-contained reconciliation:
@@ -99,7 +99,7 @@ Hard gates: **{#121, v4-upgrade, #69} → #67 → #53.**
   `Packages/Publish/*`** (Publish, Plot, Splash, Publish plugins). **Excludes** SwiftTube/Spinetail
   (own tracks) and main-app deps. Bump tools-versions 5.5/5.4 → 6.4, resolve strict-concurrency
   properly (never lower language mode). **Hard gate before #67.** → `phase5-publish-upgrade`.
-- **Tailwind v2 → v4 site migration** — `phase5-tailwind-upgrade`. **v4-only.** Rip out the
+- **#145 Tailwind v2 → v4 site migration** — `phase5-tailwind-upgrade`. **v4-only.** Rip out the
   PostCSS-plugin setup (`postcss.config.js` requiring `tailwindcss`/`tailwindcss/nesting`) for the
   v4 engine; move `tailwind.config.js` → CSS-first `@theme`; `styles.css` `@tailwind base/components/utilities`
   → `@import "tailwindcss"`; rename all v2 class strings in existing `Sources/BrightDigitSite/**`
@@ -142,14 +142,14 @@ Nothing in the eight code issues depends on them.
 
 ```
 TRACK A:
-  phase5-spinetail-openapi ─┐
+  #146 spinetail read-path ─┐
   #124 (P0) ────────────────┼─> #127 (archive one-shot → Buttondown only)
                             └─> #122 (import new/missing) [needs #124]
   #126 (independent)     #31/#33 (decoupled outbound; not scheduled)
 
 TRACK B:
   #121 (fenced Publish/Plot) ─┐
-  phase5-tailwind-upgrade (v4)┤
+  #145 Tailwind v2→v4 (site)  ┤
   #69 TailwindKit (v4 module) ┴─> #67 [reconcile → Node→component, byte-identical] ─> #53
 ```
 
@@ -163,12 +163,12 @@ Run from inside the `phase-05` worktree so each branch bases on `phase-05`:
 
 ```sh
 # Track A
-grove add phase5-spinetail-openapi
-grove add phase5-buttondown
+grove add phase5-spinetail-openapi    # #146
+grove add phase5-buttondown           # #124, #127, #122, #126
 
 # Track B — foundational (parallel)
 grove add phase5-publish-upgrade      # #121
-grove add phase5-tailwind-upgrade     # v2 -> v4 site migration
+grove add phase5-tailwind-upgrade     # #145 (v2 -> v4 site migration)
 grove add phase5-tailwindkit          # #69
 
 # Track B — migration (create after v4-upgrade + #69 merge into phase-05)
@@ -180,7 +180,7 @@ grove add phase5-component-migration  # #67 then #53
 ## Verification
 
 - **#124:** unit-test `listEmails` paging against a recorded fixture.
-- **Spinetail:** build the worktree; confirm `sentCampaigns`/`archiveHTML` return usable data
+- **#146 Spinetail:** build the worktree; confirm `sentCampaigns`/`archiveHTML` return usable data
   (verify-first — likely no code needed).
 - **#127:** run the one-shot; spot-check early (2019) / mid / latest emails in the Buttondown
   archive for backfill + no content loss; confirm #114 present. Needs `BUTTONDOWN_API_KEY` and
@@ -189,7 +189,7 @@ grove add phase5-component-migration  # #67 then #53
   with correct front matter + issueNo continuation.
 - **#126:** staging deploy; submit each form → address lands in Buttondown list; footer/RSS links resolve.
 - **#121:** `swift build` under 6.4 strict concurrency (macOS + CI container); zero new warnings.
-- **v4-upgrade:** Tailwind v4 build succeeds; **visual** equivalence vs pre-upgrade.
+- **#145 v4-upgrade:** Tailwind v4 build succeeds; **visual** equivalence vs pre-upgrade.
 - **#69:** `.rendered` strings match v4 output (`.bg(.blue,.500) == "bg-blue-500"`); Plot-independent tests.
 - **#67:** generated `Output/` **byte-identical** to pre-migration (excluding mermaid); mermaid renders.
 - **#53:** after flipping `HTMLFactory` to `Component`, `swift build` still succeeds — proving no
