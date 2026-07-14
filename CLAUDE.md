@@ -6,6 +6,29 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a Swift-based static site generator for the BrightDigit website using the Publish framework. The project includes multiple Swift modules for content management, podcast integration, newsletter automation, and website generation.
 
+## Memory & Corrections Convention
+
+Every memory and correction is persisted **into this repo** (versioned, shared with future
+sessions), not only into a private auto-memory store. Two mechanisms:
+
+### Corrections log — `.claude/agent-notes.md`
+- Running, append-only log of Leo's corrections and standing **always/never** directives.
+- **Read it at the start of every work session** — it is the source of truth for how to work here.
+- **Whenever Leo makes a correction or gives an always/never instruction, append one line to it,
+  proactively (without being asked).** One line per directive.
+
+### Memory persistence
+- Every memory you form is persisted into the repo. Each memory goes into a `MEMORY.md` index
+  line **and** a durable location, routed by how urgently the fact must be read at launch:
+  - **Urgent / broad facts** → `CLAUDE.md` (always loaded into context at launch).
+  - **Lower-urgency facts** → a file under `.claude/` (loaded on demand). Note: this does **not**
+    mean `agent-notes.md` — that file is only the corrections log; use other `.claude/` files for
+    reference facts, project notes, etc.
+- `MEMORY.md` is an **index only**: one line per memory (`- [Title](path) — hook`), never the
+  full memory content.
+- Before saving, check for an existing file/line that already covers the fact and update it
+  rather than duplicating. Delete memories that turn out to be wrong.
+
 ## Development Commands
 
 ### Building and Testing
