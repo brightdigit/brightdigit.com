@@ -212,20 +212,4 @@ final class CodextendedTests: XCTestCase {
         }
     }
 
-    func testAllTestsRunOnLinux() {
-        verifyAllTestsRunOnLinux(excluding: ["testDateWithISO8601Formatter"])
-    }
-}
-
-extension CodextendedTests: LinuxTestable {
-    static var allTests = [
-        ("testEncodingAndDecoding", testEncodingAndDecoding),
-        ("testDecodeIfPresent", testDecodeIfPresent),
-        ("testDecodeIfPresentTypeMismatch", testDecodeIfPresentTypeMismatch),
-        ("testSingleValue", testSingleValue),
-        ("testUsingStringAsKey", testUsingStringAsKey),
-        ("testUsingCodingKey", testUsingCodingKey),
-        ("testDateWithCustomFormatter", testDateWithCustomFormatter),
-        ("testDecodingErrorThrownForInvalidDateString", testDecodingErrorThrownForInvalidDateString)
-    ]
 }
