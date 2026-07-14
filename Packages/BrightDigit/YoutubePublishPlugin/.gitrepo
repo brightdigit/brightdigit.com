@@ -7,6 +7,6 @@
 	remote = git@github.com:brightdigit/YoutubePublishPlugin.git
 	branch = brightdigit-com-260406
 	commit = bee9a38b4df1a43fb3c983cc238011f578e5611a
-	parent = e386f383265bb24ea7feeeb43b9d399658494314
+	parent = 4f2dc7164d2df36f0d81d6eee7b7323d239c93b5
 	method = merge
 	cmdver = 0.4.9
