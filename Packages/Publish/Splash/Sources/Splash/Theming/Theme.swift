@@ -6,6 +6,12 @@
 
 import Foundation
 
+#if os(iOS)
+import UIKit
+#elseif os(macOS)
+import Cocoa
+#endif
+
 #if !os(Linux)
 
 /// A theme describes what fonts and colors to use when rendering

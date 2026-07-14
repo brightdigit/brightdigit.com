@@ -8,10 +8,13 @@
 
 import Foundation
 import ImageIO
+import UniformTypeIdentifiers
 
 extension CGImage {
     func write(to url: URL) {
-        let destination = CGImageDestinationCreateWithURL(url as CFURL, kUTTypePNG, 1, nil)!
+        let destination = CGImageDestinationCreateWithURL(
+            url as CFURL, UTType.png.identifier as CFString, 1, nil
+        )!
         CGImageDestinationAddImage(destination, self, nil)
         CGImageDestinationFinalize(destination)
     }
