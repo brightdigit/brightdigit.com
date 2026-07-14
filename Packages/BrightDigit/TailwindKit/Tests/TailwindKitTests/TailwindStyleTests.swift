@@ -1,6 +1,6 @@
 //
 //  TailwindStyleTests.swift
-//  BrightDigit
+//  TailwindKit
 //
 //  Created by Leo Dion.
 //  Copyright © 2026 BrightDigit.
@@ -27,8 +27,9 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-@testable import TailwindKit
 import XCTest
+
+@testable import TailwindKit
 
 // Plot-independent: these assert `.rendered` string equality only; nothing here
 // imports Plot.

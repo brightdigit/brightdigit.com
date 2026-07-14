@@ -1,6 +1,6 @@
 //
 //  TailwindStyle+Utilities.swift
-//  BrightDigit
+//  TailwindKit
 //
 //  Created by Leo Dion.
 //  Copyright © 2026 BrightDigit.
@@ -28,39 +28,84 @@
 //
 
 // Instance utilities. Every member returns a new `TailwindStyle`, so utilities
-// chain. Mirror static entry points live in `TailwindStyle+Static.swift` so a
-// chain can begin with a leading dot (`.flex.gap(4)`).
+// chain. Bare utilities are computed properties; parameterized utilities are
+// methods (kept in a second extension so properties precede methods). Mirror
+// static entry points live in `TailwindStyle+Static.swift` so a chain can begin
+// with a leading dot (`.flex.gap(4)`).
+
+// MARK: - Bare utilities (computed properties)
 
 extension TailwindStyle {
-  // MARK: - Display
+  // MARK: Display
 
-  /// `flex`
+  /// `flex`.
   public var flex: TailwindStyle { appending("flex") }
-  /// `inline-flex`
+  /// `inline-flex`.
   public var inlineFlex: TailwindStyle { appending("inline-flex") }
-  /// `grid`
+  /// `grid`.
   public var grid: TailwindStyle { appending("grid") }
-  /// `block`
+  /// `block`.
   public var block: TailwindStyle { appending("block") }
-  /// `inline-block`
+  /// `inline-block`.
   public var inlineBlock: TailwindStyle { appending("inline-block") }
-  /// `inline`
+  /// `inline`.
   public var inline: TailwindStyle { appending("inline") }
-  /// `hidden`
+  /// `hidden`.
   public var hidden: TailwindStyle { appending("hidden") }
 
-  // MARK: - Flexbox & grid
+  // MARK: Flexbox & grid
 
-  /// `flex-row`
+  /// `flex-row`.
   public var flexRow: TailwindStyle { appending("flex-row") }
-  /// `flex-col`
+  /// `flex-col`.
   public var flexCol: TailwindStyle { appending("flex-col") }
-  /// `flex-wrap`
+  /// `flex-wrap`.
   public var flexWrap: TailwindStyle { appending("flex-wrap") }
-  /// `grow`
+  /// `grow`.
   public var grow: TailwindStyle { appending("grow") }
-  /// `shrink`
+  /// `shrink`.
   public var shrink: TailwindStyle { appending("shrink") }
+  /// `gap` (bare).
+  public var gap: TailwindStyle { appending("gap") }
+
+  // MARK: Colors
+
+  /// `bg-white`.
+  public var bgWhite: TailwindStyle { appending("bg-white") }
+  /// `bg-black`.
+  public var bgBlack: TailwindStyle { appending("bg-black") }
+  /// `bg-transparent`.
+  public var bgTransparent: TailwindStyle { appending("bg-transparent") }
+
+  // MARK: Typography
+
+  /// `text-white`.
+  public var textWhite: TailwindStyle { appending("text-white") }
+  /// `text-black`.
+  public var textBlack: TailwindStyle { appending("text-black") }
+  /// `italic`.
+  public var italic: TailwindStyle { appending("italic") }
+  /// `underline`.
+  public var underline: TailwindStyle { appending("underline") }
+  /// `uppercase`.
+  public var uppercase: TailwindStyle { appending("uppercase") }
+  /// `lowercase`.
+  public var lowercase: TailwindStyle { appending("lowercase") }
+  /// `capitalize`.
+  public var capitalize: TailwindStyle { appending("capitalize") }
+
+  // MARK: Borders & radius
+
+  /// `border` (1px, bare).
+  public var border: TailwindStyle { appending("border") }
+  /// `rounded` (bare).
+  public var rounded: TailwindStyle { appending("rounded") }
+}
+
+// MARK: - Parameterized utilities (methods)
+
+extension TailwindStyle {
+  // MARK: Flexbox & grid
 
   /// `items-<align>` — cross-axis alignment, e.g. `.items(.center)`.
   public func items(_ align: Align) -> TailwindStyle {
@@ -77,16 +122,22 @@ extension TailwindStyle {
     appending("grid-cols-\(count)")
   }
 
-  /// `gap` (bare).
-  public var gap: TailwindStyle { appending("gap") }
   /// `gap-<n>`, e.g. `.gap(4)`.
-  public func gap(_ amount: Spacing) -> TailwindStyle { appending("gap-\(amount.token)") }
-  /// `gap-x-<n>`.
-  public func gapX(_ amount: Spacing) -> TailwindStyle { appending("gap-x-\(amount.token)") }
-  /// `gap-y-<n>`.
-  public func gapY(_ amount: Spacing) -> TailwindStyle { appending("gap-y-\(amount.token)") }
+  public func gap(_ amount: Spacing) -> TailwindStyle {
+    appending("gap-\(amount.token)")
+  }
 
-  // MARK: - Spacing (padding & margin)
+  /// `gap-x-<n>`.
+  public func gapX(_ amount: Spacing) -> TailwindStyle {
+    appending("gap-x-\(amount.token)")
+  }
+
+  /// `gap-y-<n>`.
+  public func gapY(_ amount: Spacing) -> TailwindStyle {
+    appending("gap-y-\(amount.token)")
+  }
+
+  // MARK: Spacing (padding & margin)
 
   /// `p-<n>`.
   public func p(_ amount: Spacing) -> TailwindStyle { appending("p-\(amount.token)") }
@@ -102,7 +153,6 @@ extension TailwindStyle {
   public func pb(_ amount: Spacing) -> TailwindStyle { appending("pb-\(amount.token)") }
   /// `pl-<n>`.
   public func pl(_ amount: Spacing) -> TailwindStyle { appending("pl-\(amount.token)") }
-
   /// `m-<n>`.
   public func m(_ amount: Spacing) -> TailwindStyle { appending("m-\(amount.token)") }
   /// `mx-<n>`.
@@ -118,69 +168,52 @@ extension TailwindStyle {
   /// `ml-<n>`.
   public func ml(_ amount: Spacing) -> TailwindStyle { appending("ml-\(amount.token)") }
 
-  // MARK: - Sizing
+  // MARK: Sizing
 
   /// `w-<size>`, e.g. `.w(.full)` or `.w(4)`.
   public func w(_ size: Size) -> TailwindStyle { appending("w-\(size.token)") }
   /// `h-<size>`, e.g. `.h(.screen)` or `.h(4)`.
   public func h(_ size: Size) -> TailwindStyle { appending("h-\(size.token)") }
 
-  // MARK: - Colors
+  // MARK: Colors
 
   /// `bg-<color>-<shade>`, e.g. `.bg(.blue, ._500)`.
   public func bg(_ color: Color, _ shade: Shade) -> TailwindStyle {
     appending("bg-\(color.token)-\(shade.token)")
   }
-  /// `bg-white`.
-  public var bgWhite: TailwindStyle { appending("bg-white") }
-  /// `bg-black`.
-  public var bgBlack: TailwindStyle { appending("bg-black") }
-  /// `bg-transparent`.
-  public var bgTransparent: TailwindStyle { appending("bg-transparent") }
 
   /// `border-<color>-<shade>`, e.g. `.borderColor(.gray, ._200)`.
   public func borderColor(_ color: Color, _ shade: Shade) -> TailwindStyle {
     appending("border-\(color.token)-\(shade.token)")
   }
 
-  // MARK: - Typography
+  // MARK: Typography
 
   /// `text-<size>`, e.g. `.text(.lg)`.
-  public func text(_ size: TextSize) -> TailwindStyle { appending("text-\(size.token)") }
+  public func text(_ size: TextSize) -> TailwindStyle {
+    appending("text-\(size.token)")
+  }
+
   /// `text-<color>-<shade>`, e.g. `.text(.blue, ._500)`.
   public func text(_ color: Color, _ shade: Shade) -> TailwindStyle {
     appending("text-\(color.token)-\(shade.token)")
   }
+
   /// `text-<align>`, e.g. `.text(.center)`.
-  public func text(_ align: TextAlign) -> TailwindStyle { appending("text-\(align.token)") }
-  /// `text-white`.
-  public var textWhite: TailwindStyle { appending("text-white") }
-  /// `text-black`.
-  public var textBlack: TailwindStyle { appending("text-black") }
+  public func text(_ align: TextAlign) -> TailwindStyle {
+    appending("text-\(align.token)")
+  }
 
   /// `font-<weight>`, e.g. `.font(.medium)`.
-  public func font(_ weight: FontWeight) -> TailwindStyle { appending("font-\(weight.token)") }
+  public func font(_ weight: FontWeight) -> TailwindStyle {
+    appending("font-\(weight.token)")
+  }
 
-  /// `italic`.
-  public var italic: TailwindStyle { appending("italic") }
-  /// `underline`.
-  public var underline: TailwindStyle { appending("underline") }
-  /// `uppercase`.
-  public var uppercase: TailwindStyle { appending("uppercase") }
-  /// `lowercase`.
-  public var lowercase: TailwindStyle { appending("lowercase") }
-  /// `capitalize`.
-  public var capitalize: TailwindStyle { appending("capitalize") }
+  // MARK: Borders & radius
 
-  // MARK: - Borders & radius
-
-  /// `border` (1px, bare).
-  public var border: TailwindStyle { appending("border") }
   /// `border-<n>`, e.g. `.border(2)`.
   public func border(_ width: Int) -> TailwindStyle { appending("border-\(width)") }
 
-  /// `rounded` (bare).
-  public var rounded: TailwindStyle { appending("rounded") }
   /// `rounded-<radius>`, e.g. `.rounded(.lg)`.
   public func rounded(_ radius: Radius) -> TailwindStyle {
     radius.token.isEmpty
@@ -188,7 +221,7 @@ extension TailwindStyle {
       : appending("rounded-\(radius.token)")
   }
 
-  // MARK: - Responsive & state variants
+  // MARK: Responsive & state variants
   //
   // Each takes a nested style and prefixes every one of its tokens. Prefixes
   // stack, so `.md(.hover(.bg(.blue, ._700)))` renders `md:hover:bg-blue-700`.
@@ -205,15 +238,30 @@ extension TailwindStyle {
   public func xl2(_ style: TailwindStyle) -> TailwindStyle { prefixing("2xl", style) }
 
   /// `hover:` state variant.
-  public func hover(_ style: TailwindStyle) -> TailwindStyle { prefixing("hover", style) }
+  public func hover(_ style: TailwindStyle) -> TailwindStyle {
+    prefixing("hover", style)
+  }
+
   /// `focus:` state variant.
-  public func focus(_ style: TailwindStyle) -> TailwindStyle { prefixing("focus", style) }
+  public func focus(_ style: TailwindStyle) -> TailwindStyle {
+    prefixing("focus", style)
+  }
+
   /// `active:` state variant.
-  public func active(_ style: TailwindStyle) -> TailwindStyle { prefixing("active", style) }
+  public func active(_ style: TailwindStyle) -> TailwindStyle {
+    prefixing("active", style)
+  }
+
   /// `disabled:` state variant.
-  public func disabled(_ style: TailwindStyle) -> TailwindStyle { prefixing("disabled", style) }
+  public func disabled(_ style: TailwindStyle) -> TailwindStyle {
+    prefixing("disabled", style)
+  }
+
   /// `group-hover:` state variant.
-  public func groupHover(_ style: TailwindStyle) -> TailwindStyle { prefixing("group-hover", style) }
+  public func groupHover(_ style: TailwindStyle) -> TailwindStyle {
+    prefixing("group-hover", style)
+  }
+
   /// `dark:` color-scheme variant.
   public func dark(_ style: TailwindStyle) -> TailwindStyle { prefixing("dark", style) }
 }

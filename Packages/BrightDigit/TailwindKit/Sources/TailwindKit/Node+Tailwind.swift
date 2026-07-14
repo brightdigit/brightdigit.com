@@ -1,6 +1,6 @@
 //
-//  TailwindStyle+Plot.swift
-//  BrightDigit
+//  Node+Tailwind.swift
+//  TailwindKit
 //
 //  Created by Leo Dion.
 //  Copyright © 2026 BrightDigit.
@@ -26,10 +26,6 @@
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
-
-// The single, thin Plot bridge. The `TailwindStyle` builder itself lives in
-// Plot-free files; only this file imports Plot, so the value builder stays
-// usable without an HTML library.
 
 import Plot
 

@@ -1,6 +1,6 @@
 //
 //  TailwindStyle.swift
-//  BrightDigit
+//  TailwindKit
 //
 //  Created by Leo Dion.
 //  Copyright © 2026 BrightDigit.
@@ -42,7 +42,7 @@
 ///
 /// The final class string is produced by ``rendered``. To attach a style to a
 /// Plot element, use the single `.tailwind(_:)` convenience (see
-/// `TailwindStyle+Plot.swift`):
+/// `Node+Tailwind.swift`):
 ///
 /// ```swift
 /// Node.div(.tailwind(.flex.items(.center).gap(4)), .text("Hi"))
@@ -57,8 +57,19 @@ public struct TailwindStyle: Sendable, Equatable, Hashable {
   /// `"md:gap-4"`), rendered space-separated by ``rendered``.
   private let tokens: [String]
 
-  /// Creates an empty style. Chain utilities to build it up, or start a chain
-  /// from a static member such as `.flex`.
+  /// The composed Tailwind class string, tokens joined by a single space.
+  ///
+  /// ```swift
+  /// TW.flex.gap(4).rendered // "flex gap-4"
+  /// ```
+  public var rendered: String {
+    tokens.joined(separator: " ")
+  }
+
+  /// Creates an empty style.
+  ///
+  /// Chain utilities to build it up, or start a chain from a static member
+  /// such as `.flex`.
   public init() {
     self.tokens = []
   }
@@ -73,19 +84,11 @@ public struct TailwindStyle: Sendable, Equatable, Hashable {
   }
 
   /// Returns a new style with every token of `other` prefixed by
-  /// `"\(prefix):"` and appended. Used to model responsive/state variants
-  /// (e.g. `md`, `hover`); prefixes stack, so `.md(.hover(.bg(.blue, ._700)))`
-  /// renders `"md:hover:bg-blue-700"`.
+  /// `"\(prefix):"` and appended.
+  ///
+  /// Used to model responsive/state variants (e.g. `md`, `hover`); prefixes
+  /// stack, so `.md(.hover(.bg(.blue, ._700)))` renders `"md:hover:bg-blue-700"`.
   internal func prefixing(_ prefix: String, _ other: TailwindStyle) -> TailwindStyle {
     TailwindStyle(tokens: tokens + other.tokens.map { "\(prefix):\($0)" })
-  }
-
-  /// The composed Tailwind class string, tokens joined by a single space.
-  ///
-  /// ```swift
-  /// TW.flex.gap(4).rendered // "flex gap-4"
-  /// ```
-  public var rendered: String {
-    tokens.joined(separator: " ")
   }
 }

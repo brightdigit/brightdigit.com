@@ -1,6 +1,6 @@
 //
-//  TailwindTokens.swift
-//  BrightDigit
+//  TailwindStyle+Tokens.swift
+//  TailwindKit
 //
 //  Created by Leo Dion.
 //  Copyright © 2026 BrightDigit.
@@ -27,8 +27,6 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-// MARK: - Colors
-
 extension TailwindStyle {
   /// A Tailwind v4 color family (the `blue` in `bg-blue-500`).
   public enum Color: String, Sendable, CaseIterable {
@@ -45,8 +43,16 @@ extension TailwindStyle {
   /// A Tailwind v4 color shade (the `500` in `bg-blue-500`).
   public enum Shade: Int, Sendable, CaseIterable {
     // swiftlint:disable identifier_name
-    case _50 = 50, _100 = 100, _200 = 200, _300 = 300, _400 = 400
-    case _500 = 500, _600 = 600, _700 = 700, _800 = 800, _900 = 900
+    case _50 = 50
+    case _100 = 100
+    case _200 = 200
+    case _300 = 300
+    case _400 = 400
+    case _500 = 500
+    case _600 = 600
+    case _700 = 700
+    case _800 = 800
+    case _900 = 900
     case _950 = 950
     // swiftlint:enable identifier_name
 
@@ -64,7 +70,11 @@ extension TailwindStyle {
   /// Expressible by integer and floating-point literals so call sites read
   /// naturally: `.gap(4)`, `.p(2.5)`.
   public struct Spacing: Sendable, Equatable, Hashable,
-    ExpressibleByIntegerLiteral, ExpressibleByFloatLiteral {
+    ExpressibleByIntegerLiteral, ExpressibleByFloatLiteral
+  {
+    /// The `px` keyword (a single CSS pixel), e.g. `p-px`.
+    public static let px = Spacing(token: "px")  // swiftlint:disable:this identifier_name
+
     internal let token: String
 
     public init(integerLiteral value: Int) {
@@ -73,13 +83,11 @@ extension TailwindStyle {
 
     public init(floatLiteral value: Double) {
       // Drop a trailing ".0" so 2.0 renders as "2", 2.5 stays "2.5".
-      self.token = value.rounded() == value
+      self.token =
+        value.rounded() == value
         ? String(Int(value))
         : String(value)
     }
-
-    /// The `px` keyword (a single CSS pixel), e.g. `p-px`.
-    public static let px = Spacing(token: "px")
 
     private init(token: String) {
       self.token = token
@@ -93,23 +101,8 @@ extension TailwindStyle {
   /// A width/height value: a spacing-scale number (`w-4`) or a keyword
   /// (`w-full`, `h-screen`).
   public struct Size: Sendable, Equatable, Hashable,
-    ExpressibleByIntegerLiteral, ExpressibleByFloatLiteral {
-    internal let token: String
-
-    public init(integerLiteral value: Int) {
-      self.token = String(value)
-    }
-
-    public init(floatLiteral value: Double) {
-      self.token = value.rounded() == value
-        ? String(Int(value))
-        : String(value)
-    }
-
-    private init(token: String) {
-      self.token = token
-    }
-
+    ExpressibleByIntegerLiteral, ExpressibleByFloatLiteral
+  {
     /// `full` — 100%.
     public static let full = Size(token: "full")
     /// `screen` — the viewport dimension.
@@ -122,6 +115,23 @@ extension TailwindStyle {
     public static let max = Size(token: "max")
     /// `fit` — `fit-content`.
     public static let fit = Size(token: "fit")
+
+    internal let token: String
+
+    public init(integerLiteral value: Int) {
+      self.token = String(value)
+    }
+
+    public init(floatLiteral value: Double) {
+      self.token =
+        value.rounded() == value
+        ? String(Int(value))
+        : String(value)
+    }
+
+    private init(token: String) {
+      self.token = token
+    }
   }
 }
 
@@ -158,8 +168,14 @@ extension TailwindStyle {
   public enum TextSize: String, Sendable, CaseIterable {
     // swiftlint:disable identifier_name
     case xs, sm, base, lg, xl
-    case xl2 = "2xl", xl3 = "3xl", xl4 = "4xl", xl5 = "5xl"
-    case xl6 = "6xl", xl7 = "7xl", xl8 = "8xl", xl9 = "9xl"
+    case xl2 = "2xl"
+    case xl3 = "3xl"
+    case xl4 = "4xl"
+    case xl5 = "5xl"
+    case xl6 = "6xl"
+    case xl7 = "7xl"
+    case xl8 = "8xl"
+    case xl9 = "9xl"
     // swiftlint:enable identifier_name
 
     internal var token: String { rawValue }
@@ -175,8 +191,12 @@ extension TailwindStyle {
   /// A border-radius scale value (the `lg` in `rounded-lg`).
   public enum Radius: String, Sendable, CaseIterable {
     // swiftlint:disable identifier_name
-    case none, sm, base = "", md, lg, xl
-    case xl2 = "2xl", xl3 = "3xl", full
+    case none, sm
+    case base = ""
+    case md, lg, xl
+    case xl2 = "2xl"
+    case xl3 = "3xl"
+    case full
     // swiftlint:enable identifier_name
 
     internal var token: String { rawValue }
