@@ -6,7 +6,7 @@
 
 import XCTest
 import Publish
-import Codextended
+import Foundation
 
 final class PathTests: PublishTestCase {
     func testAbsoluteString() {
@@ -30,7 +30,7 @@ final class PathTests: PublishTestCase {
         }
 
         let wrapper = Wrapper(path: Path("my/path"))
-        let data = try wrapper.encoded()
-        XCTAssertEqual(wrapper, try data.decoded())
+        let data = try JSONEncoder().encode(wrapper)
+        XCTAssertEqual(wrapper, try JSONDecoder().decode(Wrapper.self, from: data))
     }
 }

@@ -4,7 +4,6 @@
 *  MIT license, see LICENSE file for details
 */
 
-import Codextended
 
 /// Protocol adopted by types that act as type-safe wrappers around strings.
 public protocol StringWrapper: CustomStringConvertible,

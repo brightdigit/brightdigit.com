@@ -7,7 +7,6 @@
 import Foundation
 import Ink
 import Files
-import Codextended
 
 internal struct MarkdownContentFactory<Site: Website> {
     let parser: MarkdownParser

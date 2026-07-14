@@ -4,7 +4,6 @@
 *  MIT license, see LICENSE file for details
 */
 
-import Codextended
 
 /// Type used to describe metadata for a podcast episode.
 public struct PodcastEpisodeMetadata: Hashable, Sendable {

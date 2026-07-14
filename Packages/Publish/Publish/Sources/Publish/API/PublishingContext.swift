@@ -8,7 +8,6 @@ import Foundation
 import Ink
 import Plot
 import Files
-import Codextended
 
 /// Type that represents the context in which a website is being published.
 /// It can be used to manipulate the state of the website in various ways,

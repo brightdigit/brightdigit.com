@@ -6,7 +6,6 @@
 
 import Foundation
 import Plot
-import Codextended
 
 /// A representation of a location's audio data. Can be used to
 /// implement podcast feeds, or inline audio players using the
