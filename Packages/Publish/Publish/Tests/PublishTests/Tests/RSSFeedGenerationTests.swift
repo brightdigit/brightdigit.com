@@ -7,7 +7,6 @@
 import XCTest
 import Publish
 import Files
-import Sweep
 
 final class RSSFeedGenerationTests: PublishTestCase {
     func testOnlyIncludingSpecifiedSections() throws {

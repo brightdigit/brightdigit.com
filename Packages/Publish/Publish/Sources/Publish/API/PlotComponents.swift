@@ -7,7 +7,6 @@
 import Foundation
 import Plot
 import Ink
-import Sweep
 
 // MARK: - Nodes and Attributes
 
@@ -156,26 +155,31 @@ internal extension Node where Context: RSSItemContext {
         html.append(item.body.html)
         html.append(item.rssProperties.bodySuffix ?? "")
 
-        var links = [(url: URL, range: ClosedRange<String.Index>, isHref: Bool)]()
+        var links = [(url: URL, range: Range<String.Index>, isHref: Bool)]()
 
-        html.scan(using: [
-            Matcher(
-                identifiers: [
-                    .anyString(prefixes.href),
-                    .anyString(prefixes.src)
-                ],
-                terminators: ["\""],
-                handler: { url, range in
-                    guard url.first == "/" else {
-                        return
-                    }
+        // Rewrite root-relative `href=`/`src=` attribute values to absolute URLs.
+        // Each match spans the full `href="…"`/`src="…"` so it can be replaced
+        // wholesale; only values that begin with "/" are rewritten.
+        let regex = try! NSRegularExpression(pattern: "(href|src)=\"([^\"]*)\"")
+        let fullRange = NSRange(html.startIndex..<html.endIndex, in: html)
 
-                    let absoluteURL = baseURL.appendingPathComponent(String(url))
-                    let isHref = (html[range.lowerBound] == "h")
-                    links.append((absoluteURL, range, isHref))
-                }
-            )
-        ])
+        for match in regex.matches(in: html, range: fullRange) {
+            guard let matchRange = Range(match.range, in: html),
+                  let attributeRange = Range(match.range(at: 1), in: html),
+                  let valueRange = Range(match.range(at: 2), in: html) else {
+                continue
+            }
+
+            let url = html[valueRange]
+
+            guard url.first == "/" else {
+                continue
+            }
+
+            let absoluteURL = baseURL.appendingPathComponent(String(url))
+            let isHref = (html[attributeRange] == "href")
+            links.append((absoluteURL, matchRange, isHref))
+        }
 
         for (url, range, isHref) in links.reversed() {
             let prefix = isHref ? prefixes.href : prefixes.src

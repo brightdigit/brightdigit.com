@@ -56,7 +56,7 @@ final class PodcastFeedGenerationTests: PublishTestCase {
         ])
 
         let feed = try folder.file(at: "Output/feed.rss").readAsString()
-        let substring = feed.substrings(between: "BEGIN ", and: " END").first
+        let substring = feed.firstSubstring(between: "BEGIN ", and: " END")
 
         XCTAssertEqual(substring, """
         <a href="https://swiftbysundell.com/page">Link</a> \
