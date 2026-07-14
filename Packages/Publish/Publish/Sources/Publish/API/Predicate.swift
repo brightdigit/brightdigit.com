@@ -32,15 +32,15 @@ public extension Predicate {
 
 /// Create a predicate for comparing a key path against a value.
 /// Usage example: `\.path == "somePath"`.
-public func ==<T, V: Equatable & Sendable>(lhs: KeyPath<T, V>, rhs: V) -> Predicate<T> {
+public func ==<T, V: Equatable & Sendable>(lhs: KeyPath<T, V> & Sendable, rhs: V) -> Predicate<T> {
     Predicate { $0[keyPath: lhs] == rhs }
 }
 
 /// Create a predicate for checking whether an element is contained
 /// within a collection-based key path's value.
 /// Usage example: `\.tags ~= "someTag"`.
-public func ~=<T, V: Collection>(
-    lhs: KeyPath<T, V>,
+public func ~=<T, V: Collection & Sendable>(
+    lhs: KeyPath<T, V> & Sendable,
     rhs: V.Element
 ) -> Predicate<T> where V.Element: Equatable & Sendable {
     Predicate { $0[keyPath: lhs].contains(rhs) }
@@ -49,21 +49,21 @@ public func ~=<T, V: Collection>(
 /// Create a predicate that matches against `false` values for a given
 /// `Bool` key path.
 /// Usage example: `!\.isExplicit`
-public prefix func !<T>(rhs: KeyPath<T, Bool>) -> Predicate<T> {
+public prefix func !<T>(rhs: KeyPath<T, Bool> & Sendable) -> Predicate<T> {
     rhs == false
 }
 
 /// Create a predicate that matches when a key path's value is
 /// higher than a given value.
 /// Usage example: `\.metadata.intValue > 3`.
-public func ><T, V: Comparable & Sendable>(lhs: KeyPath<T, V>, rhs: V) -> Predicate<T> {
+public func ><T, V: Comparable & Sendable>(lhs: KeyPath<T, V> & Sendable, rhs: V) -> Predicate<T> {
     Predicate { $0[keyPath: lhs] > rhs }
 }
 
 /// Create a predicate that matches when a key path's value is
 /// lower than a given value.
 /// Usage example: `\.metadata.intValue < 3`.
-public func <<T, V: Comparable & Sendable>(lhs: KeyPath<T, V>, rhs: V) -> Predicate<T> {
+public func <<T, V: Comparable & Sendable>(lhs: KeyPath<T, V> & Sendable, rhs: V) -> Predicate<T> {
     Predicate { $0[keyPath: lhs] < rhs }
 }
 

@@ -6,7 +6,7 @@
 
 /// Enum describing various orders that can be used when
 /// performing sorting operations.
-public enum SortOrder {
+public enum SortOrder: Sendable {
     /// Sort the collection in ascending order.
     case ascending
     /// Sort the collection in descending order.

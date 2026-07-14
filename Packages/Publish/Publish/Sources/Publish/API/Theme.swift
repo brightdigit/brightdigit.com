@@ -30,7 +30,7 @@ public struct Theme<Site: Website>: Sendable {
     public init<T: HTMLFactory>(
         htmlFactory factory: T,
         resourcePaths resources: Set<Path> = [],
-        file: StaticString = #file
+        file: StaticString = #filePath
     ) where T.Site == Site {
         makeIndexHTML = { try factory.makeIndexHTML(for: $0, context: $1) }
         makeSectionHTML = { try factory.makeSectionHTML(for: $0, context: $1) }

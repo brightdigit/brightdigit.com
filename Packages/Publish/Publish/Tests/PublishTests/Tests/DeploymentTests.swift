@@ -5,53 +5,41 @@
 */
 
 import XCTest
-import Publish
+@testable import Publish
 import Files
 
 final class DeploymentTests: PublishTestCase {
-    private var defaultCommandLineArguments: [String]!
-
-    override func setUp() {
-        super.setUp()
-        defaultCommandLineArguments = CommandLine.arguments
-    }
-
-    override func tearDown() {
-        CommandLine.arguments = defaultCommandLineArguments
-        super.tearDown()
-    }
-
     func testDeploymentSkippedByDefault() throws {
-        var deployed = false
+        let deployed = LockIsolated(false)
 
         try publishWebsite(using: [
             .step(named: "Custom") { _ in },
             .deploy(using: DeploymentMethod(name: "Deploy") { _ in
-                deployed = true
+                deployed.value = true
             })
         ])
 
-        XCTAssertFalse(deployed)
+        XCTAssertFalse(deployed.value)
     }
 
     func testGenerationStepsAndPluginsSkippedWhenDeploying() throws {
-        CommandLine.arguments.append("--deploy")
+        let generationPerformed = LockIsolated(false)
+        let pluginInstalled = LockIsolated(false)
 
-        var generationPerformed = false
-        var pluginInstalled = false
+        try PublishRuntimeOverride.$commandLineArguments.withValue(["publish", "--deploy"]) {
+            try publishWebsite(using: [
+                .step(named: "Skipped") { _ in
+                    generationPerformed.value = true
+                },
+                .installPlugin(Plugin(name: "Skipped") { _ in
+                    pluginInstalled.value = true
+                }),
+                .deploy(using: DeploymentMethod(name: "Deploy") { _ in })
+            ])
+        }
 
-        try publishWebsite(using: [
-            .step(named: "Skipped") { _ in
-                generationPerformed = true
-            },
-            .installPlugin(Plugin(name: "Skipped") { _ in
-                pluginInstalled = true
-            }),
-            .deploy(using: DeploymentMethod(name: "Deploy") { _ in })
-        ])
-
-        XCTAssertFalse(generationPerformed)
-        XCTAssertFalse(pluginInstalled)
+        XCTAssertFalse(generationPerformed.value)
+        XCTAssertFalse(pluginInstalled.value)
     }
 
     func testDeployingUsingCustomOutputFolder() throws {
@@ -66,21 +54,21 @@ final class DeploymentTests: PublishTestCase {
         ])
 
         // Then deploy
-        CommandLine.arguments.append("--deploy")
+        let outputFolder = LockIsolated<Folder?>(nil)
 
-        var outputFolder: Folder?
+        try PublishRuntimeOverride.$commandLineArguments.withValue(["publish", "--deploy"]) {
+            try publishWebsite(in: container, using: [
+                .deploy(using: DeploymentMethod(name: "Test") { context in
+                    outputFolder.value = try context.createDeploymentFolder(
+                        withPrefix: "Test",
+                        outputFolderPath: "CustomOutput",
+                        configure: { _ in }
+                    )
+                })
+            ])
+        }
 
-        try publishWebsite(in: container, using: [
-            .deploy(using: DeploymentMethod(name: "Test") { context in
-                outputFolder = try context.createDeploymentFolder(
-                    withPrefix: "Test",
-                    outputFolderPath: "CustomOutput",
-                    configure: { _ in }
-                )
-            })
-        ])
-
-        let folder = try require(outputFolder)
+        let folder = try require(outputFolder.value)
         let subfolder = try folder.subfolder(named: "CustomOutput")
         XCTAssertTrue(subfolder.containsSubfolder(at: "one/a"))
     }

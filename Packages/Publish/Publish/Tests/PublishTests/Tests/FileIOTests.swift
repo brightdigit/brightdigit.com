@@ -96,31 +96,31 @@ final class FileIOTests: PublishTestCase {
 
     func testRetrievingOutputFolder() throws {
         let folder = try Folder.createTemporary()
-        var firstSectionFolder: Folder?
+        let firstSectionFolder = LockIsolated<Folder?>(nil)
 
         try publishWebsite(in: folder, using: [
             .generateHTML(withTheme: .foundation),
             .step(named: "Get output folder") { context in
-                firstSectionFolder = try context.outputFolder(at: "one")
+                firstSectionFolder.value = try context.outputFolder(at: "one")
             }
         ])
 
-        XCTAssertEqual(firstSectionFolder?.name, "one")
+        XCTAssertEqual(firstSectionFolder.value?.name, "one")
     }
 
     func testRetrievingOutputFile() throws {
         let folder = try Folder.createTemporary()
-        var itemFile: File?
+        let itemFile = LockIsolated<File?>(nil)
 
         try publishWebsite(in: folder, using: [
             .addItem(.stub(withPath: "item")),
             .generateHTML(withTheme: .foundation),
             .step(named: "Get output file") { context in
-                itemFile = try context.outputFile(at: "one/item/index.html")
+                itemFile.value = try context.outputFile(at: "one/item/index.html")
             }
         ])
 
-        XCTAssertEqual(itemFile?.name, "index.html")
+        XCTAssertEqual(itemFile.value?.name, "index.html")
     }
 
     func testCleaningHiddenFilesInOutputFolder() throws {

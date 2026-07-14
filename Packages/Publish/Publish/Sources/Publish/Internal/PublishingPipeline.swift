@@ -134,7 +134,8 @@ private extension PublishingPipeline {
 
     func resolveStepKind() -> Step.Kind {
         let deploymentFlags: Set<String> = ["--deploy", "-d"]
-        let shouldDeploy = CommandLine.arguments.contains(where: deploymentFlags.contains)
+        let arguments = PublishRuntimeOverride.commandLineArguments ?? CommandLine.arguments
+        let shouldDeploy = arguments.contains(where: deploymentFlags.contains)
         return shouldDeploy ? .deployment : .generation
     }
 

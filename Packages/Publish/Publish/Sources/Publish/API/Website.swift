@@ -75,7 +75,7 @@ public extension Website {
                  deployedUsing deploymentMethod: DeploymentMethod<Self>? = nil,
                  additionalSteps: [PublishingStep<Self>] = [],
                  plugins: [Plugin<Self>] = [],
-                 file: StaticString = #file) throws -> PublishedWebsite<Self> {
+                 file: StaticString = #filePath) throws -> PublishedWebsite<Self> where Self: Sendable {
         try publish(
             at: path,
             using: [
@@ -106,29 +106,28 @@ public extension Website {
     @discardableResult
     func publish(at path: Path? = nil,
                  using steps: [PublishingStep<Self>],
-                 file: StaticString = #file) throws -> PublishedWebsite<Self> {
+                 file: StaticString = #filePath) throws -> PublishedWebsite<Self> where Self: Sendable {
         let pipeline = PublishingPipeline(
             steps: steps,
             originFilePath: Path("\(file)")
         )
 
         let semaphore = DispatchSemaphore(value: 0)
-        var result: Result<PublishedWebsite<Self>, Error>?
-        let completionHandler = { result = $0 }
-        
+        let resultBox = ResultBox<PublishedWebsite<Self>>()
+
         Task {
             do {
                 let website = try await pipeline.execute(for: self, at: path)
-                completionHandler(.success(website))
+                resultBox.value = .success(website)
             } catch {
-                completionHandler(.failure(error))
+                resultBox.value = .failure(error)
             }
-            
+
             semaphore.signal()
         }
-        
+
         semaphore.wait()
-        return try result!.get()
+        return try resultBox.value!.get()
     }
     
     /// Publish this website using a default pipeline. To build a completely
@@ -153,7 +152,7 @@ public extension Website {
                  deployedUsing deploymentMethod: DeploymentMethod<Self>? = nil,
                  additionalSteps: [PublishingStep<Self>] = [],
                  plugins: [Plugin<Self>] = [],
-                 file: StaticString = #file) async throws -> PublishedWebsite<Self> {
+                 file: StaticString = #filePath) async throws -> PublishedWebsite<Self> {
         try await publish(
             at: path,
             using: [
@@ -184,7 +183,7 @@ public extension Website {
     @discardableResult
     func publish(at path: Path? = nil,
                  using steps: [PublishingStep<Self>],
-                 file: StaticString = #file) async throws -> PublishedWebsite<Self> {
+                 file: StaticString = #filePath) async throws -> PublishedWebsite<Self> {
         let pipeline = PublishingPipeline(
             steps: steps,
             originFilePath: Path("\(file)")
@@ -231,5 +230,19 @@ public extension Website {
     /// - parameter location: The location to return a URL for.
     func url(for location: Location) -> URL {
         url(for: location.path)
+    }
+}
+
+/// A small lock-protected box used to hand a publishing result back from the
+/// asynchronous pipeline `Task` to the synchronous `publish` method that waits
+/// on a semaphore. Access is serialized by the lock, so the unchecked Sendable
+/// conformance is sound.
+private final class ResultBox<T>: @unchecked Sendable {
+    private let lock = NSLock()
+    private var storage: Result<T, Error>?
+
+    var value: Result<T, Error>? {
+        get { lock.withLock { storage } }
+        set { lock.withLock { storage = newValue } }
     }
 }

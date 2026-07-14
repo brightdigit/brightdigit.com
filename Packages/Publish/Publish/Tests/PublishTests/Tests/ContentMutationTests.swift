@@ -128,7 +128,7 @@ final class ContentMutationTests: PublishTestCase {
             Item.stub(withPath: "c").setting(\.tags, to: ["first"])
         ]
 
-        var allTags: Set<Tag>?
+        let allTags = LockIsolated<Set<Tag>?>(nil)
 
         let site = try publishWebsite(using: [
             .addItems(in: items),
@@ -142,7 +142,7 @@ final class ContentMutationTests: PublishTestCase {
                 item.tags = []
             },
             .step(named: "custom") { context in
-                allTags = context.allTags
+                allTags.value = context.allTags
             }
         ])
 
@@ -151,12 +151,12 @@ final class ContentMutationTests: PublishTestCase {
         items[2].tags = []
 
         XCTAssertEqual(site.sections[.one].items, items)
-        XCTAssertEqual(allTags, ["first", "added", "replaced"])
+        XCTAssertEqual(allTags.value, ["first", "added", "replaced"])
     }
 
     func testMutatingItemsByRemovingTags() throws {
-        var initialTags: Set<Tag>?
-        var finalTags: Set<Tag>?
+        let initialTags = LockIsolated<Set<Tag>?>(nil)
+        let finalTags = LockIsolated<Set<Tag>?>(nil)
 
         try publishWebsite(using: [
             .addItems(in: [
@@ -165,18 +165,18 @@ final class ContentMutationTests: PublishTestCase {
                 Item.stub(withPath: "c").setting(\.tags, to: ["three"])
             ]),
             .step(named: "custom") { context in
-                initialTags = context.allTags
+                initialTags.value = context.allTags
             },
             .mutateAllItems { item in
                 item.tags = []
             },
             .step(named: "custom") { context in
-                finalTags = context.allTags
+                finalTags.value = context.allTags
             }
         ])
 
-        XCTAssertEqual(initialTags, ["one", "two", "three"])
-        XCTAssertEqual(finalTags, [])
+        XCTAssertEqual(initialTags.value, ["one", "two", "three"])
+        XCTAssertEqual(finalTags.value, [])
     }
 
     func testSortingItems() throws {

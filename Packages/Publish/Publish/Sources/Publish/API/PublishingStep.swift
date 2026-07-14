@@ -98,7 +98,7 @@ public extension PublishingStep {
 
     /// Add a sequence of items to website programmatically.
     /// - parameter sequence: The items to add.
-    static func addItems<S: Sequence>(
+    static func addItems<S: Sequence & Sendable>(
         in sequence: S
     ) -> Self where S.Element == Item<Site> {
         step(named: "Add items in sequence") { context in
@@ -116,7 +116,7 @@ public extension PublishingStep {
 
     /// Add a sequence of pages to website programmatically.
     /// - parameter sequence: The pages to add.
-    static func addPages<S: Sequence>(
+    static func addPages<S: Sequence & Sendable>(
         in sequence: S
     ) -> Self where S.Element == Page {
         step(named: "Add pages in sequence") { context in
@@ -193,7 +193,7 @@ public extension PublishingStep {
         return step(named: stepName) { context in
             for section in sections {
                 try await context.sections[section].replaceItems(
-                    with: context.sections[section].items.concurrentMap { item in
+                    with: context.sections[section].items.asyncMap { item in
                         guard predicate.matches(item) else {
                             return item
                         }
@@ -262,9 +262,9 @@ public extension PublishingStep {
     /// - parameter section: Any specific section to sort all items within.
     /// - parameter keyPath: The key path to use when sorting.
     /// - parameter order: The order to use when sorting.
-    static func sortItems<T: Comparable>(
+    static func sortItems<T: Comparable & Sendable>(
         in section: Site.SectionID? = nil,
-        by keyPath: KeyPath<Item<Site>, T>,
+        by keyPath: KeyPath<Item<Site>, T> & Sendable,
         order: SortOrder = .ascending
     ) -> Self {
         let nameSuffix = section.map { " in '\($0)'" } ?? ""

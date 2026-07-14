@@ -5,7 +5,7 @@
 */
 
 import XCTest
-import Publish
+@testable import Publish
 
 final class ErrorTests: PublishTestCase {
     func testErrorForInvalidRootPath() throws {
@@ -157,15 +157,13 @@ final class ErrorTests: PublishTestCase {
             )
         )
 
-        CommandLine.arguments.append("--deploy")
-
-        assertErrorThrown(
-            try publishWebsite(using: []),
-            PublishingError(
-                infoMessage: "WebsiteName has no deployment steps."
+        try PublishRuntimeOverride.$commandLineArguments.withValue(["publish", "--deploy"]) {
+            assertErrorThrown(
+                try publishWebsite(using: []),
+                PublishingError(
+                    infoMessage: "WebsiteName has no deployment steps."
+                )
             )
-        )
-
-        CommandLine.arguments.removeLast()
+        }
     }
 }

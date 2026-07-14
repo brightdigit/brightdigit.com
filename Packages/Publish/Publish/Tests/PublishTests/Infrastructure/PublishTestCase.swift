@@ -33,7 +33,7 @@ class PublishTestCase: XCTestCase {
         plugins: [Plugin<WebsiteStub.WithoutItemMetadata>] = [],
         expectedHTML: [Path : String],
         allowWhitelistedOutputFiles: Bool = true,
-        file: StaticString = #file,
+        file: StaticString = #filePath,
         line: UInt = #line
     ) throws {
         let folder = try folder ?? Folder.createTemporary()
@@ -65,7 +65,7 @@ class PublishTestCase: XCTestCase {
         in folder: Folder? = nil,
         using steps: [PublishingStep<WebsiteStub.WithPodcastMetadata>],
         content: [Path : String] = [:],
-        file: StaticString = #file,
+        file: StaticString = #filePath,
         line: UInt = #line
     ) throws {
         try performWebsitePublishing(
@@ -79,7 +79,7 @@ class PublishTestCase: XCTestCase {
     func verifyOutput(in folder: Folder,
                       expectedHTML: [Path : String],
                       allowWhitelistedFiles: Bool = true,
-                      file: StaticString = #file,
+                      file: StaticString = #filePath,
                       line: UInt = #line) throws {
         let outputFolder = try folder.subfolder(named: "Output")
 

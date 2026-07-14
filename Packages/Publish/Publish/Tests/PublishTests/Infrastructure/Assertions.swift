@@ -9,7 +9,7 @@ import XCTest
 func assertErrorThrown<T, E: Error & Equatable>(
     _ expression: @autoclosure () throws -> T,
     _ expectedError: @autoclosure () -> E,
-    file: StaticString = #file,
+    file: StaticString = #filePath,
     line: UInt = #line
 ) {
     do {

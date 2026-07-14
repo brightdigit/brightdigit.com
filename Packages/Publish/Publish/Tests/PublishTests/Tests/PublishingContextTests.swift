@@ -10,16 +10,16 @@ import Publish
 final class PublishingContextTests: PublishTestCase {
     func testSectionIterationOrder() throws {
         let expectedOrder = WebsiteStub.SectionID.allCases
-        var actualOrder = [WebsiteStub.SectionID]()
+        let actualOrder = LockIsolated([WebsiteStub.SectionID]())
 
         try publishWebsite(using: [
             .step(named: "Step") { context in
                 context.sections.forEach { section in
-                    actualOrder.append(section.id)
+                    actualOrder.withValue { $0.append(section.id) }
                 }
             }
         ])
 
-        XCTAssertEqual(expectedOrder, actualOrder)
+        XCTAssertEqual(expectedOrder, actualOrder.value)
     }
 }
