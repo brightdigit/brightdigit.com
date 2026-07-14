@@ -256,7 +256,7 @@ fileprivate extension Storage {
     }
 
     func move(to newPath: String,
-              errorReasonProvider: (Error) -> LocationErrorReason) throws {
+              errorReasonProvider: (any Error & Sendable) -> LocationErrorReason) throws {
         do {
             try fileManager.moveItem(atPath: path, toPath: newPath)
 
@@ -466,7 +466,7 @@ import AppKit
 public extension File {
     /// Open the file.
     func open() {
-        NSWorkspace.shared.openFile(path)
+        NSWorkspace.shared.open(URL(fileURLWithPath: path))
     }
 }
 
@@ -934,7 +934,7 @@ public extension Folder {
 // MARK: - Errors
 
 /// Error type thrown by all of Files' throwing APIs.
-public struct FilesError<Reason>: Error {
+public struct FilesError<Reason: Sendable>: Error {
     /// The absolute path that the error occured at.
     public var path: String
     /// The reason that the error occured.
@@ -959,7 +959,7 @@ extension FilesError: CustomStringConvertible {
 }
 
 /// Enum listing reasons that a location manipulation could fail.
-public enum LocationErrorReason {
+public enum LocationErrorReason: Sendable {
     /// The location couldn't be found.
     case missing
     /// An empty path was given when refering to a file.
@@ -967,13 +967,13 @@ public enum LocationErrorReason {
     /// The user attempted to rename the file system's root folder.
     case cannotRenameRoot
     /// A rename operation failed with an underlying system error.
-    case renameFailed(Error)
+    case renameFailed(any Error & Sendable)
     /// A move operation failed with an underlying system error.
-    case moveFailed(Error)
+    case moveFailed(any Error & Sendable)
     /// A copy operation failed with an underlying system error.
-    case copyFailed(Error)
+    case copyFailed(any Error & Sendable)
     /// A delete operation failed with an underlying system error.
-    case deleteFailed(Error)
+    case deleteFailed(any Error & Sendable)
     /// A search path couldn't be resolved within a given domain.
     case unresolvedSearchPath(
         FileManager.SearchPathDirectory,
@@ -982,23 +982,23 @@ public enum LocationErrorReason {
 }
 
 /// Enum listing reasons that a write operation could fail.
-public enum WriteErrorReason {
+public enum WriteErrorReason: Sendable {
     /// An empty path was given when writing or creating a location.
     case emptyPath
     /// A folder couldn't be created because of an underlying system error.
-    case folderCreationFailed(Error)
+    case folderCreationFailed(any Error & Sendable)
     /// A file couldn't be created.
     case fileCreationFailed
     /// A file couldn't be written to because of an underlying system error.
-    case writeFailed(Error)
+    case writeFailed(any Error & Sendable)
     /// Failed to encode a string into binary data.
     case stringEncodingFailed(String)
 }
 
 /// Enum listing reasons that a read operation could fail.
-public enum ReadErrorReason {
+public enum ReadErrorReason: Sendable {
     /// A file couldn't be read because of an underlying system error.
-    case readFailed(Error)
+    case readFailed(any Error & Sendable)
     /// Failed to decode a given set of data into a string.
     case stringDecodingFailed
     /// Encountered a string that doesn't contain an integer.

@@ -873,7 +873,7 @@ class FilesTests: XCTestCase {
     
     // MARK: - Linux
     
-    static var allTests = [
+    static let allTests = [
         ("testCreatingAndDeletingFile", testCreatingAndDeletingFile),
         ("testCreatingFileAtPath", testCreatingFileAtPath),
         ("testDroppingLeadingSlashWhenCreatingFileAtPath", testDroppingLeadingSlashWhenCreatingFileAtPath),
