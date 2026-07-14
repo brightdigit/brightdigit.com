@@ -38,5 +38,35 @@
   {
     "name": "TailwindKit",
     "path": "Packages/BrightDigit/TailwindKit"
+  },
+  {
+    "name": "Files",
+    "path": "Packages/Publish/Files",
+    "lint": false
+  },
+  {
+    "name": "Ink",
+    "path": "Packages/Publish/Ink",
+    "lint": false
+  },
+  {
+    "name": "Plot",
+    "path": "Packages/Publish/Plot",
+    "lint": false
+  },
+  {
+    "name": "Splash",
+    "path": "Packages/Publish/Splash",
+    "lint": false
+  },
+  {
+    "name": "SplashPublishPlugin",
+    "path": "Packages/Publish/SplashPublishPlugin",
+    "lint": false
+  },
+  {
+    "name": "Publish",
+    "path": "Packages/Publish/Publish",
+    "lint": false
   }
 ]

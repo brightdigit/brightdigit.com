@@ -10,10 +10,14 @@ on:
     branches: [main]
     paths:
       - 'Packages/BrightDigit/**'
+      - 'Packages/Publish/**'
+      - '.github/packages.json'
       - '.github/workflows/packages.yaml'
   pull_request:
     paths:
       - 'Packages/BrightDigit/**'
+      - 'Packages/Publish/**'
+      - '.github/packages.json'
       - '.github/workflows/packages.yaml'
   workflow_dispatch:
 
@@ -28,6 +32,10 @@ jobs:
     outputs:
       full-matrix: ${{ steps.check.outputs.full }}
       packages: ${{ steps.matrix.outputs.packages }}
+      # lint-packages — the subset carrying their own lint tooling
+      # (Scripts/lint.sh + mise config). The vendored Publish packages set
+      # "lint": false, so they get build/test coverage but are not linted.
+      lint-packages: ${{ steps.matrix.outputs.lint-packages }}
       # cross-packages disabled on phase-04-openapi (Windows/Android jobs are
       # off — see the NOTE in build-ubuntu). Re-enable with those jobs.
       # cross-packages: ${{ steps.matrix.outputs.cross-packages }}
@@ -92,6 +100,10 @@ jobs:
 
           {
             echo "packages=$(jq -c 'map({name, path})' "$MANIFEST")"
+            # lint-packages — packages that ship lint tooling. Entries with
+            # "lint": false (the vendored Publish packages) are excluded, so
+            # they are built/tested but never linted.
+            echo "lint-packages=$(jq -c 'map(select(.lint != false)) | map({name, path})' "$MANIFEST")"
             # cross-packages — the pure-Swift subset that can target
             # Windows/Android/wasm. Disabled with the cross-platform jobs; when
             # restoring, reintroduce a per-package `cross` flag in the manifest:
@@ -278,7 +290,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        package: ${{ fromJSON(needs.configure.outputs.packages) }}
+        package: ${{ fromJSON(needs.configure.outputs.lint-packages) }}
     steps:
       - name: Install curl (required by mise-action)
         run: |
