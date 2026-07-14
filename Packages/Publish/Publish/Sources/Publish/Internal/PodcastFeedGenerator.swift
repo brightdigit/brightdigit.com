@@ -6,7 +6,6 @@
 
 import Foundation
 import Plot
-import CollectionConcurrencyKit
 
 internal struct PodcastFeedGenerator<Site: Website> where Site.ItemMetadata: PodcastCompatibleWebsiteItemMetadata {
     let sectionID: Site.SectionID
@@ -79,7 +78,7 @@ private extension PodcastFeedGenerator {
             ),
             .type(config.type),
             .image(config.imageURL),
-            .group(await items.asyncMap { item in
+            .group(items.map { item in
                 guard let audio = item.audio else {
                     throw PodcastError(path: item.path, reason: .missingAudio)
                 }

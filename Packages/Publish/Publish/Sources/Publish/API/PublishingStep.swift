@@ -192,8 +192,8 @@ public extension PublishingStep {
         
         return step(named: stepName) { context in
             for section in sections {
-                try await context.sections[section].replaceItems(
-                    with: context.sections[section].items.asyncMap { item in
+                try context.sections[section].replaceItems(
+                    with: context.sections[section].items.map { item in
                         guard predicate.matches(item) else {
                             return item
                         }

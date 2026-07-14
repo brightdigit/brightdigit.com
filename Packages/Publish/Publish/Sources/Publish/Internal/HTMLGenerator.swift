@@ -6,7 +6,6 @@
 
 import Plot
 import Files
-import CollectionConcurrencyKit
 
 internal struct HTMLGenerator<Site: Website> {
     let theme: Theme<Site>
@@ -35,7 +34,7 @@ private extension HTMLGenerator {
         let creationFile = try File(path: theme.creationPath.string)
         let packageFolder = try creationFile.resolveSwiftPackageFolder()
 
-        try await theme.resourcePaths.asyncForEach { path in
+        for path in theme.resourcePaths {
             do {
                 let file = try packageFolder.file(at: path.string)
                 try context.copyFileToOutput(file, targetFolderPath: nil)
@@ -56,15 +55,15 @@ private extension HTMLGenerator {
     }
 
     func generateSectionHTML() async throws {
-        try await context.sections.asyncForEach { section in
+        for section in context.sections {
             try outputHTML(
                 for: section,
                 indentedBy: indentation,
                 using: theme.makeSectionHTML,
                 fileMode: .foldersAndIndexFiles
             )
-            
-            try await section.items.asyncForEach { item in
+
+            for item in section.items {
                 try outputHTML(
                     for: item,
                     indentedBy: indentation,
@@ -76,7 +75,7 @@ private extension HTMLGenerator {
     }
 
     func generatePageHTML() async throws {
-        try await context.pages.values.asyncForEach { page in
+        for page in context.pages.values {
             try outputHTML(
                 for: page,
                 indentedBy: indentation,
@@ -103,7 +102,7 @@ private extension HTMLGenerator {
             try listFile.write(listHTML.render(indentedBy: indentation))
         }
 
-        try await context.allTags.asyncForEach { tag in
+        for tag in context.allTags {
             let detailsPath = context.site.path(for: tag)
             let detailsContent = config.detailsContentResolver(tag)
 
@@ -114,7 +113,7 @@ private extension HTMLGenerator {
             )
 
             guard let detailsHTML = try theme.makeTagDetailsHTML(detailsPage, context) else {
-                return
+                continue
             }
 
             try outputHTML(

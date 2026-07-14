@@ -66,7 +66,7 @@ private extension RSSFeedGenerator {
             .pubDate(date, timeZone: context.dateFormatter.timeZone),
             .ttl(Int(config.ttlInterval)),
             .atomLink(context.site.url(for: config.targetPath)),
-            .group(await items.prefix(config.maximumItemCount).asyncMap { item in
+            .group(items.prefix(config.maximumItemCount).map { item in
                 .item(
                     .guid(for: item, site: context.site),
                     .title(item.rssTitle),
