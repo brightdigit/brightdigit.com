@@ -1,7 +1,7 @@
 ---
 title: We Have All The Heroes with Stefano Mondino
 date: 2023-12-08 17:18
-description: Stefano Mondino from Synesthesia comes on to talk doing <strong>not </strong>product work at Synesthesia as opposed to building a product and working with multiple projects across various teams. We also talk about his favorite dev tools including his own tool Murray.
+description: Stefano Mondino from Synesthesia comes on to talk doing not product work at Synesthesia as opposed to building a product and working with multiple projects across various teams. We also talk about his favorite dev tools including his own tool Murray.
 featuredImage: https://images.transistor.fm/file/transistor/images/episode/1637486/full_1702072740-artwork.jpg
 youtubeID: ZyQEuZzLDqU
 audioDuration: 2695

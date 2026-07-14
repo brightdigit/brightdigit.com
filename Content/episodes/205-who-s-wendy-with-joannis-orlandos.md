@@ -1,7 +1,7 @@
 ---
 title: Who's Wendy with Joannis Orlandos
 date: 2026-06-05 08:52
-description: <strong>Joannis Orlandos</strong> stops by to chat about WendyOS, an operating system for bringing Swift and AI to robots, drones, and edge devices. We get into running Swift on NVIDIA Jetson and Raspberry Pi hardware, the future of cross-platform Swift across Android, Windows, and Wasm, and somehow end up arguing about whether you should let LLMs format your code at all.
+description: Joannis Orlandos stops by to chat about WendyOS, an operating system for bringing Swift and AI to robots, drones, and edge devices. We get into running Swift on NVIDIA Jetson and Raspberry Pi hardware, the future of cross-platform Swift across Android, Windows, and Wasm, and somehow end up arguing about whether you should let LLMs format your code at all.
 featuredImage: https://img.transistorcdn.com/DsfYPskWXiMjZMJ3AItqG6INxF_mb5yGS6CYZkJitWg/rs:fill:0:0:1/w:1400/h:1400/q:60/mb:500000/aHR0cHM6Ly9pbWct/dXBsb2FkLXByb2R1/Y3Rpb24udHJhbnNp/c3Rvci5mbS84Mjk0/ZjQyMGI3MzQ0ZTk3/MjEyMjdhYjUzNDZk/YjQyNC5qcGc.jpg
 youtubeID: LIL69QUtLT8
 audioDuration: 2858
