@@ -1,18 +1,12 @@
 #!/bin/bash
 
-# Lint script for a vendored Publish-stack package. Adapted from the BrightDigit
-# template: SwiftLint (enforcing the no_unchecked_sendable rule) and the build
-# are strict gates; swift-format and periphery run as advisory-only, since the
-# upstream Sundell code is not formatted to the BrightDigit house style.
+# Remove set -e to allow script to continue running
+# set -e  # Exit on any error
 
 ERRORS=0
 
 run_command() {
 	"$@" || ERRORS=$((ERRORS + 1))
-}
-
-advisory() {
-	"$@" || echo "  (advisory step reported issues; not failing the build)"
 }
 
 if [ "$LINT_MODE" = "INSTALL" ]; then
@@ -21,6 +15,7 @@ fi
 
 echo "LintMode: $LINT_MODE"
 
+# More portable way to get script directory
 if [ -z "$SRCROOT" ]; then
 	SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
 	PACKAGE_DIR="${SCRIPT_DIR}/.."
@@ -28,6 +23,8 @@ else
 	PACKAGE_DIR="${SRCROOT}"
 fi
 
+# Detect if mise is available
+# Check common installation paths for mise
 MISE_PATHS=(
     "/opt/homebrew/bin/mise"
     "/usr/local/bin/mise"
@@ -42,6 +39,7 @@ for mise_path in "${MISE_PATHS[@]}"; do
     fi
 done
 
+# Fallback to PATH lookup
 if [ -z "$MISE_BIN" ] && command -v mise &> /dev/null; then
     MISE_BIN="mise"
 fi
@@ -51,6 +49,7 @@ if [ -n "$MISE_BIN" ]; then
 else
     echo "Error: mise is not installed"
     echo "Install mise: https://mise.jdx.dev/getting-started.html"
+    echo "Checked paths: ${MISE_PATHS[*]}"
     exit 1
 fi
 
@@ -66,22 +65,33 @@ fi
 
 pushd $PACKAGE_DIR
 
+# Bootstrap tools (mise will install based on .mise.toml)
 run_command "$MISE_BIN" install
 
+if [ -z "$CI" ]; then
+	run_command $TOOL_CMD swift-format format --configuration .swift-format --recursive --parallel --in-place Sources Tests
+	run_command $TOOL_CMD swiftlint --fix
+fi
+
 if [ -z "$FORMAT_ONLY" ]; then
-	# Strict gates: the no_unchecked_sendable rule and a clean build.
+	run_command $TOOL_CMD swift-format lint --configuration .swift-format --recursive --parallel $SWIFTFORMAT_LINT_OPTIONS Sources Tests
 	run_command $TOOL_CMD swiftlint lint $SWIFTLINT_OPTIONS
+	# Check for compilation errors
 	run_command swift build --build-tests
-	# Advisory: house-style formatting is not enforced on vendored code.
-	advisory $TOOL_CMD swift-format lint --configuration .swift-format --recursive --parallel $SWIFTFORMAT_LINT_OPTIONS Sources Tests
+fi
+
+# header.sh rewrites file headers in place, so it only runs locally — never in CI.
+if [ -z "$CI" ]; then
+	$PACKAGE_DIR/Scripts/header.sh -d $PACKAGE_DIR/Sources -c "Leo Dion" -o "BrightDigit" -p "Files"
 fi
 
 if [ -z "$CI" ]; then
-	advisory $TOOL_CMD periphery scan $PERIPHERY_OPTIONS --disable-update-check
+	run_command $TOOL_CMD periphery scan $PERIPHERY_OPTIONS --disable-update-check
 fi
 
 popd
 
+# Exit with error code if any errors occurred
 if [ $ERRORS -gt 0 ]; then
 	echo "Linting completed with $ERRORS error(s)"
 	exit 1
