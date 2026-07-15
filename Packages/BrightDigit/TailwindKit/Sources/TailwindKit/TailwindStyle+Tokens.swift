@@ -41,20 +41,21 @@ extension TailwindStyle {
   }
 
   /// A Tailwind v4 color shade (the `500` in `bg-blue-500`).
+  ///
+  /// Spelled `sNNN` because Swift identifiers cannot begin with a digit and
+  /// leading underscores are disallowed — e.g. `.bg(.blue, .s500)`.
   public enum Shade: Int, Sendable, CaseIterable {
-    // swiftlint:disable identifier_name
-    case _50 = 50
-    case _100 = 100
-    case _200 = 200
-    case _300 = 300
-    case _400 = 400
-    case _500 = 500
-    case _600 = 600
-    case _700 = 700
-    case _800 = 800
-    case _900 = 900
-    case _950 = 950
-    // swiftlint:enable identifier_name
+    case s50 = 50
+    case s100 = 100
+    case s200 = 200
+    case s300 = 300
+    case s400 = 400
+    case s500 = 500
+    case s600 = 600
+    case s700 = 700
+    case s800 = 800
+    case s900 = 900
+    case s950 = 950
 
     /// The token fragment, e.g. `"500"`.
     internal var token: String { String(rawValue) }
@@ -77,12 +78,14 @@ extension TailwindStyle {
 
     internal let token: String
 
+    /// Creates a spacing value from an integer literal (e.g. `4` renders `4`).
     public init(integerLiteral value: Int) {
       self.token = String(value)
     }
 
+    /// Creates a spacing value from a floating-point literal, dropping a
+    /// trailing `.0` (e.g. `2.5` renders `2.5`, `2.0` renders `2`).
     public init(floatLiteral value: Double) {
-      // Drop a trailing ".0" so 2.0 renders as "2", 2.5 stays "2.5".
       self.token =
         value.rounded() == value
         ? String(Int(value))
@@ -118,10 +121,12 @@ extension TailwindStyle {
 
     internal let token: String
 
+    /// Creates a size from an integer literal on the spacing scale (e.g. `4`).
     public init(integerLiteral value: Int) {
       self.token = String(value)
     }
 
+    /// Creates a size from a floating-point literal, dropping a trailing `.0`.
     public init(floatLiteral value: Double) {
       self.token =
         value.rounded() == value

@@ -27,169 +27,156 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-// Static mirrors of every instance utility in `TailwindStyle+Utilities.swift`,
-// each forwarding to the empty style. These let a chain start with a leading
-// dot — required for `TW.flex…` and for the
-// `.tailwind(.flex.items(.center).gap)` Plot call site, where the argument type
-// is inferred as `TailwindStyle`. See the instance members for per-utility docs.
-// Bare utilities are properties; parameterized ones are methods (kept in a
-// second extension so properties precede methods).
-
-// MARK: - Bare utilities (type properties)
-
-extension TailwindStyle {
-  // MARK: Display
-
-  public static var flex: TailwindStyle { TailwindStyle().flex }
-  public static var inlineFlex: TailwindStyle { TailwindStyle().inlineFlex }
-  public static var grid: TailwindStyle { TailwindStyle().grid }
-  public static var block: TailwindStyle { TailwindStyle().block }
-  public static var inlineBlock: TailwindStyle { TailwindStyle().inlineBlock }
-  public static var inline: TailwindStyle { TailwindStyle().inline }
-  public static var hidden: TailwindStyle { TailwindStyle().hidden }
-
-  // MARK: Flexbox & grid
-
-  public static var flexRow: TailwindStyle { TailwindStyle().flexRow }
-  public static var flexCol: TailwindStyle { TailwindStyle().flexCol }
-  public static var flexWrap: TailwindStyle { TailwindStyle().flexWrap }
-  public static var grow: TailwindStyle { TailwindStyle().grow }
-  public static var shrink: TailwindStyle { TailwindStyle().shrink }
-  public static var gap: TailwindStyle { TailwindStyle().gap }
-
-  // MARK: Colors
-
-  public static var bgWhite: TailwindStyle { TailwindStyle().bgWhite }
-  public static var bgBlack: TailwindStyle { TailwindStyle().bgBlack }
-  public static var bgTransparent: TailwindStyle { TailwindStyle().bgTransparent }
-
-  // MARK: Typography
-
-  public static var textWhite: TailwindStyle { TailwindStyle().textWhite }
-  public static var textBlack: TailwindStyle { TailwindStyle().textBlack }
-  public static var italic: TailwindStyle { TailwindStyle().italic }
-  public static var underline: TailwindStyle { TailwindStyle().underline }
-  public static var uppercase: TailwindStyle { TailwindStyle().uppercase }
-  public static var lowercase: TailwindStyle { TailwindStyle().lowercase }
-  public static var capitalize: TailwindStyle { TailwindStyle().capitalize }
-
-  // MARK: Borders & radius
-
-  public static var border: TailwindStyle { TailwindStyle().border }
-  public static var rounded: TailwindStyle { TailwindStyle().rounded }
-}
-
-// MARK: - Parameterized utilities (type methods)
-
 extension TailwindStyle {
   // MARK: Flexbox & grid
 
+  /// `items-<align>`.
   public static func items(_ align: Align) -> TailwindStyle {
     TailwindStyle().items(align)
   }
+  /// `justify-<value>`.
   public static func justify(_ value: Justify) -> TailwindStyle {
     TailwindStyle().justify(value)
   }
+  /// `grid-cols-<n>`.
   public static func gridCols(_ count: Int) -> TailwindStyle {
     TailwindStyle().gridCols(count)
   }
+  /// `gap-<n>`.
   public static func gap(_ amount: Spacing) -> TailwindStyle {
     TailwindStyle().gap(amount)
   }
+  /// `gap-x-<n>`.
   public static func gapX(_ amount: Spacing) -> TailwindStyle {
     TailwindStyle().gapX(amount)
   }
+  /// `gap-y-<n>`.
   public static func gapY(_ amount: Spacing) -> TailwindStyle {
     TailwindStyle().gapY(amount)
   }
 
   // MARK: Spacing
 
+  /// `p-<n>`.
   public static func p(_ amount: Spacing) -> TailwindStyle { TailwindStyle().p(amount) }
+  /// `px-<n>`.
   public static func px(_ amount: Spacing) -> TailwindStyle { TailwindStyle().px(amount) }
+  /// `py-<n>`.
   public static func py(_ amount: Spacing) -> TailwindStyle { TailwindStyle().py(amount) }
+  /// `pt-<n>`.
   public static func pt(_ amount: Spacing) -> TailwindStyle { TailwindStyle().pt(amount) }
+  /// `pr-<n>`.
   public static func pr(_ amount: Spacing) -> TailwindStyle { TailwindStyle().pr(amount) }
+  /// `pb-<n>`.
   public static func pb(_ amount: Spacing) -> TailwindStyle { TailwindStyle().pb(amount) }
+  /// `pl-<n>`.
   public static func pl(_ amount: Spacing) -> TailwindStyle { TailwindStyle().pl(amount) }
+  /// `m-<n>`.
   public static func m(_ amount: Spacing) -> TailwindStyle { TailwindStyle().m(amount) }
+  /// `mx-<n>`.
   public static func mx(_ amount: Spacing) -> TailwindStyle { TailwindStyle().mx(amount) }
+  /// `my-<n>`.
   public static func my(_ amount: Spacing) -> TailwindStyle { TailwindStyle().my(amount) }
+  /// `mt-<n>`.
   public static func mt(_ amount: Spacing) -> TailwindStyle { TailwindStyle().mt(amount) }
+  /// `mr-<n>`.
   public static func mr(_ amount: Spacing) -> TailwindStyle { TailwindStyle().mr(amount) }
+  /// `mb-<n>`.
   public static func mb(_ amount: Spacing) -> TailwindStyle { TailwindStyle().mb(amount) }
+  /// `ml-<n>`.
   public static func ml(_ amount: Spacing) -> TailwindStyle { TailwindStyle().ml(amount) }
 
   // MARK: Sizing
 
+  /// `w-<size>`.
   public static func w(_ size: Size) -> TailwindStyle { TailwindStyle().w(size) }
+  /// `h-<size>`.
   public static func h(_ size: Size) -> TailwindStyle { TailwindStyle().h(size) }
 
   // MARK: Colors
 
+  /// `bg-<color>-<shade>`.
   public static func bg(_ color: Color, _ shade: Shade) -> TailwindStyle {
     TailwindStyle().bg(color, shade)
   }
+  /// `border-<color>-<shade>`.
   public static func borderColor(_ color: Color, _ shade: Shade) -> TailwindStyle {
     TailwindStyle().borderColor(color, shade)
   }
 
   // MARK: Typography
 
+  /// `text-<size>`.
   public static func text(_ size: TextSize) -> TailwindStyle {
     TailwindStyle().text(size)
   }
+  /// `text-<color>-<shade>`.
   public static func text(_ color: Color, _ shade: Shade) -> TailwindStyle {
     TailwindStyle().text(color, shade)
   }
+  /// `text-<align>`.
   public static func text(_ align: TextAlign) -> TailwindStyle {
     TailwindStyle().text(align)
   }
+  /// `font-<weight>`.
   public static func font(_ weight: FontWeight) -> TailwindStyle {
     TailwindStyle().font(weight)
   }
 
   // MARK: Borders & radius
 
+  /// `border-<n>`.
   public static func border(_ width: Int) -> TailwindStyle {
     TailwindStyle().border(width)
   }
+  /// `rounded-<radius>`.
   public static func rounded(_ radius: Radius) -> TailwindStyle {
     TailwindStyle().rounded(radius)
   }
 
   // MARK: Responsive & state variants
 
+  /// `sm:` variant.
   public static func sm(_ style: TailwindStyle) -> TailwindStyle {
     TailwindStyle().sm(style)
   }
+  /// `md:` variant.
   public static func md(_ style: TailwindStyle) -> TailwindStyle {
     TailwindStyle().md(style)
   }
+  /// `lg:` variant.
   public static func lg(_ style: TailwindStyle) -> TailwindStyle {
     TailwindStyle().lg(style)
   }
+  /// `xl:` variant.
   public static func xl(_ style: TailwindStyle) -> TailwindStyle {
     TailwindStyle().xl(style)
   }
+  /// `2xl:` variant.
   public static func xl2(_ style: TailwindStyle) -> TailwindStyle {
     TailwindStyle().xl2(style)
   }
+  /// `hover:` variant.
   public static func hover(_ style: TailwindStyle) -> TailwindStyle {
     TailwindStyle().hover(style)
   }
+  /// `focus:` variant.
   public static func focus(_ style: TailwindStyle) -> TailwindStyle {
     TailwindStyle().focus(style)
   }
+  /// `active:` variant.
   public static func active(_ style: TailwindStyle) -> TailwindStyle {
     TailwindStyle().active(style)
   }
+  /// `disabled:` variant.
   public static func disabled(_ style: TailwindStyle) -> TailwindStyle {
     TailwindStyle().disabled(style)
   }
+  /// `group-hover:` variant.
   public static func groupHover(_ style: TailwindStyle) -> TailwindStyle {
     TailwindStyle().groupHover(style)
   }
+  /// `dark:` variant.
   public static func dark(_ style: TailwindStyle) -> TailwindStyle {
     TailwindStyle().dark(style)
   }

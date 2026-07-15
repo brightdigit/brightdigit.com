@@ -27,118 +27,115 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import XCTest
+import Testing
 
 @testable import TailwindKit
 
 // Plot-independent: these assert `.rendered` string equality only; nothing here
 // imports Plot.
-internal final class TailwindStyleTests: XCTestCase {
-  internal func testEmptyRendersEmptyString() {
-    XCTAssertEqual(TailwindStyle().rendered, "")
-    XCTAssertEqual(TW().rendered, "")
+@Suite internal struct TailwindStyleTests {
+  @Test internal func emptyRendersEmptyString() {
+    #expect(TailwindStyle().rendered.isEmpty)
+    #expect(TW().rendered.isEmpty)
   }
 
-  internal func testConfirmedCanonicalExample() {
-    XCTAssertEqual(
-      TW.flex.items(.center).gap(4).bg(.blue, ._500).rendered,
-      "flex items-center gap-4 bg-blue-500"
+  @Test internal func confirmedCanonicalExample() {
+    #expect(
+      TW.flex.items(.center).gap(4).bg(.blue, .s500).rendered
+        == "flex items-center gap-4 bg-blue-500"
     )
   }
 
-  internal func testPlanExample() {
-    XCTAssertEqual(
-      TW.flex.items(.center).gap(4).rendered,
-      "flex items-center gap-4"
+  @Test internal func planExample() {
+    #expect(
+      TW.flex.items(.center).gap(4).rendered == "flex items-center gap-4"
     )
   }
 
-  internal func testColorShadeToken() {
-    XCTAssertEqual(TW.bg(.blue, ._500).rendered, "bg-blue-500")
-    XCTAssertEqual(TW.text(.gray, ._700).rendered, "text-gray-700")
-    XCTAssertEqual(TW.borderColor(.slate, ._200).rendered, "border-slate-200")
+  @Test internal func colorShadeToken() {
+    #expect(TW.bg(.blue, .s500).rendered == "bg-blue-500")
+    #expect(TW.text(.gray, .s700).rendered == "text-gray-700")
+    #expect(TW.borderColor(.slate, .s200).rendered == "border-slate-200")
   }
 
-  internal func testBareUtilitiesAreProperties() {
-    XCTAssertEqual(TW.flex.rendered, "flex")
-    XCTAssertEqual(TW.grid.rendered, "grid")
-    XCTAssertEqual(TW.hidden.rendered, "hidden")
-    XCTAssertEqual(TW.italic.underline.rendered, "italic underline")
-    XCTAssertEqual(TW.gap.rendered, "gap")
+  @Test internal func bareUtilitiesAreProperties() {
+    #expect(TW.flex.rendered == "flex")
+    #expect(TW.grid.rendered == "grid")
+    #expect(TW.hidden.rendered == "hidden")
+    #expect(TW.italic.underline.rendered == "italic underline")
+    #expect(TW.gap.rendered == "gap")
   }
 
-  internal func testSpacingScale() {
-    XCTAssertEqual(TW.p(4).rendered, "p-4")
-    XCTAssertEqual(TW.px(2.5).rendered, "px-2.5")
-    XCTAssertEqual(TW.my(0).mt(8).rendered, "my-0 mt-8")
-    XCTAssertEqual(TW.p(.px).rendered, "p-px")
+  @Test internal func spacingScale() {
+    #expect(TW.p(4).rendered == "p-4")
+    #expect(TW.px(2.5).rendered == "px-2.5")
+    #expect(TW.my(0).mt(8).rendered == "my-0 mt-8")
+    #expect(TW.p(.px).rendered == "p-px")
     // A whole-number float drops its trailing ".0".
-    XCTAssertEqual(TW.gap(2.0).rendered, "gap-2")
+    #expect(TW.gap(2.0).rendered == "gap-2")
   }
 
-  internal func testSizing() {
-    XCTAssertEqual(TW.w(.full).h(.screen).rendered, "w-full h-screen")
-    XCTAssertEqual(TW.w(4).rendered, "w-4")
-    XCTAssertEqual(TW.h(.auto).rendered, "h-auto")
+  @Test internal func sizing() {
+    #expect(TW.w(.full).h(.screen).rendered == "w-full h-screen")
+    #expect(TW.w(4).rendered == "w-4")
+    #expect(TW.h(.auto).rendered == "h-auto")
   }
 
-  internal func testTypography() {
-    XCTAssertEqual(TW.text(.lg).font(.medium).rendered, "text-lg font-medium")
-    XCTAssertEqual(TW.text(.xl2).rendered, "text-2xl")
-    XCTAssertEqual(TW.text(.center).rendered, "text-center")
-    XCTAssertEqual(TW.text(.blue, ._500).rendered, "text-blue-500")
+  @Test internal func typography() {
+    #expect(TW.text(.lg).font(.medium).rendered == "text-lg font-medium")
+    #expect(TW.text(.xl2).rendered == "text-2xl")
+    #expect(TW.text(.center).rendered == "text-center")
+    #expect(TW.text(.blue, .s500).rendered == "text-blue-500")
   }
 
-  internal func testFlexAndGrid() {
-    XCTAssertEqual(
-      TW.flex.flexCol.justify(.between).items(.stretch).rendered,
-      "flex flex-col justify-between items-stretch"
+  @Test internal func flexAndGrid() {
+    #expect(
+      TW.flex.flexCol.justify(.between).items(.stretch).rendered
+        == "flex flex-col justify-between items-stretch"
     )
-    XCTAssertEqual(TW.grid.gridCols(3).gap(6).rendered, "grid grid-cols-3 gap-6")
+    #expect(TW.grid.gridCols(3).gap(6).rendered == "grid grid-cols-3 gap-6")
   }
 
-  internal func testBordersAndRadius() {
-    XCTAssertEqual(TW.border.rounded.rendered, "border rounded")
-    XCTAssertEqual(TW.border(2).rounded(.lg).rendered, "border-2 rounded-lg")
+  @Test internal func bordersAndRadius() {
+    #expect(TW.border.rounded.rendered == "border rounded")
+    #expect(TW.border(2).rounded(.lg).rendered == "border-2 rounded-lg")
     // `rounded(.base)` collapses to bare `rounded`.
-    XCTAssertEqual(TW.rounded(.base).rendered, "rounded")
-    XCTAssertEqual(TW.rounded(.full).rendered, "rounded-full")
+    #expect(TW.rounded(.base).rendered == "rounded")
+    #expect(TW.rounded(.full).rendered == "rounded-full")
   }
 
-  internal func testResponsivePrefix() {
-    XCTAssertEqual(
-      TW.flex.md(.gap(4).items(.center)).rendered,
-      "flex md:gap-4 md:items-center"
+  @Test internal func responsivePrefix() {
+    #expect(
+      TW.flex.md(.gap(4).items(.center)).rendered
+        == "flex md:gap-4 md:items-center"
     )
-    XCTAssertEqual(TW.block.lg(.hidden).rendered, "block lg:hidden")
+    #expect(TW.block.lg(.hidden).rendered == "block lg:hidden")
   }
 
-  internal func testStatePrefix() {
-    XCTAssertEqual(
-      TW.bg(.blue, ._500).hover(.bg(.blue, ._700)).rendered,
-      "bg-blue-500 hover:bg-blue-700"
-    )
-  }
-
-  internal func testStackedPrefixes() {
-    XCTAssertEqual(
-      TW.md(.hover(.bg(.blue, ._700))).rendered,
-      "md:hover:bg-blue-700"
-    )
-    XCTAssertEqual(
-      TW.dark(.text(.gray, ._100)).rendered,
-      "dark:text-gray-100"
+  @Test internal func statePrefix() {
+    #expect(
+      TW.bg(.blue, .s500).hover(.bg(.blue, .s700)).rendered
+        == "bg-blue-500 hover:bg-blue-700"
     )
   }
 
-  internal func testStaticAndInstanceEntryPointsAgree() {
+  @Test internal func stackedPrefixes() {
+    #expect(TW.md(.hover(.bg(.blue, .s700))).rendered == "md:hover:bg-blue-700")
+    #expect(TW.dark(.text(.gray, .s100)).rendered == "dark:text-gray-100")
+  }
+
+  @Test internal func staticAndInstanceEntryPointsAgree() {
     // Leading-dot static entry vs. explicit-empty instance chain.
-    XCTAssertEqual(TailwindStyle.flex.gap(4), TailwindStyle().flex.gap(4))
-    XCTAssertEqual(TW.bg(.blue, ._500), TailwindStyle().bg(.blue, ._500))
+    let flexGapViaInstance = TailwindStyle().flex.gap(4)
+    #expect(TailwindStyle.flex.gap(4) == flexGapViaInstance)
+    let bgViaInstance = TailwindStyle().bg(.blue, .s500)
+    #expect(TW.bg(.blue, .s500) == bgViaInstance)
   }
 
-  internal func testEquatable() {
-    XCTAssertEqual(TW.flex.gap(4), TW.flex.gap(4))
-    XCTAssertNotEqual(TW.flex.gap(4), TW.flex.gap(2))
+  @Test internal func equatable() {
+    let lhs = TW.flex.gap(4)
+    let rhs = TW.flex.gap(4)
+    #expect(lhs == rhs)
+    #expect(lhs != TW.flex.gap(2))
   }
 }

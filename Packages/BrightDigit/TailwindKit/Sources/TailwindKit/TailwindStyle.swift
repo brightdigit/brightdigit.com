@@ -36,7 +36,7 @@
 /// `TailwindStyle`, so styles are composed by chaining:
 ///
 /// ```swift
-/// TW.flex.items(.center).gap(4).bg(.blue, ._500).rendered
+/// TW.flex.items(.center).gap(4).bg(.blue, .s500).rendered
 /// // "flex items-center gap-4 bg-blue-500"
 /// ```
 ///
@@ -87,7 +87,7 @@ public struct TailwindStyle: Sendable, Equatable, Hashable {
   /// `"\(prefix):"` and appended.
   ///
   /// Used to model responsive/state variants (e.g. `md`, `hover`); prefixes
-  /// stack, so `.md(.hover(.bg(.blue, ._700)))` renders `"md:hover:bg-blue-700"`.
+  /// stack, so `.md(.hover(.bg(.blue, .s700)))` renders `"md:hover:bg-blue-700"`.
   internal func prefixing(_ prefix: String, _ other: TailwindStyle) -> TailwindStyle {
     TailwindStyle(tokens: tokens + other.tokens.map { "\(prefix):\($0)" })
   }

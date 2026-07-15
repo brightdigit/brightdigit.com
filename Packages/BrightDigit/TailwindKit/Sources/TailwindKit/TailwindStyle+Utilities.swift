@@ -27,83 +27,6 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-// Instance utilities. Every member returns a new `TailwindStyle`, so utilities
-// chain. Bare utilities are computed properties; parameterized utilities are
-// methods (kept in a second extension so properties precede methods). Mirror
-// static entry points live in `TailwindStyle+Static.swift` so a chain can begin
-// with a leading dot (`.flex.gap(4)`).
-
-// MARK: - Bare utilities (computed properties)
-
-extension TailwindStyle {
-  // MARK: Display
-
-  /// `flex`.
-  public var flex: TailwindStyle { appending("flex") }
-  /// `inline-flex`.
-  public var inlineFlex: TailwindStyle { appending("inline-flex") }
-  /// `grid`.
-  public var grid: TailwindStyle { appending("grid") }
-  /// `block`.
-  public var block: TailwindStyle { appending("block") }
-  /// `inline-block`.
-  public var inlineBlock: TailwindStyle { appending("inline-block") }
-  /// `inline`.
-  public var inline: TailwindStyle { appending("inline") }
-  /// `hidden`.
-  public var hidden: TailwindStyle { appending("hidden") }
-
-  // MARK: Flexbox & grid
-
-  /// `flex-row`.
-  public var flexRow: TailwindStyle { appending("flex-row") }
-  /// `flex-col`.
-  public var flexCol: TailwindStyle { appending("flex-col") }
-  /// `flex-wrap`.
-  public var flexWrap: TailwindStyle { appending("flex-wrap") }
-  /// `grow`.
-  public var grow: TailwindStyle { appending("grow") }
-  /// `shrink`.
-  public var shrink: TailwindStyle { appending("shrink") }
-  /// `gap` (bare).
-  public var gap: TailwindStyle { appending("gap") }
-
-  // MARK: Colors
-
-  /// `bg-white`.
-  public var bgWhite: TailwindStyle { appending("bg-white") }
-  /// `bg-black`.
-  public var bgBlack: TailwindStyle { appending("bg-black") }
-  /// `bg-transparent`.
-  public var bgTransparent: TailwindStyle { appending("bg-transparent") }
-
-  // MARK: Typography
-
-  /// `text-white`.
-  public var textWhite: TailwindStyle { appending("text-white") }
-  /// `text-black`.
-  public var textBlack: TailwindStyle { appending("text-black") }
-  /// `italic`.
-  public var italic: TailwindStyle { appending("italic") }
-  /// `underline`.
-  public var underline: TailwindStyle { appending("underline") }
-  /// `uppercase`.
-  public var uppercase: TailwindStyle { appending("uppercase") }
-  /// `lowercase`.
-  public var lowercase: TailwindStyle { appending("lowercase") }
-  /// `capitalize`.
-  public var capitalize: TailwindStyle { appending("capitalize") }
-
-  // MARK: Borders & radius
-
-  /// `border` (1px, bare).
-  public var border: TailwindStyle { appending("border") }
-  /// `rounded` (bare).
-  public var rounded: TailwindStyle { appending("rounded") }
-}
-
-// MARK: - Parameterized utilities (methods)
-
 extension TailwindStyle {
   // MARK: Flexbox & grid
 
@@ -177,12 +100,12 @@ extension TailwindStyle {
 
   // MARK: Colors
 
-  /// `bg-<color>-<shade>`, e.g. `.bg(.blue, ._500)`.
+  /// `bg-<color>-<shade>`, e.g. `.bg(.blue, .s500)`.
   public func bg(_ color: Color, _ shade: Shade) -> TailwindStyle {
     appending("bg-\(color.token)-\(shade.token)")
   }
 
-  /// `border-<color>-<shade>`, e.g. `.borderColor(.gray, ._200)`.
+  /// `border-<color>-<shade>`, e.g. `.borderColor(.gray, .s200)`.
   public func borderColor(_ color: Color, _ shade: Shade) -> TailwindStyle {
     appending("border-\(color.token)-\(shade.token)")
   }
@@ -194,7 +117,7 @@ extension TailwindStyle {
     appending("text-\(size.token)")
   }
 
-  /// `text-<color>-<shade>`, e.g. `.text(.blue, ._500)`.
+  /// `text-<color>-<shade>`, e.g. `.text(.blue, .s500)`.
   public func text(_ color: Color, _ shade: Shade) -> TailwindStyle {
     appending("text-\(color.token)-\(shade.token)")
   }
@@ -224,7 +147,7 @@ extension TailwindStyle {
   // MARK: Responsive & state variants
   //
   // Each takes a nested style and prefixes every one of its tokens. Prefixes
-  // stack, so `.md(.hover(.bg(.blue, ._700)))` renders `md:hover:bg-blue-700`.
+  // stack, so `.md(.hover(.bg(.blue, .s700)))` renders `md:hover:bg-blue-700`.
 
   /// `sm:` — ≥ 40rem breakpoint.
   public func sm(_ style: TailwindStyle) -> TailwindStyle { prefixing("sm", style) }
