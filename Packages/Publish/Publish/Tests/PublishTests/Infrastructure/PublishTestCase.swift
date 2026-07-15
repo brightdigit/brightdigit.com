@@ -64,9 +64,7 @@ internal class PublishTestCase: XCTestCase {
   internal func publishWebsiteWithPodcast(
     in folder: Folder? = nil,
     using steps: [PublishingStep<WebsiteStub.WithPodcastMetadata>],
-    content: [Path: String] = [:],
-    file: StaticString = #filePath,
-    line: UInt = #line
+    content: [Path: String] = [:]
   ) throws {
     try performWebsitePublishing(
       in: folder,

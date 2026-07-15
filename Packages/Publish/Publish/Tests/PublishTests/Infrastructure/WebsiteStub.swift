@@ -38,13 +38,8 @@ internal enum WebsiteStub {
     internal var description = "Description"
     internal var language = Language.english
     internal var imagePath: Path?
-    internal var faviconPath: Path?
     internal var tagHTMLConfig: TagHTMLConfiguration? = .default
 
     internal init() {}
-
-    internal func title(for sectionID: SectionID) -> String {
-      sectionID.rawValue
-    }
   }
 }
