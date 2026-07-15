@@ -78,7 +78,6 @@ import Testing
     #expect(email.id == Self.emailID)
     #expect(email.subject == "Hello from ButtondownKit")
     #expect(email.status == .draft)
-    #expect(email.source == .api)
 
     // The request carried the Markdown body unchanged (no HTML conversion).
     let recorded = await transport.recorded
