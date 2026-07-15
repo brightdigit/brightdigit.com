@@ -7,6 +7,8 @@
     "@tailwindcss/postcss": "^4.1.11",
     "babel-loader": "^8.2.3",
     "css-loader": "^6.6.0",
+    "highlight.js": "^11.11.1",
+    "mermaid": "^11.16.0",
     "postcss": "^8.2.4",
     "postcss-cli": "^8.3.1",
     "postcss-loader": "^6.2.1",

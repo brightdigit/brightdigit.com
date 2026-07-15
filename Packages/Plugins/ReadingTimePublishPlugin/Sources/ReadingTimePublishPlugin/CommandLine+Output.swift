@@ -15,7 +15,7 @@ let output = Mutex<@Sendable (String, OutputKind) -> Void>({ string, kind in
         string = "\(emoji) \(string)"
     }
 
-    fputs(string, kind.target)
+    try? kind.target.write(contentsOf: Data(string.utf8))
 })
 
 enum OutputKind {
@@ -39,12 +39,14 @@ private extension OutputKind {
         }
     }
 
-    var target: UnsafeMutablePointer<FILE> {
+    // `FileHandle` rather than the C `stdout` global, which on Linux (glibc) is
+    // a mutable `var` and not concurrency-safe under Swift 6.
+    var target: FileHandle {
         switch self {
         case .info, .warning, .success:
-            return stdout
+            return .standardOutput
         case .error:
-            return stdout
+            return .standardOutput
         }
     }
 }

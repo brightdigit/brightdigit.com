@@ -1,6 +1,64 @@
 import 'regenerator-runtime/runtime';
 import './../styles/styles.css';
 
+// Syntax highlighting (client-side, replaces the removed Splash plugin) and
+// Mermaid diagrams. Ink renders fenced code blocks as
+// `<pre><code class="language-xxx">…</code></pre>`, which is exactly what
+// highlight.js targets and what the Mermaid transform below looks for.
+import hljs from 'highlight.js/lib/core';
+import swift from 'highlight.js/lib/languages/swift';
+import yaml from 'highlight.js/lib/languages/yaml';
+import bash from 'highlight.js/lib/languages/bash';
+import ini from 'highlight.js/lib/languages/ini'; // also covers `toml`
+import mermaid from 'mermaid';
+// highlight.js token colors are defined in styles/styles.css (`.hljs-*` rules),
+// so the site keeps its own palette instead of a prebuilt hljs theme.
+
+hljs.registerLanguage('swift', swift);
+hljs.registerLanguage('yaml', yaml);
+hljs.registerLanguage('bash', bash);
+hljs.registerLanguage('ini', ini);
+hljs.registerLanguage('toml', ini);
+
+// Turn Ink's `<pre><code class="language-mermaid">` blocks into the
+// `<div class="mermaid">` elements Mermaid renders, then run Mermaid. Bails
+// early when there are no diagrams so the library only initializes when needed.
+function renderMermaidDiagrams(): void {
+    const blocks = document.querySelectorAll<HTMLElement>('pre > code.language-mermaid');
+    if (blocks.length === 0) {
+        return;
+    }
+    blocks.forEach((code) => {
+        const pre = code.parentElement!;
+        const div = document.createElement('div');
+        div.className = 'mermaid';
+        // `textContent` decodes the HTML entities Ink escaped in the source.
+        div.textContent = code.textContent ?? '';
+        pre.replaceWith(div);
+    });
+    mermaid.initialize({
+        startOnLoad: false,
+        theme: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default',
+    });
+    void mermaid.run();
+}
+
+// Highlight every fenced code block except Mermaid diagrams and blocks the
+// author opted out of with ```no-highlight.
+function highlightCodeBlocks(): void {
+    document
+        .querySelectorAll<HTMLElement>('pre code')
+        .forEach((block) => {
+            if (
+                block.classList.contains('language-mermaid') ||
+                block.classList.contains('language-no-highlight')
+            ) {
+                return;
+            }
+            hljs.highlightElement(block);
+        });
+}
+
 declare global {
     interface Window {
         gtag: (...args: any[]) => void
@@ -64,6 +122,10 @@ window.matchMedia('(prefers-color-scheme: dark)')
     })
 
 window.document.addEventListener("DOMContentLoaded", () => {
+    // Mermaid first, so its blocks are removed before highlight.js runs.
+    renderMermaidDiagrams()
+    highlightCodeBlocks()
+
     const shareLinks = document.querySelectorAll("a[data-text][data-url]")
     const type = "text/html";
     shareLinks.forEach(element => {

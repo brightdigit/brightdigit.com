@@ -52,14 +52,6 @@
     "path": "Packages/Publish/Plot"
   },
   {
-    "name": "Splash",
-    "path": "Packages/Publish/Splash"
-  },
-  {
-    "name": "SplashPublishPlugin",
-    "path": "Packages/Publish/SplashPublishPlugin"
-  },
-  {
     "name": "Publish",
     "path": "Packages/Publish/Publish"
   }

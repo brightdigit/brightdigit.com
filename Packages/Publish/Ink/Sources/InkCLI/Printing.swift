@@ -7,7 +7,9 @@
 import Foundation
 
 internal func printError(_ error: CustomStringConvertible) {
-    fputs("\(error)\n", stderr)
+    // Write via FileHandle rather than the C `stderr` global, which on Linux
+    // (glibc) is a mutable `var` and not concurrency-safe under Swift 6.
+    try? FileHandle.standardError.write(contentsOf: Data("\(error)\n".utf8))
 }
 
 internal func printUsageMessage() {
