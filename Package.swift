@@ -20,6 +20,7 @@ let package = Package(
       targets: ["brightdigitwg"]
     ),
     .library(name: "ContributeMailchimp", targets: ["ContributeMailchimp"]),
+    .library(name: "ContributeButtondown", targets: ["ContributeButtondown"]),
     .library(name: "BrightDigitPodcast", targets: ["BrightDigitPodcast"]),
     .library(name: "ContributeYouTube", targets: ["ContributeYouTube"]),
     .library(name: "ContributeRSS", targets: ["ContributeRSS"]),
@@ -69,6 +70,7 @@ let package = Package(
         "ContributeYouTube",
         "ContributeRSS",
         "ContributeMailchimp",
+        "ContributeButtondown",
         "ContributeWordPress",
         .product(name: "Spinetail", package: "Spinetail"),
         .product(name: "ButtondownKit", package: "ButtondownKit"),
@@ -101,6 +103,13 @@ let package = Package(
       ]
     ),
     .target(
+      name: "ContributeButtondown",
+      dependencies: [
+        "Contribute",
+        .product(name: "ButtondownKit", package: "ButtondownKit")
+      ]
+    ),
+    .target(
       name: "ContributeYouTube",
       dependencies: ["Contribute", "SwiftTube"]
     ),
@@ -127,6 +136,14 @@ let package = Package(
         "BrightDigitArgs",
         "BrightDigitPodcast",
         .product(name: "Spinetail", package: "Spinetail"),
+        .product(name: "ButtondownKit", package: "ButtondownKit")
+      ]
+    ),
+    .testTarget(
+      name: "ContributeButtondownTests",
+      dependencies: [
+        "ContributeButtondown",
+        "Contribute",
         .product(name: "ButtondownKit", package: "ButtondownKit")
       ]
     )

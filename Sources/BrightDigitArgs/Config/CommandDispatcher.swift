@@ -53,6 +53,7 @@ public enum CommandDispatcher {
     await registry.register(EpisodeURLCommand.self)
     await registry.register(Import.PodcastCommand.self)
     await registry.register(Import.MailchimpCommand.self)
+    await registry.register(Import.ButtondownCommand.self)
     await registry.register(Import.WordPressCommand.self)
     await registry.register(Buttondown.ReconcileCommand.self)
 

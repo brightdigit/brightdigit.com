@@ -78,19 +78,64 @@ public struct ButtondownClient: Sendable, UnderlyingClientProtocol,
     self.underlying = underlying
   }
 
+  /// The default Buttondown API server URL.
+  ///
+  /// Force-tried from the generated ``Servers/Server1``: the URL is a constant
+  /// literal in the vendored OpenAPI spec, so its construction cannot fail.
+  public static let defaultServerURL = try! Servers.Server1.url()
+
+  /// The client configuration used by the URLSession-backed initializers.
+  ///
+  /// Installs ``LenientISO8601DateTranscoder`` so the mixed fractional/whole
+  /// second timestamps the Buttondown API returns both decode successfully.
+  public static var defaultConfiguration: Configuration {
+    Configuration(dateTranscoder: LenientISO8601DateTranscoder.default)
+  }
+
   // URLSession-backed conveniences. Unavailable on WASI (no URLSessionTransport);
   // build a `Client` with a wasm-compatible transport and use `init(underlying:)`.
   #if !os(WASI)
-    /// Creates a client that talks to the live Buttondown API with the given key.
-    /// - Parameter apiKey: The Buttondown API key.
-    /// - Throws: An error if the server URL cannot be constructed.
-    public init(apiKey: String) throws {
-      let client = Client(
-        serverURL: try Servers.Server1.url(),
-        transport: URLSessionTransport(),
-        middlewares: [AuthenticationMiddleware(apiKey: apiKey)]
+    /// Creates a client that talks to the Buttondown API with the given key,
+    /// server URL, and configuration.
+    ///
+    /// This is the designated URLSession-backed initializer; the other
+    /// `apiKey`-based initializers funnel through it.
+    /// - Parameters:
+    ///   - apiKey: The Buttondown API key.
+    ///   - serverURL: The API server URL. Defaults to ``defaultServerURL``.
+    ///   - configuration: The generated-client configuration.
+    public init(
+      apiKey: String,
+      serverURL: URL = ButtondownClient.defaultServerURL,
+      configuration: Configuration
+    ) {
+      self.init(
+        underlying: Client(
+          serverURL: serverURL,
+          configuration: configuration,
+          transport: URLSessionTransport(),
+          middlewares: [AuthenticationMiddleware(apiKey: apiKey)]
+        )
       )
-      self.init(underlying: client)
+    }
+
+    /// Creates a client that talks to the Buttondown API with the given key,
+    /// server URL, and date transcoder.
+    /// - Parameters:
+    ///   - apiKey: The Buttondown API key.
+    ///   - serverURL: The API server URL. Defaults to ``defaultServerURL``.
+    ///   - dateTranscoder: The transcoder used to decode API timestamps.
+    ///     Defaults to ``LenientISO8601DateTranscoder``.
+    public init(
+      apiKey: String,
+      serverURL: URL = ButtondownClient.defaultServerURL,
+      dateTranscoder: any DateTranscoder = LenientISO8601DateTranscoder.default
+    ) {
+      self.init(
+        apiKey: apiKey,
+        serverURL: serverURL,
+        configuration: Configuration(dateTranscoder: dateTranscoder)
+      )
     }
 
     /// Creates a client using the `BUTTONDOWN_API_KEY` environment variable.
@@ -102,7 +147,7 @@ public struct ButtondownClient: Sendable, UnderlyingClientProtocol,
       else {
         throw ClientError.missingAPIKey
       }
-      return try ButtondownClient(apiKey: apiKey)
+      return ButtondownClient(apiKey: apiKey)
     }
   #endif
 }

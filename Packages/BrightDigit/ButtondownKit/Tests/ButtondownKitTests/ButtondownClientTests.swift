@@ -192,9 +192,9 @@ import Testing
   }
 
   #if !os(WASI)
-    /// `init(apiKey:)` builds a live-transport client without throwing.
-    @Test internal func initWithAPIKeySucceeds() throws {
-      _ = try ButtondownClient(apiKey: Self.apiKey)
+    /// `init(apiKey:)` builds a live-transport client.
+    @Test internal func initWithAPIKeySucceeds() {
+      _ = ButtondownClient(apiKey: Self.apiKey)
     }
   #endif
 }
