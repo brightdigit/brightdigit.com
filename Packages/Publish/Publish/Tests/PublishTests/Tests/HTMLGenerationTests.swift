@@ -10,17 +10,12 @@ import Plot
 import Files
 
 final class HTMLGenerationTests: PublishTestCase {
-    private var htmlFactory: HTMLFactoryMock<WebsiteStub.WithoutItemMetadata>!
-
-    override func setUp() {
-        super.setUp()
-        htmlFactory = HTMLFactoryMock()
-    }
-
     func testGeneratingIndexHTML() throws {
-        htmlFactory.makeIndexHTML = { content, _ in
-            HTML(.body(.text(content.title)))
-        }
+        let htmlFactory = HTMLFactoryMock<WebsiteStub.WithoutItemMetadata>(
+            makeIndexHTML: { content, _ in
+                HTML(.body(.text(content.title)))
+            }
+        )
 
         try publishWebsite(
             using: Theme(htmlFactory: htmlFactory),
@@ -30,9 +25,11 @@ final class HTMLGenerationTests: PublishTestCase {
     }
 
     func testGeneratingSectionHTML() throws {
-        htmlFactory.makeSectionHTML = { section, _ in
-            HTML(.body(.text(section.title)))
-        }
+        let htmlFactory = HTMLFactoryMock<WebsiteStub.WithoutItemMetadata>(
+            makeSectionHTML: { section, _ in
+                HTML(.body(.text(section.title)))
+            }
+        )
 
         try publishWebsite(
             using: Theme(htmlFactory: htmlFactory),
@@ -48,13 +45,15 @@ final class HTMLGenerationTests: PublishTestCase {
     }
 
     func testGeneratingItemHTML() throws {
-        htmlFactory.makeItemHTML = { item, _ in
-            HTML(.body(
-                .unwrap(item.audio?.url, { .text($0.absoluteString) }),
-                .text(" "),
-                .text(item.title)
-            ))
-        }
+        let htmlFactory = HTMLFactoryMock<WebsiteStub.WithoutItemMetadata>(
+            makeItemHTML: { item, _ in
+                HTML(.body(
+                    .unwrap(item.audio?.url, { .text($0.absoluteString) }),
+                    .text(" "),
+                    .text(item.title)
+                ))
+            }
+        )
 
         try publishWebsite(
             using: Theme(htmlFactory: htmlFactory),
@@ -80,9 +79,11 @@ final class HTMLGenerationTests: PublishTestCase {
     }
 
     func testGeneratingNestedItemHTML() throws {
-        htmlFactory.makeItemHTML = { item, _ in
-            HTML(.body(.text(item.title)))
-        }
+        let htmlFactory = HTMLFactoryMock<WebsiteStub.WithoutItemMetadata>(
+            makeItemHTML: { item, _ in
+                HTML(.body(.text(item.title)))
+            }
+        )
 
         try publishWebsite(
             using: Theme(htmlFactory: htmlFactory),
@@ -102,9 +103,11 @@ final class HTMLGenerationTests: PublishTestCase {
     }
 
     func testGeneratingPageHTML() throws {
-        htmlFactory.makePageHTML = { page, _ in
-            HTML(.body(.text(page.title)))
-        }
+        let htmlFactory = HTMLFactoryMock<WebsiteStub.WithoutItemMetadata>(
+            makePageHTML: { page, _ in
+                HTML(.body(.text(page.title)))
+            }
+        )
 
         try publishWebsite(
             using: Theme(htmlFactory: htmlFactory),
@@ -127,17 +130,18 @@ final class HTMLGenerationTests: PublishTestCase {
     }
 
     func testGeneratingTagHTML() throws {
-        htmlFactory.makeTagListHTML = { page, _ in
-            HTML(.body(.ul(
-                .forEach(page.tags.sorted()) {
-                    .li(.text($0.string))
-                }
-            )))
-        }
-
-        htmlFactory.makeTagDetailsHTML = { page, _ in
-            HTML(.body(.text(page.tag.string)))
-        }
+        let htmlFactory = HTMLFactoryMock<WebsiteStub.WithoutItemMetadata>(
+            makeTagListHTML: { page, _ in
+                HTML(.body(.ul(
+                    .forEach(page.tags.sorted()) {
+                        .li(.text($0.string))
+                    }
+                )))
+            },
+            makeTagDetailsHTML: { page, _ in
+                HTML(.body(.text(page.tag.string)))
+            }
+        )
 
         try publishWebsite(
             using: Theme(htmlFactory: htmlFactory),
@@ -167,9 +171,11 @@ final class HTMLGenerationTests: PublishTestCase {
     }
 
     func testCleaningUpOldHTMLFiles() throws {
-        htmlFactory.makePageHTML = { page, _ in
-            HTML(.body(.text(page.title)))
-        }
+        let htmlFactory = HTMLFactoryMock<WebsiteStub.WithoutItemMetadata>(
+            makePageHTML: { page, _ in
+                HTML(.body(.text(page.title)))
+            }
+        )
 
         let folder = try Folder.createTemporary()
 
@@ -197,9 +203,11 @@ final class HTMLGenerationTests: PublishTestCase {
     }
 
     func testAlwaysGeneratingIndexPageForAllSections() throws {
-        htmlFactory.makeSectionHTML = { section, _ in
-            HTML(.body(.text(section.id.rawValue)))
-        }
+        let htmlFactory = HTMLFactoryMock<WebsiteStub.WithoutItemMetadata>(
+            makeSectionHTML: { section, _ in
+                HTML(.body(.text(section.id.rawValue)))
+            }
+        )
 
         try publishWebsite(
             using: Theme(htmlFactory: htmlFactory),
@@ -211,11 +219,12 @@ final class HTMLGenerationTests: PublishTestCase {
             ]
         )
     }
-    
 
     func testNotGeneratingTagHTMLForIncompatibleTheme() throws {
-        htmlFactory.makeTagListHTML = nil
-        htmlFactory.makeTagDetailsHTML = nil
+        let htmlFactory = HTMLFactoryMock<WebsiteStub.WithoutItemMetadata>(
+            makeTagListHTML: nil,
+            makeTagDetailsHTML: nil
+        )
 
         try publishWebsite(
             using: Theme(htmlFactory: htmlFactory),
@@ -235,6 +244,8 @@ final class HTMLGenerationTests: PublishTestCase {
     }
 
     func testNotGeneratingTagHTMLWhenDisabled() throws {
+        let htmlFactory = HTMLFactoryMock<WebsiteStub.WithoutItemMetadata>()
+
         var site = WebsiteStub.WithoutItemMetadata()
         site.tagHTMLConfig = nil
 
@@ -256,6 +267,7 @@ final class HTMLGenerationTests: PublishTestCase {
     }
 
     func testGeneratingStandAloneHTMLFiles() throws {
+        let htmlFactory = HTMLFactoryMock<WebsiteStub.WithoutItemMetadata>()
         let folder = try Folder.createTemporary()
         let theme = Theme(htmlFactory: htmlFactory)
 

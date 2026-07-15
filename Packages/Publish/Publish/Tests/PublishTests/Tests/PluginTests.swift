@@ -42,10 +42,11 @@ final class PluginTests: PublishTestCase {
     }
 
     func testAddingPluginToDefaultPipeline() throws {
-        let htmlFactory = HTMLFactoryMock<WebsiteStub.WithoutItemMetadata>()
-        htmlFactory.makeIndexHTML = { content, _ in
-            HTML(.body(content.body.node))
-        }
+        let htmlFactory = HTMLFactoryMock<WebsiteStub.WithoutItemMetadata>(
+            makeIndexHTML: { content, _ in
+                HTML(.body(content.body.node))
+            }
+        )
 
         try publishWebsite(
             using: Theme(htmlFactory: htmlFactory),

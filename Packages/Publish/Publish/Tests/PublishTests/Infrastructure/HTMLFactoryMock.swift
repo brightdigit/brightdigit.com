@@ -11,67 +11,59 @@ import Plot
 final class HTMLFactoryMock<Site: Website>: HTMLFactory {
     typealias Closure<T> = @Sendable (T, PublishingContext<Site>) throws -> HTML
 
-    // `HTMLFactory` requires `Sendable`, so the mutable test-configurable
-    // closures are stored in lock-protected boxes rather than plain `var`s.
-    private let _makeIndexHTML = LockIsolated<Closure<Index>>({ _, _ in HTML(.body()) })
-    private let _makeSectionHTML = LockIsolated<Closure<Section<Site>>>({ _, _ in HTML(.body()) })
-    private let _makeItemHTML = LockIsolated<Closure<Item<Site>>>({ _, _ in HTML(.body()) })
-    private let _makePageHTML = LockIsolated<Closure<Page>>({ _, _ in HTML(.body()) })
-    private let _makeTagListHTML = LockIsolated<Closure<TagListPage>?>({ _, _ in HTML(.body()) })
-    private let _makeTagDetailsHTML = LockIsolated<Closure<TagDetailsPage>?>({ _, _ in HTML(.body()) })
+    // `HTMLFactory` requires `Sendable`. The test-configurable render closures
+    // are injected at construction and stored immutably, so the mock is Sendable
+    // without any lock-protected storage.
+    private let makeIndexHTMLClosure: Closure<Index>
+    private let makeSectionHTMLClosure: Closure<Section<Site>>
+    private let makeItemHTMLClosure: Closure<Item<Site>>
+    private let makePageHTMLClosure: Closure<Page>
+    private let makeTagListHTMLClosure: Closure<TagListPage>?
+    private let makeTagDetailsHTMLClosure: Closure<TagDetailsPage>?
 
-    var makeIndexHTML: Closure<Index> {
-        get { _makeIndexHTML.value }
-        set { _makeIndexHTML.value = newValue }
-    }
-    var makeSectionHTML: Closure<Section<Site>> {
-        get { _makeSectionHTML.value }
-        set { _makeSectionHTML.value = newValue }
-    }
-    var makeItemHTML: Closure<Item<Site>> {
-        get { _makeItemHTML.value }
-        set { _makeItemHTML.value = newValue }
-    }
-    var makePageHTML: Closure<Page> {
-        get { _makePageHTML.value }
-        set { _makePageHTML.value = newValue }
-    }
-    var makeTagListHTML: Closure<TagListPage>? {
-        get { _makeTagListHTML.value }
-        set { _makeTagListHTML.value = newValue }
-    }
-    var makeTagDetailsHTML: Closure<TagDetailsPage>? {
-        get { _makeTagDetailsHTML.value }
-        set { _makeTagDetailsHTML.value = newValue }
+    init(
+        makeIndexHTML: @escaping Closure<Index> = { _, _ in HTML(.body()) },
+        makeSectionHTML: @escaping Closure<Section<Site>> = { _, _ in HTML(.body()) },
+        makeItemHTML: @escaping Closure<Item<Site>> = { _, _ in HTML(.body()) },
+        makePageHTML: @escaping Closure<Page> = { _, _ in HTML(.body()) },
+        makeTagListHTML: Closure<TagListPage>? = { _, _ in HTML(.body()) },
+        makeTagDetailsHTML: Closure<TagDetailsPage>? = { _, _ in HTML(.body()) }
+    ) {
+        self.makeIndexHTMLClosure = makeIndexHTML
+        self.makeSectionHTMLClosure = makeSectionHTML
+        self.makeItemHTMLClosure = makeItemHTML
+        self.makePageHTMLClosure = makePageHTML
+        self.makeTagListHTMLClosure = makeTagListHTML
+        self.makeTagDetailsHTMLClosure = makeTagDetailsHTML
     }
 
     func makeIndexHTML(for index: Index,
                        context: PublishingContext<Site>) throws -> HTML {
-        try makeIndexHTML(index, context)
+        try makeIndexHTMLClosure(index, context)
     }
 
     func makeSectionHTML(for section: Section<Site>,
                          context: PublishingContext<Site>) throws -> HTML {
-        try makeSectionHTML(section, context)
+        try makeSectionHTMLClosure(section, context)
     }
 
     func makeItemHTML(for item: Item<Site>,
                       context: PublishingContext<Site>) throws -> HTML {
-        try makeItemHTML(item, context)
+        try makeItemHTMLClosure(item, context)
     }
 
     func makePageHTML(for page: Page,
                       context: PublishingContext<Site>) throws -> HTML {
-        try makePageHTML(page, context)
+        try makePageHTMLClosure(page, context)
     }
 
     func makeTagListHTML(for page: TagListPage,
                          context: PublishingContext<Site>) throws -> HTML? {
-        try makeTagListHTML?(page, context)
+        try makeTagListHTMLClosure?(page, context)
     }
 
     func makeTagDetailsHTML(for page: TagDetailsPage,
                             context: PublishingContext<Site>) throws -> HTML? {
-        try makeTagDetailsHTML?(page, context)
+        try makeTagDetailsHTMLClosure?(page, context)
     }
 }

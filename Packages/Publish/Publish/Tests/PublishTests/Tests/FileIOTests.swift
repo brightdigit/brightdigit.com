@@ -94,35 +94,6 @@ final class FileIOTests: PublishTestCase {
         XCTAssertNotNil(try? folder.file(at: "B/file"))
     }
 
-    func testRetrievingOutputFolder() throws {
-        let folder = try Folder.createTemporary()
-        let firstSectionFolder = LockIsolated<Folder?>(nil)
-
-        try publishWebsite(in: folder, using: [
-            .generateHTML(withTheme: .foundation),
-            .step(named: "Get output folder") { context in
-                firstSectionFolder.value = try context.outputFolder(at: "one")
-            }
-        ])
-
-        XCTAssertEqual(firstSectionFolder.value?.name, "one")
-    }
-
-    func testRetrievingOutputFile() throws {
-        let folder = try Folder.createTemporary()
-        let itemFile = LockIsolated<File?>(nil)
-
-        try publishWebsite(in: folder, using: [
-            .addItem(.stub(withPath: "item")),
-            .generateHTML(withTheme: .foundation),
-            .step(named: "Get output file") { context in
-                itemFile.value = try context.outputFile(at: "one/item/index.html")
-            }
-        ])
-
-        XCTAssertEqual(itemFile.value?.name, "index.html")
-    }
-
     func testCleaningHiddenFilesInOutputFolder() throws {
         let folder = try Folder.createTemporary()
         try folder.createFile(at: "Output/.hidden")

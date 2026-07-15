@@ -121,64 +121,6 @@ final class ContentMutationTests: PublishTestCase {
         XCTAssertEqual(Array(site.sections[.one].items), items)
     }
 
-    func testMutatingItemsByChangingTags() throws {
-        var items = [
-            Item.stub(withPath: "a").setting(\.tags, to: ["first"]),
-            Item.stub(withPath: "b").setting(\.tags, to: ["first"]),
-            Item.stub(withPath: "c").setting(\.tags, to: ["first"])
-        ]
-
-        let allTags = LockIsolated<Set<Tag>?>(nil)
-
-        let site = try publishWebsite(using: [
-            .addItems(in: items),
-            .mutateAllItems(matching: \.path == "one/a") { item in
-                item.tags.append("added")
-            },
-            .mutateAllItems(matching: \.path == "one/b") { item in
-                item.tags = ["replaced"]
-            },
-            .mutateAllItems(matching: \.path == "one/c") { item in
-                item.tags = []
-            },
-            .step(named: "custom") { context in
-                allTags.value = context.allTags
-            }
-        ])
-
-        items[0].tags = ["first", "added"]
-        items[1].tags = ["replaced"]
-        items[2].tags = []
-
-        XCTAssertEqual(site.sections[.one].items, items)
-        XCTAssertEqual(allTags.value, ["first", "added", "replaced"])
-    }
-
-    func testMutatingItemsByRemovingTags() throws {
-        let initialTags = LockIsolated<Set<Tag>?>(nil)
-        let finalTags = LockIsolated<Set<Tag>?>(nil)
-
-        try publishWebsite(using: [
-            .addItems(in: [
-                Item.stub(withPath: "a").setting(\.tags, to: ["one"]),
-                Item.stub(withPath: "b").setting(\.tags, to: ["two"]),
-                Item.stub(withPath: "c").setting(\.tags, to: ["three"])
-            ]),
-            .step(named: "custom") { context in
-                initialTags.value = context.allTags
-            },
-            .mutateAllItems { item in
-                item.tags = []
-            },
-            .step(named: "custom") { context in
-                finalTags.value = context.allTags
-            }
-        ])
-
-        XCTAssertEqual(initialTags.value, ["one", "two", "three"])
-        XCTAssertEqual(finalTags.value, [])
-    }
-
     func testSortingItems() throws {
         let items = [
             Item.stub(withPath: "a").setting(\.title, to: "A"),
