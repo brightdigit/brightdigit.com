@@ -140,48 +140,6 @@ public extension PublishingContext {
         try copyFileToOutput(file, targetFolderPath: targetFolderPath)
     }
 
-    /// Create a folder suitable for deployment. Any existing folder will be emptied
-    /// (apart from hidden files) before being passed to the given configure closure.
-    /// After that, all output files and folders will be copied into the new folder.
-    /// - Parameter prefix: What prefix to apply to the folder, typically
-    ///   the name of the current deployment method.
-    /// - parameter outputFolderPath: Any specific subfolder path to copy the output to.
-    ///   If `nil`, then the output will be copied to the deployment folder itself.
-    /// - Parameter configure: A closure used to configure the folder.
-    func createDeploymentFolder(
-        withPrefix prefix: String,
-        outputFolderPath: Path? = nil,
-        configure: (Folder) throws -> Void
-    ) throws -> Folder {
-        let path = Path(prefix + "Deploy")
-
-        let folder = try createFolder(at: path, in: folders.internal)
-        try folder.empty()
-
-        do {
-            try configure(folder)
-        } catch {
-            throw FileIOError(
-                path: path,
-                reason: .deploymentFolderSetupFailed(error)
-            )
-        }
-
-        var outputFolder = folder
-
-        if let outputFolderPath = outputFolderPath {
-            outputFolder = try folder.createSubfolder(at: outputFolderPath.string)
-        }
-
-        do {
-            try folders.output.subfolders.forEach { try $0.copy(to: outputFolder) }
-            try folders.output.files.includingHidden.forEach { try $0.copy(to: outputFolder) }
-            return folder
-        } catch {
-            throw FileIOError(path: path, reason: .folderCreationFailed)
-        }
-    }
-
     /// Return either an existing or newly created cache file for the
     /// current publishing step. Cache files are scoped to the step
     /// that they're created within, and can't be shared among steps.

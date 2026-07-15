@@ -19,7 +19,6 @@ extension FileIOError {
         case fileCreationFailed
         case fileCouldNotBeRead
         case fileCopyingFailed
-        case deploymentFolderSetupFailed(Error)
     }
 }
 
@@ -53,20 +52,10 @@ private extension FileIOError {
             return "The file could not be read"
         case .fileCopyingFailed:
             return "The file could not be copied"
-        case .deploymentFolderSetupFailed:
-            return "Failed to setup deployment folder."
         }
     }
 
     var underlyingError: Error? {
-        switch reason {
-        case .rootFolderNotFound, .folderNotFound,
-             .folderCreationFailed, .folderCopyingFailed,
-             .fileNotFound, .fileCreationFailed,
-             .fileCouldNotBeRead, .fileCopyingFailed:
-            return nil
-        case .deploymentFolderSetupFailed(let error):
-            return error
-        }
+        nil
     }
 }

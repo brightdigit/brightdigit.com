@@ -17,7 +17,6 @@ public struct PublishingStep<Site: Website>: Sendable {
     /// Closure type used to define the main body of a publishing step.
     public typealias Closure = @Sendable (inout PublishingContext<Site>) async throws -> Void
 
-    internal let kind: Kind
     internal let body: Body
 }
 
@@ -26,13 +25,13 @@ public struct PublishingStep<Site: Website>: Sendable {
 public extension PublishingStep {
     /// An empty step that does nothing. Can be used as a conditional fallback.
     static var empty: Self {
-        PublishingStep(kind: .system, body: .empty)
+        PublishingStep(body: .empty)
     }
 
     /// Group an array of steps into one.
     /// - parameter steps: The steps to use to form a group.
     static func group(_ steps: [Self]) -> Self {
-        PublishingStep(kind: .system, body: .group(steps))
+        PublishingStep(body: .group(steps))
     }
 
     /// Conditionally run a step if an expression evaluates to `true`.
@@ -59,7 +58,7 @@ public extension PublishingStep {
         case .empty, .group:
             return step
         case .operation(let name, let closure):
-            return .step(named: name, kind: step.kind) { context in
+            return .step(named: name) { context in
                 do { try await closure(&context) }
                 catch {}
             }
@@ -71,7 +70,6 @@ public extension PublishingStep {
     static func installPlugin(_ plugin: Plugin<Site>) -> Self {
         step(
             named: "Install plugin '\(plugin.name)'",
-            kind: .generation,
             body: plugin.installer
         )
     }
@@ -81,7 +79,7 @@ public extension PublishingStep {
     /// - parameter body: The step's closure body, which is used to
     ///   to mutate the current `PublishingContext`.
     static func step(named name: String, body: @escaping Closure) -> Self {
-        step(named: name, kind: .generation, body: body)
+        PublishingStep(body: .operation(name: name, closure: body))
     }
 }
 
@@ -456,44 +454,12 @@ public extension PublishingStep where Site.ItemMetadata: PodcastCompatibleWebsit
     }
 }
 
-// MARK: - Deployment
-
-public extension PublishingStep {
-    /// Deploy the website using a given method.
-    /// This step will only run in case either the `-d` or `--deploy
-    /// flag was passed on the command line, for example by using the
-    /// `publish deploy` command.
-    /// - parameter method: The method to use when deploying the website.
-    static func deploy(using method: DeploymentMethod<Site>) -> Self {
-        step(named: "Deploy using \(method.name)", kind: .deployment) { context in
-            try method.body(context)
-        }
-    }
-}
-
 // MARK: - Implementation details
 
 internal extension PublishingStep {
-    enum Kind: String, Sendable {
-        case system
-        case generation
-        case deployment
-    }
-
     enum Body: Sendable {
         case empty
         case operation(name: String, closure: Closure)
         case group([PublishingStep])
-    }
-}
-
-private extension PublishingStep {
-    static func step(named name: String,
-                     kind: Kind,
-                     body: @escaping Closure) -> Self {
-        PublishingStep(
-            kind: kind,
-            body: .operation(name: name, closure: body)
-        )
     }
 }

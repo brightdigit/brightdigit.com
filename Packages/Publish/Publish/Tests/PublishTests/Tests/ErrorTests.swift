@@ -136,17 +136,8 @@ final class ErrorTests: PublishTestCase {
         assertErrorThrown(
             try publishWebsite(using: []),
             PublishingError(
-                infoMessage: "WebsiteName has no generation steps."
+                infoMessage: "WebsiteName has no publishing steps."
             )
         )
-
-        try PublishRuntimeOverride.$commandLineArguments.withValue(["publish", "--deploy"]) {
-            assertErrorThrown(
-                try publishWebsite(using: []),
-                PublishingError(
-                    infoMessage: "WebsiteName has no deployment steps."
-                )
-            )
-        }
     }
 }

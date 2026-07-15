@@ -61,7 +61,6 @@ public extension Website {
     /// - parameter path: Any specific path to generate the website at.
     /// - parameter rssFeedSections: What sections to include in the site's RSS feed.
     /// - parameter rssFeedConfig: The configuration to use for the site's RSS feed.
-    /// - parameter deploymentMethod: How to deploy the website.
     /// - parameter additionalSteps: Any additional steps to add to the publishing
     ///   pipeline. Will be executed right before the HTML generation process begins.
     /// - parameter plugins: Plugins to be installed at the start of the publishing process.
@@ -73,7 +72,6 @@ public extension Website {
                  at path: Path? = nil,
                  rssFeedSections: Set<SectionID> = Set(SectionID.allCases),
                  rssFeedConfig: RSSFeedConfiguration? = .default,
-                 deployedUsing deploymentMethod: DeploymentMethod<Self>? = nil,
                  additionalSteps: [PublishingStep<Self>] = [],
                  plugins: [Plugin<Self>] = [],
                  file: StaticString = #filePath) throws -> PublishedWebsite<Self> where Self: Sendable {
@@ -92,8 +90,7 @@ public extension Website {
                         config: config
                     )
                 },
-                .generateSiteMap(indentedBy: indentation),
-                .unwrap(deploymentMethod, PublishingStep.deploy)
+                .generateSiteMap(indentedBy: indentation)
             ],
             file: file
         )
@@ -138,7 +135,6 @@ public extension Website {
     /// - parameter path: Any specific path to generate the website at.
     /// - parameter rssFeedSections: What sections to include in the site's RSS feed.
     /// - parameter rssFeedConfig: The configuration to use for the site's RSS feed.
-    /// - parameter deploymentMethod: How to deploy the website.
     /// - parameter additionalSteps: Any additional steps to add to the publishing
     ///   pipeline. Will be executed right before the HTML generation process begins.
     /// - parameter plugins: Plugins to be installed at the start of the publishing process.
@@ -150,7 +146,6 @@ public extension Website {
                  at path: Path? = nil,
                  rssFeedSections: Set<SectionID> = Set(SectionID.allCases),
                  rssFeedConfig: RSSFeedConfiguration? = .default,
-                 deployedUsing deploymentMethod: DeploymentMethod<Self>? = nil,
                  additionalSteps: [PublishingStep<Self>] = [],
                  plugins: [Plugin<Self>] = [],
                  file: StaticString = #filePath) async throws -> PublishedWebsite<Self> {
@@ -169,8 +164,7 @@ public extension Website {
                         config: config
                     )
                 },
-                .generateSiteMap(indentedBy: indentation),
-                .unwrap(deploymentMethod, PublishingStep.deploy)
+                .generateSiteMap(indentedBy: indentation)
             ],
             file: file
         )

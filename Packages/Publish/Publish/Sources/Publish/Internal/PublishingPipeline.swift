@@ -17,21 +17,16 @@ internal struct PublishingPipeline<Site: Website> {
 
 extension PublishingPipeline {
     func execute(for site: Site, at path: Path?) async throws -> PublishedWebsite<Site> {
-        let stepKind = resolveStepKind()
-
-        let folders = try setUpFolders(
-            withExplicitRootPath: path,
-            shouldEmptyOutputFolder: stepKind == .generation
-        )
+        let folders = try setUpFolders(withExplicitRootPath: path)
 
         let steps = self.steps.flatMap { step in
-            runnableSteps(ofKind: stepKind, from: step)
+            runnableSteps(from: step)
         }
 
         guard let firstStep = steps.first else {
             throw PublishingError(
                 infoMessage: """
-                \(site.name) has no \(stepKind.rawValue) steps.
+                \(site.name) has no publishing steps.
                 """
             )
         }
@@ -80,14 +75,11 @@ private extension PublishingPipeline {
         let closure: Step.Closure
     }
 
-    func setUpFolders(withExplicitRootPath path: Path?,
-                      shouldEmptyOutputFolder: Bool) throws -> Folder.Group {
+    func setUpFolders(withExplicitRootPath path: Path?) throws -> Folder.Group {
         let root = try resolveRootFolder(withExplicitPath: path)
         let outputFolderName = "Output"
 
-        if shouldEmptyOutputFolder {
-            try? root.subfolder(named: outputFolderName).empty(includingHidden: true)
-        }
+        try? root.subfolder(named: outputFolderName).empty(includingHidden: true)
 
         do {
             let outputFolder = try root.createSubfolderIfNeeded(
@@ -132,24 +124,12 @@ private extension PublishingPipeline {
         return try originFile.resolveSwiftPackageFolder()
     }
 
-    func resolveStepKind() -> Step.Kind {
-        let deploymentFlags: Set<String> = ["--deploy", "-d"]
-        let arguments = PublishRuntimeOverride.commandLineArguments ?? CommandLine.arguments
-        let shouldDeploy = arguments.contains(where: deploymentFlags.contains)
-        return shouldDeploy ? .deployment : .generation
-    }
-
-    func runnableSteps(ofKind kind: Step.Kind, from step: Step) -> [RunnableStep] {
-        switch step.kind {
-        case .system, kind: break
-        default: return []
-        }
-
+    func runnableSteps(from step: Step) -> [RunnableStep] {
         switch step.body {
         case .empty:
             return []
         case .group(let steps):
-            return steps.flatMap { runnableSteps(ofKind: kind, from: $0) }
+            return steps.flatMap { runnableSteps(from: $0) }
         case .operation(let name, let closure):
             return [RunnableStep(name: name, closure: closure)]
         }
