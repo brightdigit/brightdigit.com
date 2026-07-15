@@ -21,7 +21,7 @@ internal extension CommandLine {
             string = "\(emoji) \(string)"
         }
 
-        fputs(string, kind.target)
+        try? kind.target.write(contentsOf: Data(string.utf8))
     }
 }
 
@@ -39,12 +39,12 @@ private extension CommandLine.OutputKind {
         }
     }
 
-    var target: UnsafeMutablePointer<FILE> {
+    var target: FileHandle {
         switch self {
         case .info, .warning, .success:
-            return stdout
+            return .standardOutput
         case .error:
-            return stdout
+            return .standardOutput
         }
     }
 }
