@@ -7,7 +7,7 @@
 import Files
 
 internal extension File {
-    func resolveSwiftPackageFolder() throws -> Folder {
+    func resolveSwiftPackageFolder() throws(PublishingError) -> Folder {
         var nextFolder = parent
 
         while let currentFolder = nextFolder {

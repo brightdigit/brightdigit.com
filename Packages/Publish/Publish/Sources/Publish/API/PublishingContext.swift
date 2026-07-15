@@ -377,7 +377,7 @@ private extension PublishingContext {
         }
     }
 
-    func createFolder(at path: Path, in folder: Folder) throws -> Folder {
+    func createFolder(at path: Path, in folder: Folder) throws(FileIOError) -> Folder {
         do {
             return try folder.createSubfolderIfNeeded(at: path.string)
         } catch {
@@ -386,7 +386,7 @@ private extension PublishingContext {
         }
     }
 
-    func createFile(at path: Path, in folder: Folder) throws -> File {
+    func createFile(at path: Path, in folder: Folder) throws(FileIOError) -> File {
         do {
             return try folder.createFileIfNeeded(at: path.string)
         } catch {
