@@ -43,8 +43,9 @@ import OpenAPIRuntime
 /// ``ButtondownClient`` wraps the swift-openapi-generator ``Client`` with an
 /// ``AuthenticationMiddleware`` and exposes a small, ergonomic surface via the
 /// capability protocols it conforms to: ``EmailListing`` (list/page emails),
-/// ``EmailDrafting`` (create/send drafts), and ``EmailRetrieving`` (read one
-/// email). Those capabilities implement their methods against ``underlying`` in
+/// ``EmailDrafting`` (create/send drafts), ``EmailRetrieving`` (read one
+/// email), and ``EmailUpdating`` (patch an email). Those capabilities implement
+/// their methods against ``underlying`` in
 /// extensions constrained on ``UnderlyingClientProtocol``, so this type is only
 /// storage plus initializers. All results are Swift-native domain types
 /// (``Email`` et al.), never the generated `Components.Schemas.*`.
@@ -54,7 +55,7 @@ import OpenAPIRuntime
 /// repository; the API key is supplied via the `BUTTONDOWN_API_KEY` environment
 /// variable.
 public struct ButtondownClient: Sendable, UnderlyingClientProtocol,
-  EmailListing, EmailDrafting, EmailRetrieving
+  EmailListing, EmailDrafting, EmailRetrieving, EmailUpdating
 {
   /// Errors surfaced by ``ButtondownClient``.
   public enum ClientError: Error, Equatable {
