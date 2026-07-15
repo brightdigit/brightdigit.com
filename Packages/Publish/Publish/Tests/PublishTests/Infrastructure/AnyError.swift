@@ -6,10 +6,10 @@
 
 import Foundation
 
-struct AnyError: LocalizedError {
-    var errorDescription: String?
+internal struct AnyError: LocalizedError {
+  internal var errorDescription: String?
 
-    init(_ string: String) {
-        errorDescription = string
-    }
+  internal init(_ string: String) {
+    errorDescription = string
+  }
 }

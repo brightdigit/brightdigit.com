@@ -6,21 +6,21 @@
 
 import Files
 
-internal extension File {
-    func resolveSwiftPackageFolder() throws(PublishingError) -> Folder {
-        var nextFolder = parent
+extension File {
+  internal func resolveSwiftPackageFolder() throws(PublishingError) -> Folder {
+    var nextFolder = parent
 
-        while let currentFolder = nextFolder {
-            if currentFolder.containsFile(named: "Package.swift") {
-                return currentFolder
-            }
+    while let currentFolder = nextFolder {
+      if currentFolder.containsFile(named: "Package.swift") {
+        return currentFolder
+      }
 
-            nextFolder = currentFolder.parent
-        }
-
-        throw PublishingError(
-            path: Path(path),
-            infoMessage: "Could not resolve Swift package folder"
-        )
+      nextFolder = currentFolder.parent
     }
+
+    throw PublishingError(
+      path: Path(path),
+      infoMessage: "Could not resolve Swift package folder"
+    )
+  }
 }

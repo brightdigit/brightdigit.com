@@ -7,139 +7,139 @@
 import Files
 
 #if canImport(Cocoa)
-import Cocoa
+  import Cocoa
 #endif
 
 internal struct PublishingPipeline<Site: Website> {
-    let steps: [PublishingStep<Site>]
-    let originFilePath: Path
+  internal let steps: [PublishingStep<Site>]
+  internal let originFilePath: Path
 }
 
 extension PublishingPipeline {
-    func execute(for site: Site, at path: Path?) async throws -> PublishedWebsite<Site> {
-        let folders = try setUpFolders(withExplicitRootPath: path)
+  internal func execute(for site: Site, at path: Path?) async throws -> PublishedWebsite<Site> {
+    let folders = try setUpFolders(withExplicitRootPath: path)
 
-        let steps = self.steps.flatMap { step in
-            runnableSteps(from: step)
-        }
-
-        guard let firstStep = steps.first else {
-            throw PublishingError(
-                infoMessage: """
-                \(site.name) has no publishing steps.
-                """
-            )
-        }
-
-        var context = PublishingContext(
-            site: site,
-            folders: folders,
-            firstStepName: firstStep.name
-        )
-
-        context.generationWillBegin()
-
-        postNotification(named: "WillStart")
-        CommandLine.output("Publishing \(site.name) (\(steps.count) steps)", as: .info)
-
-        for (index, step) in steps.enumerated() {
-            do {
-                let message = "[\(index + 1)/\(steps.count)] \(step.name)"
-                CommandLine.output(message, as: .info)
-                context.prepareForStep(named: step.name)
-                try await step.closure(&context)
-            } catch let error as PublishingErrorConvertible {
-                throw error.publishingError(forStepNamed: step.name)
-            } catch {
-                let message = "An unknown error occurred: \(error.localizedDescription)"
-                throw PublishingError(infoMessage: message)
-            }
-        }
-
-        CommandLine.output("Successfully published \(site.name)", as: .success)
-        postNotification(named: "DidFinish")
-
-        return PublishedWebsite(
-            index: context.index,
-            sections: context.sections,
-            pages: context.pages
-        )
+    let steps = self.steps.flatMap { step in
+      runnableSteps(from: step)
     }
+
+    guard let firstStep = steps.first else {
+      throw PublishingError(
+        infoMessage: """
+          \(site.name) has no publishing steps.
+          """
+      )
+    }
+
+    var context = PublishingContext(
+      site: site,
+      folders: folders,
+      firstStepName: firstStep.name
+    )
+
+    context.generationWillBegin()
+
+    postNotification(named: "WillStart")
+    CommandLine.output("Publishing \(site.name) (\(steps.count) steps)", as: .info)
+
+    for (index, step) in steps.enumerated() {
+      do {
+        let message = "[\(index + 1)/\(steps.count)] \(step.name)"
+        CommandLine.output(message, as: .info)
+        context.prepareForStep(named: step.name)
+        try await step.closure(&context)
+      } catch let error as PublishingErrorConvertible {
+        throw error.publishingError(forStepNamed: step.name)
+      } catch {
+        let message = "An unknown error occurred: \(error.localizedDescription)"
+        throw PublishingError(infoMessage: message)
+      }
+    }
+
+    CommandLine.output("Successfully published \(site.name)", as: .success)
+    postNotification(named: "DidFinish")
+
+    return PublishedWebsite(
+      index: context.index,
+      sections: context.sections,
+      pages: context.pages
+    )
+  }
 }
 
-private extension PublishingPipeline {
-    typealias Step = PublishingStep<Site>
+extension PublishingPipeline {
+  fileprivate typealias Step = PublishingStep<Site>
 
-    struct RunnableStep {
-        let name: String
-        let closure: Step.Closure
+  fileprivate struct RunnableStep {
+    let name: String
+    let closure: Step.Closure
+  }
+
+  fileprivate func setUpFolders(withExplicitRootPath path: Path?) throws -> Folder.Group {
+    let root = try resolveRootFolder(withExplicitPath: path)
+    let outputFolderName = "Output"
+
+    try? root.subfolder(named: outputFolderName).empty(includingHidden: true)
+
+    do {
+      let outputFolder = try root.createSubfolderIfNeeded(
+        withName: outputFolderName
+      )
+
+      let internalFolder = try root.createSubfolderIfNeeded(
+        withName: ".publish"
+      )
+
+      let cacheFolder = try internalFolder.createSubfolderIfNeeded(
+        withName: "Caches"
+      )
+
+      return Folder.Group(
+        root: root,
+        output: outputFolder,
+        internal: internalFolder,
+        caches: cacheFolder
+      )
+    } catch {
+      throw PublishingError(
+        path: path,
+        infoMessage: "Failed to set up root folder structure"
+      )
+    }
+  }
+
+  fileprivate func resolveRootFolder(withExplicitPath path: Path?) throws -> Folder {
+    if let path = path {
+      do {
+        return try Folder(path: path.string)
+      } catch {
+        throw PublishingError(
+          path: path,
+          infoMessage: "Could not find the requested root folder"
+        )
+      }
     }
 
-    func setUpFolders(withExplicitRootPath path: Path?) throws -> Folder.Group {
-        let root = try resolveRootFolder(withExplicitPath: path)
-        let outputFolderName = "Output"
+    let originFile = try File(path: originFilePath.string)
+    return try originFile.resolveSwiftPackageFolder()
+  }
 
-        try? root.subfolder(named: outputFolderName).empty(includingHidden: true)
-
-        do {
-            let outputFolder = try root.createSubfolderIfNeeded(
-                withName: outputFolderName
-            )
-
-            let internalFolder = try root.createSubfolderIfNeeded(
-                withName: ".publish"
-            )
-
-            let cacheFolder = try internalFolder.createSubfolderIfNeeded(
-                withName: "Caches"
-            )
-
-            return Folder.Group(
-                root: root,
-                output: outputFolder,
-                internal: internalFolder,
-                caches: cacheFolder
-            )
-        } catch {
-            throw PublishingError(
-                path: path,
-                infoMessage: "Failed to set up root folder structure"
-            )
-        }
+  fileprivate func runnableSteps(from step: Step) -> [RunnableStep] {
+    switch step.body {
+    case .empty:
+      return []
+    case .group(let steps):
+      return steps.flatMap { runnableSteps(from: $0) }
+    case .operation(let name, let closure):
+      return [RunnableStep(name: name, closure: closure)]
     }
+  }
 
-    func resolveRootFolder(withExplicitPath path: Path?) throws -> Folder {
-        if let path = path {
-            do {
-                return try Folder(path: path.string)
-            } catch {
-                throw PublishingError(
-                    path: path,
-                    infoMessage: "Could not find the requested root folder"
-                )
-            }
-        }
-
-        let originFile = try File(path: originFilePath.string)
-        return try originFile.resolveSwiftPackageFolder()
-    }
-
-    func runnableSteps(from step: Step) -> [RunnableStep] {
-        switch step.body {
-        case .empty:
-            return []
-        case .group(let steps):
-            return steps.flatMap { runnableSteps(from: $0) }
-        case .operation(let name, let closure):
-            return [RunnableStep(name: name, closure: closure)]
-        }
-    }
-
-    func postNotification(named name: String) {
-        #if canImport(Cocoa)
-        let center = DistributedNotificationCenter.default()
-        let name = Notification.Name(rawValue: "Publish.\(name)")
-        center.post(Notification(name: name))
-        #endif
-    }
+  fileprivate func postNotification(named name: String) {
+    #if canImport(Cocoa)
+      let center = DistributedNotificationCenter.default()
+      let name = Notification.Name(rawValue: "Publish.\(name)")
+      center.post(Notification(name: name))
+    #endif
+  }
 }

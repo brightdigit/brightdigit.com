@@ -6,11 +6,11 @@
 
 import Files
 
-internal extension Folder {
-    struct Group: Sendable {
-        let root: Folder
-        let output: Folder
-        let `internal`: Folder
-        let caches: Folder
-    }
+extension Folder {
+  internal struct Group: Sendable {
+    internal let root: Folder
+    internal let output: Folder
+    internal let `internal`: Folder
+    internal let caches: Folder
+  }
 }

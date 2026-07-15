@@ -4,33 +4,33 @@
 *  MIT license, see LICENSE file for details
 */
 
-import XCTest
-import Publish
 import Foundation
+import Publish
+import XCTest
 
-final class PathTests: PublishTestCase {
-    func testAbsoluteString() {
-        XCTAssertEqual(Path("relative").absoluteString, "/relative")
-        XCTAssertEqual(Path("/absolute").absoluteString, "/absolute")
+internal final class PathTests: PublishTestCase {
+  internal func testAbsoluteString() {
+    XCTAssertEqual(Path("relative").absoluteString, "/relative")
+    XCTAssertEqual(Path("/absolute").absoluteString, "/absolute")
+  }
+
+  internal func testAppendingComponent() {
+    let path = Path("one")
+    XCTAssertEqual(path.appendingComponent("two"), "one/two")
+  }
+
+  internal func testStringInterpolation() {
+    let path = Path("my/path")
+    XCTAssertEqual("\(path)", "my/path")
+  }
+
+  internal func testCoding() throws {
+    struct Wrapper: Equatable, Codable {
+      let path: Path
     }
 
-    func testAppendingComponent() {
-        let path = Path("one")
-        XCTAssertEqual(path.appendingComponent("two"), "one/two")
-    }
-
-    func testStringInterpolation() {
-        let path = Path("my/path")
-        XCTAssertEqual("\(path)", "my/path")
-    }
-
-    func testCoding() throws {
-        struct Wrapper: Equatable, Codable {
-            let path: Path
-        }
-
-        let wrapper = Wrapper(path: Path("my/path"))
-        let data = try JSONEncoder().encode(wrapper)
-        XCTAssertEqual(wrapper, try JSONDecoder().decode(Wrapper.self, from: data))
-    }
+    let wrapper = Wrapper(path: Path("my/path"))
+    let data = try JSONEncoder().encode(wrapper)
+    XCTAssertEqual(wrapper, try JSONDecoder().decode(Wrapper.self, from: data))
+  }
 }
