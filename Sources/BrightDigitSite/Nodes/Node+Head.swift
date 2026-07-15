@@ -86,10 +86,7 @@ extension Node where Context == HTML.DocumentContext {
       ),
       .link(
         .rel(.alternate), .type("application/rss+xml"), .title("BrightDigit Newsletter"),
-        .href(
-          // swiftlint:disable:next line_length
-          "https://us12.campaign-archive.com/feed?u=cb3bba007ed171091f55c47f0&id=584d0d5c40"
-        )
+        .href(Strings.Buttondown.rssURL)
       ),
 
       .link(.rel(.icon), .href("/favicon.ico"), .sizes("any"), .type("image/svg+xml")),
@@ -122,7 +119,7 @@ extension Node where Context == HTML.DocumentContext {
       .script(
         .defer(),
         .data(named: "domain", value: "brightdigit.com"),
-        .src("https://plausible.io/js/script.js")
+        .src("https://plausible.io/js/script.tagged-events.js")
       )
     )
   }

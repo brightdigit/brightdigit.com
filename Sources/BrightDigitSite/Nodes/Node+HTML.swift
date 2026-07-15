@@ -172,9 +172,7 @@ extension Node where Context == HTML.BodyContext {
           .li(href: "https://www.empowerapps.show", flatIcon: "podcast"),
           .li(href: "http://youtube.com/c/BrightdigitLLC", flatIcon: "youtube"),
           .li(
-            href:
-              // swiftlint:disable:next line_length
-              "https://us12.campaign-archive.com/home/?u=cb3bba007ed171091f55c47f0&id=584d0d5c40",
+            href: Strings.Buttondown.archiveURL,
             flatIcon: "newsletter"
           ),
           .li(href: "/feed.rss", flatIcon: "rss")
