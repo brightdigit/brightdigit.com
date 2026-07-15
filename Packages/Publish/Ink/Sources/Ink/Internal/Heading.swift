@@ -5,27 +5,29 @@
 */
 
 internal struct Heading: Modifiable, HTMLConvertible, PlainTextConvertible {
-    var modifierTarget: Modifier.Target { .headings }
-    var level: Int
+  internal var modifierTarget: Modifier.Target { .headings }
+  internal var level: Int
 
-    /// Pre-rendered inline HTML of the heading text (#40).
-    private var renderedBody: String
-    /// Plain-text form, used for document-title inference.
-    private var plainTextValue: String
+  /// Pre-rendered inline HTML of the heading text (#40).
+  private var renderedBody: String
+  /// Plain-text form, used for document-title inference.
+  private var plainTextValue: String
 
-    init(level: Int, renderedBody: String, plainText: String) {
-        self.level = level
-        self.renderedBody = renderedBody
-        self.plainTextValue = plainText
-    }
+  internal init(level: Int, renderedBody: String, plainText: String) {
+    self.level = level
+    self.renderedBody = renderedBody
+    self.plainTextValue = plainText
+  }
 
-    func html(usingURLs urls: NamedURLCollection,
-              modifiers: ModifierCollection) -> String {
-        let tagName = "h\(level)"
-        return "<\(tagName)>\(renderedBody)</\(tagName)>"
-    }
+  internal func html(
+    usingURLs urls: NamedURLCollection,
+    modifiers: ModifierCollection
+  ) -> String {
+    let tagName = "h\(level)"
+    return "<\(tagName)>\(renderedBody)</\(tagName)>"
+  }
 
-    func plainText() -> String {
-        plainTextValue
-    }
+  internal func plainText() -> String {
+    plainTextValue
+  }
 }

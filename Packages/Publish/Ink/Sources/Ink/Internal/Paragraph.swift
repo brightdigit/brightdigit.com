@@ -5,23 +5,25 @@
 */
 
 internal struct Paragraph: Modifiable, HTMLConvertible, PlainTextConvertible {
-    var modifierTarget: Modifier.Target { .paragraphs }
+  internal var modifierTarget: Modifier.Target { .paragraphs }
 
-    /// Pre-rendered inline HTML of the paragraph (#40).
-    private var renderedBody: String
-    private var plainTextValue: String
+  /// Pre-rendered inline HTML of the paragraph (#40).
+  private var renderedBody: String
+  private var plainTextValue: String
 
-    init(renderedBody: String, plainText: String) {
-        self.renderedBody = renderedBody
-        self.plainTextValue = plainText
-    }
+  internal init(renderedBody: String, plainText: String) {
+    self.renderedBody = renderedBody
+    self.plainTextValue = plainText
+  }
 
-    func html(usingURLs urls: NamedURLCollection,
-              modifiers: ModifierCollection) -> String {
-        "<p>\(renderedBody)</p>"
-    }
+  internal func html(
+    usingURLs urls: NamedURLCollection,
+    modifiers: ModifierCollection
+  ) -> String {
+    "<p>\(renderedBody)</p>"
+  }
 
-    func plainText() -> String {
-        plainTextValue
-    }
+  internal func plainText() -> String {
+    plainTextValue
+  }
 }

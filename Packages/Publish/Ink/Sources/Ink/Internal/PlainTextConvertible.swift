@@ -1,3 +1,3 @@
 internal protocol PlainTextConvertible {
-    func plainText() -> String
+  func plainText() -> String
 }

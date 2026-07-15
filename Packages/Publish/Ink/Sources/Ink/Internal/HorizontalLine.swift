@@ -5,18 +5,20 @@
 */
 
 internal struct HorizontalLine: Modifiable, HTMLConvertible, PlainTextConvertible {
-    var modifierTarget: Modifier.Target { .horizontalLines }
+  internal var modifierTarget: Modifier.Target { .horizontalLines }
 
-    init() {}
+  internal init() {}
 
-    func html(usingURLs urls: NamedURLCollection,
-              modifiers: ModifierCollection) -> String {
-        "<hr>"
-    }
+  internal func html(
+    usingURLs urls: NamedURLCollection,
+    modifiers: ModifierCollection
+  ) -> String {
+    "<hr>"
+  }
 
-    func plainText() -> String {
-        // Since we want to strip all HTML from plain text output,
-        // there is nothing to return here, just an empty string.
-        ""
-    }
+  internal func plainText() -> String {
+    // Since we want to strip all HTML from plain text output,
+    // there is nothing to return here, just an empty string.
+    ""
+  }
 }
