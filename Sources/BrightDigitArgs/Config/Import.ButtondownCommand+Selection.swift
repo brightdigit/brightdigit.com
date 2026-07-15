@@ -54,7 +54,7 @@ extension Import.ButtondownCommand {
   /// falling back to the `BUTTONDOWN_API_KEY` environment variable.
   internal static func makeClient(apiKey: String?) throws -> ButtondownClient {
     if let apiKey, !apiKey.isEmpty {
-      return try ButtondownClient(apiKey: apiKey)
+      return ButtondownClient(apiKey: apiKey)
     }
     return try ButtondownClient.fromEnvironment()
   }

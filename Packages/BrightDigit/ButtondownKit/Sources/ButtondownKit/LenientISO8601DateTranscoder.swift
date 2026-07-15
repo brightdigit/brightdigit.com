@@ -41,30 +41,26 @@ import OpenAPIRuntime
 /// fail to decode. This transcoder tries the fractional-seconds parse first and
 /// falls back to the whole-second parse, so both shapes decode.
 ///
-/// A fresh `ISO8601DateFormatter` is created per call, so the value carries no
-/// shared mutable state and is trivially `Sendable`.
+/// Parsing goes through the value-type `Date.ISO8601FormatStyle`, which carries
+/// no shared mutable state and is trivially `Sendable`.
 public struct LenientISO8601DateTranscoder: DateTranscoder {
   /// Creates a new lenient transcoder.
   public init() {}
 
   /// Encodes the date as an ISO-8601 string with fractional seconds.
   public func encode(_ date: Date) throws -> String {
-    let formatter = ISO8601DateFormatter()
-    formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-    return formatter.string(from: date)
+    date.formatted(Date.ISO8601FormatStyle(includingFractionalSeconds: true))
   }
 
   /// Decodes an ISO-8601 string, tolerating the presence or absence of
   /// fractional seconds.
   public func decode(_ dateString: String) throws -> Date {
-    let optionSets: [ISO8601DateFormatter.Options] = [
-      [.withInternetDateTime, .withFractionalSeconds],
-      [.withInternetDateTime],
+    let styles = [
+      Date.ISO8601FormatStyle(includingFractionalSeconds: true),
+      Date.ISO8601FormatStyle(includingFractionalSeconds: false),
     ]
-    let formatter = ISO8601DateFormatter()
-    for options in optionSets {
-      formatter.formatOptions = options
-      if let date = formatter.date(from: dateString) {
+    for style in styles {
+      if let date = try? style.parse(dateString) {
         return date
       }
     }
