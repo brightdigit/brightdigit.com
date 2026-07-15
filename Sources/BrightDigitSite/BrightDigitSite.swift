@@ -162,7 +162,6 @@ public struct BrightDigitSite: Website, MetadataAttached {
 
   internal static let postMarkdownSteps: [PublishingStep<BrightDigitSite>] = [
     .yamlStringFix,
-    .installPlugin(.readingTime()),
     .sortItems(by: \.date, order: .descending),
     .generateHTML(withTheme: .company, indentation: .spaces(2)),
     .group([
