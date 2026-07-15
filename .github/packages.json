@@ -41,32 +41,26 @@
   },
   {
     "name": "Files",
-    "path": "Packages/Publish/Files",
-    "lint": false
+    "path": "Packages/Publish/Files"
   },
   {
     "name": "Ink",
-    "path": "Packages/Publish/Ink",
-    "lint": false
+    "path": "Packages/Publish/Ink"
   },
   {
     "name": "Plot",
-    "path": "Packages/Publish/Plot",
-    "lint": false
+    "path": "Packages/Publish/Plot"
   },
   {
     "name": "Splash",
-    "path": "Packages/Publish/Splash",
-    "lint": false
+    "path": "Packages/Publish/Splash"
   },
   {
     "name": "SplashPublishPlugin",
-    "path": "Packages/Publish/SplashPublishPlugin",
-    "lint": false
+    "path": "Packages/Publish/SplashPublishPlugin"
   },
   {
     "name": "Publish",
-    "path": "Packages/Publish/Publish",
-    "lint": false
+    "path": "Packages/Publish/Publish"
   }
 ]
