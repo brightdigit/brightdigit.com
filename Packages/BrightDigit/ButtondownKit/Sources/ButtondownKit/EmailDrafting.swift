@@ -1,5 +1,5 @@
 //
-//  ButtondownEmailDrafting.swift
+//  EmailDrafting.swift
 //  ButtondownKit
 //
 //  Created by Leo Dion.
@@ -28,14 +28,14 @@
 //
 
 /// The capability to create draft emails and send them.
-public protocol ButtondownEmailDrafting: ButtondownClientProtocol {
+public protocol EmailDrafting {
   /// Creates a draft email from a Markdown body.
   /// - Parameters:
   ///   - subject: The email subject line.
   ///   - body: The Markdown body of the email.
-  /// - Returns: The created ``ButtondownEmail``.
+  /// - Returns: The created ``Email``.
   /// - Throws: An error if the request fails or the response is unexpected.
-  func createDraft(subject: String, body: String) async throws -> ButtondownEmail
+  func createDraft(subject: String, body: String) async throws -> Email
 
   /// Sends a previously-created draft to all subscribers.
   /// - Parameter id: The id of the draft email to send.
@@ -43,7 +43,7 @@ public protocol ButtondownEmailDrafting: ButtondownClientProtocol {
   func sendDraft(id: String) async throws
 }
 
-extension ButtondownEmailDrafting {
+extension EmailDrafting where Self: UnderlyingClientProtocol {
   /// Creates a draft email (newsletter issue) from a Markdown body.
   ///
   /// Maps to `POST /emails`. Buttondown is Markdown-native, so `body` is sent
@@ -51,13 +51,13 @@ extension ButtondownEmailDrafting {
   /// - Parameters:
   ///   - subject: The email subject line.
   ///   - body: The Markdown body of the email.
-  /// - Returns: The created ``ButtondownEmail``.
+  /// - Returns: The created ``Email``.
   /// - Throws: ``ButtondownClient/ClientError/unexpectedResponse`` on a non-201
   ///   response, or a transport/decoding error.
   public func createDraft(
     subject: String,
     body: String
-  ) async throws -> ButtondownEmail {
+  ) async throws -> Email {
     let input = Components.Schemas.EmailInput(
       body: body,
       status: .init(value1: .draft),
@@ -66,7 +66,7 @@ extension ButtondownEmailDrafting {
     let output = try await underlying.create_email(body: .json(input))
     switch output {
     case .created(let created):
-      return try ButtondownEmail(from: created.body.json)
+      return try Email(from: created.body.json)
     default:
       throw ButtondownClient.ClientError.unexpectedResponse
     }

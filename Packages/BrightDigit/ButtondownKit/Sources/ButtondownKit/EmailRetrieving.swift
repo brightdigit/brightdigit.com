@@ -1,5 +1,5 @@
 //
-//  ButtondownEmailRetrieving.swift
+//  EmailRetrieving.swift
 //  ButtondownKit
 //
 //  Created by Leo Dion.
@@ -28,25 +28,25 @@
 //
 
 /// The capability to retrieve a single email by id.
-public protocol ButtondownEmailRetrieving: ButtondownClientProtocol {
+public protocol EmailRetrieving {
   /// Retrieves a single email by id.
   /// - Parameter id: The email id.
-  /// - Returns: The ``ButtondownEmail``.
+  /// - Returns: The ``Email``.
   /// - Throws: An error if the request fails or the response is unexpected.
-  func email(id: String) async throws -> ButtondownEmail
+  func email(id: String) async throws -> Email
 }
 
-extension ButtondownEmailRetrieving {
+extension EmailRetrieving where Self: UnderlyingClientProtocol {
   /// Retrieves a single email by id. Maps to `GET /emails/{id}`.
   /// - Parameter id: The email id.
-  /// - Returns: The ``ButtondownEmail``.
+  /// - Returns: The ``Email``.
   /// - Throws: ``ButtondownClient/ClientError/unexpectedResponse`` on a non-200
   ///   response, or a transport/decoding error.
-  public func email(id: String) async throws -> ButtondownEmail {
+  public func email(id: String) async throws -> Email {
     let output = try await underlying.retrieve_email(path: .init(id: id))
     switch output {
     case .ok(let response):
-      return try ButtondownEmail(from: response.body.json)
+      return try Email(from: response.body.json)
     default:
       throw ButtondownClient.ClientError.unexpectedResponse
     }

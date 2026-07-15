@@ -68,13 +68,13 @@ import Testing
       "GET /emails": [.init(status: 200, json: try fixture("emails-page-1"))]
     ])
     let client = try makeClient(transport)
-    let page: ButtondownEmailPage = try await client.listEmails(
+    let page: EmailPage = try await client.listEmails(
       status: [.sent],
       page: 1
     )
     #expect(page.count == 3)
     #expect(page.emails.count == 2)
-    let first: ButtondownEmail = try #require(page.emails.first)
+    let first: Email = try #require(page.emails.first)
     #expect(first.id == "00000000-0000-0000-0000-000000000001")
     #expect(first.subject == "Issue One")
     #expect(first.status == .sent)

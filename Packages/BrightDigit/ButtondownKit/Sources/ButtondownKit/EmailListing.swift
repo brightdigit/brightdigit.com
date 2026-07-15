@@ -1,5 +1,5 @@
 //
-//  ButtondownEmailListing.swift
+//  EmailListing.swift
 //  ButtondownKit
 //
 //  Created by Leo Dion.
@@ -28,31 +28,31 @@
 //
 
 /// The capability to read (and page through) a newsletter's emails.
-public protocol ButtondownEmailListing: ButtondownClientProtocol {
+public protocol EmailListing {
   /// Retrieves a single page of emails.
   /// - Parameters:
   ///   - status: If non-empty, only return emails with one of these statuses.
   ///   - page: The 1-based page number to fetch.
-  /// - Returns: The ``ButtondownEmailPage`` for the requested page.
+  /// - Returns: The ``EmailPage`` for the requested page.
   /// - Throws: An error if the request fails or the response is unexpected.
   func listEmails(
-    status: [ButtondownEmailStatus],
+    status: [EmailStatus],
     page: Int?
-  ) async throws -> ButtondownEmailPage
+  ) async throws -> EmailPage
 
   /// Enumerates every email across all pages.
   /// - Parameters:
   ///   - status: If non-empty, only return emails with one of these statuses.
   ///   - pageLimit: The maximum number of pages to fetch, if any.
-  /// - Returns: All ``ButtondownEmail`` values across the fetched pages.
+  /// - Returns: All ``Email`` values across the fetched pages.
   /// - Throws: An error if a request fails or a response is unexpected.
   func listAllEmails(
-    status: [ButtondownEmailStatus],
+    status: [EmailStatus],
     pageLimit: Int?
-  ) async throws -> [ButtondownEmail]
+  ) async throws -> [Email]
 }
 
-extension ButtondownEmailListing {
+extension EmailListing where Self: UnderlyingClientProtocol {
   /// Retrieves a single page of emails. Maps to `GET /emails`.
   ///
   /// Buttondown paginates with a 1-based `page` query parameter; the returned
@@ -62,13 +62,13 @@ extension ButtondownEmailListing {
   ///   - status: If non-empty, only return emails with one of the given
   ///     statuses (server-side filter, e.g. `[.sent]`).
   ///   - page: The 1-based page number to fetch. Defaults to the first page.
-  /// - Returns: The ``ButtondownEmailPage`` for the requested page.
+  /// - Returns: The ``EmailPage`` for the requested page.
   /// - Throws: ``ButtondownClient/ClientError/unexpectedResponse`` on a non-200
   ///   response, or a transport/decoding error.
   public func listEmails(
-    status: [ButtondownEmailStatus] = [],
+    status: [EmailStatus] = [],
     page: Int? = nil
-  ) async throws -> ButtondownEmailPage {
+  ) async throws -> EmailPage {
     let output = try await underlying.list_emails(
       query: .init(
         status: status.isEmpty ? nil : status.map(\.schema),
@@ -77,7 +77,7 @@ extension ButtondownEmailListing {
     )
     switch output {
     case .ok(let response):
-      return try ButtondownEmailPage(from: response.body.json)
+      return try EmailPage(from: response.body.json)
     default:
       throw ButtondownClient.ClientError.unexpectedResponse
     }
@@ -93,15 +93,15 @@ extension ButtondownEmailListing {
   ///     statuses (server-side filter, e.g. `[.sent]`).
   ///   - pageLimit: The maximum number of pages to fetch. Defaults to `nil`
   ///     (no limit — walk until the count is reached).
-  /// - Returns: All ``ButtondownEmail`` values across the fetched pages, in the
-  ///   order the API returns them.
+  /// - Returns: All ``Email`` values across the fetched pages, in the order the
+  ///   API returns them.
   /// - Throws: ``ButtondownClient/ClientError/unexpectedResponse`` on a non-200
   ///   response, or a transport/decoding error.
   public func listAllEmails(
-    status: [ButtondownEmailStatus] = [],
+    status: [EmailStatus] = [],
     pageLimit: Int? = nil
-  ) async throws -> [ButtondownEmail] {
-    var collected: [ButtondownEmail] = []
+  ) async throws -> [Email] {
+    var collected: [Email] = []
     var page = 1
     while true {
       let result = try await listEmails(status: status, page: page)

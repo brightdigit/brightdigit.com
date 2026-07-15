@@ -1,5 +1,5 @@
 //
-//  ButtondownEmailPage.swift
+//  EmailPage.swift
 //  ButtondownKit
 //
 //  Created by Leo Dion.
@@ -29,28 +29,29 @@
 
 /// A single page of a paginated email listing.
 ///
-/// A Swift-native flattening of the generated `EmailPage` schema, mapped via
-/// ``init(from:)``, so callers see domain ``ButtondownEmail`` values rather than
-/// `Components.Schemas.*`.
-public struct ButtondownEmailPage: Equatable, Sendable {
+/// A Swift-native flattening of the generated `Components.Schemas.EmailPage`
+/// schema, mapped via ``init(from:)``, so callers see domain ``Email`` values
+/// rather than `Components.Schemas.*`.
+public struct EmailPage: Equatable, Sendable {
   /// The total number of emails across all pages.
   public let count: Int
   /// The emails on this page.
-  public let emails: [ButtondownEmail]
+  public let emails: [Email]
 
   /// Memberwise initializer.
-  public init(count: Int, emails: [ButtondownEmail]) {
+  public init(count: Int, emails: [Email]) {
     self.count = count
     self.emails = emails
   }
 }
 
-extension ButtondownEmailPage {
-  /// Maps a generated OpenAPI `EmailPage` schema into the flat domain model.
+extension EmailPage {
+  /// Maps a generated OpenAPI `Components.Schemas.EmailPage` into the domain
+  /// model.
   internal init(from page: Components.Schemas.EmailPage) {
     self.init(
       count: page.count,
-      emails: page.results.map(ButtondownEmail.init(from:))
+      emails: page.results.map(Email.init(from:))
     )
   }
 }

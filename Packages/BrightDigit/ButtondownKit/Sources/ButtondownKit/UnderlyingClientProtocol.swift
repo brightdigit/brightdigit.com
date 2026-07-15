@@ -1,5 +1,5 @@
 //
-//  ButtondownClientProtocol.swift
+//  UnderlyingClientProtocol.swift
 //  ButtondownKit
 //
 //  Created by Leo Dion.
@@ -27,14 +27,21 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-/// The shared seam for the Buttondown capability protocols.
+/// The shared seam the Buttondown capability protocols implement against.
 ///
-/// Every capability (listing, drafting, retrieving) refines this protocol and
-/// implements its methods against ``underlying`` in a protocol extension, so
-/// ``ButtondownClient`` itself is only storage plus initializers. Exposing the
-/// generated ``Client`` is intentional: it is already public via
-/// `ButtondownClient.init(underlying:)`, which the mock-transport tests use.
-public protocol ButtondownClientProtocol {
+/// Each capability (listing, drafting, retrieving) provides its methods in a
+/// protocol extension constrained on `Self: UnderlyingClientProtocol`, calling
+/// through ``underlying``, so ``ButtondownClient`` itself is only storage plus
+/// initializers.
+///
+/// This protocol must be **public**: the capability protocols' methods are
+/// public requirements witnessed by those constrained extensions, and Swift
+/// forbids a `public` member in an extension whose generic constraint refers to
+/// a non-public protocol ("cannot declare a public instance method in an
+/// extension with internal requirements"). Exposing ``Client`` here is
+/// therefore unavoidable, and is consistent with `ButtondownClient.init(underlying:)`,
+/// which is already public and which the mock-transport tests use.
+public protocol UnderlyingClientProtocol {
   /// The generated, transport-backed API client the wrappers call through.
   var underlying: Client { get }
 }

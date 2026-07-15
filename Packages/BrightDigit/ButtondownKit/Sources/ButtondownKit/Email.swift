@@ -1,5 +1,5 @@
 //
-//  ButtondownEmail.swift
+//  Email.swift
 //  ButtondownKit
 //
 //  Created by Leo Dion.
@@ -32,10 +32,11 @@ import Foundation
 /// A Buttondown email (newsletter issue), reduced to the fields the site
 /// consumes.
 ///
-/// A Swift-native flattening of the 22-field generated `Email` schema, mapped
-/// via ``init(from:)``. Kept intentionally small so `Components.Schemas.*` never
-/// leaks into the public API; add fields here as new consumers need them.
-public struct ButtondownEmail: Equatable, Sendable {
+/// A Swift-native flattening of the 22-field generated `Components.Schemas.Email`
+/// schema, mapped via ``init(from:)``. Kept intentionally small so
+/// `Components.Schemas.*` never leaks into the public API; add fields here as new
+/// consumers need them.
+public struct Email: Equatable, Sendable {
   /// A unique TypeID associated with the email.
   public let id: String
   /// The subject line for the email.
@@ -43,7 +44,7 @@ public struct ButtondownEmail: Equatable, Sendable {
   /// The body of the email, in HTML or Markdown format.
   public let body: String
   /// The current lifecycle status of the email.
-  public let status: ButtondownEmailStatus
+  public let status: EmailStatus
   /// The date and time at which the email was first created.
   public let creationDate: Date
   /// The date and time at which the email was last modified.
@@ -60,7 +61,7 @@ public struct ButtondownEmail: Equatable, Sendable {
     id: String,
     subject: String,
     body: String,
-    status: ButtondownEmailStatus,
+    status: EmailStatus,
     creationDate: Date,
     modificationDate: Date,
     absoluteURL: String,
@@ -79,14 +80,14 @@ public struct ButtondownEmail: Equatable, Sendable {
   }
 }
 
-extension ButtondownEmail {
-  /// Maps a generated OpenAPI `Email` schema into the flat domain model.
+extension Email {
+  /// Maps a generated OpenAPI `Components.Schemas.Email` into the domain model.
   internal init(from email: Components.Schemas.Email) {
     self.init(
       id: email.id,
       subject: email.subject,
       body: email.body,
-      status: ButtondownEmailStatus(from: email.status),
+      status: EmailStatus(from: email.status),
       creationDate: email.creation_date,
       modificationDate: email.modification_date,
       absoluteURL: email.absolute_url,

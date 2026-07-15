@@ -1,5 +1,5 @@
 //
-//  ButtondownEmailStatus.swift
+//  EmailStatus.swift
 //  ButtondownKit
 //
 //  Created by Leo Dion.
@@ -29,11 +29,11 @@
 
 /// The lifecycle state of a Buttondown email.
 ///
-/// A Swift-native mirror of the generated `EmailStatus` schema, kept out of the
-/// public API so callers never touch `Components.Schemas.*`. It maps in from the
+/// A Swift-native mirror of the generated `Components.Schemas.EmailStatus`
+/// schema, so callers never touch `Components.Schemas.*`. It maps in from the
 /// generated enum (``init(from:)``) and back out (``schema``) for the `status`
 /// filter passed to `list_emails`.
-public enum ButtondownEmailStatus: String, Equatable, Sendable, CaseIterable {
+public enum EmailStatus: String, Equatable, Sendable, CaseIterable {
   /// An unsent draft.
   case draft
   /// Managed by an RSS-to-email automation.
@@ -64,7 +64,7 @@ public enum ButtondownEmailStatus: String, Equatable, Sendable, CaseIterable {
   case suppressed
 }
 
-extension ButtondownEmailStatus {
+extension EmailStatus {
   /// The generated `EmailStatus` equivalent, for query filters sent to the API.
   internal var schema: Components.Schemas.EmailStatus {
     switch self {
@@ -87,15 +87,17 @@ extension ButtondownEmailStatus {
 
   /// Maps a generated `EmailStatus` into the Swift-native status.
   internal init(from status: Components.Schemas.EmailStatus) {
-    self = status.buttondownStatus
+    self = status.domain
   }
 }
 
 extension Components.Schemas.EmailStatus {
-  /// The Swift-native ``ButtondownEmailStatus`` equivalent of this generated
-  /// status. Expressed as a flat, exhaustive 1:1 mapping the compiler keeps in
-  /// sync with the generated enum.
-  internal var buttondownStatus: ButtondownEmailStatus {
+  /// The Swift-native ``EmailStatus`` equivalent of this generated status.
+  ///
+  /// A flat, exhaustive 1:1 mapping the compiler keeps in sync with the
+  /// generated enum. The return type is module-qualified so it is not shadowed
+  /// by the generated `Components.Schemas.EmailStatus` being extended.
+  internal var domain: ButtondownKit.EmailStatus {
     switch self {
     case .draft: .draft
     case .managed_by_rss: .managedByRSS
