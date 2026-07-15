@@ -6,7 +6,7 @@
 
 ---
 
-## ⚡ Execution status — updated 2026-07-15 (mid-milestone, pre-transfer)
+## ⚡ Execution status — updated 2026-07-15 (Track A complete; #121 in flight)
 
 The design below is the pre-execution plan; **this section reflects current reality.**
 
@@ -17,9 +17,17 @@ The design below is the pre-execution plan; **this section reflects current real
 | #124 listEmails wrapper | #147 | `phase5-buttondown` | ✅ merged into `phase-05` |
 | #145 Tailwind v2→v4 | #150 | `phase5-tailwind-upgrade` | ✅ merged |
 | #69 TailwindKit | #149 | `phase5-tailwindkit` | ✅ merged |
-| #121 Publish stack | #151 | `phase5-publish-upgrade` | 🔄 open — CI fixes pushed, awaiting green + Leo's merge |
-| #127, #122, #126 | — | `phase5-buttondown` | ⬜ not started (unblocked: #124+#146 merged) |
+| #126 subscribe-form swap | #154 | `phase5-buttondown-form` | ✅ merged into `phase-05` |
+| #127 archive one-shot | #156 | `phase5-buttondown-archive` | ✅ merged into `phase-05` |
+| #122 import new/missing | #155 | `phase5-buttondown-import` | ✅ merged into `phase-05` |
+| #121 Publish stack | #151 | `phase5-publish-upgrade` | 🔄 open — CI green so far, awaiting Leo's merge |
 | #67 → #53 | — | `phase5-component-migration` | ⬜ not started; worktree not yet created (gated on #151 merge) |
+
+**Track A (Buttondown) is fully landed on `phase-05`.** The buttondown work was split across
+three worktrees/PRs (`-form`/#154, `-archive`/#156, `-import`/#155), not the single
+`phase5-buttondown` worktree originally planned; all three are merged and their worktrees +
+local branches pruned. The only open Phase-5 PR is **#151 (#121)**; **#67→#53** remains the
+sole unstarted work, still gated on #151.
 
 New tracking issues filed: **#152** (remove vendored Files → stdlib `FilePath`/Foundation, staged, post-phase-5) · **#153** (reclaim parallel page generation — measure-first, likely not worth it).
 
