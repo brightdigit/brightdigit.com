@@ -21,7 +21,7 @@ import Markdown
 /// delegated to swift-markdown (aliased `CMarkdown`); the resulting AST is translated to
 /// Ink's node IR by `MarkdownVisitor` and rendered by Ink's retained emitter, which
 /// applies the registered modifiers via the unchanged `(html, rawString)` plumbing.
-public struct MarkdownParser {
+public struct MarkdownParser: Sendable {
     private var modifiers: ModifierCollection
 
     /// Initialize an instance, optionally passing an array

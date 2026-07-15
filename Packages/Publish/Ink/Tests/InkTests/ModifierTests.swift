@@ -6,24 +6,30 @@
 
 import XCTest
 import Ink
+import Synchronization
 
 final class ModifierTests: XCTestCase {
     func testModifierInput() {
-        var allHTML = [String]()
-        var allMarkdown = [Substring]()
+        // The modifier closure is `@Sendable`, so accumulate observed input in a
+        // lock-protected box rather than capturing plain `var`s.
+        let collected = Mutex<(html: [String], markdown: [Substring])>(([], []))
 
         let parser = MarkdownParser(modifiers: [
             Modifier(target: .paragraphs) { html, markdown in
-                allHTML.append(html)
-                allMarkdown.append(markdown)
+                collected.withLock {
+                    $0.html.append(html)
+                    $0.markdown.append(markdown)
+                }
                 return html
             }
         ])
 
         let html = parser.html(from: "One\n\nTwo\n\nThree")
         XCTAssertEqual(html, "<p>One</p><p>Two</p><p>Three</p>")
-        XCTAssertEqual(allHTML, ["<p>One</p>", "<p>Two</p>", "<p>Three</p>"])
-        XCTAssertEqual(allMarkdown, ["One", "Two", "Three"])
+        collected.withLock {
+            XCTAssertEqual($0.html, ["<p>One</p>", "<p>Two</p>", "<p>Three</p>"])
+            XCTAssertEqual($0.markdown, ["One", "Two", "Three"])
+        }
     }
 
     // #40 KNOWN LIMITATION: the swift-markdown front end renders inline markup (links,

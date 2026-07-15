@@ -4,7 +4,7 @@
 *  MIT license, see LICENSE file for details
 */
 
-internal struct ModifierCollection {
+internal struct ModifierCollection: Sendable {
     private var modifiers: [Modifier.Target : [Modifier]]
 
     init(modifiers: [Modifier]) {
