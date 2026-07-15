@@ -4,6 +4,52 @@
 > the earlier draft. Where this document and the milestone/PRD/issue bodies disagree, this
 > document wins — several issue bodies are stale (see notes).
 
+---
+
+## ⚡ Execution status — updated 2026-07-15 (mid-milestone, pre-transfer)
+
+The design below is the pre-execution plan; **this section reflects current reality.**
+
+### PR ↔ issue status
+| Issue | PR | Branch | Status |
+|-------|-----|--------|--------|
+| #146 Spinetail read-path | #148 | `phase5-spinetail-openapi` | ✅ merged into `phase-05` |
+| #124 listEmails wrapper | #147 | `phase5-buttondown` | ✅ merged into `phase-05` |
+| #145 Tailwind v2→v4 | #150 | `phase5-tailwind-upgrade` | ✅ merged |
+| #69 TailwindKit | #149 | `phase5-tailwindkit` | ✅ merged |
+| #121 Publish stack | #151 | `phase5-publish-upgrade` | 🔄 open — CI fixes pushed, awaiting green + Leo's merge |
+| #127, #122, #126 | — | `phase5-buttondown` | ⬜ not started (unblocked: #124+#146 merged) |
+| #67 → #53 | — | `phase5-component-migration` | ⬜ not started; worktree not yet created (gated on #151 merge) |
+
+New tracking issues filed: **#152** (remove vendored Files → stdlib `FilePath`/Foundation, staged, post-phase-5) · **#153** (reclaim parallel page generation — measure-first, likely not worth it).
+
+### Key decisions since the original plan
+- **Subrepos:** `git subrepo pull/push --all` works; recovery via `./fix-subrepo-parents.sh` (documented in `CLAUDE.md`).
+- **#151 dropped 3 vendored Sundell libs** from the Publish stack: **CollectionConcurrencyKit** (→ serial loops), **Codextended** (→ internal `StringCodingKey` shim), **Sweep** (→ `NSRegularExpression`). **Kept:** Files, Ink, Plot, Splash, SplashPublishPlugin, Publish.
+- **#151 made `PublishingContext` fully `Sendable`** (DateFormatter→`Date.ParseStrategy`, `TagCache`→`Mutex`, `Website: Sendable`, etc.) — **groundwork only; parallel generation NOT reintroduced** (see #153).
+- **Platform baseline bumped macOS 13 → macOS 15** (`Synchronization.Mutex` requirement; cascaded to the 4 plugins). `CLAUDE.md` updated.
+- **#151 typed throws:** Files public API `throws(FilesError<…>)`, Publish internal single-error helpers.
+- **#151 scaffolding + lint:** standard BrightDigit setup added to the 6 kept packages, lint enabled; **SwiftLint (`no_unchecked_sendable`) + build are strict gates, swift-format/periphery advisory** for the vendored code. **Publish tests kept on XCTest** (not converted — per Leo).
+- **#147 ButtondownClient redesign (merged):** domain types `Email`/`EmailStatus`/`EmailPage` (no `Components.*` in public API); `UnderlyingClientProtocol` (**must be public**) + capability protocols `EmailListing`/`EmailDrafting`/`EmailRetrieving` implemented via `extension … where Self: UnderlyingClientProtocol`; `listAllEmails(status:pageLimit:)`.
+- **#149 TailwindKit** is now a standalone package `Packages/BrightDigit/TailwindKit` (future subrepo); shade cases `_500`→`s500` (lint), e.g. `.bg(.blue, .s500)`.
+
+### Standing directives (also in `.claude/agent-notes.md`)
+- **Always Swift Testing** for NEW tests; do NOT bulk-convert existing vendored XCTest suites.
+- Vendored/Publish-stack + TailwindKit use **plain standard Swift 6.4** (`tools-version:6.4` only) — no upcoming-feature `swiftSettings` flags.
+- Phase-5 PRs target `phase-05`; **Leo reviews/merges every PR** (agents never merge).
+
+### Transfer checklist (for the other computer)
+- ✅ All merged work is on `origin/phase-05`; `phase5-publish-upgrade` (#151) is pushed.
+- ⚠️ **Copy `brightdigit.com.env` manually** — it lives at the grove root, OUTSIDE the repo (MAILCHIMP/YOUTUBE/BUTTONDOWN keys), and does NOT travel via git.
+- Merged worktree branches were auto-deleted on the remote; recreate worktrees with `grove add` as needed. `phase5-component-migration` still needs creating (after #151 merges).
+- The `~/.claude/plans` scratch plan and private memory store are machine-local; the durable facts live in this doc + `CLAUDE.md` + `.claude/agent-notes.md` (all in-repo).
+
+### Remaining work
+- **Track A (in `phase5-buttondown`, unblocked):** #127 archive one-shot, #122 import new/missing, #126 subscribe-form swap.
+- **Track B:** after #151 merges (its gates #121+#145+#69 will all be in `phase-05`), create `phase5-component-migration` for **#67** (component migration + Mermaid) then **#53**.
+
+---
+
 ## Context
 
 **Goal:** Work through the code issues in [Milestone 5 — "Phase 5: Swift 6.4 Subrepos + Components"](https://github.com/brightdigit/brightdigit.com/milestone/5), organized into parallel tracks using **grove** worktrees and branches.
