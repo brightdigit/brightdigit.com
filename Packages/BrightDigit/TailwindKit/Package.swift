@@ -20,19 +20,11 @@ let package = Package(
       name: "TailwindKit",
       dependencies: [
         .product(name: "Plot", package: "Plot")
-      ],
-      swiftSettings: [
-        .swiftLanguageMode(.v6),
-        .enableExperimentalFeature("StrictConcurrency")
       ]
     ),
     .testTarget(
       name: "TailwindKitTests",
-      dependencies: ["TailwindKit"],
-      swiftSettings: [
-        .swiftLanguageMode(.v6),
-        .enableExperimentalFeature("StrictConcurrency")
-      ]
+      dependencies: ["TailwindKit"]
     )
   ]
 )
