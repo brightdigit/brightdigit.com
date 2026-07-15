@@ -37,6 +37,18 @@ public protocol EmailDrafting {
   /// - Throws: An error if the request fails or the response is unexpected.
   func createDraft(subject: String, body: String) async throws -> Email
 
+  /// Creates an archived, never-sent email from a Markdown body.
+  ///
+  /// Used to backfill historical newsletter issues into the archive without
+  /// triggering a send: the email is created with ``EmailStatus/imported`` status
+  /// and archival enabled.
+  /// - Parameters:
+  ///   - subject: The email subject line.
+  ///   - body: The Markdown body of the email.
+  /// - Returns: The created ``Email``.
+  /// - Throws: An error if the request fails or the response is unexpected.
+  func createArchived(subject: String, body: String) async throws -> Email
+
   /// Sends a previously-created draft to all subscribers.
   /// - Parameter id: The id of the draft email to send.
   /// - Throws: An error if the request fails or the response is unexpected.
@@ -61,6 +73,38 @@ extension EmailDrafting where Self: UnderlyingClientProtocol {
     let input = Components.Schemas.EmailInput(
       body: body,
       status: .init(value1: .draft),
+      subject: subject
+    )
+    let output = try await underlying.create_email(body: .json(input))
+    switch output {
+    case .created(let created):
+      return try Email(from: created.body.json)
+    default:
+      throw ButtondownClient.ClientError.unexpectedResponse
+    }
+  }
+
+  /// Creates an archived, never-sent email (a backfilled historical issue).
+  ///
+  /// Maps to `POST /emails` with `status: imported` and `archival_mode: enabled`,
+  /// so the issue appears in the public archive but is never delivered to
+  /// subscribers. This is the backfill path for issues that only ever existed on
+  /// Mailchimp. Buttondown is Markdown-native, so `body` is sent as-is with no
+  /// HTML conversion.
+  /// - Parameters:
+  ///   - subject: The email subject line.
+  ///   - body: The Markdown body of the email.
+  /// - Returns: The created ``Email``.
+  /// - Throws: ``ButtondownClient/ClientError/unexpectedResponse`` on a non-201
+  ///   response, or a transport/decoding error.
+  public func createArchived(
+    subject: String,
+    body: String
+  ) async throws -> Email {
+    let input = Components.Schemas.EmailInput(
+      archival_mode: .init(value1: .enabled),
+      body: body,
+      status: .init(value1: .imported),
       subject: subject
     )
     let output = try await underlying.create_email(body: .json(input))
