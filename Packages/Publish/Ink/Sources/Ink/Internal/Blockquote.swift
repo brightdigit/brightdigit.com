@@ -4,7 +4,7 @@
 *  MIT license, see LICENSE file for details
 */
 
-internal struct Blockquote: Modifiable, HTMLConvertible, PlainTextConvertible {
+internal struct Blockquote: Modifiable, HTMLConvertible {
   internal var modifierTarget: Modifier.Target { .blockquotes }
 
   /// Pre-rendered HTML of the blockquote's block-level children, produced by the
@@ -22,9 +22,5 @@ internal struct Blockquote: Modifiable, HTMLConvertible, PlainTextConvertible {
     modifiers: ModifierCollection
   ) -> String {
     "<blockquote>\(renderedBody)</blockquote>"
-  }
-
-  internal func plainText() -> String {
-    renderedBody
   }
 }

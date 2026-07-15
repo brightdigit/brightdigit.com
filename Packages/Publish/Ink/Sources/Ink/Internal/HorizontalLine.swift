@@ -4,7 +4,7 @@
 *  MIT license, see LICENSE file for details
 */
 
-internal struct HorizontalLine: Modifiable, HTMLConvertible, PlainTextConvertible {
+internal struct HorizontalLine: Modifiable, HTMLConvertible {
   internal var modifierTarget: Modifier.Target { .horizontalLines }
 
   internal init() {}
@@ -14,11 +14,5 @@ internal struct HorizontalLine: Modifiable, HTMLConvertible, PlainTextConvertibl
     modifiers: ModifierCollection
   ) -> String {
     "<hr>"
-  }
-
-  internal func plainText() -> String {
-    // Since we want to strip all HTML from plain text output,
-    // there is nothing to return here, just an empty string.
-    ""
   }
 }

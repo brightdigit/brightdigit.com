@@ -4,7 +4,7 @@
 *  MIT license, see LICENSE file for details
 */
 
-internal struct CodeBlock: Modifiable, HTMLConvertible, PlainTextConvertible {
+internal struct CodeBlock: Modifiable, HTMLConvertible {
   internal var modifierTarget: Modifier.Target { .codeBlocks }
 
   private var language: Substring
@@ -22,9 +22,5 @@ internal struct CodeBlock: Modifiable, HTMLConvertible, PlainTextConvertible {
   ) -> String {
     let languageClass = language.isEmpty ? "" : " class=\"language-\(language)\""
     return "<pre><code\(languageClass)>\(code)</code></pre>"
-  }
-
-  internal func plainText() -> String {
-    code
   }
 }

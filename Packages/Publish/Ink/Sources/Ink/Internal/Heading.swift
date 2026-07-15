@@ -4,7 +4,7 @@
 *  MIT license, see LICENSE file for details
 */
 
-internal struct Heading: Modifiable, HTMLConvertible, PlainTextConvertible {
+internal struct Heading: Modifiable, HTMLConvertible {
   internal var modifierTarget: Modifier.Target { .headings }
   internal var level: Int
 

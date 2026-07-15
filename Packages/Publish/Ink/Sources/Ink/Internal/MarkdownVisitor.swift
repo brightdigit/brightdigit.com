@@ -87,8 +87,7 @@ extension MarkdownVisitor {
       )
     case let paragraph as Markdown::Paragraph:
       return Paragraph(
-        renderedBody: renderInline(paragraph.inlineChildren),
-        plainText: paragraph.plainText
+        renderedBody: renderInline(paragraph.inlineChildren)
       )
     case is ThematicBreak:
       return HorizontalLine()

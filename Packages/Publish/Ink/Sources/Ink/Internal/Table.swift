@@ -4,7 +4,7 @@
 *  MIT license, see LICENSE file for details
 */
 
-internal struct Table: Modifiable, HTMLConvertible, PlainTextConvertible {
+internal struct Table: Modifiable, HTMLConvertible {
   internal var modifierTarget: Modifier.Target { .tables }
 
   /// Pre-rendered HTML for each header cell (#40); `nil`/empty means no header row.
@@ -53,17 +53,6 @@ internal struct Table: Modifiable, HTMLConvertible, PlainTextConvertible {
 
     html.append("</tbody>")
     return render()
-  }
-
-  internal func plainText() -> String {
-    var text = header.isEmpty ? "" : plainText(forRow: header)
-
-    for row in rows {
-      if !text.isEmpty { text.append("\n") }
-      text.append(plainText(forRow: row))
-    }
-
-    return text
   }
 }
 
@@ -119,16 +108,5 @@ extension Table {
     )
 
     return tags.opening + contents + tags.closing
-  }
-
-  fileprivate func plainText(forRow row: [String]) -> String {
-    var text = ""
-
-    for index in 0..<columnCount {
-      if index > 0 { text.append(" | ") }
-      text.append(index < row.count ? row[index] : "")
-    }
-
-    return text + " |"
   }
 }

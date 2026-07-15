@@ -4,7 +4,7 @@
 *  MIT license, see LICENSE file for details
 */
 
-internal struct HTML: Modifiable, HTMLConvertible, PlainTextConvertible {
+internal struct HTML: Modifiable, HTMLConvertible {
   internal var modifierTarget: Modifier.Target { .html }
 
   private var string: String
@@ -18,11 +18,5 @@ internal struct HTML: Modifiable, HTMLConvertible, PlainTextConvertible {
     modifiers: ModifierCollection
   ) -> String {
     string
-  }
-
-  internal func plainText() -> String {
-    // Since we want to strip all HTML from plain text output,
-    // there is nothing to return here, just an empty string.
-    ""
   }
 }
