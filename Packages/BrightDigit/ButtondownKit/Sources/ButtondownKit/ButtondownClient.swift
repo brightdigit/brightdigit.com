@@ -77,6 +77,14 @@ public struct ButtondownClient: Sendable, UnderlyingClientProtocol,
     self.underlying = underlying
   }
 
+  /// The client configuration used by the URLSession-backed initializers.
+  ///
+  /// Installs ``LenientISO8601DateTranscoder`` so the mixed fractional/whole
+  /// second timestamps the Buttondown API returns both decode successfully.
+  public static var defaultConfiguration: Configuration {
+    Configuration(dateTranscoder: LenientISO8601DateTranscoder())
+  }
+
   // URLSession-backed conveniences. Unavailable on WASI (no URLSessionTransport);
   // build a `Client` with a wasm-compatible transport and use `init(underlying:)`.
   #if !os(WASI)
@@ -86,6 +94,7 @@ public struct ButtondownClient: Sendable, UnderlyingClientProtocol,
     public init(apiKey: String) throws {
       let client = Client(
         serverURL: try Servers.Server1.url(),
+        configuration: Self.defaultConfiguration,
         transport: URLSessionTransport(),
         middlewares: [AuthenticationMiddleware(apiKey: apiKey)]
       )

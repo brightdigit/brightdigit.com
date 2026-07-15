@@ -20,6 +20,7 @@ let package = Package(
       targets: ["brightdigitwg"]
     ),
     .library(name: "ContributeMailchimp", targets: ["ContributeMailchimp"]),
+    .library(name: "ContributeButtondown", targets: ["ContributeButtondown"]),
     .library(name: "BrightDigitPodcast", targets: ["BrightDigitPodcast"]),
     .library(name: "ContributeYouTube", targets: ["ContributeYouTube"]),
     .library(name: "ContributeRSS", targets: ["ContributeRSS"]),
@@ -34,6 +35,7 @@ let package = Package(
 
     .package(path: "Packages/BrightDigit/SwiftTube"),
     .package(path: "Packages/BrightDigit/Spinetail"),
+    .package(path: "Packages/BrightDigit/ButtondownKit"),
     .package(path: "Packages/BrightDigit/SyndiKit"),
     // .package(url: "https://github.com/BrightDigit/Options.git", from: "0.2.0"),
     .package(path: "Packages/BrightDigit/NPMPublishPlugin"),
@@ -68,6 +70,7 @@ let package = Package(
         "ContributeYouTube",
         "ContributeRSS",
         "ContributeMailchimp",
+        "ContributeButtondown",
         "ContributeWordPress",
         .product(name: "Spinetail", package: "Spinetail"),
         .product(name: "ConfigKeyKit", package: "ConfigKeyKit"),
@@ -99,6 +102,13 @@ let package = Package(
       ]
     ),
     .target(
+      name: "ContributeButtondown",
+      dependencies: [
+        "Contribute",
+        .product(name: "ButtondownKit", package: "ButtondownKit")
+      ]
+    ),
+    .target(
       name: "ContributeYouTube",
       dependencies: ["Contribute", "SwiftTube"]
     ),
@@ -124,6 +134,14 @@ let package = Package(
       dependencies: [
         "BrightDigitArgs",
         "BrightDigitPodcast"
+      ]
+    ),
+    .testTarget(
+      name: "ContributeButtondownTests",
+      dependencies: [
+        "ContributeButtondown",
+        "Contribute",
+        .product(name: "ButtondownKit", package: "ButtondownKit")
       ]
     )
   ]
