@@ -41,14 +41,21 @@ import OpenAPIRuntime
 /// newsletter publishing.
 ///
 /// ``ButtondownClient`` wraps the swift-openapi-generator ``Client`` with an
-/// ``AuthenticationMiddleware`` and exposes a small, ergonomic surface: create
-/// a draft email, send a draft, and read emails/subscribers (the reads back
-/// the contract round-trip tests). The underlying transport defaults to
-/// `URLSessionTransport`, which works on both Apple platforms and Linux.
+/// ``AuthenticationMiddleware`` and exposes a small, ergonomic surface via the
+/// capability protocols it conforms to: ``ButtondownEmailListing`` (list/page
+/// emails), ``ButtondownEmailDrafting`` (create/send drafts), and
+/// ``ButtondownEmailRetrieving`` (read one email). Those protocols implement
+/// their methods against ``underlying``, so this type is only storage plus
+/// initializers. All results are Swift-native domain types (``ButtondownEmail``
+/// et al.), never the generated `Components.Schemas.*`.
 ///
-/// No subscriber/audience data is stored in the repository; the API key is
-/// supplied via the `BUTTONDOWN_API_KEY` environment variable.
-public struct ButtondownClient: Sendable {
+/// The underlying transport defaults to `URLSessionTransport`, which works on
+/// both Apple platforms and Linux. No subscriber/audience data is stored in the
+/// repository; the API key is supplied via the `BUTTONDOWN_API_KEY` environment
+/// variable.
+public struct ButtondownClient: Sendable, ButtondownClientProtocol,
+  ButtondownEmailListing, ButtondownEmailDrafting, ButtondownEmailRetrieving
+{
   /// Errors surfaced by ``ButtondownClient``.
   public enum ClientError: Error, Equatable {
     /// `BUTTONDOWN_API_KEY` was not set in the environment.
@@ -59,7 +66,7 @@ public struct ButtondownClient: Sendable {
   }
 
   /// The generated, transport-backed API client.
-  private let underlying: Client
+  public let underlying: Client
 
   /// Creates a client from a pre-built generated ``Client``.
   ///
@@ -97,125 +104,4 @@ public struct ButtondownClient: Sendable {
       return try ButtondownClient(apiKey: apiKey)
     }
   #endif
-
-  /// Creates a draft email (newsletter issue) from a Markdown body.
-  ///
-  /// Maps to `POST /emails`. Buttondown is Markdown-native, so `body` is sent
-  /// as-is with no HTML conversion.
-  /// - Parameters:
-  ///   - subject: The email subject line.
-  ///   - body: The Markdown body of the email.
-  /// - Returns: The created ``Components/Schemas/Email``.
-  /// - Throws: ``ClientError/unexpectedResponse`` on a non-201 response, or a
-  ///   transport/decoding error.
-  public func createDraft(
-    subject: String,
-    body: String
-  ) async throws -> Components.Schemas.Email {
-    let input = Components.Schemas.EmailInput(
-      body: body,
-      status: .init(value1: .draft),
-      subject: subject
-    )
-    let output = try await underlying.create_email(body: .json(input))
-    switch output {
-    case .created(let created):
-      return try created.body.json
-    default:
-      throw ClientError.unexpectedResponse
-    }
-  }
-
-  /// Sends a previously-created draft to all subscribers.
-  ///
-  /// Maps to `POST /emails/{id}/send-draft`.
-  /// - Parameter id: The id of the draft email to send.
-  /// - Throws: ``ClientError/unexpectedResponse`` on a non-200 response, or a
-  ///   transport error.
-  public func sendDraft(id: String) async throws {
-    let output = try await underlying.send_draft(
-      path: .init(id: id),
-      body: .json(.init())
-    )
-    switch output {
-    case .ok:
-      return
-    default:
-      throw ClientError.unexpectedResponse
-    }
-  }
-
-  /// Retrieves a single page of emails. Maps to `GET /emails`.
-  ///
-  /// Buttondown paginates the email list with a 1-based `page` query parameter;
-  /// the returned ``Components/Schemas/EmailPage`` carries `results` for the page
-  /// plus the total `count` across all pages. Use ``listAllEmails(status:)`` to
-  /// transparently walk every page.
-  /// - Parameters:
-  ///   - status: If non-empty, only return emails with one of the given
-  ///     statuses (server-side filter, e.g. `[.sent]`).
-  ///   - page: The 1-based page number to fetch. Defaults to the first page.
-  /// - Returns: The ``Components/Schemas/EmailPage`` for the requested page.
-  /// - Throws: ``ClientError/unexpectedResponse`` on a non-200 response, or a
-  ///   transport/decoding error.
-  public func listEmails(
-    status: [Components.Schemas.EmailStatus] = [],
-    page: Int? = nil
-  ) async throws -> Components.Schemas.EmailPage {
-    let output = try await underlying.list_emails(
-      query: .init(
-        status: status.isEmpty ? nil : status,
-        page: page
-      )
-    )
-    switch output {
-    case .ok(let response):
-      return try response.body.json
-    default:
-      throw ClientError.unexpectedResponse
-    }
-  }
-
-  /// Enumerates every email across all pages. Maps to repeated `GET /emails`.
-  ///
-  /// Walks pages starting at 1, accumulating `results`, and stops once the
-  /// collected count reaches the reported total `count` or a page comes back
-  /// empty (guarding against an unexpected count). Paging is 1-based per the
-  /// Buttondown API; the page size is server-determined.
-  /// - Parameter status: If non-empty, only return emails with one of the given
-  ///   statuses (server-side filter, e.g. `[.sent]`).
-  /// - Returns: All ``Components/Schemas/Email`` values across every page, in
-  ///   the order the API returns them.
-  /// - Throws: ``ClientError/unexpectedResponse`` on a non-200 response, or a
-  ///   transport/decoding error.
-  public func listAllEmails(
-    status: [Components.Schemas.EmailStatus] = []
-  ) async throws -> [Components.Schemas.Email] {
-    var collected: [Components.Schemas.Email] = []
-    var page = 1
-    while true {
-      let result = try await listEmails(status: status, page: page)
-      collected.append(contentsOf: result.results)
-      if result.results.isEmpty || collected.count >= result.count {
-        break
-      }
-      page += 1
-    }
-    return collected
-  }
-
-  /// Retrieves a single email by id. Maps to `GET /emails/{id}`.
-  /// - Parameter id: The email id.
-  /// - Returns: The ``Components/Schemas/Email``.
-  /// - Throws: ``ClientError/unexpectedResponse`` on a non-200 response, or a
-  ///   transport/decoding error.
-  public func email(id: String) async throws -> Components.Schemas.Email {
-    let output = try await underlying.retrieve_email(path: .init(id: id))
-    switch output {
-    case .ok(let response):
-      return try response.body.json
-    default:
-      throw ClientError.unexpectedResponse
-    }
-  }
 }

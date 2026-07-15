@@ -61,17 +61,23 @@ import Testing
     return ButtondownClient(underlying: generated)
   }
 
-  /// `listEmails` reads a single page via `GET /emails`, decoding the
-  /// `EmailPage` (results + total count) and applying the status filter.
+  /// `listEmails` reads a single page via `GET /emails`, decoding the page into
+  /// the Swift-native domain types and applying the status filter.
   @Test internal func listEmailsSinglePage() async throws {
     let transport = MockTransport(responses: [
       "GET /emails": [.init(status: 200, json: try fixture("emails-page-1"))]
     ])
     let client = try makeClient(transport)
-    let page = try await client.listEmails(status: [.sent], page: 1)
+    let page: ButtondownEmailPage = try await client.listEmails(
+      status: [.sent],
+      page: 1
+    )
     #expect(page.count == 3)
-    #expect(page.results.count == 2)
-    #expect(page.results.first?.subject == "Issue One")
+    #expect(page.emails.count == 2)
+    let first: ButtondownEmail = try #require(page.emails.first)
+    #expect(first.id == "00000000-0000-0000-0000-000000000001")
+    #expect(first.subject == "Issue One")
+    #expect(first.status == .sent)
     let request = try #require(await transport.recorded.first)
     #expect(request.method == "GET")
     #expect(request.path.hasPrefix("/emails"))
@@ -97,6 +103,26 @@ import Testing
     let recorded = await transport.recorded
     #expect(recorded.count == 2)
     #expect(recorded.first?.path.contains("page=1") == true)
+    #expect(recorded.last?.path.contains("page=2") == true)
+  }
+
+  /// `pageLimit` halts paging after the given number of pages, even when the
+  /// reported `count` has not yet been reached.
+  @Test internal func listAllEmailsRespectsPageLimit() async throws {
+    let transport = MockTransport(responses: [
+      "GET /emails": [
+        .init(status: 200, json: try fixture("emails-limit-1")),
+        .init(status: 200, json: try fixture("emails-limit-2")),
+        .init(status: 200, json: try fixture("emails-limit-3")),
+      ]
+    ])
+    let client = try makeClient(transport)
+    let emails = try await client.listAllEmails(pageLimit: 2)
+    // count is 6, but only the first 2 of the 3 queued pages were fetched.
+    #expect(emails.count == 4)
+    #expect(emails.map(\.subject) == ["Limit One", "Limit Two", "Limit Three", "Limit Four"])
+    let recorded = await transport.recorded
+    #expect(recorded.count == 2)
     #expect(recorded.last?.path.contains("page=2") == true)
   }
 
