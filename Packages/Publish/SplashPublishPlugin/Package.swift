@@ -10,7 +10,7 @@ import PackageDescription
 
 let package = Package(
     name: "SplashPublishPlugin",
-    platforms: [.macOS(.v12)],
+    platforms: [.macOS(.v15)],
     products: [
         .library(
             name: "SplashPublishPlugin",

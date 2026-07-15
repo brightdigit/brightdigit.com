@@ -8,20 +8,28 @@ import Foundation
 import Ink
 import Plot
 import Files
+import Synchronization
 
 /// Type that represents the context in which a website is being published.
 /// It can be used to manipulate the state of the website in various ways,
 /// including mutating and adding new content, creating new files and folders,
 /// and so on. Each `PublishingStep` gets access to the current context.
-public struct PublishingContext<Site: Website> {
+public struct PublishingContext<Site: Website>: Sendable {
+    /// The `Date.FormatString` that Publish uses by default when parsing dates
+    /// from Markdown front matter (equivalent to `"yyyy-MM-dd HH:mm"`).
+    public static var defaultDateFormat: Date.FormatString {
+        "\(year: .padded(4))-\(month: .twoDigits)-\(day: .twoDigits) \(hour: .twoDigits(clock: .twentyFourHour, hourCycle: .zeroBased)):\(minute: .twoDigits)"
+    }
+
     /// The website that this context is for.
     public let site: Site
     /// The Markdown parser that this publishing session is using. You can
     /// add modifiers to it to customize how each Markdown string is rendered.
     public var markdownParser = MarkdownParser()
-    /// The date formatter that this publishing session is using when parsing
-    /// dates from Markdown files.
-    public var dateFormatter: DateFormatter
+    /// The parse strategy that this publishing session is using when parsing
+    /// dates from Markdown files. Replaces the previous `DateFormatter`-based
+    /// API so that the context can be fully `Sendable`.
+    public var dateParseStrategy: Date.ParseStrategy
     /// A representation of the website's main index page.
     public var index = Index()
     /// The sections that the website contains.
@@ -34,7 +42,7 @@ public struct PublishingContext<Site: Website> {
     public private(set) var lastGenerationDate: Date?
 
     private let folders: Folder.Group
-    private var tagCache = TagCache()
+    private let tagCache = TagCache()
     private var stepName: String
 
     internal init(site: Site,
@@ -43,11 +51,11 @@ public struct PublishingContext<Site: Website> {
         self.site = site
         self.folders = folders
         self.stepName = firstStepName
-
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
-        dateFormatter.timeZone = .current
-        self.dateFormatter = dateFormatter
+        self.dateParseStrategy = Date.ParseStrategy(
+            format: Self.defaultDateFormat,
+            locale: .current,
+            timeZone: .current
+        )
     }
 }
 
@@ -286,7 +294,7 @@ internal extension PublishingContext {
     func makeMarkdownContentFactory() -> MarkdownContentFactory<Site> {
         MarkdownContentFactory(
             parser: markdownParser,
-            dateFormatter: dateFormatter
+            dateParseStrategy: dateParseStrategy
         )
     }
 
@@ -310,8 +318,17 @@ internal extension PublishingContext {
 }
 
 private extension PublishingContext {
-    final class TagCache {
-        var tags: Set<Tag>?
+    /// A `Sendable` cache for the website-wide tag set, backed by a Mutex so
+    /// that the synchronous `allTags` getter is preserved while keeping
+    /// `PublishingContext` `Sendable` (rather than turning `allTags` async via
+    /// an actor).
+    final class TagCache: Sendable {
+        private let storage = Mutex<Set<Tag>?>(nil)
+
+        var tags: Set<Tag>? {
+            get { storage.withLock { $0 } }
+            set { storage.withLock { $0 = newValue } }
+        }
     }
 
     mutating func updateLastGenerationDate() throws {

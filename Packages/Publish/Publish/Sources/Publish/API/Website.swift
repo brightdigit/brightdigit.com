@@ -20,7 +20,7 @@ public typealias WebsiteItemMetadata = Decodable & Hashable & Sendable
 /// up of `PublishingStep` values, which is constructed using the `publish` method.
 /// To generate the necessary bootstrapping for conforming to this protocol, use
 /// the `publish new` command line tool.
-public protocol Website: SendableMetatype {
+public protocol Website: Sendable {
     /// The enum type used to represent the website's section IDs.
     associatedtype SectionID: WebsiteSectionID
     /// The type that defines any custom metadata for the website.

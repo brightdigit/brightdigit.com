@@ -10,7 +10,7 @@ import Files
 
 internal struct MarkdownContentFactory<Site: Website> {
     let parser: MarkdownParser
-    let dateFormatter: DateFormatter
+    let dateParseStrategy: Date.ParseStrategy
 
     func makeContent(fromFile file: File) throws -> Content {
         let markdown = try parser.parse(file.readAsString())
@@ -52,7 +52,7 @@ private extension MarkdownContentFactory {
     func makeMetadataDecoder(for markdown: Ink.Markdown) -> MarkdownMetadataDecoder {
         MarkdownMetadataDecoder(
             metadata: markdown.metadata,
-            dateFormatter: dateFormatter
+            dateParseStrategy: dateParseStrategy
         )
     }
 

@@ -11,15 +11,15 @@ internal final class MarkdownMetadataDecoder: Decoder {
     let codingPath: [CodingKey]
 
     private let metadata: [String : String]
-    private let dateFormatter: DateFormatter
+    private let dateParseStrategy: Date.ParseStrategy
     private lazy var keyedContainers = [ObjectIdentifier : Any]()
 
     init(metadata: [String : String],
          codingPath: [CodingKey] = [],
-         dateFormatter: DateFormatter) {
+         dateParseStrategy: Date.ParseStrategy) {
         self.metadata = metadata
         self.codingPath = codingPath
-        self.dateFormatter = dateFormatter
+        self.dateParseStrategy = dateParseStrategy
     }
 
     func container<T: CodingKey>(
@@ -34,7 +34,7 @@ internal final class MarkdownMetadataDecoder: Decoder {
         let container = KeyedContainer<T>(
             metadata: metadata,
             codingPath: codingPath,
-            dateFormatter: dateFormatter
+            dateParseStrategy: dateParseStrategy
         )
 
         keyedContainers[typeID] = container
@@ -73,16 +73,16 @@ private extension MarkdownMetadataDecoder {
         let keys: KeyMap<Key>
         let codingPath: [CodingKey]
         let prefix: String
-        let dateFormatter: DateFormatter
+        let dateParseStrategy: Date.ParseStrategy
 
         init(metadata: [String : String],
              codingPath: [CodingKey],
-             dateFormatter: DateFormatter) {
+             dateParseStrategy: Date.ParseStrategy) {
             self.metadata = metadata
             self.keys = KeyMap(raw: metadata.keys, codingPath: codingPath)
             self.codingPath = codingPath
             self.prefix = codingPath.asPrefix()
-            self.dateFormatter = dateFormatter
+            self.dateParseStrategy = dateParseStrategy
         }
 
         func contains(_ key: Key) -> Bool {
@@ -159,7 +159,7 @@ private extension MarkdownMetadataDecoder {
             return try T(from: MarkdownMetadataDecoder(
                 metadata: metadata,
                 codingPath: codingPath.appending(key),
-                dateFormatter: dateFormatter
+                dateParseStrategy: dateParseStrategy
             ))
         }
 
@@ -170,7 +170,7 @@ private extension MarkdownMetadataDecoder {
             KeyedDecodingContainer(KeyedContainer<T>(
                 metadata: metadata,
                 codingPath: codingPath.appending(key),
-                dateFormatter: dateFormatter
+                dateParseStrategy: dateParseStrategy
             ))
         }
 
@@ -187,7 +187,7 @@ private extension MarkdownMetadataDecoder {
             MarkdownMetadataDecoder(
                 metadata: metadata,
                 codingPath: codingPath,
-                dateFormatter: dateFormatter
+                dateParseStrategy: dateParseStrategy
             )
         }
 
@@ -195,7 +195,7 @@ private extension MarkdownMetadataDecoder {
             MarkdownMetadataDecoder(
                 metadata: metadata,
                 codingPath: codingPath.appending(key),
-                dateFormatter: dateFormatter
+                dateParseStrategy: dateParseStrategy
             )
         }
 
@@ -238,7 +238,7 @@ private extension MarkdownMetadataDecoder {
                 from: decode(key),
                 forKey: key,
                 at: codingPath,
-                formatter: dateFormatter
+                strategy: dateParseStrategy
             )
         }
     }
@@ -622,17 +622,13 @@ private extension Date {
     static func decode(from string: String,
                        forKey key: CodingKey?,
                        at codingPath: [CodingKey],
-                       formatter: DateFormatter) throws -> Self {
-        guard let date = formatter.date(from: string) else {
-            let formatDescription = formatter.dateFormat.map {
-                " Expected format: \($0)."
-            }
-
+                       strategy: Date.ParseStrategy) throws -> Self {
+        guard let date = try? strategy.parse(string) else {
             throw DecodingError.dataCorrupted(
                 DecodingError.Context(
                     codingPath: key.map(codingPath.appending) ?? codingPath,
                     debugDescription: """
-                    Invalid date string.\(formatDescription ?? "")
+                    Invalid date string. Expected format: yyyy-MM-dd HH:mm.
                     """
                 )
             )
