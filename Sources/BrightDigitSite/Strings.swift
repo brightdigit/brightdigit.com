@@ -108,4 +108,29 @@ internal enum Strings {
       // swiftlint:disable:next line_length
       "Stay informed about the latest developments in the world of Swift App Development and what they could mean for your business."
   }
+
+  // MARK: - Buttondown
+
+  /// Buttondown newsletter endpoints for the `brightdigit` account.
+  internal enum Buttondown {
+    internal static let username = "brightdigit"
+
+    /// Embed subscribe endpoint the newsletter forms POST to.
+    internal static let subscribeURL =
+      "https://buttondown.com/api/emails/embed-subscribe/\(username)"
+
+    /// Public RSS feed for the newsletter archive.
+    internal static let rssURL = "https://buttondown.com/\(username)/rss"
+
+    /// Hosted newsletter archive page.
+    internal static let archiveURL = "https://buttondown.com/\(username)/archive"
+  }
+
+  // MARK: - Analytics
+
+  internal enum Plausible {
+    /// Plausible tagged-events class marking newsletter signup submit buttons.
+    internal static let newsletterSignupEventClass =
+      "plausible-event-name=Newsletter+Signup"
+  }
 }

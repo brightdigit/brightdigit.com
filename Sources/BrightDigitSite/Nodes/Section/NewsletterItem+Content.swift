@@ -35,9 +35,8 @@ import PublishType
 extension NewsletterItem {
   internal var formNode: Node<HTML.BodyContext> {
     .form(
-      .attribute(named: "name", value: "subscribers"),
+      .action(Strings.Buttondown.subscribeURL),
       .method(.post),
-      .attribute(named: "data-netlify", value: "true"),
       .div(
         .div(
           .input(
@@ -50,7 +49,16 @@ extension NewsletterItem {
       ),
       .div(
         .div(
-          .button("Sign me up!", .type(.submit))
+          .input(
+            .type(.hidden),
+            .name("metadata__source_page"),
+            .value(source.path.string)
+          ),
+          .button(
+            "Sign me up!",
+            .type(.submit),
+            .class(Strings.Plausible.newsletterSignupEventClass)
+          )
         )
       ),
       .div(

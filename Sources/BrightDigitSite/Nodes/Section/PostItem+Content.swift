@@ -127,9 +127,8 @@ extension PostItem {
         ),
 
         .form(
-          .attribute(named: "name", value: "subscribers"),
+          .action(Strings.Buttondown.subscribeURL),
           .method(.post),
-          .attribute(named: "data-netlify", value: "true"),
           .div(
             .div(
               .input(.type(.email), .name("email"), .placeholder("leo@brightdigit.com")),
@@ -138,8 +137,16 @@ extension PostItem {
           ),
           .div(
             .div(
-              .input(.type(.hidden), .name("source"), .value(source.path.string)),
-              .button(.type(.submit), .text("Sign me up!"))
+              .input(
+                .type(.hidden),
+                .name("metadata__source_page"),
+                .value(source.path.string)
+              ),
+              .button(
+                .type(.submit),
+                .class(Strings.Plausible.newsletterSignupEventClass),
+                .text("Sign me up!")
+              )
             )
           )
         )
