@@ -18,8 +18,3 @@ public enum HTMLAnchorTarget: String {
   /// The URL should be opened in the topmost frame.
   case top = "_top"
 }
-
-extension HTMLAnchorTarget {
-  @available(*, deprecated, message: "Use .current instead")
-  internal static var `self`: Self { current }
-}
