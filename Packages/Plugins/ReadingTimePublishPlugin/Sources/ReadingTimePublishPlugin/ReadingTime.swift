@@ -1,7 +1,8 @@
 import Foundation
 import Publish
+import Synchronization
 
-public struct ReadingTimeMetadata: Equatable {
+public struct ReadingTimeMetadata: Equatable, Sendable {
     public let minutes: Int
     public let words: Int
     public let timeMinutes: Double
@@ -15,7 +16,8 @@ public extension Plugin {
         Plugin(name: "Reading time") { context in
             context.mutateAllSections { section in
                 section.mutateItems { item in
-                    data[item.path.string] = estimateTime(for: item.content.body.html, wordsPerMinute: wordsPerMinute)
+                    let estimate = estimateTime(for: item.content.body.html, wordsPerMinute: wordsPerMinute)
+                    data.withLock { $0[item.path.string] = estimate }
                 }
             }
         }
@@ -24,8 +26,9 @@ public extension Plugin {
 
 public extension Item {
     var readingTime: ReadingTimeMetadata {
-        guard let metadata = data[path.string] else {
-            output(
+        guard let metadata = data.withLock({ $0[path.string] }) else {
+            let emit = output.withLock { $0 }
+            emit(
                 #"Item "\#(title)" doesn't have ReadingTimeMetadata. Check that the ReadingTime plugin is installed after the creation of this item."#,
                 .error
             )
@@ -39,7 +42,7 @@ public extension Item {
     }
 }
 
-private var data = [AnyHashable: ReadingTimeMetadata]()
+private let data = Mutex<[AnyHashable: ReadingTimeMetadata]>([:])
 
 func estimateTime(for string: String, wordsPerMinute: Int) -> ReadingTimeMetadata {
     let words = countWords(string)

@@ -4,8 +4,11 @@
  */
 
 import Foundation
+import Synchronization
 
-var output: (String, OutputKind) -> Void = { string, kind in
+// A replaceable output hook (tests swap it to capture console output). Stored
+// in a Mutex so the global is concurrency-safe.
+let output = Mutex<@Sendable (String, OutputKind) -> Void>({ string, kind in
     var string = string + "\n"
 
     if let emoji = kind.emoji {
@@ -13,7 +16,7 @@ var output: (String, OutputKind) -> Void = { string, kind in
     }
 
     fputs(string, kind.target)
-}
+})
 
 enum OutputKind {
     case info

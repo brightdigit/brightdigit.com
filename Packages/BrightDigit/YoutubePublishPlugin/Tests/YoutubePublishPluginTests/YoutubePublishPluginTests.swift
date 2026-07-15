@@ -4,11 +4,6 @@ import XCTest
 @testable import YoutubePublishPlugin
 
 internal final class YoutubePublishPluginTests: XCTestCase {
-  internal static var allTests = [
-    ("testValidYoutubeBlockQuote", testValidYoutubeBlockQuote),
-    ("testInvalidBlockQuotePrefix", testInvalidBlockQuotePrefix),
-  ]
-
   private var parser: MarkdownParser = .init(modifiers: [
     .youtubeBlockQuote(using: DefaultYoutubeRenderer())
   ])

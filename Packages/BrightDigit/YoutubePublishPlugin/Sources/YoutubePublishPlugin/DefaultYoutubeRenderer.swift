@@ -29,7 +29,7 @@
 
 /// A default implementation for YoutubeRenderer.
 /// It just provides the HTML string held by the EmbeddedYoutube.
-public final class DefaultYoutubeRenderer: YoutubeRenderer {
+public final class DefaultYoutubeRenderer: YoutubeRenderer, Sendable {
   /// Initializes a new DefaultYoutubeRenderer.
   public init() {}
 

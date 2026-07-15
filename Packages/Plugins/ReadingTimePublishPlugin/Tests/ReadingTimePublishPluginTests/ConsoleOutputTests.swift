@@ -1,19 +1,25 @@
 import Plot
 import Publish
 @testable import ReadingTimePublishPlugin
+import Synchronization
 import XCTest
 
 final class ConsoleOutputTests: XCTestCase {
-    var capturedOutput: String?
+    // Reference box so the @Sendable output hook and the test body share one
+    // storage location (Mutex is non-copyable and can't be captured directly).
+    private final class Captured: Sendable {
+        let value = Mutex<String?>(nil)
+    }
+
+    private let captured = Captured()
 
     override func setUp() {
         super.setUp()
 
-        capturedOutput = nil
+        captured.value.withLock { $0 = nil }
 
-        output = { string, _ in
-            self.capturedOutput = string
-        }
+        let captured = self.captured
+        output.withLock { $0 = { string, _ in captured.value.withLock { $0 = string } } }
     }
 
     func testItemWithoutMetadata() {
@@ -23,7 +29,7 @@ final class ConsoleOutputTests: XCTestCase {
         XCTAssertEqual(metadata.words, 0)
         XCTAssertEqual(metadata.minutes, 0)
         XCTAssertEqual(
-            capturedOutput,
+            captured.value.withLock { $0 },
             #"Item "Fake" doesn't have ReadingTimeMetadata. Check that the ReadingTime plugin is installed after the creation of this item."#
         )
     }
