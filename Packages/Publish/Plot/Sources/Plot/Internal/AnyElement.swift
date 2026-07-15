@@ -5,7 +5,7 @@
 */
 
 internal protocol AnyElement {
-    var name: String { get }
-    var closingMode: ElementClosingMode { get }
-    var paddingCharacter: Character? { get }
+  var name: String { get }
+  var closingMode: ElementClosingMode { get }
+  var paddingCharacter: Character? { get }
 }

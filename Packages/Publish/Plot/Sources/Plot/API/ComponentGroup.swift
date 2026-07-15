@@ -15,26 +15,30 @@ import Foundation
 /// to a group results in each element within that group getting
 /// that class name assigned to it.
 public struct ComponentGroup: Component {
-    /// The group's members. Will be rendered in order.
-    public var members: [Component]
-    public var body: Component { Node.components(members) }
+  /// The group's members. Will be rendered in order.
+  public var members: [Component]
+  /// The content and behavior of this component.
+  public var body: Component { Node.components(members) }
 
-    /// Create a new group with a given set of member components.
-    /// - parameter members: The components that should be included
-    ///   within the group. Will be rendered in order.
-    public init(members: [Component]) {
-        self.members = members
-    }
+  /// Create a new group with a given set of member components.
+  /// - parameter members: The components that should be included
+  ///   within the group. Will be rendered in order.
+  public init(members: [Component]) {
+    self.members = members
+  }
 }
 
 extension ComponentGroup: ComponentContainer {
-    public init(@ComponentBuilder content: () -> Self) {
-        self = content()
-    }
+  /// Create a new component group with the given content.
+  public init(@ComponentBuilder content: () -> Self) {
+    self = content()
+  }
 }
 
 extension ComponentGroup: Sequence {
-    public func makeIterator() -> Array<Component>.Iterator {
-        members.makeIterator()
-    }
+  /// Create an iterator over the group's components.
+  /// - Returns: An iterator over the group's components.
+  public func makeIterator() -> Array<Component>.Iterator {
+    members.makeIterator()
+  }
 }

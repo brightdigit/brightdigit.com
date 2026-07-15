@@ -14,6 +14,6 @@ public protocol URLRepresentable: CustomStringConvertible {}
 extension URL: URLRepresentable {}
 extension String: URLRepresentable {}
 
-internal extension URLRepresentable {
-    var string: String { description }
+extension URLRepresentable {
+  internal var string: String { description }
 }
