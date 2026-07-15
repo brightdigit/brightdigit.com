@@ -287,6 +287,14 @@ jobs:
     # crashed in its FileIterator. The bare nightly snapshot lacks curl, which
     # mise-action needs to bootstrap mise, so install it first.
     container: swiftlang/swift:nightly-6.4.x-noble
+    # Periphery is an advisory, local-only tool (lint.sh runs `periphery scan`
+    # only when $CI is unset). Building it from source via the spm backend on the
+    # nightly toolchain is heavy and crash-prone, and with the whole lint matrix
+    # cold-building it in parallel one job nondeterministically SIGSEGVs during
+    # `mise install`. Since CI never runs periphery, disable it so mise skips the
+    # build entirely (the full backend name is required to match).
+    env:
+      MISE_DISABLE_TOOLS: "spm:peripheryapp/periphery"
     strategy:
       fail-fast: false
       matrix:
