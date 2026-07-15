@@ -22,8 +22,9 @@ public extension Plugin {
 
 public extension Modifier {
     static func splashCodeBlocks(withFormat format: HTMLOutputFormat = .init()) -> Self {
-        let highlighter = SyntaxHighlighter(format: format)
-
+        // The Ink modifier closure is `@Sendable`; `SyntaxHighlighter` isn't
+        // Sendable, so it is created inside the closure (capturing the Sendable
+        // `format`) rather than hoisted and captured.
         return Modifier(target: .codeBlocks) { html, markdown in
             var markdown = markdown.dropFirst("```".count)
 
@@ -36,6 +37,7 @@ public extension Modifier {
                 .dropFirst()
                 .dropLast("\n```".count)
 
+            let highlighter = SyntaxHighlighter(format: format)
             let highlighted = highlighter.highlight(String(markdown))
             return "<pre><code>" + highlighted + "\n</code></pre>"
         }

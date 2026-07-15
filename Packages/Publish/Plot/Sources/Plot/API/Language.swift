@@ -7,7 +7,7 @@
 // Enum defining language codes according to the ISO 639 standard,
 // which can be used to specify the primary language of an HTML,
 // RSS or PodcastFeed document.
-public enum Language: String {
+public enum Language: String, Sendable {
     case abkhazian = "ab"
     case afar = "aa"
     case afrikaans = "af"

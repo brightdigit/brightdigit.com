@@ -11,7 +11,7 @@ import Foundation
 /// in a `span` element with a CSS class matching the token's type.
 /// Optionally, a `classPrefix` can be set to prefix each CSS class with
 /// a given string.
-public struct HTMLOutputFormat: OutputFormat {
+public struct HTMLOutputFormat: OutputFormat, Sendable {
     public var classPrefix: String
 
     public init(classPrefix: String = "") {
