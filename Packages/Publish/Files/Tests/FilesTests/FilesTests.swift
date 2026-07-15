@@ -781,31 +781,6 @@ class FilesTests: XCTestCase {
         }
     }
     
-    func testUsingCustomFileManager() {
-        class FileManagerMock: FileManager {
-            var noFilesExist = false
-            
-            override func fileExists(atPath path: String, isDirectory: UnsafeMutablePointer<ObjCBool>?) -> Bool {
-                if noFilesExist {
-                    return false
-                }
-                
-                return super.fileExists(atPath: path, isDirectory: isDirectory)
-            }
-        }
-        
-        performTest {
-            let fileManager = FileManagerMock()
-            let subfolder = try folder.managedBy(fileManager).createSubfolder(named: UUID().uuidString)
-            let file = try subfolder.createFile(named: "file")
-            try XCTAssertEqual(file.read(), Data())
-        
-            // Mock that no files exist, which should call file lookups to fail
-            fileManager.noFilesExist = true
-            try assert(subfolder.file(named: "file"), throwsErrorOfType: LocationError.self)
-        }
-    }
-
     func testFolderContainsFile() {
         performTest {
             let subfolder = try folder.createSubfolder(named: "subfolder")
@@ -930,7 +905,6 @@ class FilesTests: XCTestCase {
         ("testCreateFolderIfNeeded", testCreateFolderIfNeeded),
         ("testCreateSubfolderIfNeeded", testCreateSubfolderIfNeeded),
         ("testCreatingFileWithString", testCreatingFileWithString),
-        ("testUsingCustomFileManager", testUsingCustomFileManager),
         ("testFolderContainsFile", testFolderContainsFile),
         ("testFolderContainsSubfolder", testFolderContainsSubfolder),
         ("testErrorDescriptions", testErrorDescriptions)
