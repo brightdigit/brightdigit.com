@@ -88,7 +88,7 @@ public struct ButtondownClient: Sendable, UnderlyingClientProtocol,
   /// Installs ``LenientISO8601DateTranscoder`` so the mixed fractional/whole
   /// second timestamps the Buttondown API returns both decode successfully.
   public static var defaultConfiguration: Configuration {
-    Configuration(dateTranscoder: LenientISO8601DateTranscoder())
+    Configuration(dateTranscoder: LenientISO8601DateTranscoder.default)
   }
 
   // URLSession-backed conveniences. Unavailable on WASI (no URLSessionTransport);
@@ -128,7 +128,7 @@ public struct ButtondownClient: Sendable, UnderlyingClientProtocol,
     public init(
       apiKey: String,
       serverURL: URL = ButtondownClient.defaultServerURL,
-      dateTranscoder: any DateTranscoder = LenientISO8601DateTranscoder()
+      dateTranscoder: any DateTranscoder = LenientISO8601DateTranscoder.default
     ) {
       self.init(
         apiKey: apiKey,

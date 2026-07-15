@@ -53,7 +53,7 @@ import Testing
 
   /// A timestamp with fractional seconds decodes to the expected instant.
   @Test internal func decodesFractionalSeconds() throws {
-    let transcoder = LenientISO8601DateTranscoder()
+    let transcoder = LenientISO8601DateTranscoder.default
     let date = try transcoder.decode("2026-06-29T18:36:10.808726Z")
     // 2026-06-29T18:36:10Z is 1_782_758_170 seconds since the epoch; the
     // fractional part adds within the same second.
@@ -62,14 +62,14 @@ import Testing
 
   /// A timestamp with no fractional seconds still decodes (the fallback path).
   @Test internal func decodesWholeSeconds() throws {
-    let transcoder = LenientISO8601DateTranscoder()
+    let transcoder = LenientISO8601DateTranscoder.default
     let date = try transcoder.decode("2026-06-30T12:03:00Z")
     #expect(date.timeIntervalSince1970 == 1_782_820_980)
   }
 
   /// A non-ISO8601 string throws rather than returning a bogus date.
   @Test internal func rejectsGarbage() {
-    let transcoder = LenientISO8601DateTranscoder()
+    let transcoder = LenientISO8601DateTranscoder.default
     #expect(throws: (any Error).self) {
       _ = try transcoder.decode("not-a-date")
     }
