@@ -193,17 +193,17 @@ private extension PublishTestCase {
     }
 
     @discardableResult
-    func performWebsitePublishing<T: WebsiteStub>(
+    func performWebsitePublishing<Metadata: WebsiteItemMetadata>(
         in folder: Folder? = nil,
-        using steps: [PublishingStep<T>],
+        using steps: [PublishingStep<WebsiteStub.Site<Metadata>>],
         files: [Path : String],
         filePathPrefix: String = ""
-    ) throws -> PublishedWebsite<T> {
+    ) throws -> PublishedWebsite<WebsiteStub.Site<Metadata>> {
         let folder = try folder ?? Folder.createTemporary()
 
         try addFiles(withContent: files, to: folder, pathPrefix: filePathPrefix)
 
-        return try T().publish(
+        return try WebsiteStub.Site<Metadata>().publish(
             at: Path(folder.path),
             using: steps
         )

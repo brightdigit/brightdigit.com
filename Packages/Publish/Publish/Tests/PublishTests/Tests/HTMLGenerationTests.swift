@@ -235,7 +235,7 @@ final class HTMLGenerationTests: PublishTestCase {
     }
 
     func testNotGeneratingTagHTMLWhenDisabled() throws {
-        let site = WebsiteStub.WithoutItemMetadata()
+        var site = WebsiteStub.WithoutItemMetadata()
         site.tagHTMLConfig = nil
 
         try publishWebsite(site,

@@ -8,41 +8,39 @@ import Foundation
 import Publish
 import Plot
 
-// This is a test double whose configuration properties are only ever mutated
-// during a test's synchronous setup, before it is handed to the (sequential)
-// publishing pipeline. That external synchronization makes the unchecked
-// Sendable conformance sound; the non-final class hierarchy rules out a
-// checked conformance.
-class WebsiteStub: @unchecked Sendable {
+// Test website doubles, modeled as Sendable value types (no @unchecked). The
+// configuration properties remain mutable `var`s so tests can tweak them during
+// setup; being a struct keeps the whole thing Sendable.
+enum WebsiteStub {
     enum SectionID: String, WebsiteSectionID {
         case one, two, three, customRawValue = "custom-raw-value"
     }
 
-    var url = URL(string: "https://swiftbysundell.com")!
-    var name = "WebsiteName"
-    var description = "Description"
-    var language = Language.english
-    var imagePath: Path? = nil
-    var faviconPath: Path? = nil
-    var tagHTMLConfig: TagHTMLConfiguration? = .default
+    struct EmptyItemMetadata: WebsiteItemMetadata {}
 
-    required init() {}
-
-    func title(for sectionID: WebsiteStub.SectionID) -> String {
-        sectionID.rawValue
+    struct PodcastItemMetadata: PodcastCompatibleWebsiteItemMetadata {
+        var podcast: PodcastEpisodeMetadata?
     }
-}
 
-extension WebsiteStub {
-    final class WithItemMetadata<ItemMetadata: WebsiteItemMetadata>: WebsiteStub, Website, @unchecked Sendable {}
+    struct Site<ItemMetadata: WebsiteItemMetadata>: Website {
+        typealias SectionID = WebsiteStub.SectionID
 
-    final class WithPodcastMetadata: WebsiteStub, Website, @unchecked Sendable {
-        struct ItemMetadata: PodcastCompatibleWebsiteItemMetadata {
-            var podcast: PodcastEpisodeMetadata?
+        var url = URL(string: "https://swiftbysundell.com")!
+        var name = "WebsiteName"
+        var description = "Description"
+        var language = Language.english
+        var imagePath: Path? = nil
+        var faviconPath: Path? = nil
+        var tagHTMLConfig: TagHTMLConfiguration? = .default
+
+        init() {}
+
+        func title(for sectionID: SectionID) -> String {
+            sectionID.rawValue
         }
     }
 
-    final class WithoutItemMetadata: WebsiteStub, Website, @unchecked Sendable {
-        struct ItemMetadata: WebsiteItemMetadata {}
-    }
+    typealias WithoutItemMetadata = Site<EmptyItemMetadata>
+    typealias WithPodcastMetadata = Site<PodcastItemMetadata>
+    typealias WithItemMetadata<ItemMetadata: WebsiteItemMetadata> = Site<ItemMetadata>
 }

@@ -7,6 +7,7 @@
 import Foundation
 import Plot
 import Dispatch
+import Synchronization
 
 /// Protocol that all `Website.SectionID` implementations must conform to.
 public protocol WebsiteSectionID: Decodable, Hashable, CaseIterable, RawRepresentable, Sendable where RawValue == String {}
@@ -233,16 +234,14 @@ public extension Website {
     }
 }
 
-/// A small lock-protected box used to hand a publishing result back from the
+/// A small Mutex-protected box used to hand a publishing result back from the
 /// asynchronous pipeline `Task` to the synchronous `publish` method that waits
-/// on a semaphore. Access is serialized by the lock, so the unchecked Sendable
-/// conformance is sound.
-private final class ResultBox<T>: @unchecked Sendable {
-    private let lock = NSLock()
-    private var storage: Result<T, Error>?
+/// on a semaphore.
+private final class ResultBox<T: Sendable>: Sendable {
+    private let storage = Mutex<Result<T, any Error & Sendable>?>(nil)
 
-    var value: Result<T, Error>? {
-        get { lock.withLock { storage } }
-        set { lock.withLock { storage = newValue } }
+    var value: Result<T, any Error & Sendable>? {
+        get { storage.withLock { $0 } }
+        set { storage.withLock { $0 = newValue } }
     }
 }
