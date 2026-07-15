@@ -46,28 +46,6 @@ import OpenAPIRuntime
 /// decoding — and the style used when encoding — are injectable, so the mixed
 /// fractional/whole-second default can be overridden for other APIs.
 public struct LenientISO8601DateTranscoder: DateTranscoder {
-  /// The error thrown when a date string matches none of the ``decodeStyles``.
-  ///
-  /// Aggregates the error from every attempted style so the failure is
-  /// diagnosable rather than collapsed into a single opaque message.
-  public struct DecodingFailure: Error, CustomStringConvertible {
-    /// The string that failed to decode.
-    public let dateString: String
-
-    /// The error thrown by each style in ``decodeStyles``, in attempt order.
-    public let underlyingErrors: [any Error]
-
-    public var description: String {
-      let reasons = underlyingErrors
-        .map { String(describing: $0) }
-        .joined(separator: "; ")
-      return
-        "Expected date string to be ISO8601-formatted matching one of "
-        + "\(underlyingErrors.count) style(s): \"\(dateString)\". "
-        + "Underlying errors: \(reasons)"
-    }
-  }
-
   /// The ISO-8601 style requiring fractional seconds (e.g. `...10.808Z`).
   private static let fractionalSecondsStyle = Date.ISO8601FormatStyle(
     includingFractionalSeconds: true
@@ -113,8 +91,9 @@ public struct LenientISO8601DateTranscoder: DateTranscoder {
   /// Decodes an ISO-8601 string by trying each style in ``decodeStyles`` until
   /// one succeeds.
   ///
-  /// - Throws: ``DecodingFailure`` aggregating every style's error when none of
-  ///   them parse the string.
+  /// - Throws: `DecodingError.dataCorrupted` when no style parses the string;
+  ///   its context aggregates every style's error in `debugDescription` and
+  ///   carries the last one as `underlyingError`.
   public func decode(_ dateString: String) throws -> Date {
     var errors: [any Error] = []
     for style in decodeStyles {
@@ -124,6 +103,16 @@ public struct LenientISO8601DateTranscoder: DateTranscoder {
         errors.append(error)
       }
     }
-    throw DecodingFailure(dateString: dateString, underlyingErrors: errors)
+    let reasons = errors.map { String(describing: $0) }.joined(separator: "; ")
+    throw DecodingError.dataCorrupted(
+      .init(
+        codingPath: [],
+        debugDescription:
+          "Expected date string to be ISO8601-formatted matching one of "
+          + "\(decodeStyles.count) style(s): \"\(dateString)\". "
+          + "Underlying errors: \(reasons)",
+        underlyingError: errors.last
+      )
+    )
   }
 }
