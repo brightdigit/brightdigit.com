@@ -71,27 +71,19 @@ public struct Testimonial: Hashable, Comparable, Sendable {
 }
 
 extension Testimonial {
-  internal static func listItem(_ testimonial: Testimonial) -> Node<HTML.ListContext> {
-    .li(
-      .element(
-        named: "figure",
-        nodes: [
-          .blockquote(
-            .p(
-              .text(testimonial.briefQuote)
-            )
-          ),
-          .element(
-            named: "figcaption",
-            nodes: [
-              .text("-"),
-              .text(testimonial.fullName),
-              .text(", "),
-              .element(named: "cite", nodes: [.text(testimonial.title)]),
-            ]
-          ),
-        ]
-      )
-    )
+  internal static func listItem(_ testimonial: Testimonial) -> Component {
+    ListItem {
+      Element(name: "figure") {
+        Element(name: "blockquote") {
+          Paragraph { Text(testimonial.briefQuote) }
+        }
+        Element(name: "figcaption") {
+          Text("-")
+          Text(testimonial.fullName)
+          Text(", ")
+          Element(name: "cite") { Text(testimonial.title) }
+        }
+      }
+    }
   }
 }

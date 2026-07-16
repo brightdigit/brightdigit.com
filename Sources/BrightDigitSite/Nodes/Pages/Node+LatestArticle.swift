@@ -34,39 +34,34 @@ import PublishType
 
 // MARK: - ListContext
 
-extension Node where Context == HTML.ListContext {
-  public static func latestArticle(_ article: IndexArticle) -> Node {
-    .li(
-      .header(
-        .a(
-          .href(article.rootRelativeURL),
-          .img(.src(article.featuredImageURL)),
-          .h3(.text(article.title))
-        ),
-        .ol(
-          .forEach(article.tags) { tag in
-            .li(.text(tag.string))
+extension IndexBuilder {
+  internal static func latestArticle(_ article: IndexArticle) -> Component {
+    ListItem {
+      Header {
+        Link(url: article.rootRelativeURL) {
+          // No `alt`, so a raw img node (Image would inject `alt=""`).
+          Node<HTML.BodyContext>.img(.src(article.featuredImageURL))
+          H3 { Text(article.title) }
+        }
+        Element(name: "ol") {
+          for tag in article.tags {
+            ListItem { Text(tag.string) }
           }
-        )
-      ),
-      .main(
-        .p(.text(article.description))
-      ),
-      .footer(
-        .a(
-          .href(article.rootRelativeURL),
-          .div(
-            .class("publishedAt"),
-            .text(
-              PiHTMLFactory.itemFormatter.string(from: article.publishedAt)
-            )
-          ),
-          .div(
-            .class("readTime"),
-            .text("\(article.lengthInMinutes) mins")
-          )
-        )
-      )
-    )
+        }
+      }
+      Main {
+        Paragraph { Text(article.description) }
+      }
+      Footer {
+        Link(url: article.rootRelativeURL) {
+          Div {
+            Text(PiHTMLFactory.itemFormatter.string(from: article.publishedAt))
+          }.class("publishedAt")
+          Div {
+            Text("\(article.lengthInMinutes) mins")
+          }.class("readTime")
+        }
+      }
+    }
   }
 }

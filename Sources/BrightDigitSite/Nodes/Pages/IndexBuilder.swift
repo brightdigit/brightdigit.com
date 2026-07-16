@@ -48,29 +48,30 @@ internal struct IndexBuilder: ContentBuilder {
     -> [Node<HTML.BodyContext>]
   {
     [
-      .mainHeader(),
-      .sectionForServices(),
-      .sectionForTestimonials(),
-      .sectionForLatestArticles(basedOn: context),
-      .sectionForNewsletterCTA(),
+      Self.mainHeader.convertToNode(),
+      Self.sectionForServices.convertToNode(),
+      Self.sectionForTestimonials.convertToNode(),
+      Self.sectionForLatestArticles(basedOn: context).convertToNode(),
+      Self.sectionForNewsletterCTA.convertToNode(),
     ]
   }
 }
 
-extension Node where Context == HTML.BodyContext {
+extension IndexBuilder {
   // MARK: - Main Header
 
-  public static func mainHeader() -> Node {
-    .header(
-      .main(
-        .header(
-          .h1("Your Experts in Swift App Development")
-        ),
-        .sectionForHero1(),
-        .sectionForHero2()
-      ),
-      .footer(
-        .video(
+  fileprivate static var mainHeader: Component {
+    Header {
+      Main {
+        Header {
+          H1("Your Experts in Swift App Development")
+        }
+        sectionForHero1
+        sectionForHero2
+      }
+      Footer {
+        // Bespoke `<video>` with autoplay/muted/loop + `<source>` typed nodes.
+        Node<HTML.BodyContext>.video(
           .attribute(named: "autoplay"),
           .attribute(named: "muted"),
           .attribute(named: "loop"),
@@ -83,62 +84,57 @@ extension Node where Context == HTML.BodyContext {
             .type(.webM)
           )
         )
-      )
-    )
+      }
+    }
   }
 
   // MARK: - sectionForHero
 
-  public static func sectionForHero1() -> Node {
-    .section(
-      .class("hero"),
-      .main(
-        .section(
-          .class("text"),
-          .main(
+  fileprivate static var sectionForHero1: Component {
+    Element(name: "section") {
+      Main {
+        Element(name: "section") {
+          Main {
             // swiftlint:disable:next line_length
-            "Join our newsletter to be the first to know when we have availability, plus advice on what's new with Apple apps and products."
-          )
-        ),
-        .footer(
-          .a(.href("/newsletters"), .text("Subscribe Now"))
-        )
-      )
-    )
+            Text("Join our newsletter to be the first to know when we have availability, plus advice on what's new with Apple apps and products.")
+          }
+        }.class("text")
+        Footer {
+          Link("Subscribe Now", url: "/newsletters")
+        }
+      }
+    }.class("hero")
   }
 
-  public static func sectionForHero2() -> Node {
-    .section(
-      .class("hero"),
-      .header(
-        .img(.src("/media/swift-heroes.jpg"), .alt("Leo presenting at Swift Heroes"))
-      ),
-      .main(
-        .section(
-          .class("text"),
-          .main(
+  fileprivate static var sectionForHero2: Component {
+    Element(name: "section") {
+      Header {
+        Image(url: "/media/swift-heroes.jpg", description: "Leo presenting at Swift Heroes")
+      }
+      Main {
+        Element(name: "section") {
+          Main {
             // swiftlint:disable:next line_length
-            "Founded in 2012, BrightDigit aims to provide you with the very best in Swift-based development for the Apple ecosystem."
-          )
-        ),
-        .footer(
-          .a(.href("/about-us"), .text("Learn more about us"))
-        )
-      )
-    )
+            Text("Founded in 2012, BrightDigit aims to provide you with the very best in Swift-based development for the Apple ecosystem.")
+          }
+        }.class("text")
+        Footer {
+          Link("Learn more about us", url: "/about-us")
+        }
+      }
+    }.class("hero")
   }
 
   // MARK: - sectionForServices
 
-  public static func sectionForServices() -> Node {
-    .section(
-      .class("services"),
-      .header(
-        .h2("Experts in Swift"),
-        .img(.src("/media/services/001-swift.svg"), .alt("Swift Logo"))
-      ),
-      .ol(
-        .makeService(
+  fileprivate static var sectionForServices: Component {
+    Element(name: "section") {
+      Header {
+        H2("Experts in Swift")
+        Image(url: "/media/services/001-swift.svg", description: "Swift Logo")
+      }
+      Element(name: "ol") {
+        makeService(
           title: "Is your app still at the idea stage?",
           imageSrc: "/media/services/003-iphone.svg",
           imageAlt: "iPhone",
@@ -146,8 +142,8 @@ extension Node where Context == HTML.BodyContext {
             // swiftlint:disable:next line_length
             "We provide consulting services to make sure you can deliver the best user experience from the ground up.",
           linkID: "iPhone-service"
-        ),
-        .makeService(
+        )
+        makeService(
           title: "Have you started development and need specialist support?",
           imageSrc: "/media/services/002-smartwatch-app.svg",
           imageAlt: "Apple Watch",
@@ -155,8 +151,8 @@ extension Node where Context == HTML.BodyContext {
             // swiftlint:disable:next line_length
             "We specialize in Swift development for apps, large and small. If you've run into development trouble, we can help get back on track",
           linkID: "swift-service"
-        ),
-        .makeService(
+        )
+        makeService(
           title:
             // swiftlint:disable:next line_length
             "Do you have an existing app but want to go bigger, better or port to an Apple platform?",
@@ -167,82 +163,82 @@ extension Node where Context == HTML.BodyContext {
             "We believe that platform-native development is almost always best. If you have an app for Android we can help you make a twin app that works seamlessly on iOS.",
           linkID: "apple-service"
         )
-      )
-    )
+      }
+    }.class("services")
   }
 
   // MARK: - sectionForTestimonials
 
-  public static func sectionForTestimonials() -> Node {
-    .section(
-      .id("testimonials"),
-      .header(
-        .h2("Testimonials")
-      ),
-      .ol(
-        .forEach(Testimonial.all.sorted(), Testimonial.listItem)
-      )
-    )
+  fileprivate static var sectionForTestimonials: Component {
+    Element(name: "section") {
+      Header {
+        H2("Testimonials")
+      }
+      Element(name: "ol") {
+        for testimonial in Testimonial.all.sorted() {
+          Testimonial.listItem(testimonial)
+        }
+      }
+    }.id("testimonials")
   }
 
   // MARK: - Latest Articles
 
-  public static func sectionForLatestArticles(
+  fileprivate static func sectionForLatestArticles(
     basedOn context: PublishingContext<BrightDigitSite>
-  ) -> Node {
+  ) -> Component {
     let latestArticles: [IndexArticle] = context.sections.compactMap(\.items.first)
       .filter(\.isAvailable)
 
-    return .section(
-      .id("posts"),
-      .header(
-        .h2("Latest")
-      ),
-      .ol(
-        .forEach(latestArticles) { article in
-          .latestArticle(article)
+    return Element(name: "section") {
+      Header {
+        H2("Latest")
+      }
+      Element(name: "ol") {
+        for article in latestArticles {
+          Self.latestArticle(article)
         }
-      )
-    )
+      }
+    }.id("posts")
   }
 
   // MARK: - sectionForNewsletterCTA
 
-  public static func sectionForNewsletterCTA() -> Node {
-    .section(
-      .class("newsletter-cta"),
-      .header(
-        .h2(.text("Don't Let Your App "), .em("Fall Behind"))
-      ),
-      .main(
-        .p(
+  fileprivate static var sectionForNewsletterCTA: Component {
+    Element(name: "section") {
+      Header {
+        H2 {
+          Text("Don't Let Your App ")
+          Element(name: "em") { Text("Fall Behind") }
+        }
+      }
+      Main {
+        Paragraph {
           // swiftlint:disable:next line_length
-          "Stay informed about the latest developments in the world of Swift App Development and what they could mean for your business."
-        )
-      ),
-      .footer(
-        .a(.href("/newsletters"), .text("Subscribe Now"))
-      )
-    )
+          Text("Stay informed about the latest developments in the world of Swift App Development and what they could mean for your business.")
+        }
+      }
+      Footer {
+        Link("Subscribe Now", url: "/newsletters")
+      }
+    }.class("newsletter-cta")
   }
-}
 
-// MARK: - ListContext
+  // MARK: - ListContext
 
-extension Node where Context == HTML.ListContext {
-  private static func makeService(
+  fileprivate static func makeService(
     title: String, imageSrc: String, imageAlt: String, paragraph: String, linkID: String
-  ) -> Node {
-    .li(
-      .header(
-        .h3(
-          .a(.href("/services#\(linkID)"), .text(title))
-        ),
-        .img(.src(imageSrc), .alt(imageAlt))
-      ),
-      .main(
-        .p(.text(paragraph))
-      )
-    )
+  ) -> Component {
+    ListItem {
+      Header {
+        H3 {
+          Link(title, url: "/services#\(linkID)")
+        }
+        Image(url: imageSrc, description: imageAlt)
+      }
+      Main {
+        Paragraph { Text(paragraph) }
+      }
+    }
   }
 }
