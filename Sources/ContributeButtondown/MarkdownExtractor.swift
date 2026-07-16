@@ -1,5 +1,5 @@
 //
-//  Newsletter.swift
+//  MarkdownExtractor.swift
 //  BrightDigit
 //
 //  Created by Leo Dion.
@@ -29,14 +29,26 @@
 
 import Contribute
 
-/// The newsletter content type, importing BrightDigit newsletters from
-/// Buttondown emails (issue #122).
-///
-/// A fresh, non-deprecated analog of `ContributeMailchimp.Newsletter`.
-/// Buttondown's plaintext editor returns Markdown directly, so the email body is
-/// copied into the generated content without an HTML conversion step.
-public enum Newsletter: ContentType {
-  public typealias SourceType = Source
-  public typealias MarkdownExtractorType = MarkdownExtractor
-  public typealias FrontMatterTranslatorType = FrontMatterTranslator
+extension Newsletter {
+  /// Copies a Buttondown plaintext-editor body directly into site content.
+  public struct MarkdownExtractor: Contribute.MarkdownExtractor {
+    public typealias SourceType = Source
+
+    private static let editorModeMarker =
+      "<!-- buttondown-editor-mode: plaintext -->"
+
+    public init() {}
+
+    public func markdown(
+      from source: Source,
+      using _: @escaping (String) throws -> String
+    ) throws -> String {
+      guard source.markdown.hasPrefix(Self.editorModeMarker) else {
+        return source.markdown
+      }
+
+      let body = source.markdown.dropFirst(Self.editorModeMarker.count)
+      return String(body.drop(while: { $0.isNewline }))
+    }
+  }
 }

@@ -39,10 +39,7 @@ extension Newsletter {
   /// A fully-resolved Buttondown newsletter issue: the email metadata plus an
   /// assigned issue number and a slug, ready to be written to Markdown.
   ///
-  /// Conforms to ``Contribute/HTMLSource`` so the reused
-  /// ``Contribute/FilteredHTMLMarkdownExtractor`` can pull ``html`` (the email
-  /// body) and run it through the shared HTML→Markdown converter.
-  public struct Source: HTMLSource, Sendable {
+  public struct Source: Sendable {
     /// The URL-safe slug used for the file name (`NNN-slug.md`).
     public let slug: String
     /// The assigned issue number (see ``IssueNumbering``).
@@ -60,8 +57,8 @@ extension Newsletter {
     public let description: String
     /// The email's creation date, used as the published `date`.
     public let date: Date
-    /// The email body HTML, converted to Markdown by the extractor.
-    public let html: String
+    /// The email body Markdown, copied directly by the extractor.
+    public let markdown: String
 
     /// Memberwise initializer.
     public init(
@@ -73,7 +70,7 @@ extension Newsletter {
       title: String,
       description: String,
       date: Date,
-      html: String
+      markdown: String
     ) {
       self.slug = slug
       self.issueNo = issueNo
@@ -83,7 +80,7 @@ extension Newsletter {
       self.title = title
       self.description = description
       self.date = date
-      self.html = html
+      self.markdown = markdown
     }
   }
 }
@@ -91,8 +88,8 @@ extension Newsletter {
 extension Newsletter.Source {
   /// Builds a ``Newsletter/Source`` from a Buttondown ``ButtondownKit/Email``.
   ///
-  /// The email's `body` HTML is carried verbatim (converted to Markdown later by
-  /// the extractor). `absoluteURL` becomes the archive link; an empty `image`
+  /// The email's Markdown `body` is carried verbatim. `absoluteURL` becomes the
+  /// archive link; an empty `image`
   /// falls back to `featuredImageFallback`.
   ///
   /// - Parameters:
@@ -128,7 +125,7 @@ extension Newsletter.Source {
       title: email.subject,
       description: email.description,
       date: email.creationDate,
-      html: email.body
+      markdown: email.body
     )
   }
 }

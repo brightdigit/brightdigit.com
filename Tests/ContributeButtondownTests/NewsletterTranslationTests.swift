@@ -52,7 +52,7 @@ import Testing
       subject: "Issue #118",
       daysAfterEpoch: 100,
       id: "abc-123",
-      body: "<h1>Hello</h1>",
+      body: "# Hello",
       absoluteURL: "https://buttondown.com/brightdigit/archive/issue-118/",
       description: "The 118th issue.",
       image: "https://example.com/cover.png"
@@ -75,8 +75,7 @@ import Testing
     )
     #expect(frontMatter.featuredImage == URL(string: "https://example.com/cover.png"))
     #expect(frontMatter.date == YAML.dateFormatter.string(from: email.creationDate))
-    // The body HTML is retained on the source for the extractor to convert.
-    #expect(source.html == "<h1>Hello</h1>")
+    #expect(source.markdown == "# Hello")
   }
 
   /// An email with no image falls back to the supplied featured image, so the
@@ -114,12 +113,12 @@ import Testing
   }
 
   /// The full content build emits YAML front matter (delimited by `---`) with
-  /// the mapped fields, followed by the Markdown body from the HTML converter.
+  /// the mapped fields, followed by the Markdown body copied from Buttondown.
   @Test internal func buildsMarkdownWithFrontMatter() throws {
     let email = Fixtures.email(
       subject: "Issue #118",
       daysAfterEpoch: 100,
-      body: "<p>Hello world</p>"
+      body: "<!-- buttondown-editor-mode: plaintext -->\n\n# Hello world"
     )
     let source = try Newsletter.Source(
       email: email,
@@ -127,8 +126,10 @@ import Testing
       slug: "issue-118",
       featuredImageFallback: Self.fallbackImage
     )
-    // A passthrough HTML→Markdown closure keeps the assertion offline and stable.
-    let content = try Newsletter.contentBuilder().content(from: source) { $0 }
+    let content = try Newsletter.contentBuilder().content(from: source) { _ in
+      Issue.record("Buttondown Markdown must not be passed through the HTML converter")
+      return "converted"
+    }
 
     #expect(content.hasPrefix("---\n"))
     #expect(content.contains("issueNo: 118"))
@@ -138,6 +139,7 @@ import Testing
     #expect(content.contains("longArchiveURL:"))
     #expect(content.contains("featuredImage:"))
     // Body follows the closing front-matter delimiter.
-    #expect(content.contains("---\n<p>Hello world</p>"))
+    #expect(content.contains("---\n# Hello world"))
+    #expect(!content.contains("buttondown-editor-mode"))
   }
 }
