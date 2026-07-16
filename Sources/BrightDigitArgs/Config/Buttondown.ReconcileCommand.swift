@@ -108,6 +108,19 @@ extension Buttondown.ReconcileCommand {
     }
   }
 
+  /// Renders the "in Mailchimp, absent from Buttondown — skipped" advisory shown
+  /// in both the dry run and the executed run. Empty when nothing is missing.
+  private static func missingLines(_ missingIssueNos: [Int]) -> [String] {
+    guard !missingIssueNos.isEmpty else {
+      return []
+    }
+    let list = missingIssueNos.map { "#\($0)" }.joined(separator: ", ")
+    return [
+      "",
+      "Skipped (in Mailchimp, absent from Buttondown; never created): \(list)",
+    ]
+  }
+
   /// Fetches a campaign's archive HTML from Mailchimp and cleans it to Markdown,
   /// which is the new/updated Buttondown body (Buttondown is Markdown-native).
   private func cleanedBody(
@@ -126,40 +139,35 @@ extension Buttondown.ReconcileCommand {
   /// preview issues have their archive HTML fetched, keeping the dry run a light
   /// read that does not hammer Mailchimp's archive endpoint.
   private func printDryRun(
-    plan: [PlanItem],
+    plan: Plan,
     campaignCount: Int,
     emailCount: Int,
     mailchimp: MailchimpClient
   ) async throws {
-    let creates = plan.filter { $0.action == .create }
-    let updates = plan.filter { $0.action == .update }
-
-    let hasIssue114 = creates.contains { $0.issueNo == 114 } ? "YES" : "NO"
+    let updates = plan.items
     var lines: [String] = [
       "",
       "buttondown reconcile — DRY RUN (no writes; pass --execute to apply)",
       "====================================================================",
       "Mailchimp sent campaigns: \(campaignCount)",
       "Buttondown emails:        \(emailCount)",
-      "Numbered newsletters:     \(plan.count)",
-      "  CREATE (backfill):      \(creates.count)",
+      "Numbered newsletters:     \(updates.count + plan.missingIssueNos.count)",
       "  UPDATE (clean body):    \(updates.count)",
-      "",
-      "Issue #114 in CREATE set: \(hasIssue114)",
-      "",
-      "Plan (by issue number):",
+      "  SKIP (absent, missing):  \(plan.missingIssueNos.count)",
     ]
-    for item in plan {
-      let tag = item.action == .create ? "CREATE" : "UPDATE"
-      lines.append("  \(tag)  #\(item.issueNo)  \(item.subject)")
+    lines.append(contentsOf: Self.missingLines(plan.missingIssueNos))
+    lines.append("")
+    lines.append("Plan (by issue number):")
+    for item in updates {
+      lines.append("  UPDATE  #\(item.issueNo)  \(item.subject)")
     }
     print(lines.joined(separator: "\n"))
 
-    let previewItems = Array(creates.prefix(2))
+    let previewItems = Array(updates.prefix(2))
     guard !previewItems.isEmpty else {
       return
     }
-    print("\nCleaned-body preview (\(previewItems.count) CREATE issue(s)):")
+    print("\nCleaned-body preview (\(previewItems.count) UPDATE issue(s)):")
     for item in previewItems {
       let body = try await cleanedBody(forCampaignID: item.campaignID, using: mailchimp)
       print("\n--- #\(item.issueNo): \(item.subject) ---")
@@ -167,33 +175,36 @@ extension Buttondown.ReconcileCommand {
     }
   }
 
-  /// Applies the plan to Buttondown: `createArchived` for backfills,
-  /// `updateEmail` for cleanups.
+  /// Applies the plan to Buttondown: `updateEmail` for each existing issue.
   ///
-  /// Guarded behind `--execute`; **never** run live as part of automated work —
-  /// this path is for Leo's explicit invocation.
+  /// Only UPDATEs are applied — issues absent from Buttondown are reported and
+  /// skipped, never created. Guarded behind `--execute`; **never** run live as
+  /// part of automated work — this path is for Leo's explicit invocation.
   private func runExecute(
-    plan: [PlanItem],
+    plan: Plan,
     mailchimp: MailchimpClient,
     buttondown: ButtondownClient
   ) async throws {
-    Self.log("--execute set: applying \(plan.count) actions to Buttondown …")
-    for item in plan {
-      let body = try await cleanedBody(forCampaignID: item.campaignID, using: mailchimp)
-      switch item.action {
-      case .create:
-        let email = try await buttondown.createArchived(
-          subject: item.subject,
-          body: body
-        )
-        Self.log("CREATED #\(item.issueNo) (\(email.id)): \(item.subject)")
-      case .update:
-        guard let id = item.existingEmailID else {
-          continue
-        }
-        let email = try await buttondown.updateEmail(id: id, body: body)
-        Self.log("UPDATED #\(item.issueNo) (\(email.id)): \(item.subject)")
+    for line in Self.missingLines(plan.missingIssueNos) where !line.isEmpty {
+      Self.log(line)
+    }
+    Self.log("--execute set: applying \(plan.items.count) UPDATE(s) to Buttondown …")
+    for item in plan.items {
+      guard let id = item.existingEmailID else {
+        continue
       }
+      // Last-line safety: never patch anything but an imported archive email,
+      // even if the plan somehow paired this issue with a draft/sent broadcast.
+      guard item.existingStatus == .imported else {
+        Self.log(
+          "REFUSED #\(item.issueNo) (\(id)): status is "
+            + "\(item.existingStatus?.rawValue ?? "unknown"), not imported — skipped."
+        )
+        continue
+      }
+      let body = try await cleanedBody(forCampaignID: item.campaignID, using: mailchimp)
+      let email = try await buttondown.updateEmail(id: id, body: body)
+      Self.log("UPDATED #\(item.issueNo) (\(email.id)): \(item.subject)")
     }
     Self.log("done.")
   }

@@ -35,15 +35,20 @@ internal struct ButtondownReconcilePlanTests {
   }
 
   /// Builds a Buttondown email with the given id and subject.
-  private func email(id: String, subject: String) -> Email {
+  private func email(
+    id: String,
+    subject: String,
+    status: EmailStatus = .imported,
+    absoluteURL: String? = nil
+  ) -> Email {
     Email(
       id: id,
       subject: subject,
       body: "body",
-      status: .imported,
+      status: status,
       creationDate: Self.day1,
       modificationDate: Self.day1,
-      absoluteURL: "https://buttondown.example/\(id)",
+      absoluteURL: absoluteURL ?? "https://buttondown.example/\(id)",
       description: "",
       image: ""
     )
@@ -83,7 +88,7 @@ internal struct ButtondownReconcilePlanTests {
     #expect(byIssueNo[0] == nil)
   }
 
-  @Test internal func classifiesMissingAsCreateAndPresentAsUpdate() throws {
+  @Test internal func presentIssuesUpdateAndAbsentIssuesAreSkippedNeverCreated() throws {
     let numbered = [
       Reconcile.NumberedCampaign(
         issueNo: 114, campaignID: "c114", subject: "BrightDigit #114", sendTime: Self.day3
@@ -96,25 +101,106 @@ internal struct ButtondownReconcilePlanTests {
         issueNo: 2, campaignID: "c2", subject: "BrightDigit #2", sendTime: Self.day2
       ),
     ]
-    // Only #2 already exists in Buttondown.
+    // Only #2 already exists in Buttondown; #1 and #114 are absent.
     let byIssueNo = [2: email(id: "e2", subject: "BrightDigit #2")]
 
     let plan = Reconcile.buildPlan(numbered: numbered, buttondownByIssueNo: byIssueNo)
 
-    // Sorted ascending by issue number.
-    #expect(plan.map(\.issueNo) == [1, 2, 114])
+    // Only present issues become UPDATEs; absent issues are never created.
+    #expect(plan.items.map(\.issueNo) == [2])
+    #expect(plan.items.allSatisfy { $0.action == .update })
 
-    let creates = plan.filter { $0.action == .create }
-    let updates = plan.filter { $0.action == .update }
-    #expect(creates.map(\.issueNo) == [1, 114])
-    #expect(updates.map(\.issueNo) == [2])
+    // Absent issues are reported as missing (skipped), sorted ascending.
+    #expect(plan.missingIssueNos == [1, 114])
 
-    // #114 must be backfilled (the known-missing issue).
-    #expect(creates.contains { $0.issueNo == 114 })
-
-    // The UPDATE carries the existing Buttondown email id; CREATEs do not.
-    let update = try #require(updates.first)
+    // The UPDATE carries the existing Buttondown email id.
+    let update = try #require(plan.items.first)
     #expect(update.existingEmailID == "e2")
-    #expect(creates.allSatisfy { $0.existingEmailID == nil })
+  }
+
+  @Test internal func matchesButtondownEmailByArchiveSlugWhenSubjectHasNoNumber() {
+    // #116's subject dropped the "#NNN" convention, but its archive slug carries
+    // the number — it must UPDATE, not be treated as missing.
+    let numbered = [
+      Reconcile.NumberedCampaign(
+        issueNo: 116,
+        campaignID: "c116",
+        subject: "Bushel v2.3.0: Screenshot Capture",
+        sendTime: Self.day1
+      )
+    ]
+    let byIssueNo = Reconcile.emailsByIssueNo([
+      email(
+        id: "e116",
+        subject: "Bushel v2.3.0: Screenshot Capture",
+        absoluteURL:
+          "https://buttondown.com/brightdigit/archive/brightdigit-newsletter-issue-116-25-10-31/"
+      )
+    ])
+
+    #expect(byIssueNo[116]?.id == "e116")
+
+    let plan = Reconcile.buildPlan(numbered: numbered, buttondownByIssueNo: byIssueNo)
+    #expect(plan.missingIssueNos.isEmpty)
+    #expect(plan.items.map(\.issueNo) == [116])
+    #expect(plan.items.first?.existingEmailID == "e116")
+  }
+
+  @Test internal func nonImportedEmailsAreNeverMatchedSoTheIssueIsSkipped() {
+    // A real sent broadcast happens to parse to issue #50. It must NOT be a
+    // match — reconcile only ever touches imported archive emails.
+    let numbered = [
+      Reconcile.NumberedCampaign(
+        issueNo: 50, campaignID: "c50", subject: "BrightDigit #50", sendTime: Self.day1
+      )
+    ]
+    let byIssueNo = Reconcile.emailsByIssueNo([
+      email(id: "e50", subject: "BrightDigit #50", status: .sent)
+    ])
+
+    // The sent email is excluded from the index entirely.
+    #expect(byIssueNo[50] == nil)
+
+    let plan = Reconcile.buildPlan(numbered: numbered, buttondownByIssueNo: byIssueNo)
+    #expect(plan.items.isEmpty)
+    #expect(plan.missingIssueNos == [50])
+  }
+
+  @Test internal func updateItemsCarryTheImportedStatusForTheWriteGuard() throws {
+    let numbered = [
+      Reconcile.NumberedCampaign(
+        issueNo: 42, campaignID: "c42", subject: "BrightDigit #42", sendTime: Self.day1
+      )
+    ]
+    let byIssueNo = Reconcile.emailsByIssueNo([
+      email(id: "e42", subject: "BrightDigit #42", status: .imported)
+    ])
+
+    let plan = Reconcile.buildPlan(numbered: numbered, buttondownByIssueNo: byIssueNo)
+    let item = try #require(plan.items.first)
+    #expect(item.existingStatus == .imported)
+  }
+
+  @Test internal func dedupesResendsKeepingLatestSend() throws {
+    // Two campaigns share issue #9 (a Mailchimp re-send); the later send wins.
+    let numbered = [
+      Reconcile.NumberedCampaign(
+        issueNo: 9, campaignID: "original", subject: "BrightDigit Newsletter #9",
+        sendTime: Self.day1
+      ),
+      Reconcile.NumberedCampaign(
+        issueNo: 9, campaignID: "resend", subject: "BrightDigit Newsletter #9 (resend)",
+        sendTime: Self.day3
+      ),
+    ]
+    let byIssueNo = [9: email(id: "e9", subject: "BrightDigit Newsletter #9")]
+
+    let plan = Reconcile.buildPlan(numbered: numbered, buttondownByIssueNo: byIssueNo)
+
+    // One UPDATE, carrying the later campaign's id.
+    #expect(plan.items.map(\.issueNo) == [9])
+    let item = try #require(plan.items.first)
+    #expect(item.campaignID == "resend")
+    #expect(item.existingEmailID == "e9")
   }
 }
