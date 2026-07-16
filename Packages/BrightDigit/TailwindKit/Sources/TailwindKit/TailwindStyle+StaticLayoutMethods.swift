@@ -46,24 +46,32 @@ extension TailwindStyle {
   // MARK: Position offsets & z-index
 
   /// `top-<n>`.
-  public static func top(_ amount: Spacing) -> TailwindStyle { TailwindStyle().top(amount) }
+  public static func top(_ amount: DefaultSpacing) -> TailwindStyle { TailwindStyle().top(amount) }
   /// `right-<n>`.
-  public static func right(_ amount: Spacing) -> TailwindStyle { TailwindStyle().right(amount) }
+  public static func right(_ amount: DefaultSpacing) -> TailwindStyle {
+    TailwindStyle().right(amount)
+  }
   /// `bottom-<n>`.
-  public static func bottom(_ amount: Spacing) -> TailwindStyle { TailwindStyle().bottom(amount) }
+  public static func bottom(_ amount: DefaultSpacing) -> TailwindStyle {
+    TailwindStyle().bottom(amount)
+  }
   /// `left-<n>`.
-  public static func left(_ amount: Spacing) -> TailwindStyle { TailwindStyle().left(amount) }
+  public static func left(_ amount: DefaultSpacing) -> TailwindStyle {
+    TailwindStyle().left(amount)
+  }
   /// `inset-<n>`.
-  public static func inset(_ amount: Spacing) -> TailwindStyle { TailwindStyle().inset(amount) }
+  public static func inset(_ amount: DefaultSpacing) -> TailwindStyle {
+    TailwindStyle().inset(amount)
+  }
   /// `z-<n>`.
   public static func z(_ index: Int) -> TailwindStyle { TailwindStyle().z(index) }
 
   // MARK: Sizing extras
 
   /// `max-w-<size>`.
-  public static func maxW(_ size: MaxWidth) -> TailwindStyle { TailwindStyle().maxW(size) }
+  public static func maxW(_ size: some MaxWidth) -> TailwindStyle { TailwindStyle().maxW(size) }
   /// `max-h-<size>`.
-  public static func maxH(_ size: Size) -> TailwindStyle { TailwindStyle().maxH(size) }
+  public static func maxH(_ size: DefaultSize) -> TailwindStyle { TailwindStyle().maxH(size) }
 
   // MARK: Alignment extras
 
@@ -92,11 +100,11 @@ extension TailwindStyle {
     TailwindStyle().placeSelf(align)
   }
   /// `space-x-<n>`.
-  public static func spaceX(_ amount: Spacing) -> TailwindStyle {
+  public static func spaceX(_ amount: DefaultSpacing) -> TailwindStyle {
     TailwindStyle().spaceX(amount)
   }
   /// `space-y-<n>`.
-  public static func spaceY(_ amount: Spacing) -> TailwindStyle {
+  public static func spaceY(_ amount: DefaultSpacing) -> TailwindStyle {
     TailwindStyle().spaceY(amount)
   }
 
@@ -114,7 +122,7 @@ extension TailwindStyle {
     TailwindStyle().align(value)
   }
   /// `tracking-<value>`.
-  public static func tracking(_ value: Tracking) -> TailwindStyle {
+  public static func tracking(_ value: some Tracking) -> TailwindStyle {
     TailwindStyle().tracking(value)
   }
   /// `leading-<n>`.
@@ -123,9 +131,11 @@ extension TailwindStyle {
   // MARK: Effects
 
   /// `shadow-<value>`.
-  public static func shadow(_ shadow: Shadow) -> TailwindStyle { TailwindStyle().shadow(shadow) }
+  public static func shadow(_ shadow: some Shadow) -> TailwindStyle {
+    TailwindStyle().shadow(shadow)
+  }
   /// `drop-shadow-<value>`.
-  public static func dropShadow(_ shadow: DropShadow) -> TailwindStyle {
+  public static func dropShadow(_ shadow: some DropShadow) -> TailwindStyle {
     TailwindStyle().dropShadow(shadow)
   }
   /// `ring-<n>`.
@@ -142,9 +152,9 @@ extension TailwindStyle {
     TailwindStyle().duration(milliseconds)
   }
   /// `ease-<value>`.
-  public static func ease(_ ease: Ease) -> TailwindStyle { TailwindStyle().ease(ease) }
+  public static func ease(_ ease: some Ease) -> TailwindStyle { TailwindStyle().ease(ease) }
   /// `backdrop-blur-<size>`.
-  public static func backdropBlur(_ radius: Radius) -> TailwindStyle {
+  public static func backdropBlur(_ radius: some Radius) -> TailwindStyle {
     TailwindStyle().backdropBlur(radius)
   }
   /// `backdrop-brightness-<n>`.

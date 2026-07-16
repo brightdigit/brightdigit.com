@@ -43,75 +43,75 @@ extension TailwindStyle {
     TailwindStyle().gridCols(count)
   }
   /// `gap-<n>`.
-  public static func gap(_ amount: Spacing) -> TailwindStyle {
+  public static func gap(_ amount: DefaultSpacing) -> TailwindStyle {
     TailwindStyle().gap(amount)
   }
   /// `gap-x-<n>`.
-  public static func gapX(_ amount: Spacing) -> TailwindStyle {
+  public static func gapX(_ amount: DefaultSpacing) -> TailwindStyle {
     TailwindStyle().gapX(amount)
   }
   /// `gap-y-<n>`.
-  public static func gapY(_ amount: Spacing) -> TailwindStyle {
+  public static func gapY(_ amount: DefaultSpacing) -> TailwindStyle {
     TailwindStyle().gapY(amount)
   }
 
   // MARK: Spacing
 
   /// `p-<n>`.
-  public static func p(_ amount: Spacing) -> TailwindStyle { TailwindStyle().p(amount) }
+  public static func p(_ amount: DefaultSpacing) -> TailwindStyle { TailwindStyle().p(amount) }
   /// `px-<n>`.
-  public static func px(_ amount: Spacing) -> TailwindStyle { TailwindStyle().px(amount) }
+  public static func px(_ amount: DefaultSpacing) -> TailwindStyle { TailwindStyle().px(amount) }
   /// `py-<n>`.
-  public static func py(_ amount: Spacing) -> TailwindStyle { TailwindStyle().py(amount) }
+  public static func py(_ amount: DefaultSpacing) -> TailwindStyle { TailwindStyle().py(amount) }
   /// `pt-<n>`.
-  public static func pt(_ amount: Spacing) -> TailwindStyle { TailwindStyle().pt(amount) }
+  public static func pt(_ amount: DefaultSpacing) -> TailwindStyle { TailwindStyle().pt(amount) }
   /// `pr-<n>`.
-  public static func pr(_ amount: Spacing) -> TailwindStyle { TailwindStyle().pr(amount) }
+  public static func pr(_ amount: DefaultSpacing) -> TailwindStyle { TailwindStyle().pr(amount) }
   /// `pb-<n>`.
-  public static func pb(_ amount: Spacing) -> TailwindStyle { TailwindStyle().pb(amount) }
+  public static func pb(_ amount: DefaultSpacing) -> TailwindStyle { TailwindStyle().pb(amount) }
   /// `pl-<n>`.
-  public static func pl(_ amount: Spacing) -> TailwindStyle { TailwindStyle().pl(amount) }
+  public static func pl(_ amount: DefaultSpacing) -> TailwindStyle { TailwindStyle().pl(amount) }
   /// `m-<n>`.
-  public static func m(_ amount: Spacing) -> TailwindStyle { TailwindStyle().m(amount) }
+  public static func m(_ amount: DefaultSpacing) -> TailwindStyle { TailwindStyle().m(amount) }
   /// `mx-<n>`.
-  public static func mx(_ amount: Spacing) -> TailwindStyle { TailwindStyle().mx(amount) }
+  public static func mx(_ amount: DefaultSpacing) -> TailwindStyle { TailwindStyle().mx(amount) }
   /// `my-<n>`.
-  public static func my(_ amount: Spacing) -> TailwindStyle { TailwindStyle().my(amount) }
+  public static func my(_ amount: DefaultSpacing) -> TailwindStyle { TailwindStyle().my(amount) }
   /// `mt-<n>`.
-  public static func mt(_ amount: Spacing) -> TailwindStyle { TailwindStyle().mt(amount) }
+  public static func mt(_ amount: DefaultSpacing) -> TailwindStyle { TailwindStyle().mt(amount) }
   /// `mr-<n>`.
-  public static func mr(_ amount: Spacing) -> TailwindStyle { TailwindStyle().mr(amount) }
+  public static func mr(_ amount: DefaultSpacing) -> TailwindStyle { TailwindStyle().mr(amount) }
   /// `mb-<n>`.
-  public static func mb(_ amount: Spacing) -> TailwindStyle { TailwindStyle().mb(amount) }
+  public static func mb(_ amount: DefaultSpacing) -> TailwindStyle { TailwindStyle().mb(amount) }
   /// `ml-<n>`.
-  public static func ml(_ amount: Spacing) -> TailwindStyle { TailwindStyle().ml(amount) }
+  public static func ml(_ amount: DefaultSpacing) -> TailwindStyle { TailwindStyle().ml(amount) }
 
   // MARK: Sizing
 
   /// `w-<size>`.
-  public static func w(_ size: Size) -> TailwindStyle { TailwindStyle().w(size) }
+  public static func w(_ size: DefaultSize) -> TailwindStyle { TailwindStyle().w(size) }
   /// `h-<size>`.
-  public static func h(_ size: Size) -> TailwindStyle { TailwindStyle().h(size) }
+  public static func h(_ size: DefaultSize) -> TailwindStyle { TailwindStyle().h(size) }
 
   // MARK: Colors
 
   /// `bg-<color>-<shade>`.
-  public static func bg(_ color: Color, _ shade: Shade) -> TailwindStyle {
+  public static func bg(_ color: some Color, _ shade: Shade) -> TailwindStyle {
     TailwindStyle().bg(color, shade)
   }
   /// `border-<color>-<shade>`.
-  public static func borderColor(_ color: Color, _ shade: Shade) -> TailwindStyle {
+  public static func borderColor(_ color: some Color, _ shade: Shade) -> TailwindStyle {
     TailwindStyle().borderColor(color, shade)
   }
 
   // MARK: Typography
 
   /// `text-<size>`.
-  public static func text(_ size: TextSize) -> TailwindStyle {
+  public static func text(_ size: some TextSize) -> TailwindStyle {
     TailwindStyle().text(size)
   }
   /// `text-<color>-<shade>`.
-  public static func text(_ color: Color, _ shade: Shade) -> TailwindStyle {
+  public static func text(_ color: some Color, _ shade: Shade) -> TailwindStyle {
     TailwindStyle().text(color, shade)
   }
   /// `text-<align>`.
@@ -119,7 +119,7 @@ extension TailwindStyle {
     TailwindStyle().text(align)
   }
   /// `font-<weight>`.
-  public static func font(_ weight: FontWeight) -> TailwindStyle {
+  public static func font(_ weight: some FontWeight) -> TailwindStyle {
     TailwindStyle().font(weight)
   }
 
@@ -130,7 +130,7 @@ extension TailwindStyle {
     TailwindStyle().border(width)
   }
   /// `rounded-<radius>`.
-  public static func rounded(_ radius: Radius) -> TailwindStyle {
+  public static func rounded(_ radius: some Radius) -> TailwindStyle {
     TailwindStyle().rounded(radius)
   }
 

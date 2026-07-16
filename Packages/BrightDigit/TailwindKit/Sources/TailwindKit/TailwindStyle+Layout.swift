@@ -82,24 +82,30 @@ extension TailwindStyle {
   // MARK: Position offsets & z-index
 
   /// `top-<n>`.
-  public func top(_ amount: Spacing) -> TailwindStyle { appending("top-\(amount.token)") }
+  public func top(_ amount: DefaultSpacing) -> TailwindStyle { appending("top-\(amount.token)") }
   /// `right-<n>`.
-  public func right(_ amount: Spacing) -> TailwindStyle { appending("right-\(amount.token)") }
+  public func right(_ amount: DefaultSpacing) -> TailwindStyle {
+    appending("right-\(amount.token)")
+  }
   /// `bottom-<n>`.
-  public func bottom(_ amount: Spacing) -> TailwindStyle { appending("bottom-\(amount.token)") }
+  public func bottom(_ amount: DefaultSpacing) -> TailwindStyle {
+    appending("bottom-\(amount.token)")
+  }
   /// `left-<n>`.
-  public func left(_ amount: Spacing) -> TailwindStyle { appending("left-\(amount.token)") }
+  public func left(_ amount: DefaultSpacing) -> TailwindStyle { appending("left-\(amount.token)") }
   /// `inset-<n>`.
-  public func inset(_ amount: Spacing) -> TailwindStyle { appending("inset-\(amount.token)") }
+  public func inset(_ amount: DefaultSpacing) -> TailwindStyle {
+    appending("inset-\(amount.token)")
+  }
   /// `z-<n>`, e.g. `.z(50)`.
   public func z(_ index: Int) -> TailwindStyle { appending("z-\(index)") }
 
   // MARK: Sizing extras
 
   /// `max-w-<size>`, e.g. `.maxW(.xl4)` or `.maxW(.arbitrary("48rem"))`.
-  public func maxW(_ size: MaxWidth) -> TailwindStyle { appending("max-w-\(size.token)") }
+  public func maxW(_ size: some MaxWidth) -> TailwindStyle { appending("max-w-\(size.token)") }
   /// `max-h-<size>`, e.g. `.maxH(.full)` or `.maxH(60)`.
-  public func maxH(_ size: Size) -> TailwindStyle { appending("max-h-\(size.token)") }
+  public func maxH(_ size: DefaultSize) -> TailwindStyle { appending("max-h-\(size.token)") }
 
   // MARK: Flex / grid alignment extras
 
@@ -128,11 +134,11 @@ extension TailwindStyle {
     appending("place-self-\(align.token)")
   }
   /// `space-x-<n>`, e.g. `.spaceX(1)`.
-  public func spaceX(_ amount: Spacing) -> TailwindStyle {
+  public func spaceX(_ amount: DefaultSpacing) -> TailwindStyle {
     appending("space-x-\(amount.token)")
   }
   /// `space-y-<n>`.
-  public func spaceY(_ amount: Spacing) -> TailwindStyle {
+  public func spaceY(_ amount: DefaultSpacing) -> TailwindStyle {
     appending("space-y-\(amount.token)")
   }
 
@@ -150,7 +156,7 @@ extension TailwindStyle {
     appending("align-\(value.token)")
   }
   /// `tracking-<value>`, e.g. `.tracking(.tight)`.
-  public func tracking(_ value: Tracking) -> TailwindStyle {
+  public func tracking(_ value: some Tracking) -> TailwindStyle {
     appending("tracking-\(value.token)")
   }
 }

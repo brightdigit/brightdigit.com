@@ -46,54 +46,54 @@ extension TailwindStyle {
   }
 
   /// `gap-<n>`, e.g. `.gap(4)`.
-  public func gap(_ amount: Spacing) -> TailwindStyle {
+  public func gap(_ amount: DefaultSpacing) -> TailwindStyle {
     appending("gap-\(amount.token)")
   }
 
   /// `gap-x-<n>`.
-  public func gapX(_ amount: Spacing) -> TailwindStyle {
+  public func gapX(_ amount: DefaultSpacing) -> TailwindStyle {
     appending("gap-x-\(amount.token)")
   }
 
   /// `gap-y-<n>`.
-  public func gapY(_ amount: Spacing) -> TailwindStyle {
+  public func gapY(_ amount: DefaultSpacing) -> TailwindStyle {
     appending("gap-y-\(amount.token)")
   }
 
   // MARK: Spacing (padding & margin)
 
   /// `p-<n>`.
-  public func p(_ amount: Spacing) -> TailwindStyle { appending("p-\(amount.token)") }
+  public func p(_ amount: DefaultSpacing) -> TailwindStyle { appending("p-\(amount.token)") }
   /// `px-<n>`.
-  public func px(_ amount: Spacing) -> TailwindStyle { appending("px-\(amount.token)") }
+  public func px(_ amount: DefaultSpacing) -> TailwindStyle { appending("px-\(amount.token)") }
   /// `py-<n>`.
-  public func py(_ amount: Spacing) -> TailwindStyle { appending("py-\(amount.token)") }
+  public func py(_ amount: DefaultSpacing) -> TailwindStyle { appending("py-\(amount.token)") }
   /// `pt-<n>`.
-  public func pt(_ amount: Spacing) -> TailwindStyle { appending("pt-\(amount.token)") }
+  public func pt(_ amount: DefaultSpacing) -> TailwindStyle { appending("pt-\(amount.token)") }
   /// `pr-<n>`.
-  public func pr(_ amount: Spacing) -> TailwindStyle { appending("pr-\(amount.token)") }
+  public func pr(_ amount: DefaultSpacing) -> TailwindStyle { appending("pr-\(amount.token)") }
   /// `pb-<n>`.
-  public func pb(_ amount: Spacing) -> TailwindStyle { appending("pb-\(amount.token)") }
+  public func pb(_ amount: DefaultSpacing) -> TailwindStyle { appending("pb-\(amount.token)") }
   /// `pl-<n>`.
-  public func pl(_ amount: Spacing) -> TailwindStyle { appending("pl-\(amount.token)") }
+  public func pl(_ amount: DefaultSpacing) -> TailwindStyle { appending("pl-\(amount.token)") }
   /// `m-<n>` (or `-m-<n>` for a negative amount).
-  public func m(_ amount: Spacing) -> TailwindStyle { spaced("m", amount) }
+  public func m(_ amount: DefaultSpacing) -> TailwindStyle { spaced("m", amount) }
   /// `mx-<n>` (or `-mx-<n>`).
-  public func mx(_ amount: Spacing) -> TailwindStyle { spaced("mx", amount) }
+  public func mx(_ amount: DefaultSpacing) -> TailwindStyle { spaced("mx", amount) }
   /// `my-<n>` (or `-my-<n>`).
-  public func my(_ amount: Spacing) -> TailwindStyle { spaced("my", amount) }
+  public func my(_ amount: DefaultSpacing) -> TailwindStyle { spaced("my", amount) }
   /// `mt-<n>` (or `-mt-<n>`).
-  public func mt(_ amount: Spacing) -> TailwindStyle { spaced("mt", amount) }
+  public func mt(_ amount: DefaultSpacing) -> TailwindStyle { spaced("mt", amount) }
   /// `mr-<n>` (or `-mr-<n>`).
-  public func mr(_ amount: Spacing) -> TailwindStyle { spaced("mr", amount) }
+  public func mr(_ amount: DefaultSpacing) -> TailwindStyle { spaced("mr", amount) }
   /// `mb-<n>` (or `-mb-<n>`).
-  public func mb(_ amount: Spacing) -> TailwindStyle { spaced("mb", amount) }
+  public func mb(_ amount: DefaultSpacing) -> TailwindStyle { spaced("mb", amount) }
   /// `ml-<n>` (or `-ml-<n>`).
-  public func ml(_ amount: Spacing) -> TailwindStyle { spaced("ml", amount) }
+  public func ml(_ amount: DefaultSpacing) -> TailwindStyle { spaced("ml", amount) }
 
   /// Appends `<prefix>-<amount>`, moving a leading `-` on a negative amount to
   /// the front of the whole utility (Tailwind's negative form: `-mx-2`).
-  private func spaced(_ prefix: String, _ amount: Spacing) -> TailwindStyle {
+  private func spaced(_ prefix: String, _ amount: DefaultSpacing) -> TailwindStyle {
     amount.token.hasPrefix("-")
       ? appending("-\(prefix)-\(amount.token.dropFirst())")
       : appending("\(prefix)-\(amount.token)")
@@ -102,31 +102,31 @@ extension TailwindStyle {
   // MARK: Sizing
 
   /// `w-<size>`, e.g. `.w(.full)` or `.w(4)`.
-  public func w(_ size: Size) -> TailwindStyle { appending("w-\(size.token)") }
+  public func w(_ size: DefaultSize) -> TailwindStyle { appending("w-\(size.token)") }
   /// `h-<size>`, e.g. `.h(.screen)` or `.h(4)`.
-  public func h(_ size: Size) -> TailwindStyle { appending("h-\(size.token)") }
+  public func h(_ size: DefaultSize) -> TailwindStyle { appending("h-\(size.token)") }
 
   // MARK: Colors
 
   /// `bg-<color>-<shade>`, e.g. `.bg(.blue, .s500)`.
-  public func bg(_ color: Color, _ shade: Shade) -> TailwindStyle {
+  public func bg(_ color: some Color, _ shade: Shade) -> TailwindStyle {
     appending("bg-\(color.token)-\(shade.token)")
   }
 
   /// `border-<color>-<shade>`, e.g. `.borderColor(.gray, .s200)`.
-  public func borderColor(_ color: Color, _ shade: Shade) -> TailwindStyle {
+  public func borderColor(_ color: some Color, _ shade: Shade) -> TailwindStyle {
     appending("border-\(color.token)-\(shade.token)")
   }
 
   // MARK: Typography
 
   /// `text-<size>`, e.g. `.text(.lg)`.
-  public func text(_ size: TextSize) -> TailwindStyle {
+  public func text(_ size: some TextSize) -> TailwindStyle {
     appending("text-\(size.token)")
   }
 
   /// `text-<color>-<shade>`, e.g. `.text(.blue, .s500)`.
-  public func text(_ color: Color, _ shade: Shade) -> TailwindStyle {
+  public func text(_ color: some Color, _ shade: Shade) -> TailwindStyle {
     appending("text-\(color.token)-\(shade.token)")
   }
 
@@ -136,7 +136,7 @@ extension TailwindStyle {
   }
 
   /// `font-<weight>`, e.g. `.font(.medium)`.
-  public func font(_ weight: FontWeight) -> TailwindStyle {
+  public func font(_ weight: some FontWeight) -> TailwindStyle {
     appending("font-\(weight.token)")
   }
 
@@ -146,7 +146,7 @@ extension TailwindStyle {
   public func border(_ width: Int) -> TailwindStyle { appending("border-\(width)") }
 
   /// `rounded-<radius>`, e.g. `.rounded(.lg)`.
-  public func rounded(_ radius: Radius) -> TailwindStyle {
+  public func rounded(_ radius: some Radius) -> TailwindStyle {
     radius.token.isEmpty
       ? appending("rounded")
       : appending("rounded-\(radius.token)")

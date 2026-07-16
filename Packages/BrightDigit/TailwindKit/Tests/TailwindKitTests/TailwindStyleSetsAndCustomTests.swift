@@ -31,9 +31,10 @@ import Testing
 
 @testable import TailwindKit
 
-/// Covers the two PR #157 review fixes: the closed-enum "sets" that replaced
-/// the flat bare layout utilities, and the type-safe custom/arbitrary-value
-/// API. Plot-independent: asserts `.rendered` string equality only.
+/// Covers the two PR #157 review fixes: the "sets" that replaced the flat bare
+/// layout utilities, and the type-safe arbitrary-value API (`.arbitrary(_:value:)`,
+/// `.arbitrary(_:variable:)`, `.custom(property:value:)`) that replaced the
+/// removed `Custom` type. Plot-independent: asserts `.rendered` string equality.
 @Suite internal struct TailwindStyleSetsAndCustomTests {
   // MARK: Layout sets
 
@@ -73,29 +74,29 @@ import Testing
   // MARK: Custom / arbitrary values
 
   @Test internal func arbitraryLiteralValues() {
-    #expect(TW.custom("top", .value("117px")).rendered == "top-[117px]")
-    #expect(TW.custom("w", .value("200px")).rendered == "w-[200px]")
-    #expect(TW.custom("bg", .value("#bada55")).rendered == "bg-[#bada55]")
-    #expect(TW.custom("text", .value("22px")).rendered == "text-[22px]")
+    #expect(TW.arbitrary("top", value: "117px").rendered == "top-[117px]")
+    #expect(TW.arbitrary("w", value: "200px").rendered == "w-[200px]")
+    #expect(TW.arbitrary("bg", value: "#bada55").rendered == "bg-[#bada55]")
+    #expect(TW.arbitrary("text", value: "22px").rendered == "text-[22px]")
   }
 
   @Test internal func arbitraryValuesEscapeSpacesAsUnderscores() {
     // Tailwind converts underscores back to spaces at build time.
     #expect(
-      TW.custom("grid-cols", .value("1fr 500px 2fr")).rendered
+      TW.arbitrary("grid-cols", value: "1fr 500px 2fr").rendered
         == "grid-cols-[1fr_500px_2fr]"
     )
     // Existing underscores are preserved verbatim.
     #expect(
-      TW.custom("bg", .value("url('/what_a_rush.png')")).rendered
+      TW.arbitrary("bg", value: "url('/what_a_rush.png')").rendered
         == "bg-[url('/what_a_rush.png')]"
     )
   }
 
   @Test internal func cssVariableParenthesesForm() {
-    #expect(TW.custom("bg", .variable("--brand")).rendered == "bg-(--brand)")
+    #expect(TW.arbitrary("bg", variable: "--brand").rendered == "bg-(--brand)")
     #expect(
-      TW.custom("fill", .variable("--my-brand-color")).rendered
+      TW.arbitrary("fill", variable: "--my-brand-color").rendered
         == "fill-(--my-brand-color)"
     )
   }
@@ -114,16 +115,9 @@ import Testing
   @Test internal func customValuesComposeWithVariantsAndUtilities() {
     // Arbitrary values combine with responsive/state prefixes and normal utilities.
     #expect(
-      TW.custom("top", .value("117px")).lg(.custom("top", .value("344px"))).rendered
+      TW.arbitrary("top", value: "117px").lg(.arbitrary("top", value: "344px")).rendered
         == "top-[117px] lg:top-[344px]"
     )
-    #expect(TW.flex.custom("gap", .value("13px")).rendered == "flex gap-[13px]")
-  }
-
-  @Test internal func customValueTypeIsEquatable() {
-    let tenPx = TailwindStyle.Custom.value("10px")
-    #expect(tenPx == TailwindStyle.Custom.value("10px"))
-    #expect(tenPx != TailwindStyle.Custom.value("11px"))
-    #expect(TailwindStyle.Custom.variable("--a") != TailwindStyle.Custom.value("--a"))
+    #expect(TW.flex.arbitrary("gap", value: "13px").rendered == "flex gap-[13px]")
   }
 }

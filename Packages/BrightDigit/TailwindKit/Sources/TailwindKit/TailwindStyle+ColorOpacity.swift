@@ -37,15 +37,15 @@ extension TailwindStyle {
     appending("bg-black/\(opacity)")
   }
   /// `bg-<color>-<shade>/<opacity>`, e.g. `.bg(.gray, .s500, opacity: 50)`.
-  public func bg(_ color: Color, _ shade: Shade, opacity: Int) -> TailwindStyle {
+  public func bg(_ color: some Color, _ shade: Shade, opacity: Int) -> TailwindStyle {
     appending("bg-\(color.token)-\(shade.token)/\(opacity)")
   }
   /// `text-<color>-<shade>/<opacity>`.
-  public func text(_ color: Color, _ shade: Shade, opacity: Int) -> TailwindStyle {
+  public func text(_ color: some Color, _ shade: Shade, opacity: Int) -> TailwindStyle {
     appending("text-\(color.token)-\(shade.token)/\(opacity)")
   }
   /// `border-<color>-<shade>/<opacity>`, e.g. `.borderColor(.gray, .s400, opacity: 10)`.
-  public func borderColor(_ color: Color, _ shade: Shade, opacity: Int) -> TailwindStyle {
+  public func borderColor(_ color: some Color, _ shade: Shade, opacity: Int) -> TailwindStyle {
     appending("border-\(color.token)-\(shade.token)/\(opacity)")
   }
 }
@@ -61,15 +61,17 @@ extension TailwindStyle {
     TailwindStyle().bgBlack(opacity: opacity)
   }
   /// `bg-<color>-<shade>/<opacity>`.
-  public static func bg(_ color: Color, _ shade: Shade, opacity: Int) -> TailwindStyle {
+  public static func bg(_ color: some Color, _ shade: Shade, opacity: Int) -> TailwindStyle {
     TailwindStyle().bg(color, shade, opacity: opacity)
   }
   /// `text-<color>-<shade>/<opacity>`.
-  public static func text(_ color: Color, _ shade: Shade, opacity: Int) -> TailwindStyle {
+  public static func text(_ color: some Color, _ shade: Shade, opacity: Int) -> TailwindStyle {
     TailwindStyle().text(color, shade, opacity: opacity)
   }
   /// `border-<color>-<shade>/<opacity>`.
-  public static func borderColor(_ color: Color, _ shade: Shade, opacity: Int) -> TailwindStyle {
+  public static func borderColor(_ color: some Color, _ shade: Shade, opacity: Int)
+    -> TailwindStyle
+  {
     TailwindStyle().borderColor(color, shade, opacity: opacity)
   }
 }

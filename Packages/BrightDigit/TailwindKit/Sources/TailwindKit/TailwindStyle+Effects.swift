@@ -65,11 +65,11 @@ extension TailwindStyle {
   // MARK: Effects
 
   /// `shadow-<value>`, e.g. `.shadow(.lg)`.
-  public func shadow(_ shadow: Shadow) -> TailwindStyle {
+  public func shadow(_ shadow: some Shadow) -> TailwindStyle {
     appending("shadow-\(shadow.token)")
   }
   /// `drop-shadow-<value>`, e.g. `.dropShadow(.xl)`.
-  public func dropShadow(_ shadow: DropShadow) -> TailwindStyle {
+  public func dropShadow(_ shadow: some DropShadow) -> TailwindStyle {
     appending("drop-shadow-\(shadow.token)")
   }
   /// `ring-<n>`, e.g. `.ring(4)`.
@@ -91,12 +91,12 @@ extension TailwindStyle {
     appending("duration-\(milliseconds)")
   }
   /// `ease-<value>`, e.g. `.ease(.inOut)` → `ease-in-out`.
-  public func ease(_ ease: Ease) -> TailwindStyle { appending("ease-\(ease.token)") }
+  public func ease(_ ease: some Ease) -> TailwindStyle { appending("ease-\(ease.token)") }
 
   // MARK: Filters (parameterized)
 
   /// `backdrop-blur-<size>`, e.g. `.backdropBlur(.lg)`.
-  public func backdropBlur(_ radius: Radius) -> TailwindStyle {
+  public func backdropBlur(_ radius: some Radius) -> TailwindStyle {
     radius.token.isEmpty
       ? appending("backdrop-blur")
       : appending("backdrop-blur-\(radius.token)")
