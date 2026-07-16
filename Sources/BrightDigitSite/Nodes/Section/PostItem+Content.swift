@@ -34,141 +34,140 @@ import PublishType
 
 extension PostItem {
   internal var featuredItemContent: Node<HTML.BodyContext> {
-    .header(
-      .section(
-        .class("hero"),
-        .section(
-          .class("featured"),
-          .header(
-            .img(.src(featuredImageURL))
-          ),
-          .main(
-            .header(
-              .a(
-                .href(source.path),
-                .h2(.text(title))
-              )
-            ),
-            .main(
-              .text(description)
-            ),
-            .footer(
-              " published on ",
-              .span(
-                .class("published-date"),
-                .text(PiHTMLFactory.itemFormatter.string(from: publishedDate))
-              )
-            )
-          )
-        )
-      )
-    )
+    Header {
+      Element(name: "section") {
+        Element(name: "section") {
+          Header {
+            Image(featuredImageURL)
+          }
+          Main {
+            Header {
+              Link(url: source.path.absoluteString) {
+                H2 { Text(title) }
+              }
+            }
+            Main {
+              Text(description)
+            }
+            Footer {
+              Text(" published on ")
+              Span {
+                Text(PiHTMLFactory.itemFormatter.string(from: publishedDate))
+              }.class("published-date")
+            }
+          }
+        }.class("featured")
+      }.class("hero")
+    }.convertToNode()
   }
 
   internal var sectionItemContent: [Node<HTML.BodyContext>] {
     [
       .id("post-\(slug)"),
-      .header(
-        .img(.src(featuredImageURL)),
-        .a(
-          .href(source.path),
-          .h2(.text(title))
-        )
-      ),
-      .main(
-        .text(description)
-      ),
-      .footer(
-        .a(
+      Header {
+        Image(featuredImageURL)
+        Link(url: source.path.absoluteString) {
+          H2 { Text(title) }
+        }
+      }.convertToNode(),
+      Main {
+        Text(description)
+      }.convertToNode(),
+      Footer {
+        // Original markup is `<a>date</a>` with no href attribute.
+        Node<HTML.BodyContext>.a(
           .text(PiHTMLFactory.itemFormatter.string(from: publishedDate))
         )
-      ),
+      }.convertToNode(),
     ]
   }
 
   internal var pageHeader: Node<HTML.BodyContext> {
-    .header(
-      .header(
-        .img(.src(featuredImageURL)),
-        .h1(.text(title))
-      ),
-      .footer(
-        .ol(
-          .forEach(SocialShares.shares, shareListItem(for:))
-        ),
-        .div(
-          .class("readtime"),
-          .text("\(source.readingTime.minutes) mins")
-        )
-      )
-    )
+    Header {
+      Header {
+        Image(featuredImageURL)
+        H1 { Text(title) }
+      }
+      Footer {
+        Element(name: "ol") {
+          for share in SocialShares.shares {
+            shareListItem(for: share)
+          }
+        }
+        Div {
+          Text("\(source.readingTime.minutes) mins")
+        }.class("readtime")
+      }
+    }.convertToNode()
   }
 
   internal var pageFooter: Node<HTML.BodyContext> {
-    .footer(
-      .ol(
-        .forEach(SocialShares.shares, shareListItem(for:))
-      ),
-      .main(
-        .main(
-          .unwrap(subscriptionCTA) {
-            .h2(.text($0))
-          },
-          .h3(
+    Footer {
+      Element(name: "ol") {
+        for share in SocialShares.shares {
+          shareListItem(for: share)
+        }
+      }
+      Main {
+        Main {
+          if let subscriptionCTA {
+            H2 { Text(subscriptionCTA) }
+          }
+          H3 {
             // swiftlint:disable:next line_length
-            "The BrightDigit newsletter gives you regular helpful tips and advice right to your inbox!"
-          ),
-          .p(
-            .markdown(
+            Text("The BrightDigit newsletter gives you regular helpful tips and advice right to your inbox!")
+          }
+          Paragraph {
+            Node<HTML.BodyContext>.markdown(
               // swiftlint:disable:next line_length
               "A couple of times a month, I publish a [newsletter](/newsletters), with news, updates, and other content related to Apple and iOS. I try to help people better understand how to succeed with iOS apps, and keep you informed about what’s coming up on the horizon for the industry."
             )
-          )
-        ),
-
-        .form(
-          .action(Strings.Buttondown.subscribeURL),
-          .method(.post),
-          .div(
-            .div(
-              .input(.type(.email), .name("email"), .placeholder("leo@brightdigit.com")),
-              .label("Email")
-            )
-          ),
-          .div(
-            .div(
-              .input(
-                .type(.hidden),
-                .name("metadata__source_page"),
-                .value(source.path.string)
-              ),
-              .button(
-                .type(.submit),
-                .class(Strings.Plausible.newsletterSignupEventClass),
-                .text("Sign me up!")
-              )
-            )
-          )
-        )
-      )
-    )
+          }
+        }
+        subscriptionForm
+      }
+    }.convertToNode()
   }
 
-  internal func shareListItem(for share: SocialShare) -> Node<HTML.ListContext> {
-    .li(
-      .a(
-        .href(share.shareURL(for: self)),
-        .target(.blank),
-        .span(
-          .class("action"),
-          .text(share.actionText)
-        ),
-        .span(
-          .class("name"),
-          .text(share.nameText)
-        ),
-        .i(.class("flaticon-\(share.flaticonName)"))
-      )
-    )
+  private var subscriptionForm: Component {
+    Element(name: "form") {
+      Div {
+        Div {
+          Node<HTML.FormContext>.input(
+            .type(.email), .name("email"), .placeholder("leo@brightdigit.com")
+          )
+          Node<HTML.FormContext>.label("Email")
+        }
+      }
+      Div {
+        Div {
+          Node<HTML.FormContext>.input(
+            .type(.hidden),
+            .name("metadata__source_page"),
+            .value(source.path.string)
+          )
+          Button {
+            Text("Sign me up!")
+          }.attribute(named: "type", value: "submit")
+            .class(Strings.Plausible.newsletterSignupEventClass)
+        }
+      }
+    }
+    .attribute(named: "action", value: Strings.Buttondown.subscribeURL)
+    .attribute(named: "method", value: "post")
+  }
+
+  internal func shareListItem(for share: SocialShare) -> Component {
+    ListItem {
+      Link(url: share.shareURL(for: self)) {
+        Span {
+          Text(share.actionText)
+        }.class("action")
+        Span {
+          Text(share.nameText)
+        }.class("name")
+        Icon(className: "flaticon-\(share.flaticonName)")
+      }.linkTarget(.blank)
+    }
   }
 }
