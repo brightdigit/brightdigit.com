@@ -22,9 +22,12 @@ import SpinetailOpenAPI
 public struct MailchimpClient: Sendable {
   /// The authored representations returned by Mailchimp's campaign-content endpoint.
   public struct CampaignContent: Equatable, Sendable {
+    /// The campaign's rendered archive HTML, if Mailchimp returned it.
     public let archiveHTML: String?
+    /// The campaign's plain-text representation, if Mailchimp returned it.
     public let plainText: String?
 
+    /// Creates a campaign-content value from its authored representations.
     public init(archiveHTML: String?, plainText: String?) {
       self.archiveHTML = archiveHTML
       self.plainText = plainText

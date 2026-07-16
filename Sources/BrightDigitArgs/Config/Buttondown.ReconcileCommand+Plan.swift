@@ -32,57 +32,21 @@ import Foundation
 import Spinetail
 
 extension Buttondown.ReconcileCommand {
-  /// The kind of Buttondown write a reconcile plan item represents.
-  internal enum Action: String, Equatable, Sendable {
-    /// Backfill: the issue is absent from Buttondown, so create it as an
-    /// archived / never-sent email.
-    case create
-    /// Clean: the issue already exists in Buttondown, so patch its body.
-    case update
-  }
-
-  /// A Mailchimp campaign assigned its canonical BrightDigit issue number.
-  internal struct NumberedCampaign: Equatable, Sendable {
-    internal let issueNo: Int
-    internal let campaignID: String
-    internal let subject: String
-    internal let sendTime: Date
-    internal let previewText: String?
-    internal let socialCardImageURL: String?
-
-    internal init(
-      issueNo: Int,
-      campaignID: String,
-      subject: String,
-      sendTime: Date,
-      previewText: String? = nil,
-      socialCardImageURL: String? = nil
-    ) {
-      self.issueNo = issueNo
-      self.campaignID = campaignID
-      self.subject = subject
-      self.sendTime = sendTime
-      self.previewText = previewText
-      self.socialCardImageURL = socialCardImageURL
+  /// Matches the `issue-NNN` segment embedded in a Buttondown archive URL/slug.
+  ///
+  /// For example `.../archive/brightdigit-newsletter-issue-117-26-12-10/`.
+  ///
+  /// Recent issues dropped the `#NNN` convention from their subject line (e.g.
+  /// "Introducing swift-build …"), but the imported Buttondown email still carries
+  /// the number in its archive slug. Parsing the slug lets those issues match
+  /// their existing email instead of being misclassified as a backfill CREATE.
+  private static let archiveIssueNoRegex: NSRegularExpression = {
+    do {
+      return try NSRegularExpression(pattern: #"(?i)issue-(\d+)"#, options: [])
+    } catch {
+      preconditionFailure("Invalid archiveIssueNoRegex pattern: \(error)")
     }
-  }
-
-  /// A single reconcile action for one newsletter issue.
-  internal struct PlanItem: Equatable, Sendable {
-    internal let issueNo: Int
-    internal let subject: String
-    internal let campaignID: String
-    internal let action: Action
-    /// The existing Buttondown email id (UPDATE only); `nil` for CREATE.
-    internal let existingEmailID: String?
-    /// The existing Buttondown email's status (UPDATE only); `nil` for CREATE.
-    /// Re-checked immediately before writing so only ``EmailStatus/imported``
-    /// emails are ever patched.
-    internal let existingStatus: EmailStatus?
-    internal let previewText: String?
-    internal let socialCardImageURL: String?
-    internal let publishDate: Date
-  }
+  }()
 
   /// Whether a campaign is a BrightDigit newsletter, by segment or subject line.
   ///
@@ -175,29 +139,13 @@ extension Buttondown.ReconcileCommand {
     return result
   }
 
-  /// Matches the `issue-NNN` segment embedded in a Buttondown archive URL/slug
-  /// (e.g. `.../archive/brightdigit-newsletter-issue-117-26-12-10/`).
-  ///
-  /// Recent issues dropped the `#NNN` convention from their subject line (e.g.
-  /// "Introducing swift-build …"), but the imported Buttondown email still carries
-  /// the number in its archive slug. Parsing the slug lets those issues match
-  /// their existing email instead of being misclassified as a backfill CREATE.
-  private static let archiveIssueNoRegex: NSRegularExpression = {
-    do {
-      return try NSRegularExpression(pattern: #"(?i)issue-(\d+)"#, options: [])
-    } catch {
-      preconditionFailure("Invalid archiveIssueNoRegex pattern: \(error)")
-    }
-  }()
-
   /// Parses the issue number from a Buttondown email's archive URL/slug, if any.
   /// - Parameter absoluteURL: The email's ``ButtondownKit/Email/absoluteURL``.
   /// - Returns: The `issue-NNN` number embedded in the slug, or `nil`.
   internal static func parseIssueNumber(fromArchiveURL absoluteURL: String) -> Int? {
     let range = NSRange(absoluteURL.startIndex..<absoluteURL.endIndex, in: absoluteURL)
     guard
-      let match = archiveIssueNoRegex.firstMatch(
-        in: absoluteURL, options: [], range: range),
+      let match = archiveIssueNoRegex.firstMatch(in: absoluteURL, range: range),
       match.numberOfRanges > 1,
       let numberRange = Range(match.range(at: 1), in: absoluteURL),
       let issueNumber = Int(absoluteURL[numberRange])
@@ -263,15 +211,6 @@ extension Buttondown.ReconcileCommand {
       byIssueNo[campaign.issueNo] = campaign
     }
     return byIssueNo.values.sorted { $0.issueNo < $1.issueNo }
-  }
-
-  /// The outcome of planning: the UPDATE actions plus the issue numbers that
-  /// exist in Mailchimp but have no matching Buttondown email.
-  internal struct Plan: Equatable, Sendable {
-    /// One UPDATE per issue number that already exists in Buttondown, ascending.
-    internal let items: [PlanItem]
-    /// Numbered Mailchimp issues absent from Buttondown, skipped (never created).
-    internal let missingIssueNos: [Int]
   }
 
   /// Classifies each numbered campaign as UPDATE (already in Buttondown) or a
