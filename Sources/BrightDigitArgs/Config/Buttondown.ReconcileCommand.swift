@@ -30,9 +30,7 @@
 import ButtondownKit
 import ConfigKeyKit
 import Configuration
-import Contribute
 import Foundation
-import Spinetail
 
 extension Buttondown.ReconcileCommand {
   /// Resolved configuration for the `buttondown reconcile` command.
@@ -44,6 +42,8 @@ extension Buttondown.ReconcileCommand {
     internal let mailchimpListID: String
     internal let buttondownAPIKey: String?
     internal let execute: Bool
+    internal let previewDirectory: String?
+    internal let minBodyWords: Int
 
     public init(
       configuration reader: Configuration.ConfigReader,
@@ -60,7 +60,20 @@ extension Buttondown.ReconcileCommand {
       self.mailchimpListID = mailchimpListID
 
       self.buttondownAPIKey = reader.read(Keys.buttondownAPIKey)
-      self.execute = reader.read(Keys.execute)
+      // Read this through swift-configuration's native Boolean API so a bare
+      // `--execute` flag is recognized. ConfigKeyKit's string-based Boolean
+      // bridge cannot observe CLI flags because they intentionally have no
+      // string value.
+      self.execute = reader.bool(
+        forKey: Configuration.ConfigKey("execute"),
+        default: false
+      )
+      self.previewDirectory = reader.read(Keys.previewDirectory)
+      self.minBodyWords = reader.read(Keys.minBodyWords)
+      _ = try Buttondown.ReconcileCommand.mode(
+        execute: execute,
+        previewDirectory: previewDirectory
+      )
     }
 
     /// Builds the Buttondown client: an explicit `--buttondown-api-key` if
@@ -77,142 +90,13 @@ extension Buttondown.ReconcileCommand {
     static let mailchimpAPIKey = OptionalConfigKey<String>("mailchimp-api-key")
     static let mailchimpListID = OptionalConfigKey<String>("mailchimp-list-id")
     static let buttondownAPIKey = OptionalConfigKey<String>("buttondown-api-key")
-    static let execute = ConfigKey("execute", default: false)
-  }
-
-  public func execute() async throws {
-    let mailchimp = try MailchimpClient(apiKey: config.mailchimpAPIKey)
-    let buttondown = try config.makeButtondownClient()
-
-    Self.log("fetching Mailchimp sent campaigns for list \(config.mailchimpListID) …")
-    let campaigns = try await mailchimp.sentCampaigns(forListID: config.mailchimpListID)
-    Self.log("fetched \(campaigns.count) sent campaigns.")
-
-    Self.log("fetching current Buttondown emails …")
-    let emails = try await buttondown.listAllEmails()
-    Self.log("fetched \(emails.count) Buttondown emails.")
-
-    let numbered = Self.numberedCampaigns(from: campaigns)
-    let byIssueNo = Self.emailsByIssueNo(emails)
-    let plan = Self.buildPlan(numbered: numbered, buttondownByIssueNo: byIssueNo)
-
-    if config.execute {
-      try await runExecute(plan: plan, mailchimp: mailchimp, buttondown: buttondown)
-    } else {
-      try await printDryRun(
-        plan: plan,
-        campaignCount: campaigns.count,
-        emailCount: emails.count,
-        mailchimp: mailchimp
-      )
-    }
-  }
-
-  /// Fetches a campaign's archive HTML from Mailchimp and cleans it to Markdown,
-  /// which is the new/updated Buttondown body (Buttondown is Markdown-native).
-  private func cleanedBody(
-    forCampaignID campaignID: String,
-    using mailchimp: MailchimpClient
-  ) async throws -> String {
-    let html = try await mailchimp.archiveHTML(forCampaignID: campaignID)
-    return try Import.markdownGenerator.markdown(fromHTML: html)
-  }
-
-  /// Prints the reconciliation plan without performing any writes (the default).
-  ///
-  /// Shows totals, a per-issue CREATE/UPDATE line, whether issue #114 is in the
-  /// CREATE (backfill) set, and a short cleaned-body preview for the first couple
-  /// of CREATE issues so the HTML→Markdown cleanup can be eyeballed. Only the
-  /// preview issues have their archive HTML fetched, keeping the dry run a light
-  /// read that does not hammer Mailchimp's archive endpoint.
-  private func printDryRun(
-    plan: [PlanItem],
-    campaignCount: Int,
-    emailCount: Int,
-    mailchimp: MailchimpClient
-  ) async throws {
-    let creates = plan.filter { $0.action == .create }
-    let updates = plan.filter { $0.action == .update }
-
-    let hasIssue114 = creates.contains { $0.issueNo == 114 } ? "YES" : "NO"
-    var lines: [String] = [
-      "",
-      "buttondown reconcile — DRY RUN (no writes; pass --execute to apply)",
-      "====================================================================",
-      "Mailchimp sent campaigns: \(campaignCount)",
-      "Buttondown emails:        \(emailCount)",
-      "Numbered newsletters:     \(plan.count)",
-      "  CREATE (backfill):      \(creates.count)",
-      "  UPDATE (clean body):    \(updates.count)",
-      "",
-      "Issue #114 in CREATE set: \(hasIssue114)",
-      "",
-      "Plan (by issue number):",
-    ]
-    for item in plan {
-      let tag = item.action == .create ? "CREATE" : "UPDATE"
-      lines.append("  \(tag)  #\(item.issueNo)  \(item.subject)")
-    }
-    print(lines.joined(separator: "\n"))
-
-    let previewItems = Array(creates.prefix(2))
-    guard !previewItems.isEmpty else {
-      return
-    }
-    print("\nCleaned-body preview (\(previewItems.count) CREATE issue(s)):")
-    for item in previewItems {
-      let body = try await cleanedBody(forCampaignID: item.campaignID, using: mailchimp)
-      print("\n--- #\(item.issueNo): \(item.subject) ---")
-      print(Self.previewSnippet(of: body))
-    }
-  }
-
-  /// Applies the plan to Buttondown: `createArchived` for backfills,
-  /// `updateEmail` for cleanups.
-  ///
-  /// Guarded behind `--execute`; **never** run live as part of automated work —
-  /// this path is for Leo's explicit invocation.
-  private func runExecute(
-    plan: [PlanItem],
-    mailchimp: MailchimpClient,
-    buttondown: ButtondownClient
-  ) async throws {
-    Self.log("--execute set: applying \(plan.count) actions to Buttondown …")
-    for item in plan {
-      let body = try await cleanedBody(forCampaignID: item.campaignID, using: mailchimp)
-      switch item.action {
-      case .create:
-        let email = try await buttondown.createArchived(
-          subject: item.subject,
-          body: body
-        )
-        Self.log("CREATED #\(item.issueNo) (\(email.id)): \(item.subject)")
-      case .update:
-        guard let id = item.existingEmailID else {
-          continue
-        }
-        let email = try await buttondown.updateEmail(id: id, body: body)
-        Self.log("UPDATED #\(item.issueNo) (\(email.id)): \(item.subject)")
-      }
-    }
-    Self.log("done.")
-  }
-}
-
-extension Buttondown.ReconcileCommand {
-  /// Logs a `buttondown reconcile:` diagnostic line to stderr.
-  internal static func log(_ message: String) {
-    FileHandle.standardError.write(
-      Data("buttondown reconcile: \(message)\n".utf8)
-    )
-  }
-
-  /// A short, single-block preview of a cleaned body (first lines / characters).
-  private static func previewSnippet(of body: String) -> String {
-    let maxCharacters = 600
-    let trimmed = body.prefix(maxCharacters)
-    let suffix = body.count > maxCharacters ? "\n… (truncated)" : ""
-    return trimmed + suffix
+    static let previewDirectory = OptionalConfigKey<String>("preview-directory")
+    /// Minimum meaningful word count a cleaned body must have to be written.
+    ///
+    /// Modern Mailchimp/Buttondown template issues clean down to near-empty
+    /// skeletons (images + empty links); this gate skips them so reconcile never
+    /// overwrites an archive body with less than it had. `0` disables the gate.
+    static let minBodyWords = ConfigKey("min-body-words", default: 100)
   }
 }
 
@@ -223,31 +107,41 @@ extension Buttondown {
   /// Registers under the two-token name `buttondown reconcile` and is dispatched
   /// by ``CommandDispatcher``. Reads sent campaigns from Mailchimp (via
   /// Spinetail) and the current emails from Buttondown, derives an issue number
-  /// for each, and builds a plan: CREATE (as an archived / never-sent email) any
-  /// issue missing from Buttondown, else UPDATE its body with the cleaned
-  /// Markdown. It **defaults to a dry run** that only prints the plan; live
-  /// Buttondown writes require an explicit `--execute` flag. It never touches
-  /// local `Content/newsletters/*.md`.
+  /// for each, and plans an UPDATE (cleaned body) for every issue already present
+  /// as an imported archive email. It **only ever updates**: issues absent from
+  /// Buttondown are reported and skipped (never created), non-imported emails are
+  /// never touched, and issues whose cleaned body falls under `--min-body-words`
+  /// are skipped so a template issue that cleans to an empty skeleton can't
+  /// overwrite a fuller archive body. Every invocation must choose exactly one
+  /// mode: `--preview-directory` exports reviewable Markdown without Buttondown
+  /// writes, while `--execute` applies updates. It never touches local
+  /// `Content/newsletters/*.md`.
   public struct ReconcileCommand: ConfigKeyKit.Command {
     public static let commandName = "buttondown reconcile"
     public static let abstract =
-      "Reconcile Buttondown against Mailchimp (dry run by default)."
+      "Preview or execute Buttondown reconciliation against Mailchimp."
     public static let helpText = """
       OVERVIEW: Reconcile the Buttondown newsletter archive against Mailchimp.
 
       Reads sent campaigns from Mailchimp (via Spinetail) and current emails from
-      Buttondown, then plans a CREATE (archived / never-sent) for each issue
-      missing from Buttondown and an UPDATE (cleaned body) for each issue already
-      present. Defaults to a DRY RUN that only prints the plan; local
-      Content/newsletters/*.md files are never touched.
+      Buttondown, then plans an UPDATE (cleaned body) for each issue already
+      present as an imported archive email. Updates only: absent issues are
+      reported and skipped (never created), non-imported emails are never
+      touched, and issues whose cleaned body is under --min-body-words are
+      skipped. Exactly one of --preview-directory or --execute is required;
+      local Content/newsletters/*.md files are never touched.
 
       USAGE: brightdigitwg buttondown reconcile --mailchimp-api-key <key> \
-      --mailchimp-list-id <id> [--buttondown-api-key <key>] [--execute]
+      --mailchimp-list-id <id> [--buttondown-api-key <key>] \
+      [--min-body-words <n>] \
+      (--execute | --preview-directory <path>)
 
       OPTIONS:
         --mailchimp-api-key <key>   Mailchimp API key. (required)
         --mailchimp-list-id <id>    Mailchimp list ID. (required)
         --buttondown-api-key <key>  Buttondown API key; falls back to env.
+        --min-body-words <n>        Skip thin bodies; default 100, 0 disables.
+        --preview-directory <path>  Export converted Markdown without writing.
         --execute                   Apply the plan to Buttondown.
         -h, --help                  Show help information.
 
@@ -255,7 +149,7 @@ extension Buttondown {
       environment variable (e.g. MAILCHIMP_API_KEY, BUTTONDOWN_API_KEY).
       """
 
-    private let config: Config
+    internal let config: Config
 
     public init(config: Config) {
       self.config = config

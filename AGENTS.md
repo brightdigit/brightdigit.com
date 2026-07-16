@@ -11,7 +11,7 @@ This is a Swift-based static site generator for the BrightDigit website using th
 Every memory and correction is persisted **into this repo** (versioned, shared with future
 sessions), not only into a private auto-memory store. Two mechanisms:
 
-### Corrections log — `.Codex/agent-notes.md`
+### Corrections log — `.claude/agent-notes.md`
 - Running, append-only log of Leo's corrections and standing **always/never** directives.
 - **Read it at the start of every work session** — it is the source of truth for how to work here.
 - **Whenever Leo makes a correction or gives an always/never instruction, append one line to it,

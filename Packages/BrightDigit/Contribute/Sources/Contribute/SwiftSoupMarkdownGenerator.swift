@@ -87,6 +87,28 @@ public struct SwiftSoupMarkdownGenerator: MarkdownGenerator {
       .trimmingCharacters(in: .whitespacesAndNewlines)
   }
 
+  /// Converts only the elements matching a CSS selector to Markdown.
+  ///
+  /// Matches are rendered in document order without their layout ancestors.
+  /// This is useful for template HTML (such as email layouts) where the
+  /// authored content is wrapped in deeply nested presentation tables.
+  /// - Parameters:
+  ///   - htmlString: The HTML document or fragment to parse.
+  ///   - selector: A SwiftSoup-compatible CSS selector.
+  /// - Returns: Markdown for the matched elements, or an empty string when the
+  ///   selector matches nothing.
+  /// - Throws: An error if the HTML or selector cannot be parsed.
+  public func markdown(
+    fromHTML htmlString: String,
+    selecting selector: String
+  ) throws -> String {
+    let document = try SwiftSoup.parse(htmlString)
+    let blocks = try document.select(selector).array().flatMap(blockMarkup(for:))
+    return Document(blocks)
+      .format()
+      .trimmingCharacters(in: .whitespacesAndNewlines)
+  }
+
   // MARK: - SwiftSoup helpers
 
   /// The direct child elements of `element`, in document order.

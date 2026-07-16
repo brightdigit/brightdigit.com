@@ -5,61 +5,31 @@ import Testing
 
 @testable import BrightDigitArgs
 
-/// Unit tests for the pure planning logic behind `buttondown reconcile` (#127):
-/// issue-number derivation and CREATE-vs-UPDATE classification.
+/// Issue-number derivation and CREATE-vs-UPDATE classification for the pure
+/// planning logic behind `buttondown reconcile` (#127).
 internal struct ButtondownReconcilePlanTests {
   private typealias Reconcile = Buttondown.ReconcileCommand
-
-  private static let day1 = Date(timeIntervalSince1970: 1_000_000)
-  private static let dayOneAndHalf = Date(timeIntervalSince1970: 1_500_000)
-  private static let day2 = Date(timeIntervalSince1970: 2_000_000)
-  private static let day3 = Date(timeIntervalSince1970: 3_000_000)
-
-  /// Builds a BrightDigit newsletter campaign (segment-tagged so it counts).
-  private func campaign(
-    id: String,
-    subject: String,
-    sendTime: Date,
-    segment: String? = "brightdigit-business"
-  ) -> MailchimpCampaign {
-    MailchimpCampaign(
-      id: id,
-      longArchiveURL: "https://archive.example/\(id)",
-      sendTime: sendTime,
-      subjectLine: subject,
-      title: subject,
-      previewText: nil,
-      segmentText: segment,
-      socialCardImageURL: nil
-    )
-  }
-
-  /// Builds a Buttondown email with the given id and subject.
-  private func email(id: String, subject: String) -> Email {
-    Email(
-      id: id,
-      subject: subject,
-      body: "body",
-      status: .imported,
-      creationDate: Self.day1,
-      modificationDate: Self.day1,
-      absoluteURL: "https://buttondown.example/\(id)",
-      description: "",
-      image: ""
-    )
-  }
+  private typealias Fix = ButtondownReconcileFixtures
 
   @Test internal func numbersExplicitAndDateOrdersTrailingUnnumbered() {
     let campaigns = [
       // Trailing unnumbered (after the last numbered issue) → sequential 3.
-      campaign(id: "c4", subject: "Introducing swift-build", sendTime: Self.day3),
+      Fix.campaign(
+        id: "c4", subject: "Introducing swift-build", sendTime: Fix.day3
+      ),
       // Explicitly numbered.
-      campaign(id: "c1", subject: "BrightDigit Newsletter #1", sendTime: Self.day1),
-      campaign(id: "c2", subject: "BrightDigit #2", sendTime: Self.day2),
+      Fix.campaign(
+        id: "c1", subject: "BrightDigit Newsletter #1", sendTime: Fix.day1
+      ),
+      Fix.campaign(id: "c2", subject: "BrightDigit #2", sendTime: Fix.day2),
       // Interior unnumbered (before the last numbered issue) → skipped.
-      campaign(id: "c3", subject: "Blog Updates", sendTime: Self.dayOneAndHalf),
+      Fix.campaign(
+        id: "c3", subject: "Blog Updates", sendTime: Fix.dayOneAndHalf
+      ),
       // Not a BrightDigit newsletter (no segment, no marker) → excluded.
-      campaign(id: "c5", subject: "Some other blast", sendTime: Self.day3, segment: nil),
+      Fix.campaign(
+        id: "c5", subject: "Some other blast", sendTime: Fix.day3, segment: nil
+      ),
     ]
 
     let numbered = Reconcile.numberedCampaigns(from: campaigns)
@@ -70,9 +40,9 @@ internal struct ButtondownReconcilePlanTests {
 
   @Test internal func indexesButtondownEmailsByParsedIssueNumber() {
     let emails = [
-      email(id: "e98", subject: "BrightDigit Newsletter #98"),
-      email(id: "e114", subject: "BrightDigit #114"),
-      email(id: "eX", subject: "Welcome to the list!"),
+      Fix.email(id: "e98", subject: "BrightDigit Newsletter #98"),
+      Fix.email(id: "e114", subject: "BrightDigit #114"),
+      Fix.email(id: "eX", subject: "Welcome to the list!"),
     ]
 
     let byIssueNo = Reconcile.emailsByIssueNo(emails)
@@ -83,38 +53,60 @@ internal struct ButtondownReconcilePlanTests {
     #expect(byIssueNo[0] == nil)
   }
 
-  @Test internal func classifiesMissingAsCreateAndPresentAsUpdate() throws {
+  @Test internal func presentIssuesUpdateAndAbsentIssuesAreSkippedNeverCreated() throws {
     let numbered = [
       Reconcile.NumberedCampaign(
-        issueNo: 114, campaignID: "c114", subject: "BrightDigit #114", sendTime: Self.day3
+        issueNo: 114, campaignID: "c114", subject: "BrightDigit #114",
+        sendTime: Fix.day3
       ),
       Reconcile.NumberedCampaign(
         issueNo: 1, campaignID: "c1", subject: "BrightDigit Newsletter #1",
-        sendTime: Self.day1
+        sendTime: Fix.day1
       ),
       Reconcile.NumberedCampaign(
-        issueNo: 2, campaignID: "c2", subject: "BrightDigit #2", sendTime: Self.day2
+        issueNo: 2, campaignID: "c2", subject: "BrightDigit #2", sendTime: Fix.day2
       ),
     ]
-    // Only #2 already exists in Buttondown.
-    let byIssueNo = [2: email(id: "e2", subject: "BrightDigit #2")]
+    // Only #2 already exists in Buttondown; #1 and #114 are absent.
+    let byIssueNo = [2: Fix.email(id: "e2", subject: "BrightDigit #2")]
 
     let plan = Reconcile.buildPlan(numbered: numbered, buttondownByIssueNo: byIssueNo)
 
-    // Sorted ascending by issue number.
-    #expect(plan.map(\.issueNo) == [1, 2, 114])
+    // Only present issues become UPDATEs; absent issues are never created.
+    #expect(plan.items.map(\.issueNo) == [2])
+    #expect(plan.items.allSatisfy { $0.action == .update })
 
-    let creates = plan.filter { $0.action == .create }
-    let updates = plan.filter { $0.action == .update }
-    #expect(creates.map(\.issueNo) == [1, 114])
-    #expect(updates.map(\.issueNo) == [2])
+    // Absent issues are reported as missing (skipped), sorted ascending.
+    #expect(plan.missingIssueNos == [1, 114])
 
-    // #114 must be backfilled (the known-missing issue).
-    #expect(creates.contains { $0.issueNo == 114 })
-
-    // The UPDATE carries the existing Buttondown email id; CREATEs do not.
-    let update = try #require(updates.first)
+    // The UPDATE carries the existing Buttondown email id.
+    let update = try #require(plan.items.first)
     #expect(update.existingEmailID == "e2")
-    #expect(creates.allSatisfy { $0.existingEmailID == nil })
+  }
+
+  @Test internal func campaignMetadataSurvivesNumberingAndPlanning() throws {
+    let campaigns = [
+      Fix.campaign(
+        id: "c7",
+        subject: "BrightDigit Newsletter #7",
+        sendTime: Fix.day2,
+        previewText: "  Issue preview  ",
+        socialCardImageURL: "https://example.com/social.jpg"
+      )
+    ]
+    let numbered = Reconcile.numberedCampaigns(from: campaigns)
+    let plan = Reconcile.buildPlan(
+      numbered: numbered,
+      buttondownByIssueNo: [
+        7: Fix.email(id: "e7", subject: "BrightDigit Newsletter #7")
+      ]
+    )
+
+    let item = try #require(plan.items.first)
+    #expect(item.previewText == "  Issue preview  ")
+    #expect(item.socialCardImageURL == "https://example.com/social.jpg")
+    #expect(item.publishDate == Fix.day2)
+    #expect(Reconcile.nonBlank(item.previewText) == "Issue preview")
+    #expect(Reconcile.nonBlank("  ") == nil)
   }
 }

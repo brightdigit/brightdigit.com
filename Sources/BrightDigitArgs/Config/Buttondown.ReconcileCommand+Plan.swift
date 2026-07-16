@@ -32,32 +32,21 @@ import Foundation
 import Spinetail
 
 extension Buttondown.ReconcileCommand {
-  /// The kind of Buttondown write a reconcile plan item represents.
-  internal enum Action: String, Equatable, Sendable {
-    /// Backfill: the issue is absent from Buttondown, so create it as an
-    /// archived / never-sent email.
-    case create
-    /// Clean: the issue already exists in Buttondown, so patch its body.
-    case update
-  }
-
-  /// A Mailchimp campaign assigned its canonical BrightDigit issue number.
-  internal struct NumberedCampaign: Equatable, Sendable {
-    internal let issueNo: Int
-    internal let campaignID: String
-    internal let subject: String
-    internal let sendTime: Date
-  }
-
-  /// A single reconcile action for one newsletter issue.
-  internal struct PlanItem: Equatable, Sendable {
-    internal let issueNo: Int
-    internal let subject: String
-    internal let campaignID: String
-    internal let action: Action
-    /// The existing Buttondown email id (UPDATE only); `nil` for CREATE.
-    internal let existingEmailID: String?
-  }
+  /// Matches the `issue-NNN` segment embedded in a Buttondown archive URL/slug.
+  ///
+  /// For example `.../archive/brightdigit-newsletter-issue-117-26-12-10/`.
+  ///
+  /// Recent issues dropped the `#NNN` convention from their subject line (e.g.
+  /// "Introducing swift-build …"), but the imported Buttondown email still carries
+  /// the number in its archive slug. Parsing the slug lets those issues match
+  /// their existing email instead of being misclassified as a backfill CREATE.
+  private static let archiveIssueNoRegex: NSRegularExpression = {
+    do {
+      return try NSRegularExpression(pattern: #"(?i)issue-(\d+)"#, options: [])
+    } catch {
+      preconditionFailure("Invalid archiveIssueNoRegex pattern: \(error)")
+    }
+  }()
 
   /// Whether a campaign is a BrightDigit newsletter, by segment or subject line.
   ///
@@ -141,24 +130,60 @@ extension Buttondown.ReconcileCommand {
           issueNo: issueNo,
           campaignID: campaignID,
           subject: subjectLine,
-          sendTime: sendTime
+          sendTime: sendTime,
+          previewText: campaign.previewText,
+          socialCardImageURL: campaign.socialCardImageURL
         )
       )
     }
     return result
   }
 
-  /// Indexes Buttondown emails by the issue number parsed from their subject.
+  /// Parses the issue number from a Buttondown email's archive URL/slug, if any.
+  /// - Parameter absoluteURL: The email's ``ButtondownKit/Email/absoluteURL``.
+  /// - Returns: The `issue-NNN` number embedded in the slug, or `nil`.
+  internal static func parseIssueNumber(fromArchiveURL absoluteURL: String) -> Int? {
+    let range = NSRange(absoluteURL.startIndex..<absoluteURL.endIndex, in: absoluteURL)
+    guard
+      let match = archiveIssueNoRegex.firstMatch(in: absoluteURL, range: range),
+      match.numberOfRanges > 1,
+      let numberRange = Range(match.range(at: 1), in: absoluteURL),
+      let issueNumber = Int(absoluteURL[numberRange])
+    else {
+      return nil
+    }
+    return issueNumber
+  }
+
+  /// The issue number for a Buttondown email: the number embedded in its archive
+  /// slug when present, else the number parsed from its subject line.
   ///
-  /// Emails whose subject carries no BrightDigit issue number are ignored. When
-  /// two emails share a number (shouldn't normally happen) the first wins.
+  /// The archive slug is preferred because it is the number the site assigned at
+  /// import time and survives subject lines that dropped the `#NNN` convention.
+  /// - Parameter email: The Buttondown email.
+  /// - Returns: The email's issue number, or `nil` if neither source has one.
+  internal static func issueNumber(for email: Email) -> Int? {
+    parseIssueNumber(fromArchiveURL: email.absoluteURL)
+      ?? Import.MailchimpCommand.parseIssueNumber(from: email.subject)
+  }
+
+  /// Indexes Buttondown emails by issue number (archive slug first, subject
+  /// second; see ``issueNumber(for:)``).
+  ///
+  /// Only ``EmailStatus/imported`` emails are indexed: reconcile backfills the
+  /// archive, so it must never overwrite a real `draft` or `sent` broadcast that
+  /// happens to parse to an issue number. A non-imported email is treated as no
+  /// match, so its issue is reported as skipped rather than updated. When two
+  /// imported emails share a number (e.g. an old `-resend`/`-preview` archive
+  /// duplicate) the first wins.
   /// - Parameter emails: The current Buttondown emails.
-  /// - Returns: A map from issue number to the corresponding email.
+  /// - Returns: A map from issue number to the corresponding imported email.
   internal static func emailsByIssueNo(_ emails: [Email]) -> [Int: Email] {
     var map: [Int: Email] = [:]
     for email in emails {
       guard
-        let issueNo = Import.MailchimpCommand.parseIssueNumber(from: email.subject),
+        email.status == .imported,
+        let issueNo = issueNumber(for: email),
         map[issueNo] == nil
       else {
         continue
@@ -168,37 +193,64 @@ extension Buttondown.ReconcileCommand {
     return map
   }
 
-  /// Classifies each numbered campaign as CREATE (absent from Buttondown) or
-  /// UPDATE (already present), the pure heart of the reconciliation.
+  /// Collapses campaigns that share an issue number to a single canonical one,
+  /// keeping the **latest** send (Mailchimp re-sends reuse the issue number, so
+  /// several campaigns map to one number — the final send is the corrected copy).
+  /// - Parameter numbered: The numbered campaigns, possibly with duplicates.
+  /// - Returns: One campaign per issue number, latest `sendTime` winning.
+  internal static func dedupedByLatestSend(
+    _ numbered: [NumberedCampaign]
+  ) -> [NumberedCampaign] {
+    var byIssueNo: [Int: NumberedCampaign] = [:]
+    for campaign in numbered {
+      if let existing = byIssueNo[campaign.issueNo],
+        existing.sendTime >= campaign.sendTime
+      {
+        continue
+      }
+      byIssueNo[campaign.issueNo] = campaign
+    }
+    return byIssueNo.values.sorted { $0.issueNo < $1.issueNo }
+  }
+
+  /// Classifies each numbered campaign as UPDATE (already in Buttondown) or a
+  /// skipped miss (absent), the pure heart of the reconciliation.
+  ///
+  /// Re-sends are collapsed to the latest send (see ``dedupedByLatestSend(_:)``),
+  /// so each issue number yields at most one action. Issues absent from
+  /// Buttondown are **never** created here — they are returned as
+  /// ``Plan/missingIssueNos`` for the caller to log and skip.
   ///
   /// - Parameters:
   ///   - numbered: The Mailchimp campaigns with issue numbers assigned.
   ///   - buttondownByIssueNo: The current Buttondown emails indexed by issue
   ///     number (see ``emailsByIssueNo(_:)``).
-  /// - Returns: One ``PlanItem`` per campaign, sorted by issue number ascending.
+  /// - Returns: The ``Plan`` (UPDATE items ascending, plus missing issue numbers).
   internal static func buildPlan(
     numbered: [NumberedCampaign],
     buttondownByIssueNo: [Int: Email]
-  ) -> [PlanItem] {
-    numbered
-      .sorted { $0.issueNo < $1.issueNo }
-      .map { campaign in
-        if let existing = buttondownByIssueNo[campaign.issueNo] {
-          return PlanItem(
-            issueNo: campaign.issueNo,
-            subject: campaign.subject,
-            campaignID: campaign.campaignID,
-            action: .update,
-            existingEmailID: existing.id
-          )
-        }
-        return PlanItem(
+  ) -> Plan {
+    var items: [PlanItem] = []
+    var missing: [Int] = []
+    for campaign in dedupedByLatestSend(numbered) {
+      guard let existing = buttondownByIssueNo[campaign.issueNo] else {
+        missing.append(campaign.issueNo)
+        continue
+      }
+      items.append(
+        PlanItem(
           issueNo: campaign.issueNo,
           subject: campaign.subject,
           campaignID: campaign.campaignID,
-          action: .create,
-          existingEmailID: nil
+          action: .update,
+          existingEmailID: existing.id,
+          existingStatus: existing.status,
+          previewText: campaign.previewText,
+          socialCardImageURL: campaign.socialCardImageURL,
+          publishDate: campaign.sendTime
         )
-      }
+      )
+    }
+    return Plan(items: items, missingIssueNos: missing)
   }
 }
