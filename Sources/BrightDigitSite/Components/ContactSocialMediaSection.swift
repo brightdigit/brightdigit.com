@@ -1,5 +1,5 @@
 //
-//  SectionElement.swift
+//  ContactSocialMediaSection.swift
 //  BrightDigit
 //
 //  Created by Leo Dion.
@@ -29,23 +29,38 @@
 
 import Plot
 
-internal struct SectionElement: Component {
-  internal let content: ContentProvider
+/// `#social-media` alternate contact channels section.
+internal struct ContactSocialMediaSection: Component {
   internal var body: Component {
-    Element(name: "section", content: content)
-  }
-
-  internal init(
-    @ComponentBuilder content: @escaping ContentProvider
-  ) {
-    self.content = content
-  }
-}
-
-extension SectionElement {
-  internal init(forProduct product: ProductItem) {
-    self.init {
-      ProductSection(product: product)
-    }
+    Element(name: "section") {
+      Main {
+        Header {
+          Image(url: "/media/social-media.svg", description: "We are on Social Media")
+        }
+        Main {
+          Paragraph { Text("There are other ways to get a hold of us too.") }
+          Element(name: "ol") {
+            ContactSocialIconItem(
+              text: "Twitter @brightdigit", href: "/", flatIcon: "twitter"
+            )
+            ContactSocialIconItem(
+              text: "GitHub @brightdigit", href: "/", flatIcon: "github"
+            )
+            ContactSocialIconItem(
+              text: "EmpowerApps.Show Podcast", href: "/", flatIcon: "podcast"
+            )
+            ContactSocialIconItem(
+              text: "Youtube videos", href: "/", flatIcon: "youtube"
+            )
+            ContactSocialIconItem(
+              text: "Our Newsletter", href: "/", flatIcon: "newletter"
+            )
+            ContactSocialIconItem(
+              text: "Our Feed", href: "/", flatIcon: "rss"
+            )
+          }.class("social")
+        }
+      }
+    }.id("social-media")
   }
 }

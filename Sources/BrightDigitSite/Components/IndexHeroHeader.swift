@@ -1,5 +1,5 @@
 //
-//  IndexBuilder.swift
+//  IndexHeroHeader.swift
 //  BrightDigit
 //
 //  Created by Leo Dion.
@@ -27,30 +27,38 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import Foundation
 import Plot
-import Publish
-import PublishType
 
-internal struct IndexBuilder: ContentBuilder {
-  internal typealias LocationType = Index
-
-  internal let description: String = BrightDigitSite.SiteInfo.description
-  internal var imagePath: Path = BrightDigitSite.SiteInfo.imagePath
-
-  internal var bodyClasses: [String] { [] }
-
-  internal func main(
-    forLocation _: Index, withContext context: PublishingContext<BrightDigitSite>
-  )
-    -> [Node<HTML.BodyContext>]
-  {
-    [
-      IndexHeroHeader().convertToNode(),
-      IndexServicesSection().convertToNode(),
-      TestimonialsSection().convertToNode(),
-      LatestArticlesSection(context: context).convertToNode(),
-      NewsletterCTASection().convertToNode(),
-    ]
+/// Homepage masthead: H1, two hero sections, and background video.
+internal struct IndexHeroHeader: Component {
+  internal var body: Component {
+    Header {
+      Main {
+        Header {
+          H1("Your Experts in Swift App Development")
+        }
+        IndexHeroSection(
+          imageURL: nil,
+          imageDescription: nil,
+          text:
+            // swiftlint:disable:next line_length
+            "Join our newsletter to be the first to know when we have availability, plus advice on what's new with Apple apps and products.",
+          linkTitle: "Subscribe Now",
+          linkURL: "/newsletters"
+        )
+        IndexHeroSection(
+          imageURL: "/media/swift-heroes.jpg",
+          imageDescription: "Leo presenting at Swift Heroes",
+          text:
+            // swiftlint:disable:next line_length
+            "Founded in 2012, BrightDigit aims to provide you with the very best in Swift-based development for the Apple ecosystem.",
+          linkTitle: "Learn more about us",
+          linkURL: "/about-us"
+        )
+      }
+      Footer {
+        HeroBackgroundVideo()
+      }
+    }
   }
 }

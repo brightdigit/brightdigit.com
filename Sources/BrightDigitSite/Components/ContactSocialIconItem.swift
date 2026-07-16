@@ -1,5 +1,5 @@
 //
-//  IndexBuilder.swift
+//  ContactSocialIconItem.swift
 //  BrightDigit
 //
 //  Created by Leo Dion.
@@ -27,30 +27,22 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import Foundation
 import Plot
-import Publish
-import PublishType
 
-internal struct IndexBuilder: ContentBuilder {
-  internal typealias LocationType = Index
+/// Contact-page social list entry: icon + label link.
+internal struct ContactSocialIconItem: Component {
+  internal let text: String
+  internal let href: String
+  internal let flatIcon: String
 
-  internal let description: String = BrightDigitSite.SiteInfo.description
-  internal var imagePath: Path = BrightDigitSite.SiteInfo.imagePath
-
-  internal var bodyClasses: [String] { [] }
-
-  internal func main(
-    forLocation _: Index, withContext context: PublishingContext<BrightDigitSite>
-  )
-    -> [Node<HTML.BodyContext>]
-  {
-    [
-      IndexHeroHeader().convertToNode(),
-      IndexServicesSection().convertToNode(),
-      TestimonialsSection().convertToNode(),
-      LatestArticlesSection(context: context).convertToNode(),
-      NewsletterCTASection().convertToNode(),
-    ]
+  internal var body: Component {
+    ListItem {
+      // Raw <a>: href, then <i> icon, then text — matches original node order.
+      Node<HTML.BodyContext>.a(
+        .href(href),
+        .i(.class("flaticon-\(flatIcon)")),
+        .text(text)
+      )
+    }
   }
 }

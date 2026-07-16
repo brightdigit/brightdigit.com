@@ -1,5 +1,5 @@
 //
-//  IndexBuilder.swift
+//  IndexServiceListItem.swift
 //  BrightDigit
 //
 //  Created by Leo Dion.
@@ -27,30 +27,27 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import Foundation
 import Plot
-import Publish
-import PublishType
 
-internal struct IndexBuilder: ContentBuilder {
-  internal typealias LocationType = Index
+/// One service teaser in the homepage services list.
+internal struct IndexServiceListItem: Component {
+  internal let title: String
+  internal let imageSrc: String
+  internal let imageAlt: String
+  internal let paragraph: String
+  internal let linkID: String
 
-  internal let description: String = BrightDigitSite.SiteInfo.description
-  internal var imagePath: Path = BrightDigitSite.SiteInfo.imagePath
-
-  internal var bodyClasses: [String] { [] }
-
-  internal func main(
-    forLocation _: Index, withContext context: PublishingContext<BrightDigitSite>
-  )
-    -> [Node<HTML.BodyContext>]
-  {
-    [
-      IndexHeroHeader().convertToNode(),
-      IndexServicesSection().convertToNode(),
-      TestimonialsSection().convertToNode(),
-      LatestArticlesSection(context: context).convertToNode(),
-      NewsletterCTASection().convertToNode(),
-    ]
+  internal var body: Component {
+    ListItem {
+      Header {
+        H3 {
+          Link(title, url: "/services#\(linkID)")
+        }
+        Image(url: imageSrc, description: imageAlt)
+      }
+      Main {
+        Paragraph { Text(paragraph) }
+      }
+    }
   }
 }

@@ -34,24 +34,6 @@ import Plot
 /// Renders the same markup as the former `Node.header()` factory, expressed with
 /// Plot's component API so the theme is composed of components (see #67/#53).
 internal struct HeaderComponent: Component {
-  /// A single navigation entry linking to `path` (defaulting to the lowercased
-  /// `name`) and displaying `name` capitalized — mirrors `Node.li(for:at:)`.
-  private struct MenuLink: Component {
-    private let name: String
-    private let path: String?
-
-    fileprivate var body: Component {
-      ListItem {
-        Link(name.capitalized, url: "/" + (path ?? name.lowercased()))
-      }
-    }
-
-    fileprivate init(_ name: String, at path: String? = nil) {
-      self.name = name
-      self.path = path
-    }
-  }
-
   internal var body: Component {
     Header {
       Navigation {
@@ -63,14 +45,14 @@ internal struct HeaderComponent: Component {
           }
         }.class("logo")
         Element(name: "ol") {
-          MenuLink("Services")
-          MenuLink("Products")
-          MenuLink("Articles")
-          MenuLink("Tutorials")
+          NavMenuLink("Services")
+          NavMenuLink("Products")
+          NavMenuLink("Articles")
+          NavMenuLink("Tutorials")
         }.class("menu")
         Element(name: "ol") {
-          MenuLink("Podcast", at: "episodes")
-          MenuLink("Newsletters")
+          NavMenuLink("Podcast", at: "episodes")
+          NavMenuLink("Newsletters")
           ListItem {
             Link("Sponsorship", url: "https://www.patreon.com/brightdigit")
           }

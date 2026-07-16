@@ -1,5 +1,5 @@
 //
-//  IndexBuilder+LatestArticle.swift
+//  TestimonialsSection.swift
 //  BrightDigit
 //
 //  Created by Leo Dion.
@@ -27,41 +27,20 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import Foundation
 import Plot
-import Publish
-import PublishType
 
-// MARK: - ListContext
-
-extension IndexBuilder {
-  internal static func latestArticle(_ article: IndexArticle) -> Component {
-    ListItem {
+/// Homepage `#testimonials` section.
+internal struct TestimonialsSection: Component {
+  internal var body: Component {
+    Element(name: "section") {
       Header {
-        Link(url: article.rootRelativeURL) {
-          // No `alt`, so a raw img node (Image would inject `alt=""`).
-          Node<HTML.BodyContext>.img(.src(article.featuredImageURL))
-          H3 { Text(article.title) }
-        }
-        Element(name: "ol") {
-          for tag in article.tags {
-            ListItem { Text(tag.string) }
-          }
+        H2("Testimonials")
+      }
+      Element(name: "ol") {
+        for testimonial in Testimonial.all.sorted() {
+          TestimonialListItem(testimonial: testimonial)
         }
       }
-      Main {
-        Paragraph { Text(article.description) }
-      }
-      Footer {
-        Link(url: article.rootRelativeURL) {
-          Div {
-            Text(PiHTMLFactory.itemFormatter.string(from: article.publishedAt))
-          }.class("publishedAt")
-          Div {
-            Text("\(article.lengthInMinutes) mins")
-          }.class("readTime")
-        }
-      }
-    }
+    }.id("testimonials")
   }
 }

@@ -1,5 +1,5 @@
 //
-//  IndexBuilder.swift
+//  AutoplayVideo.swift
 //  BrightDigit
 //
 //  Created by Leo Dion.
@@ -27,30 +27,20 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import Foundation
 import Plot
-import Publish
-import PublishType
 
-internal struct IndexBuilder: ContentBuilder {
-  internal typealias LocationType = Index
+/// A `<video autoplay muted [loop]>` with a single webM `<source>` — bespoke
+/// attributes kept as raw nodes.
+internal struct AutoplayVideo: Component {
+  internal let src: String
+  internal let loop: Bool
 
-  internal let description: String = BrightDigitSite.SiteInfo.description
-  internal var imagePath: Path = BrightDigitSite.SiteInfo.imagePath
-
-  internal var bodyClasses: [String] { [] }
-
-  internal func main(
-    forLocation _: Index, withContext context: PublishingContext<BrightDigitSite>
-  )
-    -> [Node<HTML.BodyContext>]
-  {
-    [
-      IndexHeroHeader().convertToNode(),
-      IndexServicesSection().convertToNode(),
-      TestimonialsSection().convertToNode(),
-      LatestArticlesSection(context: context).convertToNode(),
-      NewsletterCTASection().convertToNode(),
-    ]
+  internal var body: Component {
+    Node<HTML.BodyContext>.video(
+      .attribute(named: "autoplay"),
+      .attribute(named: "muted"),
+      .unwrap(loop ? "" : nil) { _ in .attribute(named: "loop") },
+      .source(.src(src), .type(.webM))
+    )
   }
 }

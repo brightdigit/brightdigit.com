@@ -28,17 +28,6 @@
 //
 
 extension TailwindStyle {
-  // MARK: Position (bare)
-
-  /// `relative`.
-  public var relative: TailwindStyle { appending("relative") }
-  /// `absolute`.
-  public var absolute: TailwindStyle { appending("absolute") }
-  /// `fixed`.
-  public var fixed: TailwindStyle { appending("fixed") }
-  /// `sticky`.
-  public var sticky: TailwindStyle { appending("sticky") }
-
   // MARK: Sizing (bare)
 
   /// `container`.
@@ -48,14 +37,6 @@ extension TailwindStyle {
 
   // MARK: Flexbox & grid (bare)
 
-  /// `flex-1`.
-  public var flex1: TailwindStyle { appending("flex-1") }
-  /// `flex-none`.
-  public var flexNone: TailwindStyle { appending("flex-none") }
-  /// `flex-row-reverse`.
-  public var flexRowReverse: TailwindStyle { appending("flex-row-reverse") }
-  /// `flex-col-reverse`.
-  public var flexColReverse: TailwindStyle { appending("flex-col-reverse") }
   /// `grow-0`.
   public var grow0: TailwindStyle { appending("grow-0") }
   /// `shrink-0`.
@@ -65,19 +46,6 @@ extension TailwindStyle {
 
   /// `border-none` (`border-style: none`).
   public var borderNone: TailwindStyle { appending("border-none") }
-
-  // MARK: Lists (bare)
-
-  /// `list-disc`.
-  public var listDisc: TailwindStyle { appending("list-disc") }
-  /// `list-decimal`.
-  public var listDecimal: TailwindStyle { appending("list-decimal") }
-  /// `list-none`.
-  public var listNone: TailwindStyle { appending("list-none") }
-  /// `list-inside`.
-  public var listInside: TailwindStyle { appending("list-inside") }
-  /// `list-outside`.
-  public var listOutside: TailwindStyle { appending("list-outside") }
 
   // MARK: Typography (bare)
 
@@ -89,6 +57,28 @@ extension TailwindStyle {
 
 // Parameterized layout utilities.
 extension TailwindStyle {
+  // MARK: Positioning, flex & list sets
+
+  /// `position`, e.g. `.position(.relative)` → `relative`.
+  public func position(_ value: Position) -> TailwindStyle {
+    appending(value.token)
+  }
+  /// `flex-<value>` shorthand, e.g. `.flex(.one)` → `flex-1`,
+  /// `.flex(.none)` → `flex-none`.
+  public func flex(_ value: Flex) -> TailwindStyle {
+    appending("flex-\(value.token)")
+  }
+  /// `flex-<direction>`, e.g. `.flexDirection(.col)` → `flex-col`,
+  /// `.flexDirection(.rowReverse)` → `flex-row-reverse`.
+  public func flexDirection(_ value: FlexDirection) -> TailwindStyle {
+    appending("flex-\(value.token)")
+  }
+  /// `list-<value>`, e.g. `.list(.disc)` → `list-disc`,
+  /// `.list(.inside)` → `list-inside`.
+  public func list(_ value: ListStyle) -> TailwindStyle {
+    appending("list-\(value.token)")
+  }
+
   // MARK: Position offsets & z-index
 
   /// `top-<n>`.

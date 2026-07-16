@@ -1,5 +1,5 @@
 //
-//  IndexBuilder.swift
+//  TestimonialListItem.swift
 //  BrightDigit
 //
 //  Created by Leo Dion.
@@ -27,30 +27,25 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import Foundation
 import Plot
-import Publish
-import PublishType
 
-internal struct IndexBuilder: ContentBuilder {
-  internal typealias LocationType = Index
+/// A single testimonial figure in the homepage testimonials list.
+internal struct TestimonialListItem: Component {
+  internal let testimonial: Testimonial
 
-  internal let description: String = BrightDigitSite.SiteInfo.description
-  internal var imagePath: Path = BrightDigitSite.SiteInfo.imagePath
-
-  internal var bodyClasses: [String] { [] }
-
-  internal func main(
-    forLocation _: Index, withContext context: PublishingContext<BrightDigitSite>
-  )
-    -> [Node<HTML.BodyContext>]
-  {
-    [
-      IndexHeroHeader().convertToNode(),
-      IndexServicesSection().convertToNode(),
-      TestimonialsSection().convertToNode(),
-      LatestArticlesSection(context: context).convertToNode(),
-      NewsletterCTASection().convertToNode(),
-    ]
+  internal var body: Component {
+    ListItem {
+      Element(name: "figure") {
+        Element(name: "blockquote") {
+          Paragraph { Text(testimonial.briefQuote) }
+        }
+        Element(name: "figcaption") {
+          Text("-")
+          Text(testimonial.fullName)
+          Text(", ")
+          Element(name: "cite") { Text(testimonial.title) }
+        }
+      }
+    }
   }
 }

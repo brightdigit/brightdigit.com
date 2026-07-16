@@ -46,8 +46,18 @@ that imports Plot is `Node+Tailwind.swift`, which adds the single sugar
   files is split into a **bare-utilities (properties)** extension and a
   **parameterized-utilities (methods)** extension.
 - The modeled surface is a **closed** set of enums, grown component-driven for
-  consumers (issue #67). The escape hatch for unmodeled classes is Plot's
-  existing `.class("…")`; TailwindKit takes no raw strings.
+  consumers (issue #67). Related bare utilities are grouped into cohesive
+  enum "sets" (e.g. `Position`, `Flex`, `FlexDirection`, `ListStyle` consumed by
+  `.position(_:)`, `.flex(_:)`, `.flexDirection(_:)`, `.list(_:)`) rather than a
+  flat wall of computed properties.
+- For Tailwind v4 [arbitrary values](https://tailwindcss.com/docs/adding-custom-styles)
+  there is a deliberate, type-safe API: `.custom(_ prefix:_ value:)` with a
+  `Custom.value("117px")` (→ `prefix-[117px]`, spaces→underscores) or
+  `Custom.variable("--brand")` (→ `prefix-(--brand)`), plus
+  `.custom(property:value:)` for fully arbitrary `[property:value]` classes.
+  This is the only way TailwindKit accepts caller-supplied value strings; it
+  still can't emit a free-form class name. For any class not modeled at all, the
+  escape hatch remains Plot's existing `.class("…")`.
 - Shades are enum cases `.s50`…`.s950` (Swift disallows the `.500` spelling and
   leading underscores), e.g. `.bg(.blue, .s500)`.
 

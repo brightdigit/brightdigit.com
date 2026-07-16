@@ -47,10 +47,9 @@ extension TailwindStyle {
 
   // MARK: Flexbox & grid
 
-  /// `flex-row`.
-  public var flexRow: TailwindStyle { appending("flex-row") }
-  /// `flex-col`.
-  public var flexCol: TailwindStyle { appending("flex-col") }
+  // Flex direction (`flex-row`/`flex-col` and their reverses) lives in the
+  // `FlexDirection` set — see `.flexDirection(_:)` in TailwindStyle+Layout.
+
   /// `flex-wrap`.
   public var flexWrap: TailwindStyle { appending("flex-wrap") }
   /// `grow`.

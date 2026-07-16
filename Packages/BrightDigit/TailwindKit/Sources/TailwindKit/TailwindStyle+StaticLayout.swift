@@ -28,17 +28,6 @@
 //
 
 extension TailwindStyle {
-  // MARK: Position
-
-  /// `relative`.
-  public static var relative: TailwindStyle { TailwindStyle().relative }
-  /// `absolute`.
-  public static var absolute: TailwindStyle { TailwindStyle().absolute }
-  /// `fixed`.
-  public static var fixed: TailwindStyle { TailwindStyle().fixed }
-  /// `sticky`.
-  public static var sticky: TailwindStyle { TailwindStyle().sticky }
-
   // MARK: Sizing
 
   /// `container`.
@@ -48,14 +37,6 @@ extension TailwindStyle {
 
   // MARK: Flexbox & grid
 
-  /// `flex-1`.
-  public static var flex1: TailwindStyle { TailwindStyle().flex1 }
-  /// `flex-none`.
-  public static var flexNone: TailwindStyle { TailwindStyle().flexNone }
-  /// `flex-row-reverse`.
-  public static var flexRowReverse: TailwindStyle { TailwindStyle().flexRowReverse }
-  /// `flex-col-reverse`.
-  public static var flexColReverse: TailwindStyle { TailwindStyle().flexColReverse }
   /// `grow-0`.
   public static var grow0: TailwindStyle { TailwindStyle().grow0 }
   /// `shrink-0`.
@@ -65,19 +46,6 @@ extension TailwindStyle {
 
   /// `border-none`.
   public static var borderNone: TailwindStyle { TailwindStyle().borderNone }
-
-  // MARK: Lists
-
-  /// `list-disc`.
-  public static var listDisc: TailwindStyle { TailwindStyle().listDisc }
-  /// `list-decimal`.
-  public static var listDecimal: TailwindStyle { TailwindStyle().listDecimal }
-  /// `list-none`.
-  public static var listNone: TailwindStyle { TailwindStyle().listNone }
-  /// `list-inside`.
-  public static var listInside: TailwindStyle { TailwindStyle().listInside }
-  /// `list-outside`.
-  public static var listOutside: TailwindStyle { TailwindStyle().listOutside }
 
   // MARK: Typography
 

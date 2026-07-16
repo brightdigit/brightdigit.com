@@ -1,5 +1,5 @@
 //
-//  SectionElement.swift
+//  ContactForm.swift
 //  BrightDigit
 //
 //  Created by Leo Dion.
@@ -29,23 +29,47 @@
 
 import Plot
 
-internal struct SectionElement: Component {
-  internal let content: ContentProvider
+/// Netlify contact form (`name="contact"`).
+internal struct ContactForm: Component {
   internal var body: Component {
-    Element(name: "section", content: content)
-  }
-
-  internal init(
-    @ComponentBuilder content: @escaping ContentProvider
-  ) {
-    self.content = content
-  }
-}
-
-extension SectionElement {
-  internal init(forProduct product: ProductItem) {
-    self.init {
-      ProductSection(product: product)
+    Element(name: "form") {
+      Div {
+        Div {
+          Node<HTML.FormContext>.input(
+            .type(.text), .name("first-name"), .placeholder("Leo")
+          )
+          Node<HTML.FormContext>.label("First Name")
+        }
+        Div {
+          Node<HTML.FormContext>.input(
+            .type(.text), .name("last-name"), .placeholder("Dion")
+          )
+          Node<HTML.FormContext>.label("Last Name")
+        }
+      }
+      Div {
+        Div {
+          Node<HTML.FormContext>.input(
+            .type(.text), .name("email"), .placeholder("leo@brightdigit.com")
+          )
+          Node<HTML.FormContext>.label("Email")
+        }
+      }
+      Div {
+        Div {
+          Node<HTML.FormContext>.textarea(
+            .placeholder("You Message Here"), .name("message")
+          )
+        }
+      }
+      Div {
+        Div {
+          Node<HTML.FormContext>.button("Send", .type(.submit))
+        }
+      }
     }
+    .attribute(named: "name", value: "contact")
+    .attribute(named: "method", value: "post")
+    .attribute(named: "data-netlify", value: "true")
   }
 }

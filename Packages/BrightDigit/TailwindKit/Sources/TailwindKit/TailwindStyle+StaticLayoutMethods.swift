@@ -28,6 +28,21 @@
 //
 
 extension TailwindStyle {
+  // MARK: Positioning, flex & list sets
+
+  /// `position`, e.g. `.position(.relative)`.
+  public static func position(_ value: Position) -> TailwindStyle {
+    TailwindStyle().position(value)
+  }
+  /// `flex-<value>` shorthand, e.g. `.flex(.one)`.
+  public static func flex(_ value: Flex) -> TailwindStyle { TailwindStyle().flex(value) }
+  /// `flex-<direction>`, e.g. `.flexDirection(.col)`.
+  public static func flexDirection(_ value: FlexDirection) -> TailwindStyle {
+    TailwindStyle().flexDirection(value)
+  }
+  /// `list-<value>`, e.g. `.list(.disc)`.
+  public static func list(_ value: ListStyle) -> TailwindStyle { TailwindStyle().list(value) }
+
   // MARK: Position offsets & z-index
 
   /// `top-<n>`.

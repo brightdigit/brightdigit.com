@@ -1,5 +1,5 @@
 //
-//  IndexBuilder.swift
+//  HeroBackgroundVideo.swift
 //  BrightDigit
 //
 //  Created by Leo Dion.
@@ -27,30 +27,23 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import Foundation
 import Plot
-import Publish
-import PublishType
 
-internal struct IndexBuilder: ContentBuilder {
-  internal typealias LocationType = Index
-
-  internal let description: String = BrightDigitSite.SiteInfo.description
-  internal var imagePath: Path = BrightDigitSite.SiteInfo.imagePath
-
-  internal var bodyClasses: [String] { [] }
-
-  internal func main(
-    forLocation _: Index, withContext context: PublishingContext<BrightDigitSite>
-  )
-    -> [Node<HTML.BodyContext>]
-  {
-    [
-      IndexHeroHeader().convertToNode(),
-      IndexServicesSection().convertToNode(),
-      TestimonialsSection().convertToNode(),
-      LatestArticlesSection(context: context).convertToNode(),
-      NewsletterCTASection().convertToNode(),
-    ]
+/// Index-hero background: autoplay/muted/loop with QuickTime + webM sources.
+internal struct HeroBackgroundVideo: Component {
+  internal var body: Component {
+    Node<HTML.BodyContext>.video(
+      .attribute(named: "autoplay"),
+      .attribute(named: "muted"),
+      .attribute(named: "loop"),
+      .source(
+        .src("/media/iPhone.mov"),
+        .attribute(named: "type", value: "video/quicktime")
+      ),
+      .source(
+        .src("/media/iPhone.webm"),
+        .type(.webM)
+      )
+    )
   }
 }

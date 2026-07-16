@@ -1,5 +1,5 @@
 //
-//  IndexBuilder.swift
+//  FooterMeta.swift
 //  BrightDigit
 //
 //  Created by Leo Dion.
@@ -27,30 +27,19 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import Foundation
 import Plot
-import Publish
-import PublishType
 
-internal struct IndexBuilder: ContentBuilder {
-  internal typealias LocationType = Index
-
-  internal let description: String = BrightDigitSite.SiteInfo.description
-  internal var imagePath: Path = BrightDigitSite.SiteInfo.imagePath
-
-  internal var bodyClasses: [String] { [] }
-
-  internal func main(
-    forLocation _: Index, withContext context: PublishingContext<BrightDigitSite>
-  )
-    -> [Node<HTML.BodyContext>]
-  {
-    [
-      IndexHeroHeader().convertToNode(),
-      IndexServicesSection().convertToNode(),
-      TestimonialsSection().convertToNode(),
-      LatestArticlesSection(context: context).convertToNode(),
-      NewsletterCTASection().convertToNode(),
-    ]
+/// Footer address and copyright line.
+internal struct FooterMeta: Component {
+  internal var body: Component {
+    Footer {
+      Div {
+        Text("503 Mall Court #150 Lansing MI 48912")
+      }.class("address")
+      Div {
+        Text("© Bright Digit, LLC ")
+        Node<HTML.BodyContext>.year()
+      }.class("copyright")
+    }
   }
 }

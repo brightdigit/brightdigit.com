@@ -28,7 +28,6 @@
 //
 
 import Foundation
-import Plot
 
 public struct Testimonial: Hashable, Comparable, Sendable {
   internal static let all: Set<Self> = .init([
@@ -67,23 +66,5 @@ public struct Testimonial: Hashable, Comparable, Sendable {
 
   public static func < (lhs: Testimonial, rhs: Testimonial) -> Bool {
     lhs.id < rhs.id
-  }
-}
-
-extension Testimonial {
-  internal static func listItem(_ testimonial: Testimonial) -> Component {
-    ListItem {
-      Element(name: "figure") {
-        Element(name: "blockquote") {
-          Paragraph { Text(testimonial.briefQuote) }
-        }
-        Element(name: "figcaption") {
-          Text("-")
-          Text(testimonial.fullName)
-          Text(", ")
-          Element(name: "cite") { Text(testimonial.title) }
-        }
-      }
-    }
   }
 }

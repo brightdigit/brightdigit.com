@@ -1,5 +1,5 @@
 //
-//  IndexBuilder.swift
+//  AboutPageHeader.swift
 //  BrightDigit
 //
 //  Created by Leo Dion.
@@ -27,30 +27,17 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import Foundation
 import Plot
-import Publish
-import PublishType
 
-internal struct IndexBuilder: ContentBuilder {
-  internal typealias LocationType = Index
-
-  internal let description: String = BrightDigitSite.SiteInfo.description
-  internal var imagePath: Path = BrightDigitSite.SiteInfo.imagePath
-
-  internal var bodyClasses: [String] { [] }
-
-  internal func main(
-    forLocation _: Index, withContext context: PublishingContext<BrightDigitSite>
-  )
-    -> [Node<HTML.BodyContext>]
-  {
-    [
-      IndexHeroHeader().convertToNode(),
-      IndexServicesSection().convertToNode(),
-      TestimonialsSection().convertToNode(),
-      LatestArticlesSection(context: context).convertToNode(),
-      NewsletterCTASection().convertToNode(),
-    ]
+/// About page H1 masthead.
+internal struct AboutPageHeader: Component {
+  internal var body: Component {
+    Header {
+      H1 {
+        Text("Swift-Based")
+        Node<HTML.BodyContext>.br()
+        Text("App Development")
+      }
+    }
   }
 }

@@ -178,4 +178,46 @@ extension TailwindStyle {
 
     internal var token: String { rawValue }
   }
+
+  /// A `position` keyword (the whole class, e.g. `relative`, `absolute`).
+  ///
+  /// The class name *is* the token — Tailwind's position utilities carry no
+  /// prefix — consumed by ``TailwindStyle/position(_:)``.
+  public enum Position: String, Sendable, CaseIterable {
+    case relative, absolute, fixed, sticky
+
+    internal var token: String { rawValue }
+  }
+
+  /// A `flex` shorthand value (the `1` in `flex-1`, or `flex-none`).
+  public enum Flex: String, Sendable, CaseIterable {
+    /// `flex-1` — grow and shrink, ignoring the initial size.
+    case one = "1"
+    /// `flex-auto` — grow and shrink, accounting for the initial size.
+    case auto
+    /// `flex-initial` — shrink but don't grow.
+    case initial
+    /// `flex-none` — neither grow nor shrink.
+    case none
+
+    internal var token: String { rawValue }
+  }
+
+  /// A `flex-direction` keyword (the `col` in `flex-col`,
+  /// `row-reverse` in `flex-row-reverse`).
+  public enum FlexDirection: String, Sendable, CaseIterable {
+    case row, col
+    case rowReverse = "row-reverse"
+    case colReverse = "col-reverse"
+
+    internal var token: String { rawValue }
+  }
+
+  /// A `list-style` keyword — both the marker type (`disc`, `decimal`,
+  /// `none`) and its position (`inside`, `outside`) — all `list-*` utilities.
+  public enum ListStyle: String, Sendable, CaseIterable {
+    case disc, decimal, none, inside, outside
+
+    internal var token: String { rawValue }
+  }
 }

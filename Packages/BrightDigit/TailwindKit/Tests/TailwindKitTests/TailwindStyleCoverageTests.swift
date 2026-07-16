@@ -16,8 +16,9 @@ import Testing
 /// Plot-independent: asserts `.rendered` string equality only.
 @Suite internal struct TailwindStyleCoverageTests {
   @Test internal func positionAndZIndex() {
-    #expect(TW.relative.rendered == "relative")
-    #expect(TW.absolute.rendered == "absolute")
+    #expect(TW.position(.relative).rendered == "relative")
+    #expect(TW.position(.absolute).rendered == "absolute")
+    #expect(TW.position(.fixed).position(.sticky).rendered == "fixed sticky")
     #expect(TW.top(0).right(2).bottom(2).left(6).rendered == "top-0 right-2 bottom-2 left-6")
     #expect(TW.z(0).rendered == "z-0")
     #expect(TW.z(50).rendered == "z-50")
@@ -31,9 +32,12 @@ import Testing
   }
 
   @Test internal func flexAndGridExtras() {
-    #expect(TW.flex1.rendered == "flex-1")
-    #expect(TW.flexNone.rendered == "flex-none")
-    #expect(TW.flexRowReverse.rendered == "flex-row-reverse")
+    #expect(TW.flex(.one).rendered == "flex-1")
+    #expect(TW.flex(.none).rendered == "flex-none")
+    #expect(TW.flex(.auto).flex(.initial).rendered == "flex-auto flex-initial")
+    #expect(TW.flexDirection(.row).flexDirection(.col).rendered == "flex-row flex-col")
+    #expect(TW.flexDirection(.rowReverse).rendered == "flex-row-reverse")
+    #expect(TW.flexDirection(.colReverse).rendered == "flex-col-reverse")
     #expect(TW.grow0.rendered == "grow-0")
     #expect(TW.shrink0.rendered == "shrink-0")
     #expect(TW.gridCols(4).rendered == "grid-cols-4")
@@ -101,7 +105,11 @@ import Testing
     )
     #expect(TW.noUnderline.rendered == "no-underline")
     #expect(TW.align(.middle).rendered == "align-middle")
-    #expect(TW.listDisc.listInside.rendered == "list-disc list-inside")
+    #expect(TW.list(.disc).list(.inside).rendered == "list-disc list-inside")
+    #expect(
+      TW.list(.decimal).list(.none).list(.outside).rendered
+        == "list-decimal list-none list-outside"
+    )
     #expect(TW.whitespacePreWrap.rendered == "whitespace-pre-wrap")
     #expect(TW.font(.black).rendered == "font-black")
     #expect(TW.text(.xl8).rendered == "text-8xl")
@@ -133,12 +141,12 @@ import Testing
   @Test internal func composedChainFromCorpus() {
     // A realistic multi-utility chain resembling the site's @apply groups.
     #expect(
-      TW.flex.flexCol.relative.z(50).shadow(.lg).rounded(.lg).rendered
+      TW.flex.flexDirection(.col).position(.relative).z(50).shadow(.lg).rounded(.lg).rendered
         == "flex flex-col relative z-50 shadow-lg rounded-lg"
     )
     // Responsive composition: sm:flex-none lg:w-1/2 md:text-lg.
     #expect(
-      TW.sm(.flexNone).lg(.w(.fraction(1, 2))).md(.text(.lg)).rendered
+      TW.sm(.flex(.none)).lg(.w(.fraction(1, 2))).md(.text(.lg)).rendered
         == "sm:flex-none lg:w-1/2 md:text-lg"
     )
   }

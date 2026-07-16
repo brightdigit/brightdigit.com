@@ -90,7 +90,7 @@ import Testing
 
   @Test internal func flexAndGrid() {
     #expect(
-      TW.flex.flexCol.justify(.between).items(.stretch).rendered
+      TW.flex.flexDirection(.col).justify(.between).items(.stretch).rendered
         == "flex flex-col justify-between items-stretch"
     )
     #expect(TW.grid.gridCols(3).gap(6).rendered == "grid grid-cols-3 gap-6")

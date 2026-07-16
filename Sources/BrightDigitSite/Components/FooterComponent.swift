@@ -33,9 +33,7 @@ import Plot
 /// The site-wide footer: logo, social links, address, and copyright.
 ///
 /// Renders the same markup as the former `Node.footer()` factory, expressed with
-/// Plot's component API. Social entries reuse the `Node.li(href:flatIcon:rel:)`
-/// helper because their `<a aria-label href rel>` attribute ordering is bespoke
-/// and must be preserved.
+/// Plot's component API.
 internal struct FooterComponent: Component {
   internal var body: Component {
     Footer {
@@ -51,42 +49,8 @@ internal struct FooterComponent: Component {
             )
           )
         }
-        Element(name: "ol") {
-          Node<HTML.ListContext>.li(
-            href: "http://twitter.com/brightdigit", flatIcon: "twitter"
-          )
-          Node<HTML.ListContext>.li(
-            href: "http://github.com/brightdigit", flatIcon: "github"
-          )
-          Node<HTML.ListContext>.li(
-            href: "https://c.im/@leogdion", flatIcon: "mastodon", rel: .meRelationship
-          )
-          Node<HTML.ListContext>.li(
-            href: "https://www.patreon.com/brightdigit", flatIcon: "patreon"
-          )
-          Node<HTML.ListContext>.li(
-            href: "https://www.linkedin.com/in/leogdion/", flatIcon: "linkedin"
-          )
-          Node<HTML.ListContext>.li(
-            href: "https://www.empowerapps.show", flatIcon: "podcast"
-          )
-          Node<HTML.ListContext>.li(
-            href: "http://youtube.com/c/BrightdigitLLC", flatIcon: "youtube"
-          )
-          Node<HTML.ListContext>.li(
-            href: Strings.Buttondown.archiveURL, flatIcon: "newsletter"
-          )
-          Node<HTML.ListContext>.li(href: "/feed.rss", flatIcon: "rss")
-        }.class("social")
-        Footer {
-          Div {
-            Text("503 Mall Court #150 Lansing MI 48912")
-          }.class("address")
-          Div {
-            Text("© Bright Digit, LLC ")
-            Node<HTML.BodyContext>.year()
-          }.class("copyright")
-        }
+        FooterSocialLinks()
+        FooterMeta()
       }
     }
   }

@@ -1,5 +1,5 @@
 //
-//  IndexBuilder.swift
+//  AboutCTASection.swift
 //  BrightDigit
 //
 //  Created by Leo Dion.
@@ -27,30 +27,39 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import Foundation
 import Plot
-import Publish
-import PublishType
 
-internal struct IndexBuilder: ContentBuilder {
-  internal typealias LocationType = Index
-
-  internal let description: String = BrightDigitSite.SiteInfo.description
-  internal var imagePath: Path = BrightDigitSite.SiteInfo.imagePath
-
-  internal var bodyClasses: [String] { [] }
-
-  internal func main(
-    forLocation _: Index, withContext context: PublishingContext<BrightDigitSite>
-  )
-    -> [Node<HTML.BodyContext>]
-  {
-    [
-      IndexHeroHeader().convertToNode(),
-      IndexServicesSection().convertToNode(),
-      TestimonialsSection().convertToNode(),
-      LatestArticlesSection(context: context).convertToNode(),
-      NewsletterCTASection().convertToNode(),
-    ]
+/// About page closing CTA with video and contact buttons.
+internal struct AboutCTASection: Component {
+  internal var body: Component {
+    Element(name: "section") {
+      Header {
+        AutoplayVideo(src: "/media/about-us/am-try.webm", loop: true)
+      }
+      Main {
+        Header {
+          H2("\(Strings.About.ctaTitle)")
+        }
+        Main {
+          Paragraph { Text("\(Strings.About.ctaP1)") }
+          Paragraph { Text("") }
+          Node<HTML.BodyContext>.hr()
+          Paragraph { Text("\(Strings.About.ctaP2)") }
+          // `class` precedes `href` in the original markup.
+          Node<HTML.BodyContext>.a(
+            .class("button"),
+            .href("/contact-us"),
+            .text("Let's Talk")
+          )
+          Node<HTML.BodyContext>.hr()
+          Paragraph { Text("\(Strings.About.ctaP3)") }
+          Node<HTML.BodyContext>.a(
+            .class("button"),
+            .href("/contact-us"),
+            .text("Reach Out to Leo")
+          )
+        }
+      }
+    }
   }
 }

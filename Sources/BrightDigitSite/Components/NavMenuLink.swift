@@ -1,5 +1,5 @@
 //
-//  IndexBuilder.swift
+//  NavMenuLink.swift
 //  BrightDigit
 //
 //  Created by Leo Dion.
@@ -27,30 +27,22 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import Foundation
 import Plot
-import Publish
-import PublishType
 
-internal struct IndexBuilder: ContentBuilder {
-  internal typealias LocationType = Index
+/// A single navigation entry linking to `path` (defaulting to the lowercased
+/// `name`) and displaying `name` capitalized — mirrors `Node.li(for:at:)`.
+internal struct NavMenuLink: Component {
+  private let name: String
+  private let path: String?
 
-  internal let description: String = BrightDigitSite.SiteInfo.description
-  internal var imagePath: Path = BrightDigitSite.SiteInfo.imagePath
+  internal var body: Component {
+    ListItem {
+      Link(name.capitalized, url: "/" + (path ?? name.lowercased()))
+    }
+  }
 
-  internal var bodyClasses: [String] { [] }
-
-  internal func main(
-    forLocation _: Index, withContext context: PublishingContext<BrightDigitSite>
-  )
-    -> [Node<HTML.BodyContext>]
-  {
-    [
-      IndexHeroHeader().convertToNode(),
-      IndexServicesSection().convertToNode(),
-      TestimonialsSection().convertToNode(),
-      LatestArticlesSection(context: context).convertToNode(),
-      NewsletterCTASection().convertToNode(),
-    ]
+  internal init(_ name: String, at path: String? = nil) {
+    self.name = name
+    self.path = path
   }
 }
