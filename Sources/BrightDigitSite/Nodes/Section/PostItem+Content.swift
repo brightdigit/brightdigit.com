@@ -114,8 +114,10 @@ extension PostItem {
             H2 { Text(subscriptionCTA) }
           }
           H3 {
-            // swiftlint:disable:next line_length
-            Text("The BrightDigit newsletter gives you regular helpful tips and advice right to your inbox!")
+            Text(
+              // swiftlint:disable:next line_length
+              "The BrightDigit newsletter gives you regular helpful tips and advice right to your inbox!"
+            )
           }
           Paragraph {
             Node<HTML.BodyContext>.markdown(

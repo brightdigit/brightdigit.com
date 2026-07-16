@@ -95,8 +95,10 @@ extension IndexBuilder {
       Main {
         Element(name: "section") {
           Main {
-            // swiftlint:disable:next line_length
-            Text("Join our newsletter to be the first to know when we have availability, plus advice on what's new with Apple apps and products.")
+            Text(
+              // swiftlint:disable:next line_length
+              "Join our newsletter to be the first to know when we have availability, plus advice on what's new with Apple apps and products."
+            )
           }
         }.class("text")
         Footer {
@@ -109,13 +111,17 @@ extension IndexBuilder {
   fileprivate static var sectionForHero2: Component {
     Element(name: "section") {
       Header {
-        Image(url: "/media/swift-heroes.jpg", description: "Leo presenting at Swift Heroes")
+        Image(
+          url: "/media/swift-heroes.jpg", description: "Leo presenting at Swift Heroes"
+        )
       }
       Main {
         Element(name: "section") {
           Main {
-            // swiftlint:disable:next line_length
-            Text("Founded in 2012, BrightDigit aims to provide you with the very best in Swift-based development for the Apple ecosystem.")
+            Text(
+              // swiftlint:disable:next line_length
+              "Founded in 2012, BrightDigit aims to provide you with the very best in Swift-based development for the Apple ecosystem."
+            )
           }
         }.class("text")
         Footer {
@@ -182,6 +188,30 @@ extension IndexBuilder {
     }.id("testimonials")
   }
 
+  // MARK: - sectionForNewsletterCTA
+
+  fileprivate static var sectionForNewsletterCTA: Component {
+    Element(name: "section") {
+      Header {
+        H2 {
+          Text("Don't Let Your App ")
+          Element(name: "em") { Text("Fall Behind") }
+        }
+      }
+      Main {
+        Paragraph {
+          Text(
+            // swiftlint:disable:next line_length
+            "Stay informed about the latest developments in the world of Swift App Development and what they could mean for your business."
+          )
+        }
+      }
+      Footer {
+        Link("Subscribe Now", url: "/newsletters")
+      }
+    }.class("newsletter-cta")
+  }
+
   // MARK: - Latest Articles
 
   fileprivate static func sectionForLatestArticles(
@@ -200,28 +230,6 @@ extension IndexBuilder {
         }
       }
     }.id("posts")
-  }
-
-  // MARK: - sectionForNewsletterCTA
-
-  fileprivate static var sectionForNewsletterCTA: Component {
-    Element(name: "section") {
-      Header {
-        H2 {
-          Text("Don't Let Your App ")
-          Element(name: "em") { Text("Fall Behind") }
-        }
-      }
-      Main {
-        Paragraph {
-          // swiftlint:disable:next line_length
-          Text("Stay informed about the latest developments in the world of Swift App Development and what they could mean for your business.")
-        }
-      }
-      Footer {
-        Link("Subscribe Now", url: "/newsletters")
-      }
-    }.class("newsletter-cta")
   }
 
   // MARK: - ListContext

@@ -1,5 +1,5 @@
 //
-//  Node+LatestArticle.swift
+//  IndexBuilder+LatestArticle.swift
 //  BrightDigit
 //
 //  Created by Leo Dion.

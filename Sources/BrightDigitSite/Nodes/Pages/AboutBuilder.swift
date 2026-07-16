@@ -47,119 +47,49 @@ internal struct AboutBuilder: PageBuilder {
     forLocation _: LocationType, withContext _: PublishingContext<BrightDigitSite>
   ) -> [Node<HTML.BodyContext>] {
     [
-      Self.aboutHeader.convertToNode(),
+      Self.aboutHeader,
       Self.leftImageWithRightTextNoHeader(
         imageSrc: "/media/about-us/graphic-attract.webm",
         text: Strings.About.section1
-      ).convertToNode(),
-
+      ),
       Self.leftTextWithHeaderRightImage(
         imageSrc: "/media/about-us/opportunities.webm",
         header: Strings.About.whoWeAreTitle,
         para1: Strings.About.whoWeAreP1,
         para2: Strings.About.whoWeAreP2,
         para3: Strings.About.whoWeAreP3
-      ).convertToNode(),
-
+      ),
       Self.leftImageRightTextWithHeader(
         imageSrc: "/media/about-us/communication.webm",
         header: Strings.About.workWithUsTitle,
         para1: Strings.About.workWithusP1,
         para2: Strings.About.workWithusP2,
         para3: Strings.About.workWithusP3
-      ).convertToNode(),
-
+      ),
       Self.leftTextWithHeaderRightImage(
         imageSrc: "/media/about-us/podcast.webm",
         header: Strings.About.helpingOthersTitle,
         para1: Strings.About.helpingOthersP1,
         para2: Strings.About.helpingOthersP2,
         para3: ""
-      ).convertToNode(),
-
-      Self.aboutCTA.convertToNode(),
+      ),
+      Self.aboutCTA,
     ]
   }
 }
 
 extension AboutBuilder {
-  fileprivate static var aboutHeader: Component {
+  fileprivate static var aboutHeader: Node<HTML.BodyContext> {
     Header {
       H1 {
         Text("Swift-Based")
         Node<HTML.BodyContext>.br()
         Text("App Development")
       }
-    }
+    }.convertToNode()
   }
 
-  /// A `<video autoplay muted [loop]>` with a single webM `<source>` — bespoke
-  /// attributes kept as raw nodes.
-  private static func autoplayVideo(_ imageSrc: String, loop: Bool) -> Node<HTML.BodyContext> {
-    .video(
-      .attribute(named: "autoplay"),
-      .attribute(named: "muted"),
-      .unwrap(loop ? "" : nil) { _ in .attribute(named: "loop") },
-      .source(.src(imageSrc), .type(.webM))
-    )
-  }
-
-  fileprivate static func leftImageWithRightTextNoHeader(
-    imageSrc: String, text: String
-  ) -> Component {
-    Element(name: "section") {
-      Header {
-        autoplayVideo(imageSrc, loop: false)
-      }
-      Main {
-        Main {
-          Paragraph { Text("\(text)") }
-        }
-      }
-    }
-  }
-
-  fileprivate static func leftTextWithHeaderRightImage(
-    imageSrc: String, header: String, para1: String, para2: String, para3: String
-  ) -> Component {
-    Element(name: "section") {
-      Header {
-        autoplayVideo(imageSrc, loop: true)
-      }
-      Main {
-        Header {
-          H2("\(header)")
-        }
-        Main {
-          Node<HTML.BodyContext>.markdown(para1)
-          Node<HTML.BodyContext>.markdown(para2)
-          Node<HTML.BodyContext>.markdown(para3)
-        }
-      }
-    }
-  }
-
-  fileprivate static func leftImageRightTextWithHeader(
-    imageSrc: String, header: String, para1: String, para2: String, para3: String
-  ) -> Component {
-    Element(name: "section") {
-      Header {
-        autoplayVideo(imageSrc, loop: true)
-      }
-      Main {
-        Header {
-          H2("\(header)")
-        }
-        Main {
-          Node<HTML.BodyContext>.markdown(para1)
-          Node<HTML.BodyContext>.markdown(para2)
-          Node<HTML.BodyContext>.markdown(para3)
-        }
-      }
-    }
-  }
-
-  fileprivate static var aboutCTA: Component {
+  fileprivate static var aboutCTA: Node<HTML.BodyContext> {
     Element(name: "section") {
       Header {
         autoplayVideo("/media/about-us/am-try.webm", loop: true)
@@ -188,6 +118,74 @@ extension AboutBuilder {
           )
         }
       }
-    }
+    }.convertToNode()
+  }
+
+  fileprivate static func leftImageWithRightTextNoHeader(
+    imageSrc: String, text: String
+  ) -> Node<HTML.BodyContext> {
+    Element(name: "section") {
+      Header {
+        autoplayVideo(imageSrc, loop: false)
+      }
+      Main {
+        Main {
+          Paragraph { Text("\(text)") }
+        }
+      }
+    }.convertToNode()
+  }
+
+  fileprivate static func leftTextWithHeaderRightImage(
+    imageSrc: String, header: String, para1: String, para2: String, para3: String
+  ) -> Node<HTML.BodyContext> {
+    Element(name: "section") {
+      Header {
+        autoplayVideo(imageSrc, loop: true)
+      }
+      Main {
+        Header {
+          H2("\(header)")
+        }
+        Main {
+          Node<HTML.BodyContext>.markdown(para1)
+          Node<HTML.BodyContext>.markdown(para2)
+          Node<HTML.BodyContext>.markdown(para3)
+        }
+      }
+    }.convertToNode()
+  }
+
+  fileprivate static func leftImageRightTextWithHeader(
+    imageSrc: String, header: String, para1: String, para2: String, para3: String
+  ) -> Node<HTML.BodyContext> {
+    Element(name: "section") {
+      Header {
+        autoplayVideo(imageSrc, loop: true)
+      }
+      Main {
+        Header {
+          H2("\(header)")
+        }
+        Main {
+          Node<HTML.BodyContext>.markdown(para1)
+          Node<HTML.BodyContext>.markdown(para2)
+          Node<HTML.BodyContext>.markdown(para3)
+        }
+      }
+    }.convertToNode()
+  }
+
+  /// A `<video autoplay muted [loop]>` with a single webM `<source>` — bespoke
+  /// attributes kept as raw nodes.
+  private static func autoplayVideo(
+    _ imageSrc: String, loop: Bool
+  ) -> Node<HTML.BodyContext> {
+    .video(
+      .attribute(named: "autoplay"),
+      .attribute(named: "muted"),
+      .unwrap(loop ? "" : nil) { _ in .attribute(named: "loop") },
+      .source(.src(imageSrc), .type(.webM))
+    )
   }
 }

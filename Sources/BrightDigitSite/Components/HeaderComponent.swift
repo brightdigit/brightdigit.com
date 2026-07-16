@@ -37,18 +37,18 @@ internal struct HeaderComponent: Component {
   /// A single navigation entry linking to `path` (defaulting to the lowercased
   /// `name`) and displaying `name` capitalized — mirrors `Node.li(for:at:)`.
   private struct MenuLink: Component {
-    internal let name: String
-    internal let path: String?
+    private let name: String
+    private let path: String?
 
-    internal init(_ name: String, at path: String? = nil) {
-      self.name = name
-      self.path = path
-    }
-
-    internal var body: Component {
+    fileprivate var body: Component {
       ListItem {
         Link(name.capitalized, url: "/" + (path ?? name.lowercased()))
       }
+    }
+
+    fileprivate init(_ name: String, at path: String? = nil) {
+      self.name = name
+      self.path = path
     }
   }
 

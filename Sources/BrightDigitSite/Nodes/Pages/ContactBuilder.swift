@@ -67,8 +67,10 @@ extension ContactBuilder {
         Main {
           Div {
             Paragraph {
-              // swiftlint:disable:next line_length
-              Text("Want to chat about how we can help you and your company? Let us know how we help.")
+              Text(
+                // swiftlint:disable:next line_length
+                "Want to chat about how we can help you and your company? Let us know how we help."
+              )
             }
             contactForm
           }
@@ -81,11 +83,15 @@ extension ContactBuilder {
     Element(name: "form") {
       Div {
         Div {
-          Node<HTML.FormContext>.input(.type(.text), .name("first-name"), .placeholder("Leo"))
+          Node<HTML.FormContext>.input(
+            .type(.text), .name("first-name"), .placeholder("Leo")
+          )
           Node<HTML.FormContext>.label("First Name")
         }
         Div {
-          Node<HTML.FormContext>.input(.type(.text), .name("last-name"), .placeholder("Dion"))
+          Node<HTML.FormContext>.input(
+            .type(.text), .name("last-name"), .placeholder("Dion")
+          )
           Node<HTML.FormContext>.label("Last Name")
         }
       }
@@ -99,7 +105,9 @@ extension ContactBuilder {
       }
       Div {
         Div {
-          Node<HTML.FormContext>.textarea(.placeholder("You Message Here"), .name("message"))
+          Node<HTML.FormContext>.textarea(
+            .placeholder("You Message Here"), .name("message")
+          )
         }
       }
       Div {
