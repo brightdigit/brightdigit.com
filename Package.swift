@@ -29,7 +29,6 @@ let package = Package(
   dependencies: [
     .package(path: "Packages/Publish/Publish"),
 
-    .package(path: "Packages/Publish/SplashPublishPlugin"),
     .package(path: "Packages/BrightDigit/YoutubePublishPlugin"),
     .package(path: "Packages/Plugins/ReadingTimePublishPlugin"),
 
@@ -82,7 +81,6 @@ let package = Package(
       name: "BrightDigitSite",
       dependencies: [
         "Publish",
-        "SplashPublishPlugin",
         "YoutubePublishPlugin",
         "ReadingTimePublishPlugin",
         // "Options",

@@ -72,6 +72,33 @@ extension Buttondown.ReconcileCommand {
     return brightdigitSent || subjectLine.contains("BrightDigit Newsletter")
   }
 
+  /// Filters and orders sent BrightDigit newsletters by send time.
+  /// - Parameter campaigns: Every sent campaign returned by Mailchimp.
+  /// - Returns: BrightDigit newsletter campaigns with send times, oldest first.
+  private static func sortedNewsletters(
+    from campaigns: [MailchimpCampaign]
+  ) -> [(campaign: MailchimpCampaign, sendTime: Date)] {
+    campaigns
+      .compactMap { campaign -> (campaign: MailchimpCampaign, sendTime: Date)? in
+        let subjectLine = campaign.subjectLine ?? ""
+        guard
+          isBrightDigitNewsletter(campaign: campaign, subjectLine: subjectLine),
+          let sendTime = campaign.sendTime
+        else {
+          return nil
+        }
+        return (campaign, sendTime)
+      }
+      .sorted { $0.sendTime < $1.sendTime }
+  }
+
+  /// Parses an explicit newsletter issue number from a campaign subject.
+  /// - Parameter campaign: The campaign whose subject should be parsed.
+  /// - Returns: The explicit issue number, if the subject contains one.
+  private static func explicitIssueNumber(for campaign: MailchimpCampaign) -> Int? {
+    Import.MailchimpCommand.parseIssueNumber(from: campaign.subjectLine ?? "")
+  }
+
   /// Assigns each BrightDigit newsletter campaign its canonical issue number.
   ///
   /// Mirrors `Import.MailchimpCommand.selectCampaigns` and reuses its
@@ -85,31 +112,11 @@ extension Buttondown.ReconcileCommand {
   internal static func numberedCampaigns(
     from campaigns: [MailchimpCampaign]
   ) -> [NumberedCampaign] {
-    let newsletters =
-      campaigns
-      .compactMap { campaign -> (campaign: MailchimpCampaign, sendTime: Date)? in
-        let subjectLine = campaign.subjectLine ?? ""
-        guard
-          isBrightDigitNewsletter(campaign: campaign, subjectLine: subjectLine),
-          let sendTime = campaign.sendTime
-        else {
-          return nil
-        }
-        return (campaign, sendTime)
-      }
-      .sorted { $0.sendTime < $1.sendTime }
-
-    let numbered =
-      newsletters
-      .filter {
-        Import.MailchimpCommand.parseIssueNumber(from: $0.campaign.subjectLine ?? "")
-          != nil
-      }
+    let newsletters = sortedNewsletters(from: campaigns)
+    let numbered = newsletters.filter { explicitIssueNumber(for: $0.campaign) != nil }
     let maxExplicit =
       numbered
-      .compactMap {
-        Import.MailchimpCommand.parseIssueNumber(from: $0.campaign.subjectLine ?? "")
-      }
+      .compactMap { explicitIssueNumber(for: $0.campaign) }
       .max() ?? 0
     let lastNumberedDate = numbered.map(\.sendTime).max()
 
@@ -118,7 +125,7 @@ extension Buttondown.ReconcileCommand {
     for (campaign, sendTime) in newsletters {
       let subjectLine = campaign.subjectLine ?? ""
       let issueNo: Int
-      if let explicit = Import.MailchimpCommand.parseIssueNumber(from: subjectLine) {
+      if let explicit = explicitIssueNumber(for: campaign) {
         issueNo = explicit
       } else if let lastDate = lastNumberedDate, sendTime > lastDate {
         trailingIssueNo += 1

@@ -12,18 +12,21 @@ import Foundation
 /// Instead, Plot will automatically convert the elements, components and
 /// attributes that you create using its DSL into nodes that are then rendered.
 public protocol NodeConvertible: Renderable {
-    /// The context of the node that this type can be converted into.
-    associatedtype Context
-    /// Convert this instance into a renderable node. See `Node` for more info.
-    var node: Node<Context> { get }
+  /// The context of the node that this type can be converted into.
+  associatedtype Context
+  /// Convert this instance into a renderable node. See `Node` for more info.
+  var node: Node<Context> { get }
 }
 
-public extension NodeConvertible {
-    func render(indentedBy indentationKind: Indentation.Kind?) -> String {
-        Renderer.render(node, indentedBy: indentationKind)
-    }
+extension NodeConvertible {
+  /// Render this value into a string.
+  /// - Returns: The rendered string.
+  public func render(indentedBy indentationKind: Indentation.Kind?) -> String {
+    Renderer.render(node, indentedBy: indentationKind)
+  }
 }
 
 extension Array: Renderable, NodeConvertible where Element: NodeConvertible {
-    public var node: Node<Element.Context> { .group(map(\.node)) }
+  /// The node representation of this sequence.
+  public var node: Node<Element.Context> { .group(map(\.node)) }
 }

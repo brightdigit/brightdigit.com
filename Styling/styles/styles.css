@@ -1356,44 +1356,54 @@ body.articles, body.tutorials {
         @apply whitespace-pre-wrap text-xs font-extralight p-4 bg-gray-900 text-white block my-4 lg:text-base lg:p-8;
         overflow-x: auto;
 
-        .keyword {
+        /* highlight.js token colors, mapped from the former Splash palette so
+           highlighted code keeps the same Sundell-style look. */
+        .hljs-keyword,
+        .hljs-literal,
+        .hljs-built_in {
           @apply font-bold;
           color: #FC5FA3;
-
         }
 
-        .type {
+        .hljs-type,
+        .hljs-title.class_,
+        .hljs-title {
           color: #9EF1DD;
         }
 
-        .call {
-          color: #67B7A4 ;
+        .hljs-title.function_,
+        .hljs-title.function_.invoke__ {
+          color: #67B7A4;
         }
 
-        .property {
+        .hljs-attr,
+        .hljs-attribute,
+        .hljs-property {
           color: #21ab9d;
         }
 
-        .number {
+        .hljs-number {
           color: #db6f57;
         }
 
-        .string {
+        .hljs-string {
           color: #fa641e;
         }
 
-        .comment {
+        .hljs-comment,
+        .hljs-quote {
           color: #6b8a94;
         }
 
-        .dotAccess {
+        .hljs-variable,
+        .hljs-params {
           color: #92b300;
         }
 
-        .preprocessing {
+        .hljs-meta,
+        .hljs-meta .hljs-keyword {
           color: #b68a00;
         }
-
       }
     }
     & > footer {

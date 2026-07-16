@@ -13,16 +13,16 @@ import Foundation
 /// associated with an `EnvironmentKey`, and are passed downwards through a component/node
 /// hierarchy until overridden by another value.
 @propertyWrapper public struct EnvironmentValue<Value>: AnyEnvironmentValue {
-    /// The underlying value of the wrapped property.
-    public var wrappedValue: Value { environment.value?[key] ?? key.defaultValue }
+  /// The underlying value of the wrapped property.
+  public var wrappedValue: Value { environment.value?[key] ?? key.defaultValue }
 
-    internal let environment = Environment.Reference()
-    private let key: EnvironmentKey<Value>
+  internal let environment = Environment.Reference()
+  private let key: EnvironmentKey<Value>
 
-    /// Initialize an instance of this wrapper with the `EnvironmentKey` that should
-    /// be used to determine its property's value.
-    /// - parameter key: The environment key to use to read this property's value.
-    public init(_ key: EnvironmentKey<Value>) {
-        self.key = key
-    }
+  /// Initialize an instance of this wrapper with the `EnvironmentKey` that should
+  /// be used to determine its property's value.
+  /// - parameter key: The environment key to use to read this property's value.
+  public init(_ key: EnvironmentKey<Value>) {
+    self.key = key
+  }
 }

@@ -1,45 +1,20 @@
 import Foundation
 import Publish
 
-public struct ReadingTimeMetadata: Equatable {
+public struct ReadingTimeMetadata: Equatable, Sendable {
     public let minutes: Int
     public let words: Int
     public let timeMinutes: Double
 }
 
-public extension Plugin {
-    /// Plugin that calculates the average reading time of each `Item`.
-    /// Use `Item.readingTime` to access the data.
-    /// - Parameter wordsPerMinute: Average reading speed (words per minute) used to calculate the reading time.
-    static func readingTime(wordsPerMinute: Int = 200) -> Self {
-        Plugin(name: "Reading time") { context in
-            context.mutateAllSections { section in
-                section.mutateItems { item in
-                    data[item.path.string] = estimateTime(for: item.content.body.html, wordsPerMinute: wordsPerMinute)
-                }
-            }
-        }
-    }
-}
-
 public extension Item {
+    /// The estimated reading time of the item, computed on demand from its
+    /// rendered body. Reading time is a pure function of the body HTML and a
+    /// fixed reading speed, so there is no cached/plugin state behind it.
     var readingTime: ReadingTimeMetadata {
-        guard let metadata = data[path.string] else {
-            output(
-                #"Item "\#(title)" doesn't have ReadingTimeMetadata. Check that the ReadingTime plugin is installed after the creation of this item."#,
-                .error
-            )
-            return ReadingTimeMetadata(
-                minutes: 0,
-                words: 0,
-                timeMinutes: 0
-            )
-        }
-        return metadata
+        estimateTime(for: content.body.html, wordsPerMinute: 200)
     }
 }
-
-private var data = [AnyHashable: ReadingTimeMetadata]()
 
 func estimateTime(for string: String, wordsPerMinute: Int) -> ReadingTimeMetadata {
     let words = countWords(string)

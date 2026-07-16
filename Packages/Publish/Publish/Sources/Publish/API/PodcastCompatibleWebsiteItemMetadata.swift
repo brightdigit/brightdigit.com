@@ -10,6 +10,6 @@ import Foundation
 /// are podcast-compatible. Conforming to this protocol is a requirement
 /// in order to use the `generatePodcastFeed` step.
 public protocol PodcastCompatibleWebsiteItemMetadata: WebsiteItemMetadata {
-    /// The item's podcast episode-specific metadata.
-    var podcast: PodcastEpisodeMetadata? { get }
+  /// The item's podcast episode-specific metadata.
+  var podcast: PodcastEpisodeMetadata? { get }
 }

@@ -12,15 +12,18 @@ import Foundation
 /// and `Item` instead. Pages can either be added programmatically, or through
 /// Markdown files placed within the root of the website's content folder.
 public struct Page: Location, Equatable, Sendable {
-    public var path: Path
-    public var content: Content
+  /// The absolute path of the page within the website.
+  public var path: Path
+  /// The page's main content.
+  public var content: Content
 
-    /// Initialize a new page programmatically. You can also create pages from
-    /// Markdown using the `addMarkdownFiles` step.
-    /// - Parameter path: The absolute path of the page.
-    /// - Parameter content: The page's content.
-    public init(path: Path, content: Content) {
-        self.path = path
-        self.content = content
-    }
+  /// Initialize a new page programmatically. You can also create pages from
+  /// Markdown using the `addMarkdownFiles` step.
+  /// - Parameters:
+  ///   - path: The absolute path of the page.
+  ///   - content: The page's content.
+  public init(path: Path, content: Content) {
+    self.path = path
+    self.content = content
+  }
 }

@@ -8,16 +8,17 @@ import Foundation
 
 /// Type used to describe the author of a podcast.
 public struct PodcastAuthor: Codable, Equatable, Sendable {
-    /// The author's full name.
-    public var name: String
-    /// The author's email address.
-    public var emailAddress: String
+  /// The author's full name.
+  public var name: String
+  /// The author's email address.
+  public var emailAddress: String
 
-    /// Initialize a new instance of this type
-    /// - Parameter name: The author's full name.
-    /// - Parameter emailAddress: The author's email address.
-    public init(name: String, emailAddress: String) {
-        self.name = name
-        self.emailAddress = emailAddress
-    }
+  /// Initialize a new instance of this type
+  /// - Parameters:
+  ///   - name: The author's full name.
+  ///   - emailAddress: The author's email address.
+  public init(name: String, emailAddress: String) {
+    self.name = name
+    self.emailAddress = emailAddress
+  }
 }

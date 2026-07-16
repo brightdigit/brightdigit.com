@@ -67,9 +67,11 @@ extension Import.ButtondownCommand {
     return "\(paddedIssue)-\(source.slug)"
   }
 
-  /// The set of issue numbers already present in `directory`, read from the
-  /// zero-padded `NNN-` file-name prefix (slug-independent), matching the naming
-  /// the Mailchimp importer produced. Used to skip issues already on disk.
+  /// The set of issue numbers already present in `directory`.
+  ///
+  /// Reads the zero-padded `NNN-` file-name prefix (slug-independent), matching
+  /// the naming the Mailchimp importer produced. Used to skip issues already on
+  /// disk.
   internal static func existingIssueNumbers(in directory: URL) -> Set<Int> {
     let names =
       (try? FileManager.default.contentsOfDirectory(atPath: directory.path)) ?? []
@@ -83,8 +85,10 @@ extension Import.ButtondownCommand {
     return numbers
   }
 
-  /// Resolves a numbered email into a writable ``Newsletter/Source``, deriving
-  /// the slug from the subject (via ``BrightDigitSite``'s `convertedToSlug()`).
+  /// Resolves a numbered email into a writable ``Newsletter/Source``.
+  ///
+  /// Derives the slug from the subject via ``BrightDigitSite``'s
+  /// `convertedToSlug()`.
   internal static func source(
     from numbered: ContributeButtondown.Newsletter.NumberedEmail
   ) throws -> ContributeButtondown.Newsletter.Source {

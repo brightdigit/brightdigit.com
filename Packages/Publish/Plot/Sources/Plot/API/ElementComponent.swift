@@ -12,13 +12,16 @@ import Foundation
 /// versions of this type, such as `Div`, `Header`, `Article`, and so on.
 /// See the `ElementDefinitions` namespace enum for a list of all such aliases.
 public struct ElementComponent<Definition: ElementDefinition>: ComponentContainer {
-    @ComponentBuilder public var content: ContentProvider
+  /// The content that this component wraps.
+  @ComponentBuilder public var content: ContentProvider
 
-    public init(@ComponentBuilder content: @escaping ContentProvider) {
-        self.content = content
-    }
+  /// The content and behavior of this component.
+  public var body: Component {
+    Definition.wrapper(.component(content()))
+  }
 
-    public var body: Component {
-        Definition.wrapper(.component(content()))
-    }
+  /// Create a new component with the given content.
+  public init(@ComponentBuilder content: @escaping ContentProvider) {
+    self.content = content
+  }
 }

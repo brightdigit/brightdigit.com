@@ -66,6 +66,26 @@ public struct ButtondownClient: Sendable, UnderlyingClientProtocol,
     case unexpectedResponse
   }
 
+  /// The default Buttondown API server URL.
+  ///
+  /// Built from the generated ``Servers/Server1`` constant. If this traps, the
+  /// vendored OpenAPI spec contains an invalid server URL literal.
+  public static let defaultServerURL: URL = {
+    do {
+      return try Servers.Server1.url()
+    } catch {
+      preconditionFailure("Invalid generated Buttondown server URL: \(error)")
+    }
+  }()
+
+  /// The client configuration used by the URLSession-backed initializers.
+  ///
+  /// Installs ``LenientISO8601DateTranscoder`` so the mixed fractional/whole
+  /// second timestamps the Buttondown API returns both decode successfully.
+  public static var defaultConfiguration: Configuration {
+    Configuration(dateTranscoder: LenientISO8601DateTranscoder.default)
+  }
+
   /// The generated, transport-backed API client.
   public let underlying: Client
 
@@ -76,20 +96,6 @@ public struct ButtondownClient: Sendable, UnderlyingClientProtocol,
   /// - Parameter underlying: The generated client to wrap.
   public init(underlying: Client) {
     self.underlying = underlying
-  }
-
-  /// The default Buttondown API server URL.
-  ///
-  /// Force-tried from the generated ``Servers/Server1``: the URL is a constant
-  /// literal in the vendored OpenAPI spec, so its construction cannot fail.
-  public static let defaultServerURL = try! Servers.Server1.url()
-
-  /// The client configuration used by the URLSession-backed initializers.
-  ///
-  /// Installs ``LenientISO8601DateTranscoder`` so the mixed fractional/whole
-  /// second timestamps the Buttondown API returns both decode successfully.
-  public static var defaultConfiguration: Configuration {
-    Configuration(dateTranscoder: LenientISO8601DateTranscoder.default)
   }
 
   // URLSession-backed conveniences. Unavailable on WASI (no URLSessionTransport);

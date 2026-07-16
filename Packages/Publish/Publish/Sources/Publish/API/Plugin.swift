@@ -9,19 +9,20 @@ import Foundation
 /// Type used to implement Publish plugins, that can be used to customize
 /// the publishing process in any way.
 public struct Plugin<Site: Website>: Sendable {
-    /// Closure type used to install a plugin within the current context.
-    public typealias Installer = PublishingStep<Site>.Closure
+  /// Closure type used to install a plugin within the current context.
+  public typealias Installer = PublishingStep<Site>.Closure
 
-    /// The human-readable name of the plugin.
-    public var name: String
-    /// The closure used to install the plugin within the current context.
-    public var installer: Installer
+  /// The human-readable name of the plugin.
+  public var name: String
+  /// The closure used to install the plugin within the current context.
+  public var installer: Installer
 
-    /// Initialize a new plugin instance.
-    /// - Parameter name: The human-readable name of the plugin.
-    /// - Parameter installer: The closure used to install the plugin.
-    public init(name: String, installer: @escaping Installer) {
-        self.name = name
-        self.installer = installer
-    }
+  /// Initialize a new plugin instance.
+  /// - Parameters:
+  ///   - name: The human-readable name of the plugin.
+  ///   - installer: The closure used to install the plugin.
+  public init(name: String, installer: @escaping Installer) {
+    self.name = name
+    self.installer = installer
+  }
 }

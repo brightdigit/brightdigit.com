@@ -4,24 +4,20 @@
 *  MIT license, see LICENSE file for details
 */
 
-internal struct Paragraph: Modifiable, HTMLConvertible, PlainTextConvertible {
-    var modifierTarget: Modifier.Target { .paragraphs }
+internal struct Paragraph: Modifiable, HTMLConvertible {
+  internal var modifierTarget: Modifier.Target { .paragraphs }
 
-    /// Pre-rendered inline HTML of the paragraph (#40).
-    private var renderedBody: String
-    private var plainTextValue: String
+  /// Pre-rendered inline HTML of the paragraph (#40).
+  private var renderedBody: String
 
-    init(renderedBody: String, plainText: String) {
-        self.renderedBody = renderedBody
-        self.plainTextValue = plainText
-    }
+  internal init(renderedBody: String) {
+    self.renderedBody = renderedBody
+  }
 
-    func html(usingURLs urls: NamedURLCollection,
-              modifiers: ModifierCollection) -> String {
-        "<p>\(renderedBody)</p>"
-    }
-
-    func plainText() -> String {
-        plainTextValue
-    }
+  internal func html(
+    usingURLs urls: NamedURLCollection,
+    modifiers: ModifierCollection
+  ) -> String {
+    "<p>\(renderedBody)</p>"
+  }
 }

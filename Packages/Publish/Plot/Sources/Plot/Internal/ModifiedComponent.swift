@@ -5,8 +5,8 @@
 */
 
 internal struct ModifiedComponent: Component {
-    var base: Component
-    var deferredAttributes = [AnyAttribute]()
-    var environmentOverrides = [Environment.Override]()
-    var body: Component { Node.modifiedComponent(self) }
+  internal var base: Component
+  internal var deferredAttributes = [AnyAttribute]()
+  internal var environmentOverrides = [Environment.Override]()
+  internal var body: Component { Node.modifiedComponent(self) }
 }

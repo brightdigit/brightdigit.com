@@ -28,7 +28,7 @@
 //
 
 /// A protocol that defines the interface for rendering EmbeddedYoutube HTML.
-public protocol YoutubeRenderer {
+public protocol YoutubeRenderer: Sendable {
   /// Renders an EmbeddedYoutube into a string.
   func render(youtube: EmbeddedYoutube) throws -> String
 }

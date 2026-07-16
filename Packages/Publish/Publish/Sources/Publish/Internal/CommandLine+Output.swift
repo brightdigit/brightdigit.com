@@ -6,45 +6,45 @@
 
 import Foundation
 
-internal extension CommandLine {
-    enum OutputKind {
-        case info
-        case warning
-        case error
-        case success
+extension CommandLine {
+  internal enum OutputKind {
+    case info
+    case warning
+    case error
+    case success
+  }
+
+  internal static func output(_ string: String, as kind: OutputKind) {
+    var string = string + "\n"
+
+    if let emoji = kind.emoji {
+      string = "\(emoji) \(string)"
     }
 
-    static func output(_ string: String, as kind: OutputKind) {
-        var string = string + "\n"
-
-        if let emoji = kind.emoji {
-            string = "\(emoji) \(string)"
-        }
-
-        fputs(string, kind.target)
-    }
+    try? kind.target.write(contentsOf: Data(string.utf8))
+  }
 }
 
-private extension CommandLine.OutputKind {
-    var emoji: Character? {
-        switch self {
-        case .info:
-            return nil
-        case .warning:
-            return "⚠️"
-        case .error:
-            return "❌"
-        case .success:
-            return "✅"
-        }
+extension CommandLine.OutputKind {
+  fileprivate var emoji: Character? {
+    switch self {
+    case .info:
+      return nil
+    case .warning:
+      return "⚠️"
+    case .error:
+      return "❌"
+    case .success:
+      return "✅"
     }
+  }
 
-    var target: UnsafeMutablePointer<FILE> {
-        switch self {
-        case .info, .warning, .success:
-            return stdout
-        case .error:
-            return stdout
-        }
+  fileprivate var target: FileHandle {
+    switch self {
+    case .info, .warning, .success:
+      return .standardOutput
+    case .error:
+      return .standardOutput
     }
+  }
 }

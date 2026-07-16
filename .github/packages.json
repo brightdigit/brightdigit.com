@@ -38,5 +38,21 @@
   {
     "name": "TailwindKit",
     "path": "Packages/BrightDigit/TailwindKit"
+  },
+  {
+    "name": "Files",
+    "path": "Packages/Publish/Files"
+  },
+  {
+    "name": "Ink",
+    "path": "Packages/Publish/Ink"
+  },
+  {
+    "name": "Plot",
+    "path": "Packages/Publish/Plot"
+  },
+  {
+    "name": "Publish",
+    "path": "Packages/Publish/Publish"
   }
 ]

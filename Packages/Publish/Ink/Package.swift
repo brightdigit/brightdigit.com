@@ -1,4 +1,4 @@
-// swift-tools-version:5.7
+// swift-tools-version:6.4
 
 /**
 *  Ink
@@ -10,9 +10,9 @@ import PackageDescription
 
 let package = Package(
     name: "Ink",
+    platforms: [.macOS(.v15)],
     products: [
-        .library(name: "Ink", targets: ["Ink"]),
-        .executable(name: "ink-cli", targets: ["InkCLI"])
+        .library(name: "Ink", targets: ["Ink"])
     ],
     dependencies: [
         // #40: swift-markdown replaces Ink's hand-written `Reader` parser as the
@@ -32,7 +32,6 @@ let package = Package(
                 .product(name: "Markdown", package: "swift-markdown")
             ]
         ),
-        .executableTarget(name: "InkCLI", dependencies: ["Ink"]),
         .testTarget(name: "InkTests", dependencies: ["Ink"])
     ]
 )

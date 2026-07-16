@@ -4,81 +4,84 @@
 *  MIT license, see LICENSE file for details
 */
 
-import XCTest
 import Publish
+import XCTest
 
-final class WebsiteTests: PublishTestCase {
-    private var website: WebsiteStub.WithoutItemMetadata!
+internal final class WebsiteTests: PublishTestCase {
+  // Assigned in `setUp()` before every test, following the standard XCTest idiom.
+  // swift-format-ignore: NeverUseImplicitlyUnwrappedOptionals
+  // swiftlint:disable:next implicitly_unwrapped_optional
+  private var website: WebsiteStub.WithoutItemMetadata!
 
-    override func setUp() {
-        super.setUp()
-        website = .init()
-    }
+  override internal func setUp() {
+    super.setUp()
+    website = .init()
+  }
 
-    func testDefaultTagListPath() {
-        XCTAssertEqual(website.tagListPath, "tags")
-    }
+  internal func testDefaultTagListPath() {
+    XCTAssertEqual(website.tagListPath, "tags")
+  }
 
-    func testCustomTagListPath() {
-        website.tagHTMLConfig = TagHTMLConfiguration(basePath: "custom")
-        XCTAssertEqual(website.tagListPath, "custom")
-    }
+  internal func testCustomTagListPath() {
+    website.tagHTMLConfig = TagHTMLConfiguration(basePath: "custom")
+    XCTAssertEqual(website.tagListPath, "custom")
+  }
 
-    func testPathForSectionID() {
-        XCTAssertEqual(website.path(for: .one), "one")
-    }
-    
-    func testPathForSectionIDWithRawValue() {
-        XCTAssertEqual(website.path(for: .customRawValue), "custom-raw-value")
-    }
+  internal func testPathForSectionID() {
+    XCTAssertEqual(website.path(for: .one), "one")
+  }
 
-    func testDefaultPathForTag() {
-        let tag = Tag("some tag")
-        XCTAssertEqual(website.path(for: tag), "tags/some-tag")
-    }
+  internal func testPathForSectionIDWithRawValue() {
+    XCTAssertEqual(website.path(for: .customRawValue), "custom-raw-value")
+  }
 
-    func testCustomPathForTag() {
-        website.tagHTMLConfig = TagHTMLConfiguration(basePath: "custom")
-        let tag = Tag("some tag")
-        XCTAssertEqual(website.path(for: tag), "custom/some-tag")
-    }
+  internal func testDefaultPathForTag() {
+    let tag = Tag("some tag")
+    XCTAssertEqual(website.path(for: tag), "tags/some-tag")
+  }
 
-    func testDefaultURLForTag() {
-        XCTAssertEqual(
-            website.url(for: Tag("some tag")),
-            URL(string: "https://swiftbysundell.com/tags/some-tag")
-        )
-    }
+  internal func testCustomPathForTag() {
+    website.tagHTMLConfig = TagHTMLConfiguration(basePath: "custom")
+    let tag = Tag("some tag")
+    XCTAssertEqual(website.path(for: tag), "custom/some-tag")
+  }
 
-    func testCustomURLForTag() {
-        website.tagHTMLConfig = TagHTMLConfiguration(basePath: "custom")
+  internal func testDefaultURLForTag() {
+    XCTAssertEqual(
+      website.url(for: Tag("some tag")),
+      URL(string: "https://swiftbysundell.com/tags/some-tag")
+    )
+  }
 
-        XCTAssertEqual(
-            website.url(for: Tag("some tag")),
-            URL(string: "https://swiftbysundell.com/custom/some-tag")
-        )
-    }
+  internal func testCustomURLForTag() {
+    website.tagHTMLConfig = TagHTMLConfiguration(basePath: "custom")
 
-    func testURLForRelativePath() {
-        XCTAssertEqual(
-            website.url(for: Path("a/path")),
-            URL(string: "https://swiftbysundell.com/a/path")
-        )
-    }
+    XCTAssertEqual(
+      website.url(for: Tag("some tag")),
+      URL(string: "https://swiftbysundell.com/custom/some-tag")
+    )
+  }
 
-    func testURLForAbsolutePath() {
-        XCTAssertEqual(
-            website.url(for: Path("/a/path")),
-            URL(string: "https://swiftbysundell.com/a/path")
-        )
-    }
+  internal func testURLForRelativePath() {
+    XCTAssertEqual(
+      website.url(for: Path("a/path")),
+      URL(string: "https://swiftbysundell.com/a/path")
+    )
+  }
 
-    func testURLForLocation() {
-        let page = Page(path: "mypage", content: Content())
+  internal func testURLForAbsolutePath() {
+    XCTAssertEqual(
+      website.url(for: Path("/a/path")),
+      URL(string: "https://swiftbysundell.com/a/path")
+    )
+  }
 
-        XCTAssertEqual(
-            website.url(for: page),
-            URL(string: "https://swiftbysundell.com/mypage")
-        )
-    }
+  internal func testURLForLocation() {
+    let page = Page(path: "mypage", content: Content())
+
+    XCTAssertEqual(
+      website.url(for: page),
+      URL(string: "https://swiftbysundell.com/mypage")
+    )
+  }
 }

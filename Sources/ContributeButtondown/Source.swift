@@ -113,9 +113,12 @@ extension Newsletter.Source {
         emailID: email.id, value: email.absoluteURL
       )
     }
-    let featuredImageURL = email.image.isEmpty
-      ? featuredImageFallback
-      : URL(string: email.image) ?? featuredImageFallback
+    let featuredImageURL: URL
+    if email.image.isEmpty {
+      featuredImageURL = featuredImageFallback
+    } else {
+      featuredImageURL = URL(string: email.image) ?? featuredImageFallback
+    }
     self.init(
       slug: slug,
       issueNo: issueNo,

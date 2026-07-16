@@ -166,7 +166,8 @@ commits), then re-run the pull/push.
 - **Kanna** - HTML/XML parsing (used by Tagscriber for web content extraction)
 - **ArgumentParser** - Apple's Swift Argument Parser for CLI
 - **MarkdownGenerator** - Markdown document generation
-- Publish Plugins: SplashPublishPlugin, YoutubePublishPlugin, ReadingTimePublishPlugin, TransistorPublishPlugin, NPMPublishPlugin
+- Publish Plugins: YoutubePublishPlugin, ReadingTimePublishPlugin, TransistorPublishPlugin, NPMPublishPlugin
+- Syntax highlighting: client-side highlight.js (in the `Styling` bundle), plus Mermaid diagrams; the vendored Splash/SplashPublishPlugin were removed (see PR #151). Ink emits `<pre><code class="language-xxx">` which highlight.js targets and the Mermaid transform consumes.
 
 ### Deployment Pipeline
 CI/CD runs on **GitHub Actions** (`.github/workflows/main.yaml`). All Linux jobs run in the `brightdigit/publish-xml:6.4` container (Swift 6.4, Ubuntu Noble — based on the `swiftlang/swift:nightly-6.4.x-noble` snapshot), built from this repo's `Dockerfile`. Jobs:
@@ -184,7 +185,7 @@ The self-hosted macOS `build`/`package` jobs are currently commented out in the 
 ### Testing and Build Environment
 - Tests are located in `Tests/BrightDigitSiteTests/`
 - Run tests: `swift test`
-- Project requires Swift 6.4+ and macOS 13+
+- Project requires Swift 6.4+ and macOS 15+ (the vendored Publish stack uses `Synchronization.Mutex`, which requires macOS 15)
 - Linux builds use Ubuntu Noble (24.04) with custom Docker image
 - Swift Package Manager handles all dependency resolution
 
