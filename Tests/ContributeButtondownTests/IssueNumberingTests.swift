@@ -35,8 +35,10 @@ import Testing
 
 /// Exercises subject parsing, sequential numbering, and the skip-existing logic.
 @Suite internal struct IssueNumberingTests {
-  /// "Issue N" and "Issue #N" (including the interior "- Issue #N -" form) parse
-  /// out the number; version strings and empty subjects do not.
+  /// "Issue N" and "Issue #N" parse out the number.
+  ///
+  /// This includes the interior "- Issue #N -" form. Version strings and empty
+  /// subjects do not parse as issue numbers.
   @Test internal func parseIssueNumberVariants() {
     #expect(Newsletter.parseIssueNumber(fromSubject: "Issue 118") == 118)
     #expect(Newsletter.parseIssueNumber(fromSubject: "Issue #119") == 119)

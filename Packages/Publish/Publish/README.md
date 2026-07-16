@@ -228,13 +228,14 @@ try DeliciousRecipes().publish(using: [
 
 *If your plugin is hosted on GitHub you can use the `publish-plugin` [topic](https://help.github.com/en/github/administering-a-repository/classifying-your-repository-with-topics#adding-topics-to-your-repository) so it can be found with the rest of [community plugins](https://github.com/topics/publish-plugin?l=swift).*
 
-For a real-world example of a Publish plugin, check out the [official Splash plugin](https://github.com/johnsundell/splashpublishplugin), which makes it really easy to integrate the [Splash syntax highlighter](https://github.com/johnsundell/splash) with Publish.
+> **BrightDigit note:** Splash / SplashPublishPlugin were removed from this
+> fork. Syntax highlighting is handled client-side (highlight.js in the site
+> `Styling` bundle). See `Documentation/HowTo/SyntaxHighlighting/using-highlight-js.md`.
 
 ## System requirements
 
-To be able to successfully use Publish, make sure that your system has Swift version 5.4 (or later) installed. If you’re using a Mac, also make sure that `xcode-select` is pointed at an Xcode installation that includes the required version of Swift, and that you’re running macOS Big Sur (11.0) or later. 
-
-Please note that Publish **does not** officially support any form of beta software, including beta versions of Xcode and macOS, or unreleased versions of Swift.
+This BrightDigit fork requires **Swift 6.4+** and **macOS 15+** (it uses
+`Synchronization.Mutex` under complete strict concurrency).
 
 ## Installation
 
@@ -258,40 +259,18 @@ import Publish
 
 For more information on how to use the Swift Package Manager, check out [this article](https://www.swiftbysundell.com/articles/managing-dependencies-using-the-swift-package-manager), or [its official documentation](https://swift.org/package-manager).
 
-Publish also ships with a command line tool that makes it easy to set up new website projects, and to generate and deploy existing ones. To install that command line tool, simply run `make` within a local copy of the Publish repo:
-
-```
-$ git clone https://github.com/JohnSundell/Publish.git
-$ cd Publish
-$ make
-```
-
-Then run `publish help` for instructions on how to use it.
-
-The Publish command line tool is also available via [Homebrew](https://brew.sh) and can be installed using the following command if you have Homebrew installed:
-
-```
-brew install publish
-```
-
-However, please note that Homebrew support is not officially maintained by John Sundell, and you might therefore be installing an older version of the Publish command line tool when using Homebrew. Using `make`, as described above, is the preferred way to install the Publish command line tool.
+> **BrightDigit note:** the upstream Publish CLI and Homebrew formula are not
+> used here. The site is driven by the first-party `brightdigitwg` executable
+> (`ArgumentParser` / `--mode`), and deployment is handled by Netlify in CI.
 
 ## Running and deploying
 
 Since all Publish websites are implemented as Swift packages, they can be generated simply by opening up a website’s package in Xcode (by opening its `Package.swift` file), and then running it using the `Product > Run` command (or `⌘+R`).
 
-Publish can also facilitate the deployment of websites to external servers through its `DeploymentMethod` API, and ships with built-in implementations for Git and GitHub-based deployments. To define a deployment method for a website, add the `deploy` step to your publishing pipeline:
-
-```swift
-try DeliciousRecipes().publish(using: [
-    ...
-    .deploy(using: .gitHub("johnsundell/delicious-recipes"))
-])
-```
-
-Even when added to a pipeline, deployment steps are disabled by default, and are only executed when the `--deploy` command line flag was passed (which can be added through Xcode’s `Product > Scheme > Edit Scheme...` menu), or by running the command line tool using `publish deploy`.
-
-Publish can also start a `localhost` web server for local testing and development, by using the `publish run` command. To regenerate site content with the server running, use Product > Run on your site's package in Xcode.
+> **BrightDigit note:** command-line `--deploy` sniffing and the
+> `DeploymentMethod` / `PublishingStep.deploy` API were **removed** from this
+> fork. The publishing pipeline always runs generation. Deploy via your own
+> host (here: Netlify).
 
 ## Quick start
 

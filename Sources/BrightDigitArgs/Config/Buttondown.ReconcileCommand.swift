@@ -67,7 +67,7 @@ extension Buttondown.ReconcileCommand {
     /// supplied, else the `BUTTONDOWN_API_KEY` environment fallback.
     internal func makeButtondownClient() throws -> ButtondownClient {
       if let buttondownAPIKey {
-        return try ButtondownClient(apiKey: buttondownAPIKey)
+        return ButtondownClient(apiKey: buttondownAPIKey)
       }
       return try ButtondownClient.fromEnvironment()
     }
@@ -78,13 +78,6 @@ extension Buttondown.ReconcileCommand {
     static let mailchimpListID = OptionalConfigKey<String>("mailchimp-list-id")
     static let buttondownAPIKey = OptionalConfigKey<String>("buttondown-api-key")
     static let execute = ConfigKey("execute", default: false)
-  }
-
-  /// Logs a `buttondown reconcile:` diagnostic line to stderr.
-  internal static func log(_ message: String) {
-    FileHandle.standardError.write(
-      Data("buttondown reconcile: \(message)\n".utf8)
-    )
   }
 
   public func execute() async throws {
@@ -141,6 +134,7 @@ extension Buttondown.ReconcileCommand {
     let creates = plan.filter { $0.action == .create }
     let updates = plan.filter { $0.action == .update }
 
+    let hasIssue114 = creates.contains { $0.issueNo == 114 } ? "YES" : "NO"
     var lines: [String] = [
       "",
       "buttondown reconcile — DRY RUN (no writes; pass --execute to apply)",
@@ -151,7 +145,7 @@ extension Buttondown.ReconcileCommand {
       "  CREATE (backfill):      \(creates.count)",
       "  UPDATE (clean body):    \(updates.count)",
       "",
-      "Issue #114 in CREATE set: \(creates.contains { $0.issueNo == 114 } ? "YES" : "NO")",
+      "Issue #114 in CREATE set: \(hasIssue114)",
       "",
       "Plan (by issue number):",
     ]
@@ -173,17 +167,11 @@ extension Buttondown.ReconcileCommand {
     }
   }
 
-  /// A short, single-block preview of a cleaned body (first lines / characters).
-  private static func previewSnippet(of body: String) -> String {
-    let maxCharacters = 600
-    let trimmed = body.prefix(maxCharacters)
-    let suffix = body.count > maxCharacters ? "\n… (truncated)" : ""
-    return trimmed + suffix
-  }
-
   /// Applies the plan to Buttondown: `createArchived` for backfills,
-  /// `updateEmail` for cleanups. Guarded behind `--execute`; **never** run live
-  /// as part of automated work — this path is for Leo's explicit invocation.
+  /// `updateEmail` for cleanups.
+  ///
+  /// Guarded behind `--execute`; **never** run live as part of automated work —
+  /// this path is for Leo's explicit invocation.
   private func runExecute(
     plan: [PlanItem],
     mailchimp: MailchimpClient,
@@ -211,6 +199,23 @@ extension Buttondown.ReconcileCommand {
   }
 }
 
+extension Buttondown.ReconcileCommand {
+  /// Logs a `buttondown reconcile:` diagnostic line to stderr.
+  internal static func log(_ message: String) {
+    FileHandle.standardError.write(
+      Data("buttondown reconcile: \(message)\n".utf8)
+    )
+  }
+
+  /// A short, single-block preview of a cleaned body (first lines / characters).
+  private static func previewSnippet(of body: String) -> String {
+    let maxCharacters = 600
+    let trimmed = body.prefix(maxCharacters)
+    let suffix = body.count > maxCharacters ? "\n… (truncated)" : ""
+    return trimmed + suffix
+  }
+}
+
 extension Buttondown {
   /// ConfigKeyKit-based command for reconciling the Buttondown newsletter
   /// archive against Mailchimp (issue #127).
@@ -226,7 +231,7 @@ extension Buttondown {
   public struct ReconcileCommand: ConfigKeyKit.Command {
     public static let commandName = "buttondown reconcile"
     public static let abstract =
-      "Reconcile the Buttondown newsletter archive against Mailchimp (dry run by default)."
+      "Reconcile Buttondown against Mailchimp (dry run by default)."
     public static let helpText = """
       OVERVIEW: Reconcile the Buttondown newsletter archive against Mailchimp.
 
@@ -242,11 +247,8 @@ extension Buttondown {
       OPTIONS:
         --mailchimp-api-key <key>   Mailchimp API key. (required)
         --mailchimp-list-id <id>    Mailchimp list ID. (required)
-        --buttondown-api-key <key>  Buttondown API key. Falls back to
-                                    BUTTONDOWN_API_KEY if omitted.
-        --execute                   Apply the plan to Buttondown. WITHOUT this
-                                    flag the command only prints the plan and
-                                    performs no writes.
+        --buttondown-api-key <key>  Buttondown API key; falls back to env.
+        --execute                   Apply the plan to Buttondown.
         -h, --help                  Show help information.
 
       Each option may also be supplied via an uppercased, underscore-separated

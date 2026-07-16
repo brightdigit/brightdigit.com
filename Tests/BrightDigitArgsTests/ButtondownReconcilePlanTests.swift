@@ -11,7 +11,7 @@ internal struct ButtondownReconcilePlanTests {
   private typealias Reconcile = Buttondown.ReconcileCommand
 
   private static let day1 = Date(timeIntervalSince1970: 1_000_000)
-  private static let day1_5 = Date(timeIntervalSince1970: 1_500_000)
+  private static let dayOneAndHalf = Date(timeIntervalSince1970: 1_500_000)
   private static let day2 = Date(timeIntervalSince1970: 2_000_000)
   private static let day3 = Date(timeIntervalSince1970: 3_000_000)
 
@@ -57,7 +57,7 @@ internal struct ButtondownReconcilePlanTests {
       campaign(id: "c1", subject: "BrightDigit Newsletter #1", sendTime: Self.day1),
       campaign(id: "c2", subject: "BrightDigit #2", sendTime: Self.day2),
       // Interior unnumbered (before the last numbered issue) → skipped.
-      campaign(id: "c3", subject: "Blog Updates", sendTime: Self.day1_5),
+      campaign(id: "c3", subject: "Blog Updates", sendTime: Self.dayOneAndHalf),
       // Not a BrightDigit newsletter (no segment, no marker) → excluded.
       campaign(id: "c5", subject: "Some other blast", sendTime: Self.day3, segment: nil),
     ]
@@ -83,7 +83,7 @@ internal struct ButtondownReconcilePlanTests {
     #expect(byIssueNo[0] == nil)
   }
 
-  @Test internal func classifiesMissingAsCreateAndPresentAsUpdate() {
+  @Test internal func classifiesMissingAsCreateAndPresentAsUpdate() throws {
     let numbered = [
       Reconcile.NumberedCampaign(
         issueNo: 114, campaignID: "c114", subject: "BrightDigit #114", sendTime: Self.day3
@@ -113,7 +113,7 @@ internal struct ButtondownReconcilePlanTests {
     #expect(creates.contains { $0.issueNo == 114 })
 
     // The UPDATE carries the existing Buttondown email id; CREATEs do not.
-    let update = try! #require(updates.first)
+    let update = try #require(updates.first)
     #expect(update.existingEmailID == "e2")
     #expect(creates.allSatisfy { $0.existingEmailID == nil })
   }

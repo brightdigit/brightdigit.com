@@ -1,5 +1,5 @@
 //
-//  IssueNumbering.swift
+//  Newsletter+IssueNumbering.swift
 //  BrightDigit
 //
 //  Created by Leo Dion.
@@ -35,7 +35,8 @@ extension Newsletter {
   public struct NumberedEmail: Sendable, Equatable {
     /// The source Buttondown email.
     public let email: Email
-    /// The issue number assigned by ``Newsletter/assignIssueNumbers(to:continuingFrom:)``.
+    /// The issue number assigned by
+    /// ``Newsletter/assignIssueNumbers(to:continuingFrom:)``.
     public let issueNo: Int
 
     /// Memberwise initializer.

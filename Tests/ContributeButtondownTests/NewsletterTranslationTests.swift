@@ -36,9 +36,14 @@ import Testing
 
 /// Exercises `Email → Source → FrontMatter` mapping and the full content build.
 @Suite internal struct NewsletterTranslationTests {
-  private static let fallbackImage = URL(
-    string: "https://brightdigit.com/android-chrome-512x512.png"
-  )!
+  private static let fallbackImage: URL = {
+    guard
+      let url = URL(string: "https://brightdigit.com/android-chrome-512x512.png")
+    else {
+      preconditionFailure("Invalid fallback image URL")
+    }
+    return url
+  }()
 
   /// A `Source` built from an email carries the email fields, and the translator
   /// maps them onto the front matter (with the date formatted via `YAML`).
@@ -96,7 +101,9 @@ import Testing
       id: "bad-url",
       absoluteURL: ""
     )
-    #expect(throws: ButtondownImportError.malformedArchiveURL(emailID: "bad-url", value: "")) {
+    #expect(
+      throws: ButtondownImportError.malformedArchiveURL(emailID: "bad-url", value: "")
+    ) {
       _ = try Newsletter.Source(
         email: email,
         issueNo: 120,

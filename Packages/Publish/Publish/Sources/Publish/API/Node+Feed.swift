@@ -44,11 +44,16 @@ extension Node where Context: RSSItemContext {
 
       let url = html[valueRange]
 
-      guard url.first == "/" else {
+      // Only rewrite root-relative values. Resolve via `URL(string:relativeTo:)`
+      // so a leading `/` is treated as a path from the host root — not as a
+      // path component that `appendingPathComponent` may mishandle across
+      // Foundation versions.
+      guard url.first == "/",
+        let absoluteURL = URL(string: String(url), relativeTo: baseURL)?.absoluteURL
+      else {
         continue
       }
 
-      let absoluteURL = baseURL.appendingPathComponent(String(url))
       let isHref = (html[attributeRange] == "href")
       links.append((absoluteURL, matchRange, isHref))
     }

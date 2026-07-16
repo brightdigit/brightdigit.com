@@ -20,6 +20,8 @@ hljs.registerLanguage('bash', bash);
 hljs.registerLanguage('ini', ini);
 hljs.registerLanguage('toml', ini);
 
+const languageClassPattern = /\blang(?:uage)?-([\w-]+)\b/i;
+
 // Turn Ink's `<pre><code class="language-mermaid">` blocks into the
 // `<div class="mermaid">` elements Mermaid renders, then run Mermaid. Bails
 // early when there are no diagrams so the library only initializes when needed.
@@ -43,8 +45,13 @@ function renderMermaidDiagrams(): void {
     void mermaid.run();
 }
 
-// Highlight every fenced code block except Mermaid diagrams and blocks the
-// author opted out of with ```no-highlight.
+function explicitLanguageName(block: HTMLElement): string | null {
+    const classNames = `${block.className} ${block.parentElement?.className ?? ''}`;
+    return languageClassPattern.exec(classNames)?.[1] ?? null;
+}
+
+// Highlight every fenced code block except Mermaid diagrams, blocks the author
+// opted out of with ```no-highlight, and unsupported explicit language labels.
 function highlightCodeBlocks(): void {
     document
         .querySelectorAll<HTMLElement>('pre code')
@@ -53,6 +60,10 @@ function highlightCodeBlocks(): void {
                 block.classList.contains('language-mermaid') ||
                 block.classList.contains('language-no-highlight')
             ) {
+                return;
+            }
+            const languageName = explicitLanguageName(block);
+            if (languageName && !hljs.getLanguage(languageName)) {
                 return;
             }
             hljs.highlightElement(block);
