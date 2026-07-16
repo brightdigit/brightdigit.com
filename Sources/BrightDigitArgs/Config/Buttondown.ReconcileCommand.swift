@@ -44,6 +44,7 @@ extension Buttondown.ReconcileCommand {
     internal let mailchimpListID: String
     internal let buttondownAPIKey: String?
     internal let execute: Bool
+    internal let minBodyWords: Int
 
     public init(
       configuration reader: Configuration.ConfigReader,
@@ -61,6 +62,7 @@ extension Buttondown.ReconcileCommand {
 
       self.buttondownAPIKey = reader.read(Keys.buttondownAPIKey)
       self.execute = reader.read(Keys.execute)
+      self.minBodyWords = reader.read(Keys.minBodyWords)
     }
 
     /// Builds the Buttondown client: an explicit `--buttondown-api-key` if
@@ -78,6 +80,11 @@ extension Buttondown.ReconcileCommand {
     static let mailchimpListID = OptionalConfigKey<String>("mailchimp-list-id")
     static let buttondownAPIKey = OptionalConfigKey<String>("buttondown-api-key")
     static let execute = ConfigKey("execute", default: false)
+    /// Minimum meaningful word count a cleaned body must have to be written.
+    /// Modern Mailchimp/Buttondown template issues clean down to near-empty
+    /// skeletons (images + empty links); this gate skips them so reconcile never
+    /// overwrites an archive body with less than it had. `0` disables the gate.
+    static let minBodyWords = ConfigKey("min-body-words", default: 100)
   }
 
   public func execute() async throws {
@@ -131,6 +138,67 @@ extension Buttondown.ReconcileCommand {
     return try Import.markdownGenerator.markdown(fromHTML: html)
   }
 
+  /// A plan item resolved to its cleaned body and meaningful word count.
+  private struct ResolvedItem {
+    let item: PlanItem
+    let body: String
+    let words: Int
+  }
+
+  /// The plan items partitioned by the body-quality gate.
+  private struct ResolvedUpdates {
+    /// Issues whose cleaned body meets the word threshold — safe to write.
+    let writable: [ResolvedItem]
+    /// Issues whose cleaned body is too thin — skipped so reconcile never
+    /// overwrites an archive body with an empty/skeleton clean.
+    let thin: [ResolvedItem]
+  }
+
+  /// Fetches and cleans every UPDATE item's body, then partitions them by the
+  /// `--min-body-words` quality gate.
+  ///
+  /// This is the one place that hits Mailchimp's archive endpoint for the whole
+  /// plan, shared by the dry run and the executed run so both see the same
+  /// classification. When the gate is `0` every item is writable.
+  /// - Parameters:
+  ///   - plan: The reconcile plan.
+  ///   - mailchimp: The Mailchimp client.
+  /// - Returns: The writable and thin partitions.
+  private func resolveUpdates(
+    plan: Plan,
+    mailchimp: MailchimpClient
+  ) async throws -> ResolvedUpdates {
+    var writable: [ResolvedItem] = []
+    var thin: [ResolvedItem] = []
+    for item in plan.items {
+      let body = try await cleanedBody(forCampaignID: item.campaignID, using: mailchimp)
+      let words = Self.meaningfulWordCount(of: body)
+      let resolved = ResolvedItem(item: item, body: body, words: words)
+      if words >= config.minBodyWords {
+        writable.append(resolved)
+      } else {
+        thin.append(resolved)
+      }
+    }
+    return ResolvedUpdates(writable: writable, thin: thin)
+  }
+
+  /// Renders the "cleaned body too thin — skipped" advisory for the dry run and
+  /// the executed run. Empty when the gate rejected nothing.
+  private func thinLines(_ thin: [ResolvedItem]) -> [String] {
+    guard !thin.isEmpty else {
+      return []
+    }
+    var lines = [
+      "",
+      "Skipped (cleaned body under \(config.minBodyWords) words — not overwritten):",
+    ]
+    for resolved in thin {
+      lines.append("  SKIP  #\(resolved.item.issueNo)  (\(resolved.words) words)  \(resolved.item.subject)")
+    }
+    return lines
+  }
+
   /// Prints the reconciliation plan without performing any writes (the default).
   ///
   /// Shows totals, a per-issue CREATE/UPDATE line, whether issue #114 is in the
@@ -144,34 +212,36 @@ extension Buttondown.ReconcileCommand {
     emailCount: Int,
     mailchimp: MailchimpClient
   ) async throws {
-    let updates = plan.items
+    let resolved = try await resolveUpdates(plan: plan, mailchimp: mailchimp)
+    let writable = resolved.writable
     var lines: [String] = [
       "",
       "buttondown reconcile — DRY RUN (no writes; pass --execute to apply)",
       "====================================================================",
       "Mailchimp sent campaigns: \(campaignCount)",
       "Buttondown emails:        \(emailCount)",
-      "Numbered newsletters:     \(updates.count + plan.missingIssueNos.count)",
-      "  UPDATE (clean body):    \(updates.count)",
+      "Numbered newsletters:     \(plan.items.count + plan.missingIssueNos.count)",
+      "  UPDATE (clean body):    \(writable.count)",
+      "  SKIP (thin body):       \(resolved.thin.count)",
       "  SKIP (absent, missing):  \(plan.missingIssueNos.count)",
     ]
+    lines.append(contentsOf: thinLines(resolved.thin))
     lines.append(contentsOf: Self.missingLines(plan.missingIssueNos))
     lines.append("")
     lines.append("Plan (by issue number):")
-    for item in updates {
-      lines.append("  UPDATE  #\(item.issueNo)  \(item.subject)")
+    for resolved in writable {
+      lines.append("  UPDATE  #\(resolved.item.issueNo)  (\(resolved.words) words)  \(resolved.item.subject)")
     }
     print(lines.joined(separator: "\n"))
 
-    let previewItems = Array(updates.prefix(2))
+    let previewItems = Array(writable.prefix(2))
     guard !previewItems.isEmpty else {
       return
     }
     print("\nCleaned-body preview (\(previewItems.count) UPDATE issue(s)):")
-    for item in previewItems {
-      let body = try await cleanedBody(forCampaignID: item.campaignID, using: mailchimp)
-      print("\n--- #\(item.issueNo): \(item.subject) ---")
-      print(Self.previewSnippet(of: body))
+    for resolved in previewItems {
+      print("\n--- #\(resolved.item.issueNo): \(resolved.item.subject) ---")
+      print(Self.previewSnippet(of: resolved.body))
     }
   }
 
@@ -185,11 +255,16 @@ extension Buttondown.ReconcileCommand {
     mailchimp: MailchimpClient,
     buttondown: ButtondownClient
   ) async throws {
+    let resolved = try await resolveUpdates(plan: plan, mailchimp: mailchimp)
+    for line in thinLines(resolved.thin) where !line.isEmpty {
+      Self.log(line)
+    }
     for line in Self.missingLines(plan.missingIssueNos) where !line.isEmpty {
       Self.log(line)
     }
-    Self.log("--execute set: applying \(plan.items.count) UPDATE(s) to Buttondown …")
-    for item in plan.items {
+    Self.log("--execute set: applying \(resolved.writable.count) UPDATE(s) to Buttondown …")
+    for entry in resolved.writable {
+      let item = entry.item
       guard let id = item.existingEmailID else {
         continue
       }
@@ -202,8 +277,7 @@ extension Buttondown.ReconcileCommand {
         )
         continue
       }
-      let body = try await cleanedBody(forCampaignID: item.campaignID, using: mailchimp)
-      let email = try await buttondown.updateEmail(id: id, body: body)
+      let email = try await buttondown.updateEmail(id: id, body: entry.body)
       Self.log("UPDATED #\(item.issueNo) (\(email.id)): \(item.subject)")
     }
     Self.log("done.")
@@ -225,6 +299,43 @@ extension Buttondown.ReconcileCommand {
     let suffix = body.count > maxCharacters ? "\n… (truncated)" : ""
     return trimmed + suffix
   }
+
+  /// Counts the *meaningful* words in a cleaned Markdown body — the words a
+  /// reader actually sees.
+  ///
+  /// Modern Mailchimp/Buttondown template issues clean down to skeletons of
+  /// images, empty links, and preheader spacer runs; those must not count as
+  /// content. So this strips image syntax, replaces links with just their link
+  /// text, removes bare URLs, and drops zero-width / spacer characters, then
+  /// counts alphanumeric-bearing whitespace-separated tokens.
+  /// - Parameter body: The cleaned Markdown body.
+  /// - Returns: The number of meaningful words.
+  internal static func meaningfulWordCount(of body: String) -> Int {
+    var text = body
+    // Images `![alt](url)` contribute nothing readable.
+    text = text.replacingOccurrences(
+      of: #"!\[[^\]]*\]\([^)]*\)"#, with: " ", options: .regularExpression
+    )
+    // Links `[text](url)` → keep only the visible text.
+    text = text.replacingOccurrences(
+      of: #"\[([^\]]*)\]\([^)]*\)"#, with: "$1", options: .regularExpression
+    )
+    // Bare/angle-bracketed URLs.
+    text = text.replacingOccurrences(
+      of: #"<?https?://[^\s>]+>?"#, with: " ", options: .regularExpression
+    )
+    // Zero-width joiners / soft hyphen / combining grapheme joiner / NBSP-likes
+    // used as email-preheader spacers.
+    let spacerScalars: Set<Unicode.Scalar> = [
+      "\u{034F}", "\u{200B}", "\u{200C}", "\u{200D}", "\u{00AD}", "\u{00A0}",
+      "\u{2060}", "\u{FEFF}",
+    ]
+    text = String(String.UnicodeScalarView(text.unicodeScalars.filter { !spacerScalars.contains($0) }))
+
+    return text
+      .split(whereSeparator: { $0.isWhitespace })
+      .count { token in token.contains { $0.isLetter || $0.isNumber } }
+  }
 }
 
 extension Buttondown {
@@ -234,11 +345,14 @@ extension Buttondown {
   /// Registers under the two-token name `buttondown reconcile` and is dispatched
   /// by ``CommandDispatcher``. Reads sent campaigns from Mailchimp (via
   /// Spinetail) and the current emails from Buttondown, derives an issue number
-  /// for each, and builds a plan: CREATE (as an archived / never-sent email) any
-  /// issue missing from Buttondown, else UPDATE its body with the cleaned
-  /// Markdown. It **defaults to a dry run** that only prints the plan; live
-  /// Buttondown writes require an explicit `--execute` flag. It never touches
-  /// local `Content/newsletters/*.md`.
+  /// for each, and plans an UPDATE (cleaned body) for every issue already present
+  /// as an imported archive email. It **only ever updates**: issues absent from
+  /// Buttondown are reported and skipped (never created), non-imported emails are
+  /// never touched, and issues whose cleaned body falls under `--min-body-words`
+  /// are skipped so a template issue that cleans to an empty skeleton can't
+  /// overwrite a fuller archive body. It **defaults to a dry run** that only
+  /// prints the plan; live writes require an explicit `--execute` flag. It never
+  /// touches local `Content/newsletters/*.md`.
   public struct ReconcileCommand: ConfigKeyKit.Command {
     public static let commandName = "buttondown reconcile"
     public static let abstract =
@@ -247,18 +361,23 @@ extension Buttondown {
       OVERVIEW: Reconcile the Buttondown newsletter archive against Mailchimp.
 
       Reads sent campaigns from Mailchimp (via Spinetail) and current emails from
-      Buttondown, then plans a CREATE (archived / never-sent) for each issue
-      missing from Buttondown and an UPDATE (cleaned body) for each issue already
-      present. Defaults to a DRY RUN that only prints the plan; local
+      Buttondown, then plans an UPDATE (cleaned body) for each issue already
+      present as an imported archive email. Updates only: absent issues are
+      reported and skipped (never created), non-imported emails are never
+      touched, and issues whose cleaned body is under --min-body-words are
+      skipped. Defaults to a DRY RUN that only prints the plan; local
       Content/newsletters/*.md files are never touched.
 
       USAGE: brightdigitwg buttondown reconcile --mailchimp-api-key <key> \
-      --mailchimp-list-id <id> [--buttondown-api-key <key>] [--execute]
+      --mailchimp-list-id <id> [--buttondown-api-key <key>] \
+      [--min-body-words <n>] [--execute]
 
       OPTIONS:
         --mailchimp-api-key <key>   Mailchimp API key. (required)
         --mailchimp-list-id <id>    Mailchimp list ID. (required)
         --buttondown-api-key <key>  Buttondown API key; falls back to env.
+        --min-body-words <n>        Skip issues whose cleaned body has fewer than
+                                    <n> meaningful words. Default 100; 0 disables.
         --execute                   Apply the plan to Buttondown.
         -h, --help                  Show help information.
 
