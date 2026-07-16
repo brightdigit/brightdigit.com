@@ -110,32 +110,28 @@ method is a trivial Spinetail addition — same request, read the other field.
 ## Approach (recommended, approved)
 
 Two independent tracks, both feeding the same `--execute`: recover the 69 skipped
-bodies (fix the HTML walk + plain_text fallback), and sync metadata
+bodies (select authored HTML fragments + plain_text fallback), and sync metadata
 (publish_date + description + image). Body + metadata are updated together and
 gated together (an issue must clear the word gate to be touched at all).
 
 ### Track 1 — Recover body content
 
-**1a. Fix the table walk in `SwiftSoupMarkdownGenerator`** (Contribute package)
-- Files: `Packages/BrightDigit/Contribute/Sources/Contribute/SwiftSoupMarkdownGenerator+TableList.swift`
-  and `…+Markup.swift`.
-- `rows(of:)` (TableList L114-127) and `ownCells(of:)` (L101-110) assume a strict
-  `table → (tr|thead|tbody|tfoot) → (td|th)` shape and silently drop anything else.
-  Make cell discovery robust to nested/non-standard Mailchimp wrappers: find
-  **descendant** `td`/`th` cells rather than only direct children, while keeping the
-  existing nested-table de-dup so inner-table content isn't emitted twice (there's
-  already a `nestedTableContentEmittedExactlyOnce` test to preserve).
-- In `blockMarkup(for:)` (Markup L48-103) add a text-preserving fallback for bare
-  `tr`/`td`/`th`/`tbody`/`thead`/`tfoot` reached outside the table path (today they
-  hit `default:` which iterates only element children, losing cell text nodes).
-- Reconcile the inline-skip vs block-recurse asymmetry (Markup L76-78, L167-168) so
-  text under non-block wrappers (`center`, `font`, custom tags) isn't dropped.
-- Add fixtures reproducing real Mailchimp drag-and-drop markup (deeply nested
-  `td → table → td → div.mcnTextContent → p > span`) to
-  `Contribute/Tests/ContributeTests/SwiftSoupMarkdownGeneratorTests.swift`.
-- CAUTION: Contribute is a shared package used by all importers (Mailchimp,
-  WordPress, podcast). Keep changes additive; run the full ContributeTests suite to
-  confirm no regression to existing plain-HTML behavior.
+> **Implementation revision:** after reviewing the real #113 markup, recovery
+> targets Mailchimp's authored content blocks rather than traversing the layout
+> tables. Modern `.mceText` children and non-logo `.mceImageBlockContainer`
+> images are converted in document order; legacy campaigns keep the existing
+> whole-document conversion path.
+
+**1a. Select authored fragments with `SwiftSoupMarkdownGenerator`**
+- Add selector-based fragment conversion to the shared generator without changing
+  its existing whole-document or table behavior.
+- For modern Mailchimp HTML, select direct `.mceText` children plus non-logo images
+  beneath `.mceImageBlockContainer`; omit presentation tables, preview text,
+  spacers, social chrome, and logos.
+- If the modern selector matches nothing, use the existing whole-document path so
+  already-working legacy campaigns remain unchanged.
+- Add a reduced #113-style fixture proving prose, links, headings, and content
+  images retain document order while template chrome is excluded.
 
 **1b. plain_text fallback** for anything still thin after 1a
 - Add `plainText(forCampaignID:)` to Spinetail `MailchimpClient`
@@ -179,7 +175,7 @@ gated together (an issue must clear the word gate to be touched at all).
   blank). Dry run prints the metadata each writable issue would set.
 
 ## Critical files
-- `Packages/BrightDigit/Contribute/Sources/Contribute/SwiftSoupMarkdownGenerator+TableList.swift`, `…+Markup.swift` (+ tests)
+- `Packages/BrightDigit/Contribute/Sources/Contribute/SwiftSoupMarkdownGenerator.swift` (+ tests)
 - `Packages/BrightDigit/Spinetail/Sources/Spinetail/MailchimpClient.swift` (plainText method)
 - `Packages/BrightDigit/ButtondownKit/Sources/ButtondownKit/OpenAPI/openapi.json` (spec edit) + regenerated `Generated/{Types,Client}.swift`
 - `Packages/BrightDigit/ButtondownKit/Sources/ButtondownKit/EmailUpdating.swift` (+ EmailUpdatingTests)
@@ -190,15 +186,17 @@ Already committed on this branch (`buttondown-reconcile-updates-only`, commit
 This plan builds on top; new work lands as follow-up commits on the same branch.
 
 ## Verification
-1. `swift test` in `Packages/BrightDigit/Contribute` — new nested-Mailchimp fixture
-   extracts full text; existing table/plain-HTML tests still pass.
+1. `swift test` in `Packages/BrightDigit/Contribute` — the selected-content fixture
+   extracts prose and content images without layout chrome; existing
+   table/plain-HTML tests still pass.
 2. `swift test` in `Packages/BrightDigit/ButtondownKit` — updateEmail serializes
    image/publish_date; regen `git diff` shows only publish_date added.
 3. `swift test --filter ButtondownReconcilePlanTests` (main pkg) — plain_text
    cleaner + fallback classification + metadata-carrying plan items.
-4. Live DRY RUN (`swift run brightdigitwg buttondown reconcile`, env keys) — confirm
+4. Live preview (`swift run brightdigitwg buttondown reconcile
+   --preview-directory <path>`, env keys) — inspect the generated Markdown index and confirm
    the skip count collapses from 69 toward ~0-2, each recovered issue shows its body
    source (html/plain_text) and word count, and the metadata (date/desc/image) each
    issue would set. Spot-check a few recovered bodies (#100, #113, #117) for quality.
-5. Only after the dry run looks right: `--execute` (user-initiated) to write the
+5. Only after the preview looks right: `--execute` (user-initiated) to write the
    ~113 imported archive emails (body + metadata), with #114 still skipped as absent.

@@ -20,7 +20,9 @@ internal struct ButtondownReconcilePlanTests {
     id: String,
     subject: String,
     sendTime: Date,
-    segment: String? = "brightdigit-business"
+    segment: String? = "brightdigit-business",
+    previewText: String? = nil,
+    socialCardImageURL: String? = nil
   ) -> MailchimpCampaign {
     MailchimpCampaign(
       id: id,
@@ -28,9 +30,9 @@ internal struct ButtondownReconcilePlanTests {
       sendTime: sendTime,
       subjectLine: subject,
       title: subject,
-      previewText: nil,
+      previewText: previewText,
       segmentText: segment,
-      socialCardImageURL: nil
+      socialCardImageURL: socialCardImageURL
     )
   }
 
@@ -234,5 +236,142 @@ internal struct ButtondownReconcilePlanTests {
     let body = "Read [our estimation guide](https://brightdigit.com/guide) today."
     // "Read our estimation guide today" → 5 words.
     #expect(Reconcile.meaningfulWordCount(of: body) == 5)
+  }
+
+  @Test internal func campaignMetadataSurvivesNumberingAndPlanning() throws {
+    let campaigns = [
+      campaign(
+        id: "c7",
+        subject: "BrightDigit Newsletter #7",
+        sendTime: Self.day2,
+        previewText: "  Issue preview  ",
+        socialCardImageURL: "https://example.com/social.jpg"
+      )
+    ]
+    let numbered = Reconcile.numberedCampaigns(from: campaigns)
+    let plan = Reconcile.buildPlan(
+      numbered: numbered,
+      buttondownByIssueNo: [7: email(id: "e7", subject: "BrightDigit Newsletter #7")]
+    )
+
+    let item = try #require(plan.items.first)
+    #expect(item.previewText == "  Issue preview  ")
+    #expect(item.socialCardImageURL == "https://example.com/social.jpg")
+    #expect(item.publishDate == Self.day2)
+    #expect(Reconcile.nonBlank(item.previewText) == "Issue preview")
+    #expect(Reconcile.nonBlank("  ") == nil)
+  }
+
+  @Test internal func mailchimpCleanerRemovesTemplateCruftAndKeepsProse() {
+    let body = """
+      [View this email in your browser](https://mailchi.mp/example)
+
+      *|MC_PREVIEW_TEXT|*
+      A useful paragraph with an [inline link](https://example.com/article).
+
+      https://twitter.com/brightdigit
+
+      logo
+
+      *|IFNOT:ARCHIVE_PAGE|*
+      Want to change how you receive these emails?
+      *|END:IF|*
+      Copyright (C) 2026 BrightDigit
+      Our mailing address is:
+      123 Main Street
+      """
+
+    let cleaned = Reconcile.cleanMailchimpBody(body)
+
+    #expect(
+      cleaned == "A useful paragraph with an [inline link](https://example.com/article).")
+  }
+
+  @Test internal func preferredCandidateUsesFallbackOnlyForThinPrimary() {
+    let thinHTML = Reconcile.BodyCandidate(
+      body: "thin",
+      words: 1,
+      source: .selectedHTML
+    )
+    let recoveredPlainText = Reconcile.BodyCandidate(
+      body: "recovered body",
+      words: 150,
+      source: .plainText
+    )
+    let sufficientHTML = Reconcile.BodyCandidate(
+      body: "sufficient body",
+      words: 120,
+      source: .selectedHTML
+    )
+
+    #expect(
+      Reconcile.preferredCandidate(
+        primary: thinHTML,
+        fallback: recoveredPlainText,
+        minimumWords: 100
+      ).source == .plainText
+    )
+    #expect(
+      Reconcile.preferredCandidate(
+        primary: sufficientHTML,
+        fallback: recoveredPlainText,
+        minimumWords: 100
+      ).source == .selectedHTML
+    )
+  }
+
+  @Test internal func reconcileRequiresExactlyOneMode() throws {
+    #expect(try Reconcile.mode(execute: true, previewDirectory: nil) == .execute)
+    #expect(
+      try Reconcile.mode(execute: false, previewDirectory: " ./preview ")
+        == .previewDirectory("./preview")
+    )
+    #expect(throws: CommandError.self) {
+      _ = try Reconcile.mode(execute: false, previewDirectory: nil)
+    }
+    #expect(throws: CommandError.self) {
+      _ = try Reconcile.mode(execute: true, previewDirectory: "preview")
+    }
+  }
+
+  @Test internal func previewDirectoryContainsBodiesAndIndex() throws {
+    let directory = FileManager.default.temporaryDirectory
+      .appendingPathComponent(UUID().uuidString, isDirectory: true)
+    defer { try? FileManager.default.removeItem(at: directory) }
+
+    let item = Reconcile.PlanItem(
+      issueNo: 113,
+      subject: "A subject | with a pipe",
+      campaignID: "campaign-113",
+      action: .update,
+      existingEmailID: "email-113",
+      existingStatus: .imported,
+      previewText: "Preview",
+      socialCardImageURL: "https://example.com/image.jpg",
+      publishDate: Self.day3
+    )
+    let resolved = Reconcile.ResolvedItem(
+      item: item,
+      body: "# Recovered\n\nFull converted body.",
+      words: 4,
+      source: .selectedHTML
+    )
+
+    try Reconcile.writePreview(
+      resolved: .init(writable: [resolved], thin: []),
+      missingIssueNos: [114],
+      to: directory
+    )
+
+    let bodyURL = directory.appendingPathComponent("113-selected-html.md")
+    let body = try String(contentsOf: bodyURL, encoding: .utf8)
+    let index = try String(
+      contentsOf: directory.appendingPathComponent("README.md"),
+      encoding: .utf8
+    )
+    #expect(body == "# Recovered\n\nFull converted body.\n")
+    #expect(index.contains("[selected-html](113-selected-html.md)"))
+    #expect(index.contains("A subject \\| with a pipe"))
+    #expect(index.contains("Absent from Buttondown (no converted file): #114"))
   }
 }

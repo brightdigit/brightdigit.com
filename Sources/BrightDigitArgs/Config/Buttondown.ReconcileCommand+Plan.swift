@@ -47,6 +47,24 @@ extension Buttondown.ReconcileCommand {
     internal let campaignID: String
     internal let subject: String
     internal let sendTime: Date
+    internal let previewText: String?
+    internal let socialCardImageURL: String?
+
+    internal init(
+      issueNo: Int,
+      campaignID: String,
+      subject: String,
+      sendTime: Date,
+      previewText: String? = nil,
+      socialCardImageURL: String? = nil
+    ) {
+      self.issueNo = issueNo
+      self.campaignID = campaignID
+      self.subject = subject
+      self.sendTime = sendTime
+      self.previewText = previewText
+      self.socialCardImageURL = socialCardImageURL
+    }
   }
 
   /// A single reconcile action for one newsletter issue.
@@ -61,6 +79,9 @@ extension Buttondown.ReconcileCommand {
     /// Re-checked immediately before writing so only ``EmailStatus/imported``
     /// emails are ever patched.
     internal let existingStatus: EmailStatus?
+    internal let previewText: String?
+    internal let socialCardImageURL: String?
+    internal let publishDate: Date
   }
 
   /// Whether a campaign is a BrightDigit newsletter, by segment or subject line.
@@ -145,7 +166,9 @@ extension Buttondown.ReconcileCommand {
           issueNo: issueNo,
           campaignID: campaignID,
           subject: subjectLine,
-          sendTime: sendTime
+          sendTime: sendTime,
+          previewText: campaign.previewText,
+          socialCardImageURL: campaign.socialCardImageURL
         )
       )
     }
@@ -173,7 +196,8 @@ extension Buttondown.ReconcileCommand {
   internal static func parseIssueNumber(fromArchiveURL absoluteURL: String) -> Int? {
     let range = NSRange(absoluteURL.startIndex..<absoluteURL.endIndex, in: absoluteURL)
     guard
-      let match = archiveIssueNoRegex.firstMatch(in: absoluteURL, options: [], range: range),
+      let match = archiveIssueNoRegex.firstMatch(
+        in: absoluteURL, options: [], range: range),
       match.numberOfRanges > 1,
       let numberRange = Range(match.range(at: 1), in: absoluteURL),
       let issueNumber = Int(absoluteURL[numberRange])
@@ -231,7 +255,9 @@ extension Buttondown.ReconcileCommand {
   ) -> [NumberedCampaign] {
     var byIssueNo: [Int: NumberedCampaign] = [:]
     for campaign in numbered {
-      if let existing = byIssueNo[campaign.issueNo], existing.sendTime >= campaign.sendTime {
+      if let existing = byIssueNo[campaign.issueNo],
+        existing.sendTime >= campaign.sendTime
+      {
         continue
       }
       byIssueNo[campaign.issueNo] = campaign
@@ -279,7 +305,10 @@ extension Buttondown.ReconcileCommand {
           campaignID: campaign.campaignID,
           action: .update,
           existingEmailID: existing.id,
-          existingStatus: existing.status
+          existingStatus: existing.status,
+          previewText: campaign.previewText,
+          socialCardImageURL: campaign.socialCardImageURL,
+          publishDate: campaign.sendTime
         )
       )
     }

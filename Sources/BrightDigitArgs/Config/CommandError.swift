@@ -41,6 +41,8 @@ public enum CommandError: Error, CustomStringConvertible {
   case invalidValue(option: String, value: String)
   /// A supplied value was expected to be a URL but could not be parsed.
   case invalidURL(String)
+  /// Command options were supplied in an invalid combination.
+  case invalidOptionCombination(String)
 
   public var description: String {
     switch self {
@@ -50,6 +52,8 @@ public enum CommandError: Error, CustomStringConvertible {
       return "Invalid value for \(option): \(value)"
     case let .invalidURL(value):
       return "Invalid URL: \(value)"
+    case let .invalidOptionCombination(message):
+      return message
     }
   }
 }
