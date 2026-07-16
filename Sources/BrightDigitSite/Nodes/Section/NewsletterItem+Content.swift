@@ -33,113 +33,108 @@ import Publish
 import PublishType
 
 extension NewsletterItem {
-  internal var formNode: Node<HTML.BodyContext> {
-    .form(
-      .action(Strings.Buttondown.subscribeURL),
-      .method(.post),
-      .div(
-        .div(
-          .input(
+  internal var formComponent: Component {
+    Element(name: "form") {
+      Div {
+        Div {
+          Node<HTML.FormContext>.input(
             .type(.text),
             .placeholder("leo@brightdigit.com"),
             .name("email")
-          ),
-          .label("Email")
-        )
-      ),
-      .div(
-        .div(
-          .input(
+          )
+          Node<HTML.FormContext>.label("Email")
+        }
+      }
+      Div {
+        Div {
+          Node<HTML.FormContext>.input(
             .type(.hidden),
             .name("metadata__source_page"),
             .value(source.path.string)
-          ),
-          .button(
-            "Sign me up!",
-            .type(.submit),
+          )
+          Button {
+            Text("Sign me up!")
+          }.attribute(named: "type", value: "submit")
             .class(Strings.Plausible.newsletterSignupEventClass)
-          )
-        )
-      ),
-      .div(
-        .class("message"),
-        .div(
-          .h3("Be the first to know:"),
-          .ol(
-            .li(
-              "When we publish", .b(" new content "),
-              "on building better apps on our blog or podcast."
-            ),
-            .li(
-              "Details about", .b(" upcoming events and conferences "),
-              "Leo is speaking at."
-            ),
-            .li(
-              "About the", .b(" latest developments "),
-              "in the world of Swift and Apple software, and how they can help you."
-            )
-          )
-        )
-      )
-    )
+        }
+      }
+      Div {
+        Div {
+          H3 { Text("Be the first to know:") }
+          Element(name: "ol") {
+            ListItem {
+              Text("When we publish")
+              Element(name: "b") { Text(" new content ") }
+              Text("on building better apps on our blog or podcast.")
+            }
+            ListItem {
+              Text("Details about")
+              Element(name: "b") { Text(" upcoming events and conferences ") }
+              Text("Leo is speaking at.")
+            }
+            ListItem {
+              Text("About the")
+              Element(name: "b") { Text(" latest developments ") }
+              Text("in the world of Swift and Apple software, and how they can help you.")
+            }
+          }
+        }
+      }.class("message")
+    }
+    .attribute(named: "action", value: Strings.Buttondown.subscribeURL)
+    .attribute(named: "method", value: "post")
+  }
+
+  private var itemFooter: Component {
+    Footer {
+      Text("published on")
+      Span {
+        Text(PiHTMLFactory.itemFormatter.string(from: publishedDate))
+      }.class("published-date")
+    }
   }
 
   internal var featuredItemContent: Node<HTML.BodyContext> {
-    .header(
-      .section(
-        .h1("Don't Let Your App", .em("Fall Behind")),
-        .p("\(Strings.Newsletter.featuredParagraph)")
-      ),
-      .section(
-        .class("hero"),
-
-        formNode,
-
-        .section(
-          .class("featured"),
-          .header(
-            .h3("Featured issue"),
-            .img(.src(featuredImageURL)),
-            .a(
-              .href(archiveURL),
-              .h2(.text(title))
-            )
-          ),
-          .main(
-            .text(description)
-          ),
-          .footer(
-            .text("published on"),
-            .span(
-              .class("published-date"),
-              .text(PiHTMLFactory.itemFormatter.string(from: publishedDate))
-            )
-          )
-        )
-      )
-    )
+    Header {
+      Element(name: "section") {
+        H1 {
+          Text("Don't Let Your App")
+          Element(name: "em") { Text("Fall Behind") }
+        }
+        Paragraph { Text("\(Strings.Newsletter.featuredParagraph)") }
+      }
+      Element(name: "section") {
+        formComponent
+        Element(name: "section") {
+          Header {
+            H3 { Text("Featured issue") }
+            Image(featuredImageURL)
+            Link(url: archiveURL) {
+              H2 { Text(title) }
+            }
+          }
+          Main {
+            Text(description)
+          }
+          itemFooter
+        }.class("featured")
+      }.class("hero")
+    }.convertToNode()
   }
 
   internal var sectionItemContent: [Node<HTML.BodyContext>] {
     [
       .id("issue-\(issueNo)"),
-      .header(
-        .img(.src(featuredImageURL)),
-        .a(
-          .href(archiveURL),
-          .h2(.text(title))
-        )
-      ),
-      .main(
-        .text(description)
-      ),
-      .footer(
-        .text("published on"),
-        .span(
-          .class("published-date"),
-          .text(PiHTMLFactory.itemFormatter.string(from: publishedDate))
-        )
-      ),
+      Header {
+        Image(featuredImageURL)
+        Link(url: archiveURL) {
+          H2 { Text(title) }
+        }
+      }.convertToNode(),
+      Main {
+        Text(description)
+      }.convertToNode(),
+      itemFooter.convertToNode(),
     ]
   }
 }
