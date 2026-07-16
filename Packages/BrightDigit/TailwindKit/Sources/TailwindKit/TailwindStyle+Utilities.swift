@@ -76,20 +76,28 @@ extension TailwindStyle {
   public func pb(_ amount: Spacing) -> TailwindStyle { appending("pb-\(amount.token)") }
   /// `pl-<n>`.
   public func pl(_ amount: Spacing) -> TailwindStyle { appending("pl-\(amount.token)") }
-  /// `m-<n>`.
-  public func m(_ amount: Spacing) -> TailwindStyle { appending("m-\(amount.token)") }
-  /// `mx-<n>`.
-  public func mx(_ amount: Spacing) -> TailwindStyle { appending("mx-\(amount.token)") }
-  /// `my-<n>`.
-  public func my(_ amount: Spacing) -> TailwindStyle { appending("my-\(amount.token)") }
-  /// `mt-<n>`.
-  public func mt(_ amount: Spacing) -> TailwindStyle { appending("mt-\(amount.token)") }
-  /// `mr-<n>`.
-  public func mr(_ amount: Spacing) -> TailwindStyle { appending("mr-\(amount.token)") }
-  /// `mb-<n>`.
-  public func mb(_ amount: Spacing) -> TailwindStyle { appending("mb-\(amount.token)") }
-  /// `ml-<n>`.
-  public func ml(_ amount: Spacing) -> TailwindStyle { appending("ml-\(amount.token)") }
+  /// `m-<n>` (or `-m-<n>` for a negative amount).
+  public func m(_ amount: Spacing) -> TailwindStyle { spaced("m", amount) }
+  /// `mx-<n>` (or `-mx-<n>`).
+  public func mx(_ amount: Spacing) -> TailwindStyle { spaced("mx", amount) }
+  /// `my-<n>` (or `-my-<n>`).
+  public func my(_ amount: Spacing) -> TailwindStyle { spaced("my", amount) }
+  /// `mt-<n>` (or `-mt-<n>`).
+  public func mt(_ amount: Spacing) -> TailwindStyle { spaced("mt", amount) }
+  /// `mr-<n>` (or `-mr-<n>`).
+  public func mr(_ amount: Spacing) -> TailwindStyle { spaced("mr", amount) }
+  /// `mb-<n>` (or `-mb-<n>`).
+  public func mb(_ amount: Spacing) -> TailwindStyle { spaced("mb", amount) }
+  /// `ml-<n>` (or `-ml-<n>`).
+  public func ml(_ amount: Spacing) -> TailwindStyle { spaced("ml", amount) }
+
+  /// Appends `<prefix>-<amount>`, moving a leading `-` on a negative amount to
+  /// the front of the whole utility (Tailwind's negative form: `-mx-2`).
+  private func spaced(_ prefix: String, _ amount: Spacing) -> TailwindStyle {
+    amount.token.hasPrefix("-")
+      ? appending("-\(prefix)-\(amount.token.dropFirst())")
+      : appending("\(prefix)-\(amount.token)")
+  }
 
   // MARK: Sizing
 

@@ -76,6 +76,9 @@ extension TailwindStyle {
     /// The `px` keyword (a single CSS pixel), e.g. `p-px`.
     public static let px = Spacing(token: "px")  // swiftlint:disable:this identifier_name
 
+    /// The `auto` keyword, e.g. `mx-auto`.
+    public static let auto = Spacing(token: "auto")
+
     internal let token: String
 
     /// Creates a spacing value from an integer literal (e.g. `4` renders `4`).
@@ -95,47 +98,13 @@ extension TailwindStyle {
     private init(token: String) {
       self.token = token
     }
-  }
-}
 
-// MARK: - Sizing
-
-extension TailwindStyle {
-  /// A width/height value: a spacing-scale number (`w-4`) or a keyword
-  /// (`w-full`, `h-screen`).
-  public struct Size: Sendable, Equatable, Hashable,
-    ExpressibleByIntegerLiteral, ExpressibleByFloatLiteral
-  {
-    /// `full` — 100%.
-    public static let full = Size(token: "full")
-    /// `screen` — the viewport dimension.
-    public static let screen = Size(token: "screen")
-    /// `auto`.
-    public static let auto = Size(token: "auto")
-    /// `min` — `min-content`.
-    public static let min = Size(token: "min")
-    /// `max` — `max-content`.
-    public static let max = Size(token: "max")
-    /// `fit` — `fit-content`.
-    public static let fit = Size(token: "fit")
-
-    internal let token: String
-
-    /// Creates a size from an integer literal on the spacing scale (e.g. `4`).
-    public init(integerLiteral value: Int) {
-      self.token = String(value)
-    }
-
-    /// Creates a size from a floating-point literal, dropping a trailing `.0`.
-    public init(floatLiteral value: Double) {
-      self.token =
-        value.rounded() == value
-        ? String(Int(value))
-        : String(value)
-    }
-
-    private init(token: String) {
-      self.token = token
+    /// A negative spacing value, e.g. `.neg(2)` on `.mx` → `-mx-2`.
+    ///
+    /// Tailwind emits negatives by prefixing the whole utility with `-`; the
+    /// margin methods prepend the `-` when the token begins with one.
+    public static func neg(_ value: Int) -> Spacing {
+      Spacing(token: "-\(value)")
     }
   }
 }
@@ -194,9 +163,13 @@ extension TailwindStyle {
   }
 
   /// A border-radius scale value (the `lg` in `rounded-lg`).
+  ///
+  /// Uses the Tailwind **v4** scale, where the small end was renamed: v3's
+  /// `rounded-sm` (2px) became `rounded-xs`, and bare `rounded` (4px) became
+  /// `rounded-sm`. `.base` renders bare `rounded`.
   public enum Radius: String, Sendable, CaseIterable {
     // swiftlint:disable identifier_name
-    case none, sm
+    case none, xs, sm
     case base = ""
     case md, lg, xl
     case xl2 = "2xl"
