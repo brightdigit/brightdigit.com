@@ -33,119 +33,104 @@ import Publish
 import PublishType
 
 extension PodcastItem {
-  internal var featuredItemContent: Node<HTML.BodyContext> {
-    .header(
-      .section(
-        .class("hero"),
-        .section(
-          .class("featured"),
-          .id("episode-\(episodeNo)"),
-          .header(
-            .div(
-              .class("episode-no"),
-              .text("episode \(episodeNo)")
-            ),
-            .a(
-              .href(source.path),
-              .img(.src(imageURL)),
-              .h2(.text(title))
-            ),
-            .div(
-              .class("publish-date"),
-              .text(PiHTMLFactory.itemFormatter.string(from: publishedDate))
-            )
-          ),
-          .main(
-            .a(
-              .href(source.path),
-              .img(.src(imageURL))
-            ),
-            .main(
-              .div(
-                .class("publish-date"),
-                .text(PiHTMLFactory.itemFormatter.string(from: publishedDate))
-              ),
-              .p("\(description)"),
-              .iframe(
-                .attribute(named: "width", value: "100%"),
-                .attribute(named: "height", value: "180"),
-                .attribute(named: "frameborder", value: "no"),
-                .attribute(named: "scrolling", value: "no"),
-                .attribute(named: "seamless src", value: "\(transistorEmbedURL)")
-              )
-            )
-          ),
-          .footer(
-            .iframe(
-              .attribute(named: "width", value: "100%"),
-              .attribute(named: "height", value: "180"),
-              .attribute(named: "frameborder", value: "no"),
-              .attribute(named: "scrolling", value: "no"),
-              .attribute(named: "seamless src", value: "\(transistorEmbedURL)")
-            ),
-            .main(
-              .div(
-                .class("audio-length"),
-                .i(.class("flaticon-podcast")),
-                .text(PiHTMLFactory.formatTimeInterval(audioDuration))
-              ),
-              .unwrap(videoDuration) { videoDuration in
-                .div(
-                  .class("video-length"),
-                  .i(.class("flaticon-youtube")),
-                  .text(PiHTMLFactory.formatTimeInterval(videoDuration))
-                )
-              },
-              .div(
-                .a(
-                  .href(source.path),
-                  .text("More Info")
-                )
-              )
-            )
-          )
-        )
-      )
+  /// The Transistor audio player iframe (bespoke `seamless src` attribute — kept
+  /// as a raw node to preserve exact attribute emission).
+  private var transistorIFrame: Node<HTML.BodyContext> {
+    .iframe(
+      .attribute(named: "width", value: "100%"),
+      .attribute(named: "height", value: "180"),
+      .attribute(named: "frameborder", value: "no"),
+      .attribute(named: "scrolling", value: "no"),
+      .attribute(named: "seamless src", value: "\(transistorEmbedURL)")
     )
+  }
+
+  private var publishDateDiv: Component {
+    Div {
+      Text(PiHTMLFactory.itemFormatter.string(from: publishedDate))
+    }.class("publish-date")
+  }
+
+  private var audioLengthDiv: Component {
+    Div {
+      Icon(className: "flaticon-podcast")
+      Text(PiHTMLFactory.formatTimeInterval(audioDuration))
+    }.class("audio-length")
+  }
+
+  internal var featuredItemContent: Node<HTML.BodyContext> {
+    Header {
+      Element(name: "section") {
+        Element(name: "section") {
+          Header {
+            Div {
+              Text("episode \(episodeNo)")
+            }.class("episode-no")
+            Link(url: source.path.absoluteString) {
+              Image(imageURL)
+              H2 { Text(title) }
+            }
+            publishDateDiv
+          }
+          Main {
+            Link(url: source.path.absoluteString) {
+              Image(imageURL)
+            }
+            Main {
+              publishDateDiv
+              Paragraph { Text("\(description)") }
+              transistorIFrame
+            }
+          }
+          Footer {
+            transistorIFrame
+            Main {
+              audioLengthDiv
+              if let videoDuration {
+                Div {
+                  Icon(className: "flaticon-youtube")
+                  Text(PiHTMLFactory.formatTimeInterval(videoDuration))
+                }.class("video-length")
+              }
+              Div {
+                Link("More Info", url: source.path.absoluteString)
+              }
+            }
+          }
+        }.class("featured").id("episode-\(episodeNo)")
+      }.class("hero")
+    }.convertToNode()
   }
 
   internal var sectionItemContent: [Node<HTML.BodyContext>] {
     [
       .id("episode-\(episodeNo)"),
-      .header(
-        .a(
-          .href(source.path),
-          .img(.src(imageURL)),
-          .h2(.text(title))
-        ),
-        .div(
-          .class("publish-date"),
-          .text(PiHTMLFactory.itemFormatter.string(from: publishedDate))
-        )
-      ),
-      .main(.text(description)),
-      .footer(
-        .div(
-          .class("audio-length"),
-          .i(.class("flaticon-podcast")),
-          .text(PiHTMLFactory.formatTimeInterval(audioDuration))
-        ),
-        .div(
-          .class("video-length"),
-          .i(.class("flaticon-youtube")),
-          .unwrap(videoDuration) { videoDuration in
-            .text(PiHTMLFactory.formatTimeInterval(videoDuration))
+      Header {
+        Link(url: source.path.absoluteString) {
+          Image(imageURL)
+          H2 { Text(title) }
+        }
+        publishDateDiv
+      }.convertToNode(),
+      Main { Text(description) }.convertToNode(),
+      Footer {
+        audioLengthDiv
+        Div {
+          Icon(className: "flaticon-youtube")
+          if let videoDuration {
+            Text(PiHTMLFactory.formatTimeInterval(videoDuration))
           }
-        ),
-        .div(
-          .a(
+        }.class("video-length")
+        Div {
+          // `data-text`/`data-url` + raw share icon — keep the exact node.
+          Node<HTML.BodyContext>.a(
             .data(named: "text", value: "Episode \(episodeNo) - \(title)"),
             .data(named: "url", value: source.absoluteURL(forSite: site).absoluteString),
             .href(source.path),
             .raw("<i class=\"flaticon-share\"></i> Share")
           )
-        )
-      ),
+        }
+      }.convertToNode(),
     ]
   }
 
@@ -160,113 +145,103 @@ extension PodcastItem {
   }
 
   internal var podcastHeader: Node<HTML.BodyContext> {
-    .header(
-      .ol(
-        .li(
-          .class("episode-no"),
-          .i(.class("flaticon-announcement")),
-          .text("Episode #\(episodeNo)")
-        ),
-        .li(
-          .class("publish-date"),
-          .i(.class("flaticon-calendar")),
-          .text(PiHTMLFactory.itemFormatter.string(from: publishedDate))
-        ),
-        .li(
-          .class("audio-length"),
-          .i(.class("flaticon-podcast")),
-          .text(PiHTMLFactory.formatTimeInterval(audioDuration))
-        ),
-        .li(
-          .class("video-length"),
-          .i(.class("flaticon-youtube")),
-          .unwrap(videoDuration) { videoDuration in
-            .text(PiHTMLFactory.formatTimeInterval(videoDuration))
+    Header {
+      Element(name: "ol") {
+        ListItem {
+          Icon(className: "flaticon-announcement")
+          Text("Episode #\(episodeNo)")
+        }.class("episode-no")
+        ListItem {
+          Icon(className: "flaticon-calendar")
+          Text(PiHTMLFactory.itemFormatter.string(from: publishedDate))
+        }.class("publish-date")
+        ListItem {
+          Icon(className: "flaticon-podcast")
+          Text(PiHTMLFactory.formatTimeInterval(audioDuration))
+        }.class("audio-length")
+        ListItem {
+          Icon(className: "flaticon-youtube")
+          if let videoDuration {
+            Text(PiHTMLFactory.formatTimeInterval(videoDuration))
           }
-        )
-      ),
-      .h1("\(title)"),
-      .img(
-        .class("default"),
-        .src(imageURL)
-      )
-    )
+        }.class("video-length")
+      }
+      H1 { Text("\(title)") }
+      // `class` precedes `src` in the original markup; Image emits src first, so
+      // use a raw img node to preserve attribute order.
+      Node<HTML.BodyContext>.img(.class("default"), .src(imageURL))
+    }.convertToNode()
   }
 
   internal var descriptionHeader: Node<HTML.BodyContext> {
-    .header(
-      .img(
-        .class("youtube"),
-        .src(imageURL)
-      ),
-      .h1("\(title)"),
-      .main(
-        .img(
-          .class("album"),
-          .src(featuredImageURL)
-        ),
-        .div(
-          .class("description"),
-          .text(description)
-        )
-      ),
-      .ol(
-        .class("media"),
-        .li(
-          .a(
-            .href(transistorShareURL),
-            .i(
-              .class("flaticon-podcast"),
-              .text(PiHTMLFactory.formatTimeInterval(audioDuration))
-            ),
-            .span(
-              .class("specs"),
-              .text(" podcast "),
-              .span(
-                .class("source"),
-                .text("at transistor.fm")
-              )
-            )
-          )
-        ),
-        .li(
-          .a(
-            .unwrap(youtubeShareURL) { youtubeShareURL in
-              .href(youtubeShareURL)
-            },
-            .i(.class("flaticon-youtube")),
-            .unwrap(videoDuration) { videoDuration in
-              .text(PiHTMLFactory.formatTimeInterval(videoDuration))
-            },
-            .span(
-              .class("specs"),
-              .text(" video "),
-              .span(
-                .class("source"),
-                .text("at youtube.com")
-              )
-            )
-          )
+    Header {
+      Node<HTML.BodyContext>.img(.class("youtube"), .src(imageURL))
+      H1 { Text("\(title)") }
+      Main {
+        Node<HTML.BodyContext>.img(.class("album"), .src(featuredImageURL))
+        Div {
+          Text(description)
+        }.class("description")
+      }
+      Element(name: "ol") {
+        ListItem {
+          Link(url: transistorShareURL) {
+            Element(name: "i") {
+              Text(PiHTMLFactory.formatTimeInterval(audioDuration))
+            }.class("flaticon-podcast")
+            Span {
+              Text(" podcast ")
+              Span {
+                Text("at transistor.fm")
+              }.class("source")
+            }.class("specs")
+          }
+        }
+        ListItem {
+          podcastVideoShareLink
+        }
+      }.class("media")
+    }.convertToNode()
+  }
+
+  /// The YouTube share link in the media list — its `href` is conditional on
+  /// `youtubeShareURL`, so it is built as a raw node to match the original
+  /// `.unwrap`-based attribute emission exactly.
+  private var podcastVideoShareLink: Node<HTML.BodyContext> {
+    .a(
+      .unwrap(youtubeShareURL) { youtubeShareURL in
+        .href(youtubeShareURL)
+      },
+      .i(.class("flaticon-youtube")),
+      .unwrap(videoDuration) { videoDuration in
+        .text(PiHTMLFactory.formatTimeInterval(videoDuration))
+      },
+      .span(
+        .class("specs"),
+        .text(" video "),
+        .span(
+          .class("source"),
+          .text("at youtube.com")
         )
       )
     )
   }
 
   internal var mainContent: Node<HTML.BodyContext> {
-    .main(
-      .div(
-        .class("content"),
-        transistorEmbed,
-        .unwrap(youtubeEmbed) { $0 }
-      ),
+    Main {
+      Div {
+        transistorEmbed
+        if let youtubeEmbed {
+          youtubeEmbed
+        }
+      }.class("content")
       showNotes
-    )
+    }.convertToNode()
   }
 
   internal var showNotes: Node<HTML.BodyContext> {
-    .main(
-      .class("show-notes"),
-      .contentBody(source.body)
-    )
+    Main {
+      Node<HTML.BodyContext>.contentBody(source.body)
+    }.class("show-notes").convertToNode()
   }
 }
