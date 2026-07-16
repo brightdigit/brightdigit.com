@@ -74,9 +74,9 @@ internal struct PiHTMLFactory: HTMLFactory {
       .lang(.usEnglish),
       .head(forPage: setup),
       .body(
-        .header(),
+        .component(HeaderComponent()),
         setup.mainElement,
-        .footer()
+        .component(FooterComponent())
       )
     )
   }
@@ -95,9 +95,9 @@ internal struct PiHTMLFactory: HTMLFactory {
       .body(
         .unwrap(content.bodyID, Node.id),
         .unwrap(content.bodyClassValue, Node.class),
-        .header(),
+        .component(HeaderComponent()),
         content.mainElement,
-        .footer()
+        .component(FooterComponent())
       )
     )
   }
@@ -114,9 +114,9 @@ internal struct PiHTMLFactory: HTMLFactory {
       .body(
         .unwrap(content.bodyID, Node.id),
         .unwrap(content.bodyClassValue, Node.class),
-        .header(),
+        .component(HeaderComponent()),
         content.mainElement,
-        .footer()
+        .component(FooterComponent())
       )
     )
   }
@@ -134,9 +134,9 @@ internal struct PiHTMLFactory: HTMLFactory {
       .body(
         .unwrap(content.bodyID, Node.id),
         .unwrap(content.bodyClassValue, Node.class),
-        .header(),
+        .component(HeaderComponent()),
         content.mainElement,
-        .footer()
+        .component(FooterComponent())
       )
     )
   }
