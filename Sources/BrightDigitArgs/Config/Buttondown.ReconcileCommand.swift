@@ -62,7 +62,14 @@ extension Buttondown.ReconcileCommand {
       self.mailchimpListID = mailchimpListID
 
       self.buttondownAPIKey = reader.read(Keys.buttondownAPIKey)
-      self.execute = reader.read(Keys.execute)
+      // Read this through swift-configuration's native Boolean API so a bare
+      // `--execute` flag is recognized. ConfigKeyKit's string-based Boolean
+      // bridge cannot observe CLI flags because they intentionally have no
+      // string value.
+      self.execute = reader.bool(
+        forKey: Configuration.ConfigKey("execute"),
+        default: false
+      )
       self.previewDirectory = reader.read(Keys.previewDirectory)
       self.minBodyWords = reader.read(Keys.minBodyWords)
       _ = try Buttondown.ReconcileCommand.mode(
@@ -85,7 +92,6 @@ extension Buttondown.ReconcileCommand {
     static let mailchimpAPIKey = OptionalConfigKey<String>("mailchimp-api-key")
     static let mailchimpListID = OptionalConfigKey<String>("mailchimp-list-id")
     static let buttondownAPIKey = OptionalConfigKey<String>("buttondown-api-key")
-    static let execute = ConfigKey("execute", default: false)
     static let previewDirectory = OptionalConfigKey<String>("preview-directory")
     /// Minimum meaningful word count a cleaned body must have to be written.
     /// Modern Mailchimp/Buttondown template issues clean down to near-empty

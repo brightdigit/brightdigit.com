@@ -1,4 +1,5 @@
 import ButtondownKit
+import Configuration
 import Foundation
 import Spinetail
 import Testing
@@ -332,6 +333,24 @@ internal struct ButtondownReconcilePlanTests {
     #expect(throws: CommandError.self) {
       _ = try Reconcile.mode(execute: true, previewDirectory: "preview")
     }
+  }
+
+  @Test internal func reconcileConfigRecognizesBareExecuteFlag() async throws {
+    let reader = Configuration.ConfigReader(
+      provider: CommandLineArgumentsProvider(arguments: [
+        "brightdigitwg",
+        "buttondown",
+        "reconcile",
+        "--mailchimp-api-key", "test-us1",
+        "--mailchimp-list-id", "test-list",
+        "--execute",
+      ])
+    )
+
+    let config = try await Reconcile.Config(configuration: reader)
+
+    #expect(config.execute)
+    #expect(config.previewDirectory == nil)
   }
 
   @Test internal func previewDirectoryContainsBodiesAndIndex() throws {
