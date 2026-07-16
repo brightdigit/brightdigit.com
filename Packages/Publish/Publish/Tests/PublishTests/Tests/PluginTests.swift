@@ -53,7 +53,7 @@ internal final class PluginTests: PublishTestCase {
   internal func testAddingPluginToDefaultPipeline() throws {
     let htmlFactory = HTMLFactoryMock<WebsiteStub.WithoutItemMetadata>(
       makeIndexHTML: { content, _ in
-        HTML(.body(content.body.node))
+        HTML(.body(content.body.node)).node
       }
     )
 

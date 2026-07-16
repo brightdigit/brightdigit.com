@@ -13,7 +13,7 @@ internal final class HTMLGenerationTests: PublishTestCase {
   internal func testGeneratingIndexHTML() throws {
     let htmlFactory = HTMLFactoryMock<WebsiteStub.WithoutItemMetadata>(
       makeIndexHTML: { content, _ in
-        HTML(.body(.text(content.title)))
+        HTML(.body(.text(content.title))).node
       }
     )
 
@@ -27,7 +27,7 @@ internal final class HTMLGenerationTests: PublishTestCase {
   internal func testGeneratingSectionHTML() throws {
     let htmlFactory = HTMLFactoryMock<WebsiteStub.WithoutItemMetadata>(
       makeSectionHTML: { section, _ in
-        HTML(.body(.text(section.title)))
+        HTML(.body(.text(section.title))).node
       }
     )
 
@@ -53,7 +53,7 @@ internal final class HTMLGenerationTests: PublishTestCase {
             .text(" "),
             .text(item.title)
           )
-        )
+        ).node
       }
     )
 
@@ -83,7 +83,7 @@ internal final class HTMLGenerationTests: PublishTestCase {
   internal func testGeneratingNestedItemHTML() throws {
     let htmlFactory = HTMLFactoryMock<WebsiteStub.WithoutItemMetadata>(
       makeItemHTML: { item, _ in
-        HTML(.body(.text(item.title)))
+        HTML(.body(.text(item.title))).node
       }
     )
 
@@ -107,7 +107,7 @@ internal final class HTMLGenerationTests: PublishTestCase {
   internal func testGeneratingPageHTML() throws {
     let htmlFactory = HTMLFactoryMock<WebsiteStub.WithoutItemMetadata>(
       makePageHTML: { page, _ in
-        HTML(.body(.text(page.title)))
+        HTML(.body(.text(page.title))).node
       }
     )
 
@@ -144,10 +144,10 @@ internal final class HTMLGenerationTests: PublishTestCase {
               }
             )
           )
-        )
+        ).node
       },
       makeTagDetailsHTML: { page, _ in
-        HTML(.body(.text(page.tag.string)))
+        HTML(.body(.text(page.tag.string))).node
       }
     )
 
@@ -181,7 +181,7 @@ internal final class HTMLGenerationTests: PublishTestCase {
   internal func testCleaningUpOldHTMLFiles() throws {
     let htmlFactory = HTMLFactoryMock<WebsiteStub.WithoutItemMetadata>(
       makePageHTML: { page, _ in
-        HTML(.body(.text(page.title)))
+        HTML(.body(.text(page.title))).node
       }
     )
 

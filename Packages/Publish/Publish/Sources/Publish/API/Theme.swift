@@ -11,13 +11,15 @@ import Plot
 /// it's recommended to create them using static factory methods, just like
 /// how the built-in `foundation` theme is implemented.
 public struct Theme<Site: Website>: Sendable {
-  internal let makeIndexHTML: @Sendable (Index, PublishingContext<Site>) throws -> HTML
-  internal let makeSectionHTML: @Sendable (Section<Site>, PublishingContext<Site>) throws -> HTML
-  internal let makeItemHTML: @Sendable (Item<Site>, PublishingContext<Site>) throws -> HTML
-  internal let makePageHTML: @Sendable (Page, PublishingContext<Site>) throws -> HTML
-  internal let makeTagListHTML: @Sendable (TagListPage, PublishingContext<Site>) throws -> HTML?
+  internal let makeIndexHTML: @Sendable (Index, PublishingContext<Site>) throws -> Component
+  internal let makeSectionHTML:
+    @Sendable (Section<Site>, PublishingContext<Site>) throws -> Component
+  internal let makeItemHTML: @Sendable (Item<Site>, PublishingContext<Site>) throws -> Component
+  internal let makePageHTML: @Sendable (Page, PublishingContext<Site>) throws -> Component
+  internal let makeTagListHTML:
+    @Sendable (TagListPage, PublishingContext<Site>) throws -> Component?
   internal let makeTagDetailsHTML:
-    @Sendable (TagDetailsPage, PublishingContext<Site>) throws -> HTML?
+    @Sendable (TagDetailsPage, PublishingContext<Site>) throws -> Component?
   internal let resourcePaths: Set<Path>
   internal let creationPath: Path
 

@@ -128,7 +128,7 @@ extension HTMLGenerator {
   fileprivate func outputHTML<T: Location>(
     for location: T,
     indentedBy indentation: Indentation.Kind?,
-    using generator: (T, PublishingContext<Site>) throws -> HTML,
+    using generator: (T, PublishingContext<Site>) throws -> Component,
     fileMode: HTMLFileMode
   ) throws {
     let html = try generator(location, context)

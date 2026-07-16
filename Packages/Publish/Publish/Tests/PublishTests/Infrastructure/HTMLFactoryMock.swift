@@ -9,7 +9,7 @@ import Plot
 import Publish
 
 internal final class HTMLFactoryMock<Site: Website>: HTMLFactory {
-  internal typealias Closure<T> = @Sendable (T, PublishingContext<Site>) throws -> HTML
+  internal typealias Closure<T> = @Sendable (T, PublishingContext<Site>) throws -> Component
 
   // `HTMLFactory` requires `Sendable`. The test-configurable render closures
   // are injected at construction and stored immutably, so the mock is Sendable
@@ -22,12 +22,12 @@ internal final class HTMLFactoryMock<Site: Website>: HTMLFactory {
   private let makeTagDetailsHTMLClosure: Closure<TagDetailsPage>?
 
   internal init(
-    makeIndexHTML: @escaping Closure<Index> = { _, _ in HTML(.body()) },
-    makeSectionHTML: @escaping Closure<Section<Site>> = { _, _ in HTML(.body()) },
-    makeItemHTML: @escaping Closure<Item<Site>> = { _, _ in HTML(.body()) },
-    makePageHTML: @escaping Closure<Page> = { _, _ in HTML(.body()) },
-    makeTagListHTML: Closure<TagListPage>? = { _, _ in HTML(.body()) },
-    makeTagDetailsHTML: Closure<TagDetailsPage>? = { _, _ in HTML(.body()) }
+    makeIndexHTML: @escaping Closure<Index> = { _, _ in HTML(.body()).node },
+    makeSectionHTML: @escaping Closure<Section<Site>> = { _, _ in HTML(.body()).node },
+    makeItemHTML: @escaping Closure<Item<Site>> = { _, _ in HTML(.body()).node },
+    makePageHTML: @escaping Closure<Page> = { _, _ in HTML(.body()).node },
+    makeTagListHTML: Closure<TagListPage>? = { _, _ in HTML(.body()).node },
+    makeTagDetailsHTML: Closure<TagDetailsPage>? = { _, _ in HTML(.body()).node }
   ) {
     self.makeIndexHTMLClosure = makeIndexHTML
     self.makeSectionHTMLClosure = makeSectionHTML
@@ -40,42 +40,42 @@ internal final class HTMLFactoryMock<Site: Website>: HTMLFactory {
   internal func makeIndexHTML(
     for index: Index,
     context: PublishingContext<Site>
-  ) throws -> HTML {
+  ) throws -> Component {
     try makeIndexHTMLClosure(index, context)
   }
 
   internal func makeSectionHTML(
     for section: Section<Site>,
     context: PublishingContext<Site>
-  ) throws -> HTML {
+  ) throws -> Component {
     try makeSectionHTMLClosure(section, context)
   }
 
   internal func makeItemHTML(
     for item: Item<Site>,
     context: PublishingContext<Site>
-  ) throws -> HTML {
+  ) throws -> Component {
     try makeItemHTMLClosure(item, context)
   }
 
   internal func makePageHTML(
     for page: Page,
     context: PublishingContext<Site>
-  ) throws -> HTML {
+  ) throws -> Component {
     try makePageHTMLClosure(page, context)
   }
 
   internal func makeTagListHTML(
     for page: TagListPage,
     context: PublishingContext<Site>
-  ) throws -> HTML? {
+  ) throws -> Component? {
     try makeTagListHTMLClosure?(page, context)
   }
 
   internal func makeTagDetailsHTML(
     for page: TagDetailsPage,
     context: PublishingContext<Site>
-  ) throws -> HTML? {
+  ) throws -> Component? {
     try makeTagDetailsHTMLClosure?(page, context)
   }
 }
