@@ -6,7 +6,7 @@
 
 ---
 
-## ⚡ Execution status — updated 2026-07-15 (Track A complete; #121 in flight)
+## ⚡ Execution status — updated 2026-07-16 (Track A complete; #121 merged; #67+#53 in review on PR #157)
 
 The design below is the pre-execution plan; **this section reflects current reality.**
 
@@ -20,16 +20,37 @@ The design below is the pre-execution plan; **this section reflects current real
 | #126 subscribe-form swap | #154 | `phase5-buttondown-form` | ✅ merged into `phase-05` |
 | #127 archive one-shot | #156 | `phase5-buttondown-archive` | ✅ merged into `phase-05` |
 | #122 import new/missing | #155 | `phase5-buttondown-import` | ✅ merged into `phase-05` |
-| #121 Publish stack | #151 | `phase5-publish-upgrade` | 🔄 open — Leo review round addressed (5 comments) + pushed; CI green so far, awaiting Leo's merge |
-| #67 → #53 | — | `phase5-component-migration` | ⬜ not started; worktree not yet created (gated on #151 merge) |
+| #121 Publish stack | #151 | `phase5-publish-upgrade` | ✅ merged into `phase-05` (commit `aed12dec`) |
+| #67 + #53 | **#157** | `phase5-component-migration` | 🔄 **open, ready for review — CI green (both workflows); awaiting Leo's merge** |
 
-**Track A (Buttondown) is fully landed on `phase-05`.** The buttondown work was split across
-three worktrees/PRs (`-form`/#154, `-archive`/#156, `-import`/#155), not the single
-`phase5-buttondown` worktree originally planned; all three are merged and their worktrees +
-local branches pruned. The only open Phase-5 PR is **#151 (#121)**; **#67→#53** remains the
-sole unstarted work, still gated on #151.
+**Tracks A + B foundational work are fully landed on `phase-05`.** The only open Phase-5 PR is
+**#157 (#67 + #53, combined)**. All originally-planned Phase-5 code issues are now either merged
+or in review on #157.
 
 New tracking issues filed: **#152** (remove vendored Files → stdlib `FilePath`/Foundation, staged, post-phase-5) · **#153** (reclaim parallel page generation — measure-first, likely not worth it).
+
+### #67 + #53 execution (PR #157, 2026-07-16) — READY FOR REVIEW
+
+**Leo decisions this session:** one **combined PR** for #67 + #53; TailwindKit models **only officially documented Tailwind v4 classes** (nothing custom); Mermaid is **verify-only**; success criterion is **semantic (whitespace-normalized) equivalence**, not strict byte-identical.
+
+**Three issue-body corrections discovered (repo reality overrides stale issue text):**
+1. **Site markup uses semantic/BEM classes, not Tailwind utilities.** The Tailwind utilities live in `Styling/styles/styles.css` via **391 `@apply` directives**; BrightDigitSite does not depend on TailwindKit. So #67's "Commit 1 = reconcile TailwindKit / byte-identical utility migration" premise is false — TailwindKit coverage is a **separate module-only** deliverable, not wired into markup.
+2. **Mermaid + highlight.js are already integrated client-side** (`Styling/scripts/index.ts` → `/js/main.js`); #67's Mermaid checklist was already satisfied → verify-only.
+3. **`HTMLFactory` already returns `HTML` (full document), not `Node<HTML.BodyContext>`.** #53's real change: methods return `Component`; the factory yields the document via `HTML(...).node` (`Node<HTML>: Component`), which still renders `<!DOCTYPE html>`.
+
+**Landed on `phase5-component-migration` (all verified, semdiff = 0 structural across 449 pages):**
+- **Part A (#67 Node→Component):** `HeaderComponent`/`FooterComponent`, `PostItem`, `NewsletterItem`, `PodcastItem`, `IndexBuilder`+`IndexBuilder+LatestArticle`+`Testimonial.listItem`, `AboutBuilder`, `ContactBuilder` (`ServicesBuilder` was already component-based). Bespoke leaves (video, contentBody, iframes, `.data(named:)` anchors, no-alt/class-first `<img>`, netlify `<form>`) kept as raw nodes embedded in components.
+- **Part B (#67 TailwindKit):** modeled the documented v4 vocabulary from the 391 `@apply` directives; **excluded** every non-documented token (`btn`/`btn-normal`, all `*-bellow-*`, `w-5/12`, named `leading-*`, bare `filter`/`backdrop-filter`; note the v4 radius rename `rounded-xs`). 27 `.rendered` tests; module-only, not wired into markup.
+- **Mermaid:** verified end-to-end (```mermaid``` → `<pre><code class="language-mermaid">` hook + `/js/main.js` transform + `mermaid.run()`); temp file removed, baseline unaffected.
+- **Part C (#53):** flipped `HTMLFactory`/`Theme`/`HTMLGenerator`/`FoundationHTMLFactory`/`HTMLFactoryMock` + 3 inline test factories + `PiHTMLFactory` from `HTML` to `Component`. **Negative check:** a bare `HTML` return no longer compiles (`'HTML' does not conform to 'Component'`). Publish subrepo pushed (`git subrepo push --all` after `./fix-subrepo-parents.sh`).
+- **Lint follow-up:** fixed `Sources/BrightDigitSite/**` house style (only the CI `lint` job / repo-root `Scripts/lint.sh` covers the main app; package lints don't). Output unchanged.
+
+**Verification:** whole-repo `swift build`/`swift test` green (9 app + 86 Publish + 27 TailwindKit); repo-root + Publish + TailwindKit strict lint 0 violations; **both CI workflows green** on the final commit — `CI Pipeline` (build-linux, lint, package-linux, deploy) and `Packages CI` (Publish + TailwindKit on macOS + Ubuntu). **Do NOT merge — Leo reviews/merges.**
+
+**Gotchas recorded** (in `.claude/agent-notes.md`): the repo-root `./Scripts/lint.sh` WITHOUT `CI=1` runs `header.sh`, which pollutes ALL vendored Publish files with a duplicate BrightDigit header — always use `CI=1 LINT_MODE=STRICT` to check; swift-format `[LineLength]` (90) is separate from SwiftLint `line_length` and needs the long string on its own line inside the call.
+
+### Next up (after #157 merges)
+Track B is then complete. Phase-5's remaining scope is `phase-05` → `main` integration (milestone end) plus the deferred follow-ups #152/#153 (post-phase-5) and the decoupled #31/#33 outbound sub-track (not scheduled).
 
 ### Key decisions since the original plan
 - **Subrepos:** `git subrepo pull/push --all` works; recovery via `./fix-subrepo-parents.sh` (documented in `CLAUDE.md`).
@@ -64,8 +85,9 @@ Leo left 4 inline review comments on PR #151 (review `4704887635`) + 1 CI-fix as
 - The `~/.claude/plans` scratch plan and private memory store are machine-local; the durable facts live in this doc + `CLAUDE.md` + `.claude/agent-notes.md` (all in-repo).
 
 ### Remaining work
-- **Track A (in `phase5-buttondown`, unblocked):** #127 archive one-shot, #122 import new/missing, #126 subscribe-form swap.
-- **Track B:** after #151 merges (its gates #121+#145+#69 will all be in `phase-05`), create `phase5-component-migration` for **#67** (component migration + Mermaid) then **#53**.
+- **Track A:** ✅ fully landed on `phase-05`.
+- **Track B:** ✅ code complete — #121/#145/#69 merged; **#67 + #53 in review on PR #157** (CI green, awaiting Leo's merge). Nothing left to author.
+- **After #157 merges:** integrate `phase-05` → `main` (milestone end). Deferred: #152/#153 (post-phase-5), #31/#33 (decoupled outbound, unscheduled).
 
 ---
 
