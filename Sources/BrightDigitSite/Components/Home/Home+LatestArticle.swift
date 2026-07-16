@@ -1,5 +1,5 @@
 //
-//  IndexBuilder.swift
+//  Home+LatestArticle.swift
 //  BrightDigit
 //
 //  Created by Leo Dion.
@@ -30,27 +30,40 @@
 import Foundation
 import Plot
 import Publish
-import PublishType
 
-internal struct IndexBuilder: ContentBuilder {
-  internal typealias LocationType = Index
+extension Home {
+  /// One article card in the homepage “Latest” list.
+  internal struct LatestArticle: Component {
+    internal let article: IndexArticle
 
-  internal let description: String = BrightDigitSite.SiteInfo.description
-  internal var imagePath: Path = BrightDigitSite.SiteInfo.imagePath
-
-  internal var bodyClasses: [String] { [] }
-
-  internal func main(
-    forLocation _: Index, withContext context: PublishingContext<BrightDigitSite>
-  )
-    -> [Node<HTML.BodyContext>]
-  {
-    [
-      Home.HeroHeader().convertToNode(),
-      Home.ServicesSection().convertToNode(),
-      Home.TestimonialsSection().convertToNode(),
-      Home.LatestArticlesSection(context: context).convertToNode(),
-      Home.NewsletterCTASection().convertToNode(),
-    ]
+    internal var body: Component {
+      ListItem {
+        Header {
+          Link(url: article.rootRelativeURL) {
+            // No `alt`, so a raw img node (Image would inject `alt=""`).
+            Node<HTML.BodyContext>.img(.src(article.featuredImageURL))
+            H3 { Text(article.title) }
+          }
+          Element(name: "ol") {
+            for tag in article.tags {
+              ListItem { Text(tag.string) }
+            }
+          }
+        }
+        Main {
+          Paragraph { Text(article.description) }
+        }
+        Footer {
+          Link(url: article.rootRelativeURL) {
+            Div {
+              Text(PiHTMLFactory.itemFormatter.string(from: article.publishedAt))
+            }.class("publishedAt")
+            Div {
+              Text("\(article.lengthInMinutes) mins")
+            }.class("readTime")
+          }
+        }
+      }
+    }
   }
 }

@@ -1,5 +1,5 @@
 //
-//  IndexBuilder.swift
+//  Services+ProductsCTASection.swift
 //  BrightDigit
 //
 //  Created by Leo Dion.
@@ -27,30 +27,26 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import Foundation
 import Plot
-import Publish
-import PublishType
 
-internal struct IndexBuilder: ContentBuilder {
-  internal typealias LocationType = Index
-
-  internal let description: String = BrightDigitSite.SiteInfo.description
-  internal var imagePath: Path = BrightDigitSite.SiteInfo.imagePath
-
-  internal var bodyClasses: [String] { [] }
-
-  internal func main(
-    forLocation _: Index, withContext context: PublishingContext<BrightDigitSite>
-  )
-    -> [Node<HTML.BodyContext>]
-  {
-    [
-      Home.HeroHeader().convertToNode(),
-      Home.ServicesSection().convertToNode(),
-      Home.TestimonialsSection().convertToNode(),
-      Home.LatestArticlesSection(context: context).convertToNode(),
-      Home.NewsletterCTASection().convertToNode(),
-    ]
+extension Services {
+  /// Services page CTA linking to the products portfolio.
+  internal struct ProductsCTASection: Component {
+    internal var body: Component {
+      Element(name: "section") {
+        Element(name: "main") {
+          Header {
+            H2 {
+              Text("Check out some of the ")
+              Text("work").bold()
+              Text(" we've done...")
+            }
+          }
+          Footer {
+            Link("Our Work", url: "/products").class("button")
+          }
+        }
+      }.class("products-cta")
+    }
   }
 }

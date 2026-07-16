@@ -46,9 +46,9 @@ internal struct ContactBuilder: PageBuilder {
     -> [Node<HTML.BodyContext>]
   {
     [
-      ContactPageHeader().convertToNode(),
-      ContactFormSection().convertToNode(),
-      ContactSocialMediaSection().convertToNode(),
+      Contact.PageHeader().convertToNode(),
+      Contact.FormSection().convertToNode(),
+      Contact.SocialMediaSection().convertToNode(),
     ]
   }
 }

@@ -33,143 +33,58 @@ import Publish
 import PublishType
 
 extension PostItem {
+  private var shareListItems: [Post.ShareListItem] {
+    SocialShares.shares.map { share in
+      Post.ShareListItem(
+        shareURL: share.shareURL(for: self),
+        actionText: share.actionText,
+        nameText: share.nameText,
+        flaticonName: share.flaticonName
+      )
+    }
+  }
+
   internal var featuredItemContent: Node<HTML.BodyContext> {
-    Header {
-      Element(name: "section") {
-        Element(name: "section") {
-          Header {
-            Image(featuredImageURL)
-          }
-          Main {
-            Header {
-              Link(url: source.path.absoluteString) {
-                H2 { Text(title) }
-              }
-            }
-            Main {
-              Text(description)
-            }
-            Footer {
-              Text(" published on ")
-              Span {
-                Text(PiHTMLFactory.itemFormatter.string(from: publishedDate))
-              }.class("published-date")
-            }
-          }
-        }.class("featured")
-      }.class("hero")
-    }.convertToNode()
+    Post.FeaturedCard(
+      title: title,
+      description: description,
+      featuredImageURL: featuredImageURL,
+      sourcePathAbsolute: source.path.absoluteString,
+      publishedDate: publishedDate
+    )
+    .convertToNode()
   }
 
   internal var sectionItemContent: [Node<HTML.BodyContext>] {
     [
       .id("post-\(slug)"),
-      Header {
-        Image(featuredImageURL)
-        Link(url: source.path.absoluteString) {
-          H2 { Text(title) }
-        }
-      }.convertToNode(),
-      Main {
-        Text(description)
-      }.convertToNode(),
-      Footer {
-        // Original markup is `<a>date</a>` with no href attribute.
-        Node<HTML.BodyContext>.a(
-          .text(PiHTMLFactory.itemFormatter.string(from: publishedDate))
-        )
-      }.convertToNode(),
+      Post.SectionCard(
+        title: title,
+        description: description,
+        featuredImageURL: featuredImageURL,
+        sourcePathAbsolute: source.path.absoluteString,
+        publishedDate: publishedDate
+      )
+      .convertToNode(),
     ]
   }
 
   internal var pageHeader: Node<HTML.BodyContext> {
-    Header {
-      Header {
-        Image(featuredImageURL)
-        H1 { Text(title) }
-      }
-      Footer {
-        Element(name: "ol") {
-          for share in SocialShares.shares {
-            shareListItem(for: share)
-          }
-        }
-        Div {
-          Text("\(source.readingTime.minutes) mins")
-        }.class("readtime")
-      }
-    }.convertToNode()
+    Post.PageHeader(
+      title: title,
+      featuredImageURL: featuredImageURL,
+      shareItems: shareListItems,
+      readingTimeMinutes: source.readingTime.minutes
+    )
+    .convertToNode()
   }
 
   internal var pageFooter: Node<HTML.BodyContext> {
-    Footer {
-      Element(name: "ol") {
-        for share in SocialShares.shares {
-          shareListItem(for: share)
-        }
-      }
-      Main {
-        Main {
-          if let subscriptionCTA {
-            H2 { Text(subscriptionCTA) }
-          }
-          H3 {
-            Text(
-              // swiftlint:disable:next line_length
-              "The BrightDigit newsletter gives you regular helpful tips and advice right to your inbox!"
-            )
-          }
-          Paragraph {
-            Node<HTML.BodyContext>.markdown(
-              // swiftlint:disable:next line_length
-              "A couple of times a month, I publish a [newsletter](/newsletters), with news, updates, and other content related to Apple and iOS. I try to help people better understand how to succeed with iOS apps, and keep you informed about what’s coming up on the horizon for the industry."
-            )
-          }
-        }
-        subscriptionForm
-      }
-    }.convertToNode()
-  }
-
-  private var subscriptionForm: Component {
-    Element(name: "form") {
-      Div {
-        Div {
-          Node<HTML.FormContext>.input(
-            .type(.email), .name("email"), .placeholder("leo@brightdigit.com")
-          )
-          Node<HTML.FormContext>.label("Email")
-        }
-      }
-      Div {
-        Div {
-          Node<HTML.FormContext>.input(
-            .type(.hidden),
-            .name("metadata__source_page"),
-            .value(source.path.string)
-          )
-          Button {
-            Text("Sign me up!")
-          }.attribute(named: "type", value: "submit")
-            .class(Strings.Plausible.newsletterSignupEventClass)
-        }
-      }
-    }
-    .attribute(named: "action", value: Strings.Buttondown.subscribeURL)
-    .attribute(named: "method", value: "post")
-  }
-
-  internal func shareListItem(for share: SocialShare) -> Component {
-    ListItem {
-      Link(url: share.shareURL(for: self)) {
-        Span {
-          Text(share.actionText)
-        }.class("action")
-        Span {
-          Text(share.nameText)
-        }.class("name")
-        Icon(className: "flaticon-\(share.flaticonName)")
-      }.linkTarget(.blank)
-    }
+    Post.PageFooter(
+      shareItems: shareListItems,
+      subscriptionCTA: subscriptionCTA,
+      sourcePath: source.path.string
+    )
+    .convertToNode()
   }
 }

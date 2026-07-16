@@ -1,5 +1,5 @@
 //
-//  IndexBuilder.swift
+//  Podcast+SectionCard.swift
 //  BrightDigit
 //
 //  Created by Leo Dion.
@@ -29,28 +29,42 @@
 
 import Foundation
 import Plot
-import Publish
-import PublishType
 
-internal struct IndexBuilder: ContentBuilder {
-  internal typealias LocationType = Index
+extension Podcast {
+  /// A podcast episode row on the episodes section index.
+  internal struct SectionCard: Component {
+    internal let title: String
+    internal let description: String
+    internal let imageURL: URL
+    internal let sourcePathAbsolute: String
+    internal let publishedDate: Date
+    internal let audioDuration: TimeInterval
+    internal let videoDuration: TimeInterval?
+    internal let shareLink: Node<HTML.BodyContext>
 
-  internal let description: String = BrightDigitSite.SiteInfo.description
-  internal var imagePath: Path = BrightDigitSite.SiteInfo.imagePath
-
-  internal var bodyClasses: [String] { [] }
-
-  internal func main(
-    forLocation _: Index, withContext context: PublishingContext<BrightDigitSite>
-  )
-    -> [Node<HTML.BodyContext>]
-  {
-    [
-      Home.HeroHeader().convertToNode(),
-      Home.ServicesSection().convertToNode(),
-      Home.TestimonialsSection().convertToNode(),
-      Home.LatestArticlesSection(context: context).convertToNode(),
-      Home.NewsletterCTASection().convertToNode(),
-    ]
+    internal var body: Component {
+      ComponentGroup {
+        Header {
+          Link(url: sourcePathAbsolute) {
+            Image(imageURL)
+            H2 { Text(title) }
+          }
+          Podcast.PublishDateDiv(publishedDate: publishedDate)
+        }
+        Main { Text(description) }
+        Footer {
+          Podcast.AudioLengthDiv(audioDuration: audioDuration)
+          Div {
+            Icon(className: "flaticon-youtube")
+            if let videoDuration {
+              Text(PiHTMLFactory.formatTimeInterval(videoDuration))
+            }
+          }.class("video-length")
+          Div {
+            shareLink
+          }
+        }
+      }
+    }
   }
 }

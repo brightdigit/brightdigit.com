@@ -1,5 +1,5 @@
 //
-//  IndexBuilder.swift
+//  Contact+PageHeader.swift
 //  BrightDigit
 //
 //  Created by Leo Dion.
@@ -27,30 +27,15 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import Foundation
 import Plot
-import Publish
-import PublishType
 
-internal struct IndexBuilder: ContentBuilder {
-  internal typealias LocationType = Index
-
-  internal let description: String = BrightDigitSite.SiteInfo.description
-  internal var imagePath: Path = BrightDigitSite.SiteInfo.imagePath
-
-  internal var bodyClasses: [String] { [] }
-
-  internal func main(
-    forLocation _: Index, withContext context: PublishingContext<BrightDigitSite>
-  )
-    -> [Node<HTML.BodyContext>]
-  {
-    [
-      Home.HeroHeader().convertToNode(),
-      Home.ServicesSection().convertToNode(),
-      Home.TestimonialsSection().convertToNode(),
-      Home.LatestArticlesSection(context: context).convertToNode(),
-      Home.NewsletterCTASection().convertToNode(),
-    ]
+extension Contact {
+  /// Contact page H1 masthead.
+  internal struct PageHeader: Component {
+    internal var body: Component {
+      Header {
+        H1("Contact Us")
+      }
+    }
   }
 }

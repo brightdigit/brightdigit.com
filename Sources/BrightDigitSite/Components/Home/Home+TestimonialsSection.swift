@@ -1,5 +1,5 @@
 //
-//  IndexBuilder.swift
+//  Home+TestimonialsSection.swift
 //  BrightDigit
 //
 //  Created by Leo Dion.
@@ -27,30 +27,22 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import Foundation
 import Plot
-import Publish
-import PublishType
 
-internal struct IndexBuilder: ContentBuilder {
-  internal typealias LocationType = Index
-
-  internal let description: String = BrightDigitSite.SiteInfo.description
-  internal var imagePath: Path = BrightDigitSite.SiteInfo.imagePath
-
-  internal var bodyClasses: [String] { [] }
-
-  internal func main(
-    forLocation _: Index, withContext context: PublishingContext<BrightDigitSite>
-  )
-    -> [Node<HTML.BodyContext>]
-  {
-    [
-      Home.HeroHeader().convertToNode(),
-      Home.ServicesSection().convertToNode(),
-      Home.TestimonialsSection().convertToNode(),
-      Home.LatestArticlesSection(context: context).convertToNode(),
-      Home.NewsletterCTASection().convertToNode(),
-    ]
+extension Home {
+  /// Homepage `#testimonials` section.
+  internal struct TestimonialsSection: Component {
+    internal var body: Component {
+      Element(name: "section") {
+        Header {
+          H2("Testimonials")
+        }
+        Element(name: "ol") {
+          for testimonial in Testimonial.all.sorted() {
+            Home.TestimonialListItem(testimonial: testimonial)
+          }
+        }
+      }.id("testimonials")
+    }
   }
 }

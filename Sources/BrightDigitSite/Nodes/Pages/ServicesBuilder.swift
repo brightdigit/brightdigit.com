@@ -47,9 +47,9 @@ internal struct ServicesBuilder: PageBuilder {
   {
     [
       .components {
-        ServicesPageHeader()
-        ServicesBoxes()
-        ProductsCTASection()
+        Services.PageHeader()
+        Services.Boxes()
+        Services.ProductsCTASection()
       }
     ]
   }

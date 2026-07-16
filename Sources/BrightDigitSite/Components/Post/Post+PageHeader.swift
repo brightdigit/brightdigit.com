@@ -1,5 +1,5 @@
 //
-//  IndexBuilder.swift
+//  Post+PageHeader.swift
 //  BrightDigit
 //
 //  Created by Leo Dion.
@@ -29,28 +29,28 @@
 
 import Foundation
 import Plot
-import Publish
-import PublishType
 
-internal struct IndexBuilder: ContentBuilder {
-  internal typealias LocationType = Index
+extension Post {
+  /// The post page header: hero image, title, share list, and read time.
+  internal struct PageHeader: Component {
+    internal let title: String
+    internal let featuredImageURL: URL
+    internal let shareItems: [Post.ShareListItem]
+    internal let readingTimeMinutes: Int
 
-  internal let description: String = BrightDigitSite.SiteInfo.description
-  internal var imagePath: Path = BrightDigitSite.SiteInfo.imagePath
-
-  internal var bodyClasses: [String] { [] }
-
-  internal func main(
-    forLocation _: Index, withContext context: PublishingContext<BrightDigitSite>
-  )
-    -> [Node<HTML.BodyContext>]
-  {
-    [
-      Home.HeroHeader().convertToNode(),
-      Home.ServicesSection().convertToNode(),
-      Home.TestimonialsSection().convertToNode(),
-      Home.LatestArticlesSection(context: context).convertToNode(),
-      Home.NewsletterCTASection().convertToNode(),
-    ]
+    internal var body: Component {
+      Header {
+        Header {
+          Image(featuredImageURL)
+          H1 { Text(title) }
+        }
+        Footer {
+          Post.ShareList(items: shareItems)
+          Div {
+            Text("\(readingTimeMinutes) mins")
+          }.class("readtime")
+        }
+      }
+    }
   }
 }

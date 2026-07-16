@@ -1,5 +1,5 @@
 //
-//  IndexBuilder.swift
+//  Home+HeroSection.swift
 //  BrightDigit
 //
 //  Created by Leo Dion.
@@ -27,30 +27,35 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import Foundation
 import Plot
-import Publish
-import PublishType
 
-internal struct IndexBuilder: ContentBuilder {
-  internal typealias LocationType = Index
+extension Home {
+  /// A homepage `.hero` block: optional header image, body text, and CTA link.
+  internal struct HeroSection: Component {
+    internal let imageURL: String?
+    internal let imageDescription: String?
+    internal let text: String
+    internal let linkTitle: String
+    internal let linkURL: String
 
-  internal let description: String = BrightDigitSite.SiteInfo.description
-  internal var imagePath: Path = BrightDigitSite.SiteInfo.imagePath
-
-  internal var bodyClasses: [String] { [] }
-
-  internal func main(
-    forLocation _: Index, withContext context: PublishingContext<BrightDigitSite>
-  )
-    -> [Node<HTML.BodyContext>]
-  {
-    [
-      Home.HeroHeader().convertToNode(),
-      Home.ServicesSection().convertToNode(),
-      Home.TestimonialsSection().convertToNode(),
-      Home.LatestArticlesSection(context: context).convertToNode(),
-      Home.NewsletterCTASection().convertToNode(),
-    ]
+    internal var body: Component {
+      Element(name: "section") {
+        if let imageURL {
+          Header {
+            Image(url: imageURL, description: imageDescription ?? "")
+          }
+        }
+        Main {
+          Element(name: "section") {
+            Main {
+              Text(text)
+            }
+          }.class("text")
+          Footer {
+            Link(linkTitle, url: linkURL)
+          }
+        }
+      }.class("hero")
+    }
   }
 }

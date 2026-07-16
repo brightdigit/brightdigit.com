@@ -1,5 +1,5 @@
 //
-//  IndexBuilder.swift
+//  Post+SubscriptionForm.swift
 //  BrightDigit
 //
 //  Created by Leo Dion.
@@ -27,30 +27,39 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import Foundation
 import Plot
-import Publish
-import PublishType
 
-internal struct IndexBuilder: ContentBuilder {
-  internal typealias LocationType = Index
+extension Post {
+  /// The post-page newsletter subscription form (email input, no message block).
+  internal struct SubscriptionForm: Component {
+    internal let sourcePath: String
 
-  internal let description: String = BrightDigitSite.SiteInfo.description
-  internal var imagePath: Path = BrightDigitSite.SiteInfo.imagePath
-
-  internal var bodyClasses: [String] { [] }
-
-  internal func main(
-    forLocation _: Index, withContext context: PublishingContext<BrightDigitSite>
-  )
-    -> [Node<HTML.BodyContext>]
-  {
-    [
-      Home.HeroHeader().convertToNode(),
-      Home.ServicesSection().convertToNode(),
-      Home.TestimonialsSection().convertToNode(),
-      Home.LatestArticlesSection(context: context).convertToNode(),
-      Home.NewsletterCTASection().convertToNode(),
-    ]
+    internal var body: Component {
+      Element(name: "form") {
+        Div {
+          Div {
+            Node<HTML.FormContext>.input(
+              .type(.email), .name("email"), .placeholder("leo@brightdigit.com")
+            )
+            Node<HTML.FormContext>.label("Email")
+          }
+        }
+        Div {
+          Div {
+            Node<HTML.FormContext>.input(
+              .type(.hidden),
+              .name("metadata__source_page"),
+              .value(sourcePath)
+            )
+            Button {
+              Text("Sign me up!")
+            }.attribute(named: "type", value: "submit")
+              .class(Strings.Plausible.newsletterSignupEventClass)
+          }
+        }
+      }
+      .attribute(named: "action", value: Strings.Buttondown.subscribeURL)
+      .attribute(named: "method", value: "post")
+    }
   }
 }

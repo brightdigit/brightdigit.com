@@ -1,5 +1,5 @@
 //
-//  IndexBuilder.swift
+//  Newsletter+FeaturedCard.swift
 //  BrightDigit
 //
 //  Created by Leo Dion.
@@ -29,28 +29,43 @@
 
 import Foundation
 import Plot
-import Publish
-import PublishType
 
-internal struct IndexBuilder: ContentBuilder {
-  internal typealias LocationType = Index
+extension Newsletter {
+  /// The featured newsletter hero card shown on the newsletters index.
+  internal struct FeaturedCard: Component {
+    internal let title: String
+    internal let description: String
+    internal let featuredImageURL: URL
+    internal let archiveURL: URL
+    internal let publishedDate: Date
+    internal let sourcePath: String
 
-  internal let description: String = BrightDigitSite.SiteInfo.description
-  internal var imagePath: Path = BrightDigitSite.SiteInfo.imagePath
-
-  internal var bodyClasses: [String] { [] }
-
-  internal func main(
-    forLocation _: Index, withContext context: PublishingContext<BrightDigitSite>
-  )
-    -> [Node<HTML.BodyContext>]
-  {
-    [
-      Home.HeroHeader().convertToNode(),
-      Home.ServicesSection().convertToNode(),
-      Home.TestimonialsSection().convertToNode(),
-      Home.LatestArticlesSection(context: context).convertToNode(),
-      Home.NewsletterCTASection().convertToNode(),
-    ]
+    internal var body: Component {
+      Header {
+        Element(name: "section") {
+          H1 {
+            Text("Don't Let Your App")
+            Element(name: "em") { Text("Fall Behind") }
+          }
+          Paragraph { Text("\(Strings.Newsletter.featuredParagraph)") }
+        }
+        Element(name: "section") {
+          Newsletter.SubscriptionForm(sourcePath: sourcePath)
+          Element(name: "section") {
+            Header {
+              H3 { Text("Featured issue") }
+              Image(featuredImageURL)
+              Link(url: archiveURL) {
+                H2 { Text(title) }
+              }
+            }
+            Main {
+              Text(description)
+            }
+            Newsletter.ItemFooter(publishedDate: publishedDate)
+          }.class("featured")
+        }.class("hero")
+      }
+    }
   }
 }

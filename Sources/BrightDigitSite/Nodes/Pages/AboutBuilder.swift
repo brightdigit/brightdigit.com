@@ -47,33 +47,37 @@ internal struct AboutBuilder: PageBuilder {
     forLocation _: LocationType, withContext _: PublishingContext<BrightDigitSite>
   ) -> [Node<HTML.BodyContext>] {
     [
-      AboutPageHeader().convertToNode(),
-      AboutMediaSection(
+      About.PageHeader().convertToNode(),
+      About.MediaSection(
         imageSrc: "/media/about-us/graphic-attract.webm",
         text: Strings.About.section1
-      ).convertToNode(),
-      AboutMediaSection(
+      )
+      .convertToNode(),
+      About.MediaSection(
         imageSrc: "/media/about-us/opportunities.webm",
         header: Strings.About.whoWeAreTitle,
         para1: Strings.About.whoWeAreP1,
         para2: Strings.About.whoWeAreP2,
         para3: Strings.About.whoWeAreP3
-      ).convertToNode(),
-      AboutMediaSection(
+      )
+      .convertToNode(),
+      About.MediaSection(
         imageSrc: "/media/about-us/communication.webm",
         header: Strings.About.workWithUsTitle,
         para1: Strings.About.workWithusP1,
         para2: Strings.About.workWithusP2,
         para3: Strings.About.workWithusP3
-      ).convertToNode(),
-      AboutMediaSection(
+      )
+      .convertToNode(),
+      About.MediaSection(
         imageSrc: "/media/about-us/podcast.webm",
         header: Strings.About.helpingOthersTitle,
         para1: Strings.About.helpingOthersP1,
         para2: Strings.About.helpingOthersP2,
         para3: ""
-      ).convertToNode(),
-      AboutCTASection().convertToNode(),
+      )
+      .convertToNode(),
+      About.CTASection().convertToNode(),
     ]
   }
 }

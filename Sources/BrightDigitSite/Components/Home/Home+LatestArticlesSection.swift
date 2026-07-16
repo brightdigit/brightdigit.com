@@ -1,5 +1,5 @@
 //
-//  IndexBuilder.swift
+//  Home+LatestArticlesSection.swift
 //  BrightDigit
 //
 //  Created by Leo Dion.
@@ -27,30 +27,30 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import Foundation
 import Plot
 import Publish
-import PublishType
 
-internal struct IndexBuilder: ContentBuilder {
-  internal typealias LocationType = Index
+extension Home {
+  /// Homepage `#posts` “Latest” articles section.
+  internal struct LatestArticlesSection: Component {
+    private let articles: [IndexArticle]
 
-  internal let description: String = BrightDigitSite.SiteInfo.description
-  internal var imagePath: Path = BrightDigitSite.SiteInfo.imagePath
+    internal var body: Component {
+      Element(name: "section") {
+        Header {
+          H2("Latest")
+        }
+        Element(name: "ol") {
+          for article in articles {
+            Home.LatestArticle(article: article)
+          }
+        }
+      }.id("posts")
+    }
 
-  internal var bodyClasses: [String] { [] }
-
-  internal func main(
-    forLocation _: Index, withContext context: PublishingContext<BrightDigitSite>
-  )
-    -> [Node<HTML.BodyContext>]
-  {
-    [
-      Home.HeroHeader().convertToNode(),
-      Home.ServicesSection().convertToNode(),
-      Home.TestimonialsSection().convertToNode(),
-      Home.LatestArticlesSection(context: context).convertToNode(),
-      Home.NewsletterCTASection().convertToNode(),
-    ]
+    internal init(context: PublishingContext<BrightDigitSite>) {
+      self.articles = context.sections.compactMap(\.items.first)
+        .filter(\.isAvailable)
+    }
   }
 }

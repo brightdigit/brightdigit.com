@@ -1,5 +1,5 @@
 //
-//  IndexBuilder.swift
+//  Podcast+MainContent.swift
 //  BrightDigit
 //
 //  Created by Leo Dion.
@@ -27,30 +27,26 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import Foundation
 import Plot
 import Publish
-import PublishType
 
-internal struct IndexBuilder: ContentBuilder {
-  internal typealias LocationType = Index
+extension Podcast {
+  /// The podcast episode main content: audio/video embeds plus show notes.
+  internal struct MainContent: Component {
+    internal let transistorEmbed: Node<HTML.BodyContext>
+    internal let youtubeEmbed: Node<HTML.BodyContext>?
+    internal let showNotesContent: Content.Body
 
-  internal let description: String = BrightDigitSite.SiteInfo.description
-  internal var imagePath: Path = BrightDigitSite.SiteInfo.imagePath
-
-  internal var bodyClasses: [String] { [] }
-
-  internal func main(
-    forLocation _: Index, withContext context: PublishingContext<BrightDigitSite>
-  )
-    -> [Node<HTML.BodyContext>]
-  {
-    [
-      Home.HeroHeader().convertToNode(),
-      Home.ServicesSection().convertToNode(),
-      Home.TestimonialsSection().convertToNode(),
-      Home.LatestArticlesSection(context: context).convertToNode(),
-      Home.NewsletterCTASection().convertToNode(),
-    ]
+    internal var body: Component {
+      Main {
+        Div {
+          transistorEmbed
+          if let youtubeEmbed {
+            youtubeEmbed
+          }
+        }.class("content")
+        Podcast.ShowNotes(content: showNotesContent)
+      }
+    }
   }
 }

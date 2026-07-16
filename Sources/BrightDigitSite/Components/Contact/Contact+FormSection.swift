@@ -1,5 +1,5 @@
 //
-//  IndexBuilder.swift
+//  Contact+FormSection.swift
 //  BrightDigit
 //
 //  Created by Leo Dion.
@@ -27,30 +27,30 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import Foundation
 import Plot
-import Publish
-import PublishType
 
-internal struct IndexBuilder: ContentBuilder {
-  internal typealias LocationType = Index
-
-  internal let description: String = BrightDigitSite.SiteInfo.description
-  internal var imagePath: Path = BrightDigitSite.SiteInfo.imagePath
-
-  internal var bodyClasses: [String] { [] }
-
-  internal func main(
-    forLocation _: Index, withContext context: PublishingContext<BrightDigitSite>
-  )
-    -> [Node<HTML.BodyContext>]
-  {
-    [
-      Home.HeroHeader().convertToNode(),
-      Home.ServicesSection().convertToNode(),
-      Home.TestimonialsSection().convertToNode(),
-      Home.LatestArticlesSection(context: context).convertToNode(),
-      Home.NewsletterCTASection().convertToNode(),
-    ]
+extension Contact {
+  /// `#contact-us-form` section with illustration and Netlify form.
+  internal struct FormSection: Component {
+    internal var body: Component {
+      Element(name: "section") {
+        Main {
+          Header {
+            Image(url: "/media/contact-us.svg", description: "Contact Us")
+          }
+          Main {
+            Div {
+              Paragraph {
+                Text(
+                  // swiftlint:disable:next line_length
+                  "Want to chat about how we can help you and your company? Let us know how we help."
+                )
+              }
+              Contact.Form()
+            }
+          }
+        }
+      }.id("contact-us-form")
+    }
   }
 }

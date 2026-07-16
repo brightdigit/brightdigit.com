@@ -1,5 +1,5 @@
 //
-//  IndexBuilder.swift
+//  Home+NewsletterCTASection.swift
 //  BrightDigit
 //
 //  Created by Leo Dion.
@@ -27,30 +27,31 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import Foundation
 import Plot
-import Publish
-import PublishType
 
-internal struct IndexBuilder: ContentBuilder {
-  internal typealias LocationType = Index
-
-  internal let description: String = BrightDigitSite.SiteInfo.description
-  internal var imagePath: Path = BrightDigitSite.SiteInfo.imagePath
-
-  internal var bodyClasses: [String] { [] }
-
-  internal func main(
-    forLocation _: Index, withContext context: PublishingContext<BrightDigitSite>
-  )
-    -> [Node<HTML.BodyContext>]
-  {
-    [
-      Home.HeroHeader().convertToNode(),
-      Home.ServicesSection().convertToNode(),
-      Home.TestimonialsSection().convertToNode(),
-      Home.LatestArticlesSection(context: context).convertToNode(),
-      Home.NewsletterCTASection().convertToNode(),
-    ]
+extension Home {
+  /// Homepage newsletter call-to-action band.
+  internal struct NewsletterCTASection: Component {
+    internal var body: Component {
+      Element(name: "section") {
+        Header {
+          H2 {
+            Text("Don't Let Your App ")
+            Element(name: "em") { Text("Fall Behind") }
+          }
+        }
+        Main {
+          Paragraph {
+            Text(
+              // swiftlint:disable:next line_length
+              "Stay informed about the latest developments in the world of Swift App Development and what they could mean for your business."
+            )
+          }
+        }
+        Footer {
+          Link("Subscribe Now", url: "/newsletters")
+        }
+      }.class("newsletter-cta")
+    }
   }
 }

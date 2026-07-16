@@ -1,5 +1,5 @@
 //
-//  IndexBuilder.swift
+//  Post+ShareList.swift
 //  BrightDigit
 //
 //  Created by Leo Dion.
@@ -27,30 +27,19 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import Foundation
 import Plot
-import Publish
-import PublishType
 
-internal struct IndexBuilder: ContentBuilder {
-  internal typealias LocationType = Index
+extension Post {
+  /// The `<ol>` of social share links shown in a post's header and footer.
+  internal struct ShareList: Component {
+    internal let items: [Post.ShareListItem]
 
-  internal let description: String = BrightDigitSite.SiteInfo.description
-  internal var imagePath: Path = BrightDigitSite.SiteInfo.imagePath
-
-  internal var bodyClasses: [String] { [] }
-
-  internal func main(
-    forLocation _: Index, withContext context: PublishingContext<BrightDigitSite>
-  )
-    -> [Node<HTML.BodyContext>]
-  {
-    [
-      Home.HeroHeader().convertToNode(),
-      Home.ServicesSection().convertToNode(),
-      Home.TestimonialsSection().convertToNode(),
-      Home.LatestArticlesSection(context: context).convertToNode(),
-      Home.NewsletterCTASection().convertToNode(),
-    ]
+    internal var body: Component {
+      Element(name: "ol") {
+        for item in items {
+          item
+        }
+      }
+    }
   }
 }

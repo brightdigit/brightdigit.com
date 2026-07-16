@@ -1,5 +1,5 @@
 //
-//  IndexBuilder.swift
+//  Post+ShareListItem.swift
 //  BrightDigit
 //
 //  Created by Leo Dion.
@@ -29,28 +29,27 @@
 
 import Foundation
 import Plot
-import Publish
-import PublishType
 
-internal struct IndexBuilder: ContentBuilder {
-  internal typealias LocationType = Index
+extension Post {
+  /// A single social share link in a post's share list.
+  internal struct ShareListItem: Component {
+    internal let shareURL: URL
+    internal let actionText: String
+    internal let nameText: String
+    internal let flaticonName: String
 
-  internal let description: String = BrightDigitSite.SiteInfo.description
-  internal var imagePath: Path = BrightDigitSite.SiteInfo.imagePath
-
-  internal var bodyClasses: [String] { [] }
-
-  internal func main(
-    forLocation _: Index, withContext context: PublishingContext<BrightDigitSite>
-  )
-    -> [Node<HTML.BodyContext>]
-  {
-    [
-      Home.HeroHeader().convertToNode(),
-      Home.ServicesSection().convertToNode(),
-      Home.TestimonialsSection().convertToNode(),
-      Home.LatestArticlesSection(context: context).convertToNode(),
-      Home.NewsletterCTASection().convertToNode(),
-    ]
+    internal var body: Component {
+      ListItem {
+        Link(url: shareURL) {
+          Span {
+            Text(actionText)
+          }.class("action")
+          Span {
+            Text(nameText)
+          }.class("name")
+          Icon(className: "flaticon-\(flaticonName)")
+        }.linkTarget(.blank)
+      }
+    }
   }
 }

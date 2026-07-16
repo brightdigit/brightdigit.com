@@ -1,5 +1,5 @@
 //
-//  IndexBuilder.swift
+//  Services+Box.swift
 //  BrightDigit
 //
 //  Created by Leo Dion.
@@ -27,30 +27,35 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import Foundation
 import Plot
-import Publish
-import PublishType
 
-internal struct IndexBuilder: ContentBuilder {
-  internal typealias LocationType = Index
+extension Services {
+  /// A single service offering box on the services page.
+  internal struct Box: Component {
+    internal let id: String
+    internal let bigImage: Image
+    internal let smallImage: Image
+    internal let title: String
+    internal let text: String
 
-  internal let description: String = BrightDigitSite.SiteInfo.description
-  internal var imagePath: Path = BrightDigitSite.SiteInfo.imagePath
-
-  internal var bodyClasses: [String] { [] }
-
-  internal func main(
-    forLocation _: Index, withContext context: PublishingContext<BrightDigitSite>
-  )
-    -> [Node<HTML.BodyContext>]
-  {
-    [
-      Home.HeroHeader().convertToNode(),
-      Home.ServicesSection().convertToNode(),
-      Home.TestimonialsSection().convertToNode(),
-      Home.LatestArticlesSection(context: context).convertToNode(),
-      Home.NewsletterCTASection().convertToNode(),
-    ]
+    internal var body: Component {
+      Element(name: "section") {
+        Header {
+          bigImage.class("rounded-lg")
+        }
+        Element(name: "main") {
+          Header {
+            smallImage
+            H2(title)
+          }
+          Paragraph {
+            Text(self.text)
+          }
+          Footer {
+            Link("Contact Us", url: "/contact-us").class("button")
+          }
+        }
+      }.class("service").id(id)
+    }
   }
 }

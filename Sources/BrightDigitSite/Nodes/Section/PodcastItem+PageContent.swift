@@ -45,92 +45,46 @@ extension PodcastItem {
     )
   }
 
-  private var publishDateDiv: Component {
-    Div {
-      Text(PiHTMLFactory.itemFormatter.string(from: publishedDate))
-    }.class("publish-date")
-  }
-
-  private var audioLengthDiv: Component {
-    Div {
-      Icon(className: "flaticon-podcast")
-      Text(PiHTMLFactory.formatTimeInterval(audioDuration))
-    }.class("audio-length")
+  /// The `data-text`/`data-url` share link shown on the episodes section index —
+  /// kept as a raw node to preserve exact attribute emission.
+  private var sectionShareLink: Node<HTML.BodyContext> {
+    .a(
+      .data(named: "text", value: "Episode \(episodeNo) - \(title)"),
+      .data(named: "url", value: source.absoluteURL(forSite: site).absoluteString),
+      .href(source.path),
+      .raw("<i class=\"flaticon-share\"></i> Share")
+    )
   }
 
   internal var featuredItemContent: Node<HTML.BodyContext> {
-    Header {
-      Element(name: "section") {
-        Element(name: "section") {
-          Header {
-            Div {
-              Text("episode \(episodeNo)")
-            }.class("episode-no")
-            Link(url: source.path.absoluteString) {
-              Image(imageURL)
-              H2 { Text(title) }
-            }
-            publishDateDiv
-          }
-          Main {
-            Link(url: source.path.absoluteString) {
-              Image(imageURL)
-            }
-            Main {
-              publishDateDiv
-              Paragraph { Text("\(description)") }
-              transistorIFrame
-            }
-          }
-          Footer {
-            transistorIFrame
-            Main {
-              audioLengthDiv
-              if let videoDuration {
-                Div {
-                  Icon(className: "flaticon-youtube")
-                  Text(PiHTMLFactory.formatTimeInterval(videoDuration))
-                }.class("video-length")
-              }
-              Div {
-                Link("More Info", url: source.path.absoluteString)
-              }
-            }
-          }
-        }.class("featured").id("episode-\(episodeNo)")
-      }.class("hero")
-    }.convertToNode()
+    Podcast.FeaturedCard(
+      episodeNo: episodeNo,
+      title: title,
+      description: description,
+      imageURL: imageURL,
+      sourcePathAbsolute: source.path.absoluteString,
+      publishedDate: publishedDate,
+      audioDuration: audioDuration,
+      videoDuration: videoDuration,
+      transistorIFrame: transistorIFrame
+    )
+    .convertToNode()
   }
 
   internal var sectionItemContent: [Node<HTML.BodyContext>] {
     [
       .id("episode-\(episodeNo)"),
-      Header {
-        Link(url: source.path.absoluteString) {
-          Image(imageURL)
-          H2 { Text(title) }
-        }
-        publishDateDiv
-      }.convertToNode(),
-      Main { Text(description) }.convertToNode(),
-      Footer {
-        audioLengthDiv
-        Div {
-          Icon(className: "flaticon-youtube")
-          if let videoDuration {
-            Text(PiHTMLFactory.formatTimeInterval(videoDuration))
-          }
-        }.class("video-length")
-        Div {
-          // `data-text`/`data-url` + raw share icon — keep the exact node.
-          Node<HTML.BodyContext>.a(
-            .data(named: "text", value: "Episode \(episodeNo) - \(title)"),
-            .data(named: "url", value: source.absoluteURL(forSite: site).absoluteString),
-            .href(source.path),
-            .raw("<i class=\"flaticon-share\"></i> Share")
-          )
-        }
-      }.convertToNode(),
+      Podcast.SectionCard(
+        title: title,
+        description: description,
+        imageURL: imageURL,
+        sourcePathAbsolute: source.path.absoluteString,
+        publishedDate: publishedDate,
+        audioDuration: audioDuration,
+        videoDuration: videoDuration,
+        shareLink: sectionShareLink
+      )
+      .convertToNode(),
     ]
   }
 
@@ -145,63 +99,28 @@ extension PodcastItem {
   }
 
   internal var podcastHeader: Node<HTML.BodyContext> {
-    Header {
-      Element(name: "ol") {
-        ListItem {
-          Icon(className: "flaticon-announcement")
-          Text("Episode #\(episodeNo)")
-        }.class("episode-no")
-        ListItem {
-          Icon(className: "flaticon-calendar")
-          Text(PiHTMLFactory.itemFormatter.string(from: publishedDate))
-        }.class("publish-date")
-        ListItem {
-          Icon(className: "flaticon-podcast")
-          Text(PiHTMLFactory.formatTimeInterval(audioDuration))
-        }.class("audio-length")
-        ListItem {
-          Icon(className: "flaticon-youtube")
-          if let videoDuration {
-            Text(PiHTMLFactory.formatTimeInterval(videoDuration))
-          }
-        }.class("video-length")
-      }
-      H1 { Text("\(title)") }
-      // `class` precedes `src` in the original markup; Image emits src first, so
-      // use a raw img node to preserve attribute order.
-      Node<HTML.BodyContext>.img(.class("default"), .src(imageURL))
-    }.convertToNode()
+    Podcast.PageHeader(
+      episodeNo: episodeNo,
+      title: title,
+      imageURL: imageURL,
+      publishedDate: publishedDate,
+      audioDuration: audioDuration,
+      videoDuration: videoDuration
+    )
+    .convertToNode()
   }
 
   internal var descriptionHeader: Node<HTML.BodyContext> {
-    Header {
-      Node<HTML.BodyContext>.img(.class("youtube"), .src(imageURL))
-      H1 { Text("\(title)") }
-      Main {
-        Node<HTML.BodyContext>.img(.class("album"), .src(featuredImageURL))
-        Div {
-          Text(description)
-        }.class("description")
-      }
-      Element(name: "ol") {
-        ListItem {
-          Link(url: transistorShareURL) {
-            Element(name: "i") {
-              Text(PiHTMLFactory.formatTimeInterval(audioDuration))
-            }.class("flaticon-podcast")
-            Span {
-              Text(" podcast ")
-              Span {
-                Text("at transistor.fm")
-              }.class("source")
-            }.class("specs")
-          }
-        }
-        ListItem {
-          podcastVideoShareLink
-        }
-      }.class("media")
-    }.convertToNode()
+    Podcast.DescriptionHeader(
+      title: title,
+      description: description,
+      imageURL: imageURL,
+      featuredImageURL: featuredImageURL,
+      transistorShareURL: transistorShareURL,
+      audioDuration: audioDuration,
+      videoShareLink: podcastVideoShareLink
+    )
+    .convertToNode()
   }
 
   /// The YouTube share link in the media list — its `href` is conditional on
@@ -228,20 +147,11 @@ extension PodcastItem {
   }
 
   internal var mainContent: Node<HTML.BodyContext> {
-    Main {
-      Div {
-        transistorEmbed
-        if let youtubeEmbed {
-          youtubeEmbed
-        }
-      }.class("content")
-      showNotes
-    }.convertToNode()
-  }
-
-  internal var showNotes: Node<HTML.BodyContext> {
-    Main {
-      Node<HTML.BodyContext>.contentBody(source.body)
-    }.class("show-notes").convertToNode()
+    Podcast.MainContent(
+      transistorEmbed: transistorEmbed,
+      youtubeEmbed: youtubeEmbed,
+      showNotesContent: source.body
+    )
+    .convertToNode()
   }
 }
