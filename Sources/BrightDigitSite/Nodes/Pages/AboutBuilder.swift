@@ -47,150 +47,147 @@ internal struct AboutBuilder: PageBuilder {
     forLocation _: LocationType, withContext _: PublishingContext<BrightDigitSite>
   ) -> [Node<HTML.BodyContext>] {
     [
-      .aboutHeader(),
-      .leftImageWithRightTextNoHeader(
+      Self.aboutHeader.convertToNode(),
+      Self.leftImageWithRightTextNoHeader(
         imageSrc: "/media/about-us/graphic-attract.webm",
         text: Strings.About.section1
-      ),
+      ).convertToNode(),
 
-      .leftTextWithHeaderRightImage(
+      Self.leftTextWithHeaderRightImage(
         imageSrc: "/media/about-us/opportunities.webm",
         header: Strings.About.whoWeAreTitle,
         para1: Strings.About.whoWeAreP1,
         para2: Strings.About.whoWeAreP2,
         para3: Strings.About.whoWeAreP3
-      ),
+      ).convertToNode(),
 
-      .leftImageRightTextWithHeader(
+      Self.leftImageRightTextWithHeader(
         imageSrc: "/media/about-us/communication.webm",
         header: Strings.About.workWithUsTitle,
         para1: Strings.About.workWithusP1,
         para2: Strings.About.workWithusP2,
         para3: Strings.About.workWithusP3
-      ),
+      ).convertToNode(),
 
-      .leftTextWithHeaderRightImage(
+      Self.leftTextWithHeaderRightImage(
         imageSrc: "/media/about-us/podcast.webm",
         header: Strings.About.helpingOthersTitle,
         para1: Strings.About.helpingOthersP1,
         para2: Strings.About.helpingOthersP2,
         para3: ""
-      ),
+      ).convertToNode(),
 
-      .aboutCTA(),
+      Self.aboutCTA.convertToNode(),
     ]
   }
 }
 
-extension Node where Context == HTML.BodyContext {
-  public static func aboutHeader() -> Node {
-    .header(
-      .h1("Swift-Based", .br(), "App Development")
+extension AboutBuilder {
+  fileprivate static var aboutHeader: Component {
+    Header {
+      H1 {
+        Text("Swift-Based")
+        Node<HTML.BodyContext>.br()
+        Text("App Development")
+      }
+    }
+  }
+
+  /// A `<video autoplay muted [loop]>` with a single webM `<source>` — bespoke
+  /// attributes kept as raw nodes.
+  private static func autoplayVideo(_ imageSrc: String, loop: Bool) -> Node<HTML.BodyContext> {
+    .video(
+      .attribute(named: "autoplay"),
+      .attribute(named: "muted"),
+      .unwrap(loop ? "" : nil) { _ in .attribute(named: "loop") },
+      .source(.src(imageSrc), .type(.webM))
     )
   }
 
-  public static func leftImageWithRightTextNoHeader(imageSrc: String, text: String)
-    -> Node
-  {
-    .section(
-      .header(
-        .video(
-          .attribute(named: "autoplay"),
-          .attribute(named: "muted"),
-          .source(.src(imageSrc), .type(.webM))
-        )
-      ),
-      .main(
-        .main(
-          .p("\(text)")
-        )
-      )
-    )
+  fileprivate static func leftImageWithRightTextNoHeader(
+    imageSrc: String, text: String
+  ) -> Component {
+    Element(name: "section") {
+      Header {
+        autoplayVideo(imageSrc, loop: false)
+      }
+      Main {
+        Main {
+          Paragraph { Text("\(text)") }
+        }
+      }
+    }
   }
 
-  public static func leftTextWithHeaderRightImage(
+  fileprivate static func leftTextWithHeaderRightImage(
     imageSrc: String, header: String, para1: String, para2: String, para3: String
-  ) -> Node {
-    .section(
-      .header(
-        .video(
-          .attribute(named: "autoplay"),
-          .attribute(named: "muted"),
-          .attribute(named: "loop"),
-          .source(.src(imageSrc), .type(.webM))
-        )
-      ),
-      .main(
-        .header(
-          .h2("\(header)")
-        ),
-        .main(
-          .markdown(para1),
-          .markdown(para2),
-          .markdown(para3)
-        )
-      )
-    )
+  ) -> Component {
+    Element(name: "section") {
+      Header {
+        autoplayVideo(imageSrc, loop: true)
+      }
+      Main {
+        Header {
+          H2("\(header)")
+        }
+        Main {
+          Node<HTML.BodyContext>.markdown(para1)
+          Node<HTML.BodyContext>.markdown(para2)
+          Node<HTML.BodyContext>.markdown(para3)
+        }
+      }
+    }
   }
 
-  public static func leftImageRightTextWithHeader(
+  fileprivate static func leftImageRightTextWithHeader(
     imageSrc: String, header: String, para1: String, para2: String, para3: String
-  ) -> Node {
-    .section(
-      .header(
-        .video(
-          .attribute(named: "autoplay"),
-          .attribute(named: "muted"),
-          .attribute(named: "loop"),
-          .source(.src(imageSrc), .type(.webM))
-        )
-      ),
-      .main(
-        .header(
-          .h2("\(header)")
-        ),
-        .main(
-          .markdown(para1),
-          .markdown(para2),
-          .markdown(para3)
-        )
-      )
-    )
+  ) -> Component {
+    Element(name: "section") {
+      Header {
+        autoplayVideo(imageSrc, loop: true)
+      }
+      Main {
+        Header {
+          H2("\(header)")
+        }
+        Main {
+          Node<HTML.BodyContext>.markdown(para1)
+          Node<HTML.BodyContext>.markdown(para2)
+          Node<HTML.BodyContext>.markdown(para3)
+        }
+      }
+    }
   }
 
-  public static func aboutCTA() -> Node {
-    .section(
-      .header(
-        .video(
-          .attribute(named: "autoplay"),
-          .attribute(named: "muted"),
-          .attribute(named: "loop"),
-          .source(.src("/media/about-us/am-try.webm"), .type(.webM))
-        )
-      ),
-      .main(
-        .header(
-          .h2("\(Strings.About.ctaTitle)")
-        ),
-        .main(
-          .p("\(Strings.About.ctaP1)"),
-          .p(""),
-          .hr(),
-          .p("\(Strings.About.ctaP2)"),
-          .a(
+  fileprivate static var aboutCTA: Component {
+    Element(name: "section") {
+      Header {
+        autoplayVideo("/media/about-us/am-try.webm", loop: true)
+      }
+      Main {
+        Header {
+          H2("\(Strings.About.ctaTitle)")
+        }
+        Main {
+          Paragraph { Text("\(Strings.About.ctaP1)") }
+          Paragraph { Text("") }
+          Node<HTML.BodyContext>.hr()
+          Paragraph { Text("\(Strings.About.ctaP2)") }
+          // `class` precedes `href` in the original markup.
+          Node<HTML.BodyContext>.a(
             .class("button"),
             .href("/contact-us"),
             .text("Let's Talk")
-          ),
-          .hr(),
-          .p("\(Strings.About.ctaP3)"),
-          .a(
+          )
+          Node<HTML.BodyContext>.hr()
+          Paragraph { Text("\(Strings.About.ctaP3)") }
+          Node<HTML.BodyContext>.a(
             .class("button"),
             .href("/contact-us"),
             .text("Reach Out to Leo")
           )
-        )
-      )
-    )
+        }
+      }
+    }
   }
 }

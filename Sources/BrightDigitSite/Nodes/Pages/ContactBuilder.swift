@@ -46,112 +46,108 @@ internal struct ContactBuilder: PageBuilder {
     -> [Node<HTML.BodyContext>]
   {
     [
-      .header(
-        .h1("Contact Us")
-      ),
-      .makeContactUsFormWithPicture(),
-      .makeSocialMediaSection(),
+      Header {
+        H1("Contact Us")
+      }.convertToNode(),
+      Self.makeContactUsFormWithPicture.convertToNode(),
+      Self.makeSocialMediaSection.convertToNode(),
     ]
   }
 }
 
-extension Node where Context == HTML.BodyContext {
+extension ContactBuilder {
   // MARK: - makeContactUsFormWithPicture
 
-  // swiftlint:disable:next function_body_length
-  public static func makeContactUsFormWithPicture() -> Node {
-    .section(
-      .id("contact-us-form"),
-      .main(
-        .header(
-          .img(.src("/media/contact-us.svg"), .alt("Contact Us"))
-        ),
-        .main(
-          .div(
-            .p(
+  fileprivate static var makeContactUsFormWithPicture: Component {
+    Element(name: "section") {
+      Main {
+        Header {
+          Image(url: "/media/contact-us.svg", description: "Contact Us")
+        }
+        Main {
+          Div {
+            Paragraph {
               // swiftlint:disable:next line_length
-              "Want to chat about how we can help you and your company? Let us know how we help."
-            ),
-            .form(
-              .attribute(named: "name", value: "contact"),
-              .method(.post),
-              .data(named: "netlify", value: "true"),
-              .div(
-                .div(
-                  .input(.type(.text), .name("first-name"), .placeholder("Leo")),
-                  .label("First Name")
-                ),
-                .div(
-                  .input(.type(.text), .name("last-name"), .placeholder("Dion")),
-                  .label("Last Name")
-                )
-              ),
-              .div(
-                .div(
-                  .input(
-                    .type(.text), .name("email"), .placeholder("leo@brightdigit.com")
-                  ),
-                  .label("Email")
-                )
-              ),
-              .div(
-                .div(
-                  .textarea(.placeholder("You Message Here"), .name("message"))
-                )
-              ),
-              .div(
-                .div(
-                  .button("Send", .type(.submit))
-                )
-              )
-            )
+              Text("Want to chat about how we can help you and your company? Let us know how we help.")
+            }
+            contactForm
+          }
+        }
+      }
+    }.id("contact-us-form")
+  }
+
+  private static var contactForm: Component {
+    Element(name: "form") {
+      Div {
+        Div {
+          Node<HTML.FormContext>.input(.type(.text), .name("first-name"), .placeholder("Leo"))
+          Node<HTML.FormContext>.label("First Name")
+        }
+        Div {
+          Node<HTML.FormContext>.input(.type(.text), .name("last-name"), .placeholder("Dion"))
+          Node<HTML.FormContext>.label("Last Name")
+        }
+      }
+      Div {
+        Div {
+          Node<HTML.FormContext>.input(
+            .type(.text), .name("email"), .placeholder("leo@brightdigit.com")
           )
-        )
-      )
-    )
+          Node<HTML.FormContext>.label("Email")
+        }
+      }
+      Div {
+        Div {
+          Node<HTML.FormContext>.textarea(.placeholder("You Message Here"), .name("message"))
+        }
+      }
+      Div {
+        Div {
+          Node<HTML.FormContext>.button("Send", .type(.submit))
+        }
+      }
+    }
+    .attribute(named: "name", value: "contact")
+    .attribute(named: "method", value: "post")
+    .attribute(named: "data-netlify", value: "true")
   }
 
   // MARK: - makeSocialMediaSection
 
-  public static func makeSocialMediaSection() -> Node {
-    .section(
-      .id("social-media"),
-      .main(
-        .header(
-          .img(
-            .src("/media/social-media.svg"),
-            .alt("We are on Social Media")
-          )
-        ),
-        .main(
-          .p("There are other ways to get a hold of us too."),
-          .ol(
-            .class("social"),
-            .makeIconWithText("Twitter @brightdigit", href: "/", flatIcon: "twitter"),
-            .makeIconWithText("GitHub @brightdigit", href: "/", flatIcon: "github"),
-            .makeIconWithText("EmpowerApps.Show Podcast", href: "/", flatIcon: "podcast"),
-            .makeIconWithText("Youtube videos", href: "/", flatIcon: "youtube"),
-            .makeIconWithText("Our Newsletter", href: "/", flatIcon: "newletter"),
-            .makeIconWithText("Our Feed", href: "/", flatIcon: "rss")
-          )
-        )
-      )
-    )
+  fileprivate static var makeSocialMediaSection: Component {
+    Element(name: "section") {
+      Main {
+        Header {
+          Image(url: "/media/social-media.svg", description: "We are on Social Media")
+        }
+        Main {
+          Paragraph { Text("There are other ways to get a hold of us too.") }
+          Element(name: "ol") {
+            makeIconWithText("Twitter @brightdigit", href: "/", flatIcon: "twitter")
+            makeIconWithText("GitHub @brightdigit", href: "/", flatIcon: "github")
+            makeIconWithText("EmpowerApps.Show Podcast", href: "/", flatIcon: "podcast")
+            makeIconWithText("Youtube videos", href: "/", flatIcon: "youtube")
+            makeIconWithText("Our Newsletter", href: "/", flatIcon: "newletter")
+            makeIconWithText("Our Feed", href: "/", flatIcon: "rss")
+          }.class("social")
+        }
+      }
+    }.id("social-media")
   }
-}
 
-// MARK: - makeIconWithText
+  // MARK: - makeIconWithText
 
-extension Node where Context == HTML.ListContext {
-  public static func makeIconWithText(_ text: String, href: String, flatIcon: String)
-    -> Node
-  {
-    .li(
-      .a(
+  fileprivate static func makeIconWithText(
+    _ text: String, href: String, flatIcon: String
+  ) -> Component {
+    ListItem {
+      // Raw <a>: href, then <i> icon, then text — matches original node order.
+      Node<HTML.BodyContext>.a(
         .href(href),
         .i(.class("flaticon-\(flatIcon)")),
         .text(text)
       )
-    )
+    }
   }
 }
