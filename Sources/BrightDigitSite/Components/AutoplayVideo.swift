@@ -36,7 +36,7 @@ internal struct AutoplayVideo: Component {
   internal let loop: Bool
 
   internal var body: Component {
-    Node<HTML.BodyContext>.video(
+    Node.video(
       .attribute(named: "autoplay"),
       .attribute(named: "muted"),
       .unwrap(loop ? "" : nil) { _ in .attribute(named: "loop") },

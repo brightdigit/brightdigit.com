@@ -37,7 +37,7 @@ extension Podcast {
 
     internal var body: Component {
       Main {
-        Node<HTML.BodyContext>.contentBody(content)
+        Node.contentBody(content)
       }.class("show-notes")
     }
   }

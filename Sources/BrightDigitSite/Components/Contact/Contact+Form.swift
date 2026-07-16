@@ -36,36 +36,36 @@ extension Contact {
       Element(name: "form") {
         Div {
           Div {
-            Node<HTML.FormContext>.input(
+            Node.input(
               .type(.text), .name("first-name"), .placeholder("Leo")
             )
-            Node<HTML.FormContext>.label("First Name")
+            Node.label("First Name")
           }
           Div {
-            Node<HTML.FormContext>.input(
+            Node.input(
               .type(.text), .name("last-name"), .placeholder("Dion")
             )
-            Node<HTML.FormContext>.label("Last Name")
+            Node.label("Last Name")
           }
         }
         Div {
           Div {
-            Node<HTML.FormContext>.input(
+            Node.input(
               .type(.text), .name("email"), .placeholder("leo@brightdigit.com")
             )
-            Node<HTML.FormContext>.label("Email")
+            Node.label("Email")
           }
         }
         Div {
           Div {
-            Node<HTML.FormContext>.textarea(
+            Node.textarea(
               .placeholder("You Message Here"), .name("message")
             )
           }
         }
         Div {
           Div {
-            Node<HTML.FormContext>.button("Send", .type(.submit))
+            Node.button("Send", .type(.submit))
           }
         }
       }

@@ -39,7 +39,7 @@ extension Contact {
     internal var body: Component {
       ListItem {
         // Raw <a>: href, then <i> icon, then text — matches original node order.
-        Node<HTML.BodyContext>.a(
+        Node.a(
           .href(href),
           .i(.class("flaticon-\(flatIcon)")),
           .text(text)

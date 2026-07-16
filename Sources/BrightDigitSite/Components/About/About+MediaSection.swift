@@ -58,9 +58,9 @@ extension About {
             case .plainText(let text):
               Paragraph { Text("\(text)") }
             case let .markdown(para1, para2, para3):
-              Node<HTML.BodyContext>.markdown(para1)
-              Node<HTML.BodyContext>.markdown(para2)
-              Node<HTML.BodyContext>.markdown(para3)
+              Node.markdown(para1)
+              Node.markdown(para2)
+              Node.markdown(para3)
             }
           }
         }

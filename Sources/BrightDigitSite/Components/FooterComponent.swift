@@ -40,7 +40,7 @@ internal struct FooterComponent: Component {
       Footer {
         Header {
           // `class alt src` attribute ordering is bespoke; keep the exact node.
-          Node<HTML.BodyContext>.a(
+          Node.a(
             .href("/"),
             .img(
               .class("logo"),

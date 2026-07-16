@@ -52,7 +52,7 @@ extension Post {
         }
         Footer {
           // Original markup is `<a>date</a>` with no href attribute.
-          Node<HTML.BodyContext>.a(
+          Node.a(
             .text(PiHTMLFactory.itemFormatter.string(from: publishedDate))
           )
         }

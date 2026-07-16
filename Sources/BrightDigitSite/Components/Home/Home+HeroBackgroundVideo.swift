@@ -33,7 +33,7 @@ extension Home {
   /// Index-hero background: autoplay/muted/loop with QuickTime + webM sources.
   internal struct HeroBackgroundVideo: Component {
     internal var body: Component {
-      Node<HTML.BodyContext>.video(
+      Node.video(
         .attribute(named: "autoplay"),
         .attribute(named: "muted"),
         .attribute(named: "loop"),

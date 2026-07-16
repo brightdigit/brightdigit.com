@@ -31,36 +31,19 @@ import Plot
 
 /// Site-wide footer social icons.
 ///
-/// Entries reuse `Node.li(href:flatIcon:rel:)` because their
+/// Driven by the site-wide `SocialPlatform` list (see ``SocialPlatform``).
+/// Each entry reuses `Node.li(href:flatIcon:rel:)` because its
 /// `<a aria-label href rel>` attribute ordering is bespoke.
 internal struct FooterSocialLinks: Component {
+  @EnvironmentValue(.socialPlatforms) private var platforms
+
   internal var body: Component {
-    Element(name: "ol") {
-      Node<HTML.ListContext>.li(
-        href: "http://twitter.com/brightdigit", flatIcon: "twitter"
+    List(platforms) { platform in
+      Node.li(
+        href: platform.href, flatIcon: platform.flatIcon, rel: platform.rel
       )
-      Node<HTML.ListContext>.li(
-        href: "http://github.com/brightdigit", flatIcon: "github"
-      )
-      Node<HTML.ListContext>.li(
-        href: "https://c.im/@leogdion", flatIcon: "mastodon", rel: .meRelationship
-      )
-      Node<HTML.ListContext>.li(
-        href: "https://www.patreon.com/brightdigit", flatIcon: "patreon"
-      )
-      Node<HTML.ListContext>.li(
-        href: "https://www.linkedin.com/in/leogdion/", flatIcon: "linkedin"
-      )
-      Node<HTML.ListContext>.li(
-        href: "https://www.empowerapps.show", flatIcon: "podcast"
-      )
-      Node<HTML.ListContext>.li(
-        href: "http://youtube.com/c/BrightdigitLLC", flatIcon: "youtube"
-      )
-      Node<HTML.ListContext>.li(
-        href: Strings.Buttondown.archiveURL, flatIcon: "newsletter"
-      )
-      Node<HTML.ListContext>.li(href: "/feed.rss", flatIcon: "rss")
-    }.class("social")
+    }
+    .listStyle(.ordered)
+    .class("social")
   }
 }

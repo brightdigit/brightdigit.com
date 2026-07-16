@@ -36,7 +36,7 @@ extension About {
       Header {
         H1 {
           Text("Swift-Based")
-          Node<HTML.BodyContext>.br()
+          Node.br()
           Text("App Development")
         }
       }

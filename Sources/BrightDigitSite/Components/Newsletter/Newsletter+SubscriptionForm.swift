@@ -38,17 +38,17 @@ extension Newsletter {
       Element(name: "form") {
         Div {
           Div {
-            Node<HTML.FormContext>.input(
+            Node.input(
               .type(.text),
               .placeholder("leo@brightdigit.com"),
               .name("email")
             )
-            Node<HTML.FormContext>.label("Email")
+            Node.label("Email")
           }
         }
         Div {
           Div {
-            Node<HTML.FormContext>.input(
+            Node.input(
               .type(.hidden),
               .name("metadata__source_page"),
               .value(sourcePath)

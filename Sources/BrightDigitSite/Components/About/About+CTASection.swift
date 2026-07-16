@@ -44,17 +44,17 @@ extension About {
           Main {
             Paragraph { Text("\(Strings.About.ctaP1)") }
             Paragraph { Text("") }
-            Node<HTML.BodyContext>.hr()
+            Node.hr()
             Paragraph { Text("\(Strings.About.ctaP2)") }
             // `class` precedes `href` in the original markup.
-            Node<HTML.BodyContext>.a(
+            Node.a(
               .class("button"),
               .href("/contact-us"),
               .text("Let's Talk")
             )
-            Node<HTML.BodyContext>.hr()
+            Node.hr()
             Paragraph { Text("\(Strings.About.ctaP3)") }
-            Node<HTML.BodyContext>.a(
+            Node.a(
               .class("button"),
               .href("/contact-us"),
               .text("Reach Out to Leo")

@@ -38,15 +38,15 @@ extension Post {
       Element(name: "form") {
         Div {
           Div {
-            Node<HTML.FormContext>.input(
+            Node.input(
               .type(.email), .name("email"), .placeholder("leo@brightdigit.com")
             )
-            Node<HTML.FormContext>.label("Email")
+            Node.label("Email")
           }
         }
         Div {
           Div {
-            Node<HTML.FormContext>.input(
+            Node.input(
               .type(.hidden),
               .name("metadata__source_page"),
               .value(sourcePath)

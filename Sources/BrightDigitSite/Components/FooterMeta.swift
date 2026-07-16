@@ -38,7 +38,7 @@ internal struct FooterMeta: Component {
       }.class("address")
       Div {
         Text("© Bright Digit, LLC ")
-        Node<HTML.BodyContext>.year()
+        Node.year()
       }.class("copyright")
     }
   }

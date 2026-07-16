@@ -31,7 +31,12 @@ import Plot
 
 extension Contact {
   /// `#social-media` alternate contact channels section.
+  ///
+  /// Rendered from the site-wide `SocialPlatform` list (see ``SocialPlatform``);
+  /// only platforms with a `contactText` label appear here.
   internal struct SocialMediaSection: Component {
+    @EnvironmentValue(.socialPlatforms) private var platforms
+
     internal var body: Component {
       Element(name: "section") {
         Main {
@@ -40,26 +45,18 @@ extension Contact {
           }
           Main {
             Paragraph { Text("There are other ways to get a hold of us too.") }
-            Element(name: "ol") {
-              Contact.SocialIconItem(
-                text: "Twitter @brightdigit", href: "/", flatIcon: "twitter"
-              )
-              Contact.SocialIconItem(
-                text: "GitHub @brightdigit", href: "/", flatIcon: "github"
-              )
-              Contact.SocialIconItem(
-                text: "EmpowerApps.Show Podcast", href: "/", flatIcon: "podcast"
-              )
-              Contact.SocialIconItem(
-                text: "Youtube videos", href: "/", flatIcon: "youtube"
-              )
-              Contact.SocialIconItem(
-                text: "Our Newsletter", href: "/", flatIcon: "newletter"
-              )
-              Contact.SocialIconItem(
-                text: "Our Feed", href: "/", flatIcon: "rss"
-              )
-            }.class("social")
+            List(platforms) { platform in
+              ComponentGroup {
+                // Footer-only platforms have no label, so they render nothing here.
+                if let text = platform.contactText {
+                  Contact.SocialIconItem(
+                    text: text, href: platform.href, flatIcon: platform.flatIcon
+                  )
+                }
+              }
+            }
+            .listStyle(.ordered)
+            .class("social")
           }
         }
       }.id("social-media")

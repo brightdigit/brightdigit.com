@@ -51,7 +51,7 @@ extension Post {
               )
             }
             Paragraph {
-              Node<HTML.BodyContext>.markdown(
+              Node.markdown(
                 // swiftlint:disable:next line_length
                 "A couple of times a month, I publish a [newsletter](/newsletters), with news, updates, and other content related to Apple and iOS. I try to help people better understand how to succeed with iOS apps, and keep you informed about what’s coming up on the horizon for the industry."
               )
