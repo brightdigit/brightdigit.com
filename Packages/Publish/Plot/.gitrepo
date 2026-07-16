@@ -7,6 +7,6 @@
 	remote = git@github.com:brightdigit/Plot.git
 	branch = brightdigit-com-260406
 	commit = 432a877c4d6fc707348527c31b3a1de77bafed5c
-	parent = 03f35c5d776d8211cbabd6a7e1200a1b89a91490
+	parent = b4caca31ae75fd1a6cbaa40586775adebd9797f0
 	method = merge
 	cmdver = 0.4.9

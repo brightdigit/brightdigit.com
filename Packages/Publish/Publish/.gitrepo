@@ -7,6 +7,6 @@
 	remote = git@github.com:brightdigit/Publish.git
 	branch = brightdigit-com-260406
 	commit = 72e7e817780ae408ac60011eaba087fd3188d3d0
-	parent = 8e8d9be43f7fc409c41cb0b6520b269f6a773e07
+	parent = b4caca31ae75fd1a6cbaa40586775adebd9797f0
 	method = merge
 	cmdver = 0.4.9
