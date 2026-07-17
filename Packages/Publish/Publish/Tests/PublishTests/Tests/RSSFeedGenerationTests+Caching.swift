@@ -5,6 +5,7 @@
 */
 
 import Files
+import Foundation
 import Publish
 import XCTest
 
@@ -23,6 +24,10 @@ extension RSSFeedGenerationTests {
     XCTAssertEqual(feedA, feedB)
 
     try contentFile.append("New content")
+    try FileManager.default.setAttributes(
+      [.modificationDate: newDate],
+      ofItemAtPath: contentFile.path
+    )
     try generateFeed(in: folder, date: newDate)
     let feedC = try folder.file(at: "Output/feed.rss").readAsString()
 

@@ -23,7 +23,7 @@ public protocol HTMLFactory: Sendable {
   func makeIndexHTML(
     for index: Index,
     context: PublishingContext<Site>
-  ) throws -> HTML
+  ) throws -> Component
 
   /// Create the HTML to use for the index page of a section.
   /// - Parameters:
@@ -34,7 +34,7 @@ public protocol HTMLFactory: Sendable {
   func makeSectionHTML(
     for section: Section<Site>,
     context: PublishingContext<Site>
-  ) throws -> HTML
+  ) throws -> Component
 
   /// Create the HTML to use for an item.
   /// - Parameters:
@@ -45,7 +45,7 @@ public protocol HTMLFactory: Sendable {
   func makeItemHTML(
     for item: Item<Site>,
     context: PublishingContext<Site>
-  ) throws -> HTML
+  ) throws -> Component
 
   /// Create the HTML to use for a page.
   /// - Parameters:
@@ -56,7 +56,7 @@ public protocol HTMLFactory: Sendable {
   func makePageHTML(
     for page: Page,
     context: PublishingContext<Site>
-  ) throws -> HTML
+  ) throws -> Component
 
   /// Create the HTML to use for the website's list of tags, if supported.
   /// Return `nil` if the theme that this factory is for doesn't support tags.
@@ -68,7 +68,7 @@ public protocol HTMLFactory: Sendable {
   func makeTagListHTML(
     for page: TagListPage,
     context: PublishingContext<Site>
-  ) throws -> HTML?
+  ) throws -> Component?
 
   /// Create the HTML to use for a tag details page, used to represent a single
   /// tag. Return `nil` if the theme that this factory is for doesn't support tags.
@@ -80,5 +80,5 @@ public protocol HTMLFactory: Sendable {
   func makeTagDetailsHTML(
     for page: TagDetailsPage,
     context: PublishingContext<Site>
-  ) throws -> HTML?
+  ) throws -> Component?
 }

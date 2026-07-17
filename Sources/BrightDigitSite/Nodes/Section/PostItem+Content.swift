@@ -33,142 +33,54 @@ import Publish
 import PublishType
 
 extension PostItem {
-  internal var featuredItemContent: Node<HTML.BodyContext> {
-    .header(
-      .section(
-        .class("hero"),
-        .section(
-          .class("featured"),
-          .header(
-            .img(.src(featuredImageURL))
-          ),
-          .main(
-            .header(
-              .a(
-                .href(source.path),
-                .h2(.text(title))
-              )
-            ),
-            .main(
-              .text(description)
-            ),
-            .footer(
-              " published on ",
-              .span(
-                .class("published-date"),
-                .text(PiHTMLFactory.itemFormatter.string(from: publishedDate))
-              )
-            )
-          )
-        )
+  private var shareListItems: [Post.ShareListItem] {
+    SocialShares.shares.map { share in
+      Post.ShareListItem(
+        shareURL: share.shareURL(for: self),
+        actionText: share.actionText,
+        nameText: share.nameText,
+        flaticonName: share.flaticonName
       )
+    }
+  }
+
+  internal var featuredItemContent: Component {
+    Post.FeaturedCard(
+      title: title,
+      description: description,
+      featuredImageURL: featuredImageURL,
+      sourcePathAbsolute: source.path.absoluteString,
+      publishedDate: publishedDate
     )
   }
 
-  internal var sectionItemContent: [Node<HTML.BodyContext>] {
-    [
-      .id("post-\(slug)"),
-      .header(
-        .img(.src(featuredImageURL)),
-        .a(
-          .href(source.path),
-          .h2(.text(title))
-        )
-      ),
-      .main(
-        .text(description)
-      ),
-      .footer(
-        .a(
-          .text(PiHTMLFactory.itemFormatter.string(from: publishedDate))
-        )
-      ),
-    ]
+  internal var sectionItemContent: Component {
+    ListItem {
+      Post.SectionCard(
+        title: title,
+        description: description,
+        featuredImageURL: featuredImageURL,
+        sourcePathAbsolute: source.path.absoluteString,
+        publishedDate: publishedDate
+      )
+    }
+    .id("post-\(slug)")
   }
 
-  internal var pageHeader: Node<HTML.BodyContext> {
-    .header(
-      .header(
-        .img(.src(featuredImageURL)),
-        .h1(.text(title))
-      ),
-      .footer(
-        .ol(
-          .forEach(SocialShares.shares, shareListItem(for:))
-        ),
-        .div(
-          .class("readtime"),
-          .text("\(source.readingTime.minutes) mins")
-        )
-      )
+  internal var pageHeader: some Component {
+    Post.PageHeader(
+      title: title,
+      featuredImageURL: featuredImageURL,
+      shareItems: shareListItems,
+      readingTimeMinutes: source.readingTime.minutes
     )
   }
 
-  internal var pageFooter: Node<HTML.BodyContext> {
-    .footer(
-      .ol(
-        .forEach(SocialShares.shares, shareListItem(for:))
-      ),
-      .main(
-        .main(
-          .unwrap(subscriptionCTA) {
-            .h2(.text($0))
-          },
-          .h3(
-            // swiftlint:disable:next line_length
-            "The BrightDigit newsletter gives you regular helpful tips and advice right to your inbox!"
-          ),
-          .p(
-            .markdown(
-              // swiftlint:disable:next line_length
-              "A couple of times a month, I publish a [newsletter](/newsletters), with news, updates, and other content related to Apple and iOS. I try to help people better understand how to succeed with iOS apps, and keep you informed about what’s coming up on the horizon for the industry."
-            )
-          )
-        ),
-
-        .form(
-          .action(Strings.Buttondown.subscribeURL),
-          .method(.post),
-          .div(
-            .div(
-              .input(.type(.email), .name("email"), .placeholder("leo@brightdigit.com")),
-              .label("Email")
-            )
-          ),
-          .div(
-            .div(
-              .input(
-                .type(.hidden),
-                .name("metadata__source_page"),
-                .value(source.path.string)
-              ),
-              .button(
-                .type(.submit),
-                .class(Strings.Plausible.newsletterSignupEventClass),
-                .text("Sign me up!")
-              )
-            )
-          )
-        )
-      )
-    )
-  }
-
-  internal func shareListItem(for share: SocialShare) -> Node<HTML.ListContext> {
-    .li(
-      .a(
-        .href(share.shareURL(for: self)),
-        .target(.blank),
-        .span(
-          .class("action"),
-          .text(share.actionText)
-        ),
-        .span(
-          .class("name"),
-          .text(share.nameText)
-        ),
-        .i(.class("flaticon-\(share.flaticonName)"))
-      )
+  internal var pageFooter: some Component {
+    Post.PageFooter(
+      shareItems: shareListItems,
+      subscriptionCTA: subscriptionCTA,
+      sourcePath: source.path.string
     )
   }
 }

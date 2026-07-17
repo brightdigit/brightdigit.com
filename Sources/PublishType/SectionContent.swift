@@ -68,28 +68,25 @@ public struct SectionContent<SectionBuilderType: SectionBuilderProtocol>: PageCo
     builder.section.id.rawValue
   }
 
-  public var main: [Node<HTML.BodyContext>] {
-    [
-      .class("section"),
-      .unwrap(builder.header1) { text in
-        .header(
-          .h1(.text(text))
-        )
-      },
-      featuredNode,
-      .section(
-        .ol(
-          .forEach(builder.children) {
-            .li(
-              .forEach($0.sectionItemContent) { $0 }
-            )
-          }
-        )
-      ),
-    ]
+  public var mainClasses: [String] {
+    ["section"]
   }
 
-  public var featuredNode: Node<HTML.BodyContext> {
+  @ComponentBuilder public var main: Component {
+    if let header1 = builder.header1 {
+      Node<HTML.BodyContext>.header(.h1(.text(header1)))
+    }
+    featuredNode
+    Node<HTML.BodyContext>.section(
+      .ol(
+        .forEach(builder.children) {
+          .component($0.sectionItemContent)
+        }
+      )
+    )
+  }
+
+  public var featuredNode: Component {
     builder.featuredItem.featuredItemContent
   }
 

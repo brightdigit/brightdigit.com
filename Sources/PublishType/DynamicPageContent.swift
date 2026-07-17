@@ -69,7 +69,7 @@ public struct DynamicPageContent<
     }
   }
 
-  public var main: [Node<HTML.BodyContext>] {
+  public var main: Component {
     builder.main(forLocation: location, withContext: context)
   }
 

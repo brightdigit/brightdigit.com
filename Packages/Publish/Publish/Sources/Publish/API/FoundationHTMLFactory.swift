@@ -10,7 +10,7 @@ internal struct FoundationHTMLFactory<Site: Website>: HTMLFactory {
   internal func makeIndexHTML(
     for index: Index,
     context: PublishingContext<Site>
-  ) throws -> HTML {
+  ) throws -> Component {
     HTML(
       .lang(context.site.language),
       .head(for: index, on: context.site),
@@ -31,13 +31,13 @@ internal struct FoundationHTMLFactory<Site: Website>: HTMLFactory {
         }
         SiteFooter()
       }
-    )
+    ).node
   }
 
   internal func makeSectionHTML(
     for section: Section<Site>,
     context: PublishingContext<Site>
-  ) throws -> HTML {
+  ) throws -> Component {
     HTML(
       .lang(context.site.language),
       .head(for: section, on: context.site),
@@ -49,13 +49,13 @@ internal struct FoundationHTMLFactory<Site: Website>: HTMLFactory {
         }
         SiteFooter()
       }
-    )
+    ).node
   }
 
   internal func makeItemHTML(
     for item: Item<Site>,
     context: PublishingContext<Site>
-  ) throws -> HTML {
+  ) throws -> Component {
     HTML(
       .lang(context.site.language),
       .head(for: item, on: context.site),
@@ -73,13 +73,13 @@ internal struct FoundationHTMLFactory<Site: Website>: HTMLFactory {
           SiteFooter()
         }
       )
-    )
+    ).node
   }
 
   internal func makePageHTML(
     for page: Page,
     context: PublishingContext<Site>
-  ) throws -> HTML {
+  ) throws -> Component {
     HTML(
       .lang(context.site.language),
       .head(for: page, on: context.site),
@@ -88,13 +88,13 @@ internal struct FoundationHTMLFactory<Site: Website>: HTMLFactory {
         Wrapper(page.body)
         SiteFooter()
       }
-    )
+    ).node
   }
 
   internal func makeTagListHTML(
     for page: TagListPage,
     context: PublishingContext<Site>
-  ) throws -> HTML? {
+  ) throws -> Component? {
     HTML(
       .lang(context.site.language),
       .head(for: page, on: context.site),
@@ -115,13 +115,13 @@ internal struct FoundationHTMLFactory<Site: Website>: HTMLFactory {
         }
         SiteFooter()
       }
-    )
+    ).node
   }
 
   internal func makeTagDetailsHTML(
     for page: TagDetailsPage,
     context: PublishingContext<Site>
-  ) throws -> HTML? {
+  ) throws -> Component? {
     HTML(
       .lang(context.site.language),
       .head(for: page, on: context.site),
@@ -150,6 +150,6 @@ internal struct FoundationHTMLFactory<Site: Website>: HTMLFactory {
         }
         SiteFooter()
       }
-    )
+    ).node
   }
 }

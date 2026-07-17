@@ -13,7 +13,7 @@ extension HTMLGenerationTests {
   internal func testAlwaysGeneratingIndexPageForAllSections() throws {
     let htmlFactory = HTMLFactoryMock<WebsiteStub.WithoutItemMetadata>(
       makeSectionHTML: { section, _ in
-        HTML(.body(.text(section.id.rawValue)))
+        HTML(.body(.text(section.id.rawValue))).node
       }
     )
 

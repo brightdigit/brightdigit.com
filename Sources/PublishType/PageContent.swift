@@ -36,7 +36,8 @@ public protocol PageContent {
   var socialTitle: String { get }
   var socialImageURL: URL { get }
   var absoluteURL: URL { get }
-  var main: [Node<HTML.BodyContext>] { get }
+  var main: Component { get }
+  var mainClasses: [String] { get }
   var bodyID: String? { get }
   var bodyClasses: [String] { get }
   var redirectURL: URL? { get }
@@ -44,15 +45,28 @@ public protocol PageContent {
 }
 
 extension PageContent {
+  public var mainClasses: [String] {
+    []
+  }
+
   public var mainElement: Node<HTML.BodyContext> {
     .main(
-      .forEach(main) { $0 }
+      .unwrap(mainClassValue, Node.class),
+      .component(main)
     )
   }
 
+  public var mainClassValue: String? {
+    joinedClassValue(mainClasses)
+  }
+
   public var bodyClassValue: String? {
+    joinedClassValue(bodyClasses)
+  }
+
+  private func joinedClassValue(_ classes: [String]) -> String? {
     let value =
-      bodyClasses
+      classes
       .joined(separator: " ")
       .trimmingCharacters(in: .whitespacesAndNewlines)
     guard !value.isEmpty else {

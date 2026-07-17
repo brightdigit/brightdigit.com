@@ -33,18 +33,17 @@ import Publish
 import PublishType
 
 extension ProductItem {
-  internal var featuredItemContent: Plot.Node<Plot.HTML.BodyContext> {
+  internal var featuredItemContent: Component {
     SectionElement {
       List {
         ListItem(forProduct: self)
       }
-    }.environmentValue(.ordered, key: .listStyle).convertToNode()
+    }.environmentValue(.ordered, key: .listStyle)
   }
 
-  internal var sectionItemContent: [Plot.Node<Plot.HTML.BodyContext>] {
-    [
+  internal var sectionItemContent: Component {
+    ListItem {
       SectionElement(forProduct: self).environmentValue(.ordered, key: .listStyle)
-        .convertToNode()
-    ]
+    }
   }
 }

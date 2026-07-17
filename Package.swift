@@ -32,6 +32,7 @@ let package = Package(
     .package(path: "Packages/BrightDigit/YoutubePublishPlugin"),
     .package(path: "Packages/Plugins/ReadingTimePublishPlugin"),
 
+    .package(path: "Packages/BrightDigit/TailwindKit"),
     .package(path: "Packages/BrightDigit/SwiftTube"),
     .package(path: "Packages/BrightDigit/Spinetail"),
     .package(path: "Packages/BrightDigit/ButtondownKit"),
@@ -86,7 +87,8 @@ let package = Package(
         // "Options",
         "PublishType",
         "TransistorPublishPlugin",
-        "NPMPublishPlugin"
+        "NPMPublishPlugin",
+        "TailwindKit"
       ]
     ),
     .target(

@@ -69,12 +69,12 @@ internal struct PostItem<PostableType: Postable>: SectionItem {
     source.absoluteURL(forSite: site)
   }
 
-  internal var pageMainContent: [Node<HTML.BodyContext>] {
-    [
-      pageHeader,
-      .main(.contentBody(source.body)),
-      pageFooter,
-    ]
+  @ComponentBuilder internal var pageMainContent: Component {
+    pageHeader
+    Main {
+      Node<HTML.BodyContext>.contentBody(source.body)
+    }
+    pageFooter
   }
 
   internal var redirectURL: URL? {
