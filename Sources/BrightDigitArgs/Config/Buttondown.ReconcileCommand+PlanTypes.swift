@@ -76,8 +76,9 @@ extension Buttondown.ReconcileCommand {
     internal let existingEmailID: String?
     /// The existing Buttondown email's status (UPDATE only); `nil` for CREATE.
     ///
-    /// Re-checked immediately before writing so only ``EmailStatus/imported``
-    /// emails are ever patched.
+    /// Captured during planning (from the initial listing); the write step
+    /// patches only emails whose captured status is ``EmailStatus/imported``, so
+    /// a draft or already-sent email is never modified.
     internal let existingStatus: EmailStatus?
     internal let previewText: String?
     internal let socialCardImageURL: String?

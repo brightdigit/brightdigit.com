@@ -97,12 +97,18 @@ extension Import.ButtondownCommand {
 
     let existing = Self.existingIssueNumbers(in: contentPathURL)
     let localMax = existing.max() ?? 0
-    let skip = config.overwriteExisting ? [] : existing
+    // `--overwrite-existing` re-imports everything: present nothing as "already
+    // on disk" so no email is skipped by number or slug.
+    let skipNumbers = config.overwriteExisting ? [] : existing
+    let skipSlugs =
+      config.overwriteExisting ? [] : Self.existingSlugs(in: contentPathURL)
 
     let numbered = Newsletter.newIssues(
       from: emails,
       continuingFrom: localMax,
-      existingIssueNumbers: skip
+      existingIssueNumbers: skipNumbers,
+      existingSlugs: skipSlugs,
+      slug: { $0.subject.convertedToSlug() }
     )
 
     let alreadyPresent = emails.count - numbered.count

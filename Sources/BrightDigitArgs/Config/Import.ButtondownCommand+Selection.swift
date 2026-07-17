@@ -67,22 +67,66 @@ extension Import.ButtondownCommand {
     return "\(paddedIssue)-\(source.slug)"
   }
 
+  /// The `*.md` file names in `directory`, or `[]` when the directory does not
+  /// exist yet (the expected first-run state).
+  ///
+  /// A read failure on a directory that *does* exist is logged rather than
+  /// silently treated as empty — otherwise a misconfigured path would look like
+  /// an empty archive and restart numbering from issue 1.
+  private static func markdownFileNames(in directory: URL) -> [String] {
+    let manager = FileManager.default
+    var isDirectory: ObjCBool = false
+    guard
+      manager.fileExists(atPath: directory.path, isDirectory: &isDirectory),
+      isDirectory.boolValue
+    else {
+      return []
+    }
+    do {
+      return try manager.contentsOfDirectory(atPath: directory.path)
+        .filter { $0.hasSuffix(".md") }
+    } catch {
+      logImport(
+        "warning: could not read \(directory.path): \(error.localizedDescription)"
+      )
+      return []
+    }
+  }
+
   /// The set of issue numbers already present in `directory`.
   ///
   /// Reads the zero-padded `NNN-` file-name prefix (slug-independent), matching
   /// the naming the Mailchimp importer produced. Used to skip issues already on
   /// disk.
   internal static func existingIssueNumbers(in directory: URL) -> Set<Int> {
-    let names =
-      (try? FileManager.default.contentsOfDirectory(atPath: directory.path)) ?? []
     var numbers: Set<Int> = []
-    for name in names where name.hasSuffix(".md") {
+    for name in markdownFileNames(in: directory) {
       let prefix = name.prefix { $0.isNumber }
       if prefix.count >= 1, let issueNo = Int(prefix) {
         numbers.insert(issueNo)
       }
     }
     return numbers
+  }
+
+  /// The set of slugs already present in `directory`.
+  ///
+  /// Parses the `slug` out of each `NNN-slug.md` file name (the leading digit
+  /// run and its trailing `-` are the issue-number prefix; the remainder is the
+  /// slug). The slug is derived from the email's stable subject, so it lets a
+  /// re-run recognize an already-written issue even though the sequential number
+  /// it would otherwise be assigned differs from run to run.
+  internal static func existingSlugs(in directory: URL) -> Set<String> {
+    var slugs: Set<String> = []
+    for name in markdownFileNames(in: directory) {
+      let base = name.dropLast(3)  // strip ".md"
+      let digits = base.prefix { $0.isNumber }
+      guard !digits.isEmpty else { continue }
+      let remainder = base.dropFirst(digits.count)
+      guard remainder.first == "-" else { continue }
+      slugs.insert(String(remainder.dropFirst()))
+    }
+    return slugs
   }
 
   /// Resolves a numbered email into a writable ``Newsletter/Source``.

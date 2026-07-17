@@ -42,7 +42,8 @@ extension Post {
     internal var body: Component {
       ComponentGroup {
         Header {
-          Image(featuredImageURL)
+          // No `alt`, so a raw img node (Image would inject `alt=""`).
+          Node<HTML.BodyContext>.img(.src(featuredImageURL))
           Link(url: sourcePathAbsolute) {
             H2 { Text(title) }
           }

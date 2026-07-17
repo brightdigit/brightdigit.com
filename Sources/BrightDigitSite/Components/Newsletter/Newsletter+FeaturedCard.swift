@@ -54,7 +54,8 @@ extension Newsletter {
           Element(name: "section") {
             Header {
               H3 { Text("Featured issue") }
-              Image(featuredImageURL)
+              // No `alt`, so a raw img node (Image would inject `alt=""`).
+              Node<HTML.BodyContext>.img(.src(featuredImageURL))
               Link(url: archiveURL) {
                 H2 { Text(title) }
               }

@@ -40,6 +40,26 @@
     "path": "Packages/BrightDigit/TailwindKit"
   },
   {
+    "name": "ContributeButtondown",
+    "path": "Packages/BrightDigit/ContributeButtondown"
+  },
+  {
+    "name": "ContributeMailchimp",
+    "path": "Packages/BrightDigit/ContributeMailchimp"
+  },
+  {
+    "name": "ContributeRSS",
+    "path": "Packages/BrightDigit/ContributeRSS"
+  },
+  {
+    "name": "ContributeYouTube",
+    "path": "Packages/BrightDigit/ContributeYouTube"
+  },
+  {
+    "name": "PublishType",
+    "path": "Packages/BrightDigit/PublishType"
+  },
+  {
     "name": "Files",
     "path": "Packages/Publish/Files"
   },

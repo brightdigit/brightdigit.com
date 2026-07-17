@@ -44,7 +44,8 @@ extension Post {
         Element(name: "section") {
           Element(name: "section") {
             Header {
-              Image(featuredImageURL)
+              // No `alt`, so a raw img node (Image would inject `alt=""`).
+              Node<HTML.BodyContext>.img(.src(featuredImageURL))
             }
             Main {
               Header {

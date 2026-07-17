@@ -52,14 +52,16 @@ extension Podcast {
                 Text("episode \(episodeNo)")
               }.class("episode-no")
               Link(url: sourcePathAbsolute) {
-                Image(imageURL)
+                // No `alt`, so a raw img node (Image would inject `alt=""`).
+                Node<HTML.BodyContext>.img(.src(imageURL))
                 H2 { Text(title) }
               }
               Podcast.PublishDateDiv(publishedDate: publishedDate)
             }
             Main {
               Link(url: sourcePathAbsolute) {
-                Image(imageURL)
+                // No `alt`, so a raw img node (Image would inject `alt=""`).
+                Node<HTML.BodyContext>.img(.src(imageURL))
               }
               Main {
                 Podcast.PublishDateDiv(publishedDate: publishedDate)

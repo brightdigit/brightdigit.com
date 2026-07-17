@@ -46,7 +46,8 @@ extension Podcast {
       ComponentGroup {
         Header {
           Link(url: sourcePathAbsolute) {
-            Image(imageURL)
+            // No `alt`, so a raw img node (Image would inject `alt=""`).
+            Node<HTML.BodyContext>.img(.src(imageURL))
             H2 { Text(title) }
           }
           Podcast.PublishDateDiv(publishedDate: publishedDate)
