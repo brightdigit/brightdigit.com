@@ -1,6 +1,6 @@
 # AGENTS.md
 
-This file provides guidance to Codex (Codex.ai/code) when working with code in this repository.
+This is the canonical agent instruction file for this repository.
 
 ## Project Overview
 
@@ -154,8 +154,9 @@ commits), then re-run the pull/push.
   - `newsletters/` - Newsletter content (auto-generated from Mailchimp)
   - `episodes/` - Podcast episodes (auto-generated)
   - `tutorials/` - Tutorial content
-- `Sources/` - Swift source code modules
-- `Tests/` - Unit tests
+- `Sources/` - Root app and site Swift modules
+- `Packages/BrightDigit/` - Local first-party Swift packages, including content importers and shared site libraries
+- `Tests/` - Root package tests
 
 ### Key Dependencies
 - **Publish** - Static site generation framework by John Sundell

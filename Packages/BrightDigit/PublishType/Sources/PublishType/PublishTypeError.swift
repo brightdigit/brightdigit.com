@@ -31,15 +31,26 @@ import Foundation
 @preconcurrency import Publish
 
 public enum PublishTypeError: Error, LocalizedError {
-  case missingContentFor(Location)
-  case missingField(MissingField, AnyItem)
+  case missingContent(description: String)
+  case missingItemField(field: String, path: String)
+
+  public static func missingContentFor(_ location: some Location) -> Self {
+    .missingContent(description: String(describing: location))
+  }
+
+  public static func missingField(_ field: some MissingField, _ item: some AnyItem) -> Self {
+    .missingItemField(
+      field: String(describing: field),
+      path: String(describing: item.path)
+    )
+  }
 
   public var errorDescription: String? {
     switch self {
-    case let .missingContentFor(location):
-      return "Missing content for location: \(location)"
-    case let .missingField(field, item):
-      return "Missing field \(field) from \(item.path)"
+    case let .missingContent(description):
+      return "Missing content for location: \(description)"
+    case let .missingItemField(field, path):
+      return "Missing field \(field) from \(path)"
     }
   }
 }

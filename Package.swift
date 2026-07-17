@@ -19,12 +19,7 @@ let package = Package(
       name: "brightdigitwg",
       targets: ["brightdigitwg"]
     ),
-    .library(name: "ContributeMailchimp", targets: ["ContributeMailchimp"]),
-    .library(name: "ContributeButtondown", targets: ["ContributeButtondown"]),
-    .library(name: "BrightDigitPodcast", targets: ["BrightDigitPodcast"]),
-    .library(name: "ContributeYouTube", targets: ["ContributeYouTube"]),
-    .library(name: "ContributeRSS", targets: ["ContributeRSS"]),
-    .library(name: "PublishType", targets: ["PublishType"])
+    .library(name: "BrightDigitPodcast", targets: ["BrightDigitPodcast"])
   ],
   dependencies: [
     .package(path: "Packages/Publish/Publish"),
@@ -33,14 +28,18 @@ let package = Package(
     .package(path: "Packages/Plugins/ReadingTimePublishPlugin"),
 
     .package(path: "Packages/BrightDigit/TailwindKit"),
-    .package(path: "Packages/BrightDigit/SwiftTube"),
     .package(path: "Packages/BrightDigit/Spinetail"),
     .package(path: "Packages/BrightDigit/ButtondownKit"),
     .package(path: "Packages/BrightDigit/SyndiKit"),
     // .package(url: "https://github.com/BrightDigit/Options.git", from: "0.2.0"),
     .package(path: "Packages/BrightDigit/NPMPublishPlugin"),
     .package(path: "Packages/BrightDigit/Contribute"),
+    .package(path: "Packages/BrightDigit/ContributeButtondown"),
+    .package(path: "Packages/BrightDigit/ContributeMailchimp"),
+    .package(path: "Packages/BrightDigit/ContributeRSS"),
+    .package(path: "Packages/BrightDigit/ContributeYouTube"),
     .package(path: "Packages/BrightDigit/ContributeWordPress"),
+    .package(path: "Packages/BrightDigit/PublishType"),
     .package(path: "Packages/BrightDigit/TransistorPublishPlugin"),
 
     .package(url: "https://github.com/jpsim/Yams.git", from: "6.0.0"),
@@ -67,13 +66,15 @@ let package = Package(
       dependencies: [
         "BrightDigitSite",
         "BrightDigitPodcast",
-        "ContributeYouTube",
-        "ContributeRSS",
-        "ContributeMailchimp",
-        "ContributeButtondown",
+        .product(name: "Contribute", package: "Contribute"),
+        .product(name: "ContributeYouTube", package: "ContributeYouTube"),
+        .product(name: "ContributeRSS", package: "ContributeRSS"),
+        .product(name: "ContributeMailchimp", package: "ContributeMailchimp"),
+        .product(name: "ContributeButtondown", package: "ContributeButtondown"),
         "ContributeWordPress",
         .product(name: "Spinetail", package: "Spinetail"),
         .product(name: "ButtondownKit", package: "ButtondownKit"),
+        .product(name: "SyndiKit", package: "SyndiKit"),
         .product(name: "ConfigKeyKit", package: "ConfigKeyKit"),
         .product(name: "Configuration", package: "swift-configuration"),
       ]
@@ -85,7 +86,7 @@ let package = Package(
         "YoutubePublishPlugin",
         "ReadingTimePublishPlugin",
         // "Options",
-        "PublishType",
+        .product(name: "PublishType", package: "PublishType"),
         "TransistorPublishPlugin",
         "NPMPublishPlugin",
         "TailwindKit"
@@ -93,34 +94,11 @@ let package = Package(
     ),
     .target(
       name: "BrightDigitPodcast",
-      dependencies: ["ContributeYouTube", "ContributeRSS"]
-    ),
-    .target(
-      name: "ContributeMailchimp",
       dependencies: [
-        "Contribute",
-        .product(name: "Spinetail", package: "Spinetail")
-      ]
-    ),
-    .target(
-      name: "ContributeButtondown",
-      dependencies: [
-        "Contribute",
-        .product(name: "ButtondownKit", package: "ButtondownKit")
-      ]
-    ),
-    .target(
-      name: "ContributeYouTube",
-      dependencies: ["Contribute", "SwiftTube"]
-    ),
-    .target(
-      name: "ContributeRSS",
-      dependencies: ["Contribute", "SyndiKit"]
-    ),
-    .target(
-      name: "PublishType",
-      dependencies: [
-        "Publish"
+        .product(name: "Contribute", package: "Contribute"),
+        .product(name: "ContributeYouTube", package: "ContributeYouTube"),
+        .product(name: "ContributeRSS", package: "ContributeRSS"),
+        .product(name: "SyndiKit", package: "SyndiKit")
       ]
     ),
     .testTarget(
@@ -139,13 +117,5 @@ let package = Package(
         .product(name: "ButtondownKit", package: "ButtondownKit")
       ]
     ),
-    .testTarget(
-      name: "ContributeButtondownTests",
-      dependencies: [
-        "ContributeButtondown",
-        "Contribute",
-        .product(name: "ButtondownKit", package: "ButtondownKit")
-      ]
-    )
   ]
 )

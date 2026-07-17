@@ -198,7 +198,7 @@ Ordering: **I1** (link-field schema) is foundational — the generator (I2), bri
 
 #### I1 — Cross-media link schema on published items (Swift types) · P1-high
 Extend `BrightDigitSite.ItemMetadata` (`Sources/BrightDigitSite/BrightDigitSite.swift`) and the
-`PublishType` protocol layer (`Sources/PublishType/`) with a **unified, validated cross-media link
+`PublishType` protocol layer (`Packages/BrightDigit/PublishType/Sources/PublishType/`) with a **unified, validated cross-media link
 vocabulary**, replacing the drifting free-text `related.social` / `related.newsletter` /
 `related.episode`. Fields let a published site item declare its topic slug and cross-media siblings
 (e.g. `topicSlug`, `sourceRef`, `related.{episode,newsletter,social,article,talk,video}`). Codable,
