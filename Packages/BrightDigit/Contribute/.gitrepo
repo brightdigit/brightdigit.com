@@ -7,6 +7,6 @@
 	remote = git@github.com:BrightDigit/Contribute.git
 	branch = brightdigit-com-260621
 	commit = 6a27a65bffea02b5c64578d1b87f97bb840cdae6
-	parent = 204ca20d8576d6dd5a6099ca22acdbbfc02d48b3
+	parent = 0493996e477e6bc89f91a70355f10e0118cdfae0
 	method = merge
 	cmdver = 0.4.9

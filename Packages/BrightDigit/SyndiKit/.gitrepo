@@ -7,6 +7,6 @@
 	remote = git@github.com:brightdigit/SyndiKit.git
 	branch = brightdigit-com-260621
 	commit = 8259ad53d8a4aea39a99c2f835938fac1353981e
-	parent = 3f8b5a94b2092cb706bcfef558d88eb32171a798
+	parent = 0493996e477e6bc89f91a70355f10e0118cdfae0
 	method = merge
 	cmdver = 0.4.9

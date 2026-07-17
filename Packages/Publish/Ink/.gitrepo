@@ -7,6 +7,6 @@
 	remote = git@github.com:brightdigit/Ink.git
 	branch = brightdigit-com-260406
 	commit = 97f12cc6289992f188439fab6008c8281b208649
-	parent = 3f8b5a94b2092cb706bcfef558d88eb32171a798
+	parent = 0493996e477e6bc89f91a70355f10e0118cdfae0
 	method = merge
 	cmdver = 0.4.9
