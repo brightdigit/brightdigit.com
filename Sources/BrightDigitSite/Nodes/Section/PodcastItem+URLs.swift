@@ -94,22 +94,23 @@ extension PodcastItem {
     return urlComponents.url
   }
 
-  internal var youtubeEmbed: Node<HTML.BodyContext>? {
-    youtubeEmbedURL.map { youtubeEmbedURL in
-      .iframe(
-        .src(youtubeEmbedURL),
-        .frameborder(false),
-        .allowfullscreen(true),
-        .allow(
-          // swiftlint:disable:next line_length
-          "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        )
-      )
+  internal var youtubeEmbed: Component? {
+    guard let youtubeEmbedURL else {
+      return nil
     }
+    return Node<HTML.BodyContext>.iframe(
+      .src(youtubeEmbedURL),
+      .frameborder(false),
+      .allowfullscreen(true),
+      .allow(
+        // swiftlint:disable:next line_length
+        "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      )
+    )
   }
 
-  internal var transistorEmbed: Node<HTML.BodyContext> {
-    .iframe(
+  internal var transistorEmbed: some Component {
+    Node<HTML.BodyContext>.iframe(
       .attribute(named: "width", value: "100%"),
       .attribute(named: "height", value: "180"),
       .frameborder(false),

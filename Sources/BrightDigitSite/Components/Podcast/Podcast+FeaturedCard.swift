@@ -41,7 +41,7 @@ extension Podcast {
     internal let publishedDate: Date
     internal let audioDuration: TimeInterval
     internal let videoDuration: TimeInterval?
-    internal let transistorIFrame: Node<HTML.BodyContext>
+    internal let transistorIFrame: Component
 
     internal var body: Component {
       Header {

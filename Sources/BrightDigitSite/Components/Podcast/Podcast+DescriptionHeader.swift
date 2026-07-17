@@ -39,7 +39,7 @@ extension Podcast {
     internal let featuredImageURL: URL
     internal let transistorShareURL: URL
     internal let audioDuration: TimeInterval
-    internal let videoShareLink: Node<HTML.BodyContext>
+    internal let videoShareLink: Component
 
     internal var body: Component {
       Header {

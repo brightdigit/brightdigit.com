@@ -1,6 +1,6 @@
 //
-//  ProductItem+Content.swift
-//  BrightDigit
+//  DefaultTailwindClass.swift
+//  TailwindKit
 //
 //  Created by Leo Dion.
 //  Copyright © 2026 BrightDigit.
@@ -27,23 +27,17 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import Foundation
-import Plot
-import Publish
-import PublishType
+/// The built-in ``TailwindClass`` used by every modeled utility.
+///
+/// A `public` type (it is the concrete value the capability witnesses pass to
+/// the seam) with an `internal` initializer, so it is **not constructible by
+/// name** outside the module — like ``DefaultColor``. This is
+/// what keeps the public seam from becoming a raw-string entry point.
+public struct DefaultTailwindClass: TailwindClass {
+  /// The rendered utility class, e.g. `"bg-blue-500"`.
+  public let className: String
 
-extension ProductItem {
-  internal var featuredItemContent: Component {
-    SectionElement {
-      List {
-        ListItem(forProduct: self)
-      }
-    }.environmentValue(.ordered, key: .listStyle)
-  }
-
-  internal var sectionItemContent: Component {
-    ListItem {
-      SectionElement(forProduct: self).environmentValue(.ordered, key: .listStyle)
-    }
+  internal init(_ className: String) {
+    self.className = className
   }
 }

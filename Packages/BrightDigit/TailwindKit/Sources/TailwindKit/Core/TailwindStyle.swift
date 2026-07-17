@@ -53,12 +53,12 @@ public protocol TailwindStyle {
   /// The single composition primitive behind every non-variant utility. Built-in
   /// utilities pass a ``DefaultTailwindClass``; a downstream module may pass its
   /// own ``TailwindClass`` conformer.
-  func appending(_ tailwindClass: some TailwindStyleBuilder.TailwindClass) -> Self
+  func appending(_ tailwindClass: some TailwindClass) -> Self
 
   /// Returns a new style with every token of `other` prefixed by `variant`.
   ///
   /// Models responsive/state variants; prefixes stack, so
   /// `.md(.hover(.bg(.blue, .s700)))` renders `"md:hover:bg-blue-700"`.
-  func prefixing(_ variant: some TailwindStyleBuilder.Variant, _ other: TailwindStyleBuilder)
+  func prefixing(_ variant: some Variant, _ other: TailwindStyleBuilder)
     -> Self
 }

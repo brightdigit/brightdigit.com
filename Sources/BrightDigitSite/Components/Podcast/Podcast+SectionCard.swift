@@ -40,7 +40,7 @@ extension Podcast {
     internal let publishedDate: Date
     internal let audioDuration: TimeInterval
     internal let videoDuration: TimeInterval?
-    internal let shareLink: Node<HTML.BodyContext>
+    internal let shareLink: Component
 
     internal var body: Component {
       ComponentGroup {

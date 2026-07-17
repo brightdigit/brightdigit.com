@@ -43,41 +43,35 @@ internal struct AboutBuilder: PageBuilder {
 
   internal var bodyClasses: [String] { [] }
 
-  internal func main(
+  @ComponentBuilder internal func main(
     forLocation _: LocationType, withContext _: PublishingContext<BrightDigitSite>
-  ) -> [Node<HTML.BodyContext>] {
-    [
-      About.PageHeader().convertToNode(),
-      About.MediaSection(
-        imageSrc: "/media/about-us/graphic-attract.webm",
-        text: Strings.About.section1
-      )
-      .convertToNode(),
-      About.MediaSection(
-        imageSrc: "/media/about-us/opportunities.webm",
-        header: Strings.About.whoWeAreTitle,
-        para1: Strings.About.whoWeAreP1,
-        para2: Strings.About.whoWeAreP2,
-        para3: Strings.About.whoWeAreP3
-      )
-      .convertToNode(),
-      About.MediaSection(
-        imageSrc: "/media/about-us/communication.webm",
-        header: Strings.About.workWithUsTitle,
-        para1: Strings.About.workWithusP1,
-        para2: Strings.About.workWithusP2,
-        para3: Strings.About.workWithusP3
-      )
-      .convertToNode(),
-      About.MediaSection(
-        imageSrc: "/media/about-us/podcast.webm",
-        header: Strings.About.helpingOthersTitle,
-        para1: Strings.About.helpingOthersP1,
-        para2: Strings.About.helpingOthersP2,
-        para3: ""
-      )
-      .convertToNode(),
-      About.CTASection().convertToNode(),
-    ]
+  ) -> Component {
+    About.PageHeader()
+    About.MediaSection(
+      imageSrc: "/media/about-us/graphic-attract.webm",
+      text: Strings.About.section1
+    )
+    About.MediaSection(
+      imageSrc: "/media/about-us/opportunities.webm",
+      header: Strings.About.whoWeAreTitle,
+      para1: Strings.About.whoWeAreP1,
+      para2: Strings.About.whoWeAreP2,
+      para3: Strings.About.whoWeAreP3
+    )
+    About.MediaSection(
+      imageSrc: "/media/about-us/communication.webm",
+      header: Strings.About.workWithUsTitle,
+      para1: Strings.About.workWithusP1,
+      para2: Strings.About.workWithusP2,
+      para3: Strings.About.workWithusP3
+    )
+    About.MediaSection(
+      imageSrc: "/media/about-us/podcast.webm",
+      header: Strings.About.helpingOthersTitle,
+      para1: Strings.About.helpingOthersP1,
+      para2: Strings.About.helpingOthersP2,
+      para3: ""
+    )
+    About.CTASection()
   }
 }

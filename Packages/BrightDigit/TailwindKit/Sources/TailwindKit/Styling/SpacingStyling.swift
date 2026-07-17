@@ -69,31 +69,31 @@ extension SpacingStyling where Self: TailwindStyle {
 
   /// `p-<amount>`, e.g. `.p(.s4)`.
   public func p(_ amount: DefaultSpacing) -> Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("p-\(amount.token)"))
+    appending(DefaultTailwindClass("p-\(amount.token)"))
   }
   /// `px-<amount>`, e.g. `.px(.s4)`.
   public func px(_ amount: DefaultSpacing) -> Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("px-\(amount.token)"))
+    appending(DefaultTailwindClass("px-\(amount.token)"))
   }
   /// `py-<amount>`, e.g. `.py(.s4)`.
   public func py(_ amount: DefaultSpacing) -> Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("py-\(amount.token)"))
+    appending(DefaultTailwindClass("py-\(amount.token)"))
   }
   /// `pt-<amount>`, e.g. `.pt(.s4)`.
   public func pt(_ amount: DefaultSpacing) -> Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("pt-\(amount.token)"))
+    appending(DefaultTailwindClass("pt-\(amount.token)"))
   }
   /// `pr-<amount>`, e.g. `.pr(.s4)`.
   public func pr(_ amount: DefaultSpacing) -> Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("pr-\(amount.token)"))
+    appending(DefaultTailwindClass("pr-\(amount.token)"))
   }
   /// `pb-<amount>`, e.g. `.pb(.s4)`.
   public func pb(_ amount: DefaultSpacing) -> Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("pb-\(amount.token)"))
+    appending(DefaultTailwindClass("pb-\(amount.token)"))
   }
   /// `pl-<amount>`, e.g. `.pl(.s4)`.
   public func pl(_ amount: DefaultSpacing) -> Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("pl-\(amount.token)"))
+    appending(DefaultTailwindClass("pl-\(amount.token)"))
   }
 
   // MARK: Margin
@@ -118,9 +118,9 @@ extension SpacingStyling where Self: TailwindStyle {
   private func spaced(_ prefix: String, _ amount: DefaultSpacing) -> Self {
     amount.token.hasPrefix("-")
       ? appending(
-        TailwindStyleBuilder.DefaultTailwindClass("-\(prefix)-\(amount.token.dropFirst())")
+        DefaultTailwindClass("-\(prefix)-\(amount.token.dropFirst())")
       )
-      : appending(TailwindStyleBuilder.DefaultTailwindClass("\(prefix)-\(amount.token)"))
+      : appending(DefaultTailwindClass("\(prefix)-\(amount.token)"))
   }
 }
 

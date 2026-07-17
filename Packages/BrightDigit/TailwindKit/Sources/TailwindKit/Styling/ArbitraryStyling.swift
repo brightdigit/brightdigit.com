@@ -59,17 +59,17 @@ extension ArbitraryStyling where Self: TailwindStyle {
   ///
   /// Spaces in `value` are escaped to underscores.
   public func arbitrary(_ prefix: String, value: String) -> Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("\(prefix)-[\(escapingSpaces(value))]"))
+    appending(DefaultTailwindClass("\(prefix)-[\(escapingSpaces(value))]"))
   }
   /// `<prefix>-(<name>)`, e.g. `.arbitrary("bg", variable: "--brand")` → `bg-(--brand)`.
   public func arbitrary(_ prefix: String, variable name: String) -> Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("\(prefix)-(\(name))"))
+    appending(DefaultTailwindClass("\(prefix)-(\(name))"))
   }
   /// `[<property>:<value>]`, e.g. `.custom(property: "mask-type", value: "luminance")`.
   ///
   /// Spaces in `value` are escaped to underscores.
   public func custom(property: String, value: String) -> Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("[\(property):\(escapingSpaces(value))]"))
+    appending(DefaultTailwindClass("[\(property):\(escapingSpaces(value))]"))
   }
 }
 

@@ -46,8 +46,8 @@ import Testing
   }
 
   /// A custom variant — the stand-in for a `@custom-variant` a downstream module
-  /// would register. Proves ``TailwindStyleBuilder/Variant`` is extensible like a color.
-  private struct CustomVariant: TailwindStyleBuilder.Variant {
+  /// would register. Proves ``Variant`` is extensible like a color.
+  private struct CustomVariant: Variant {
     let token: String
   }
 
@@ -62,14 +62,14 @@ import Testing
       tokens.joined(separator: " ")
     }
 
-    func appending(_ tailwindClass: some TailwindStyleBuilder.TailwindClass) -> Self {
+    func appending(_ tailwindClass: some TailwindClass) -> Self {
       var copy = self
       copy.tokens.append(tailwindClass.className)
       return copy
     }
 
     func prefixing(
-      _ variant: some TailwindStyleBuilder.Variant, _ other: TailwindStyleBuilder
+      _ variant: some Variant, _ other: TailwindStyleBuilder
     ) -> Self {
       var copy = self
       copy.tokens += other.rendered

@@ -62,35 +62,35 @@ extension EffectsStyling where Self: TailwindStyle {
   // MARK: Filters (bare)
 
   /// `invert` (`invert(100%)`).
-  public var invert: Self { appending(TailwindStyleBuilder.DefaultTailwindClass("invert")) }
+  public var invert: Self { appending(DefaultTailwindClass("invert")) }
   /// `grayscale` (`grayscale(100%)`).
-  public var grayscale: Self { appending(TailwindStyleBuilder.DefaultTailwindClass("grayscale")) }
+  public var grayscale: Self { appending(DefaultTailwindClass("grayscale")) }
   /// `backdrop-grayscale`.
   public var backdropGrayscale: Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("backdrop-grayscale"))
+    appending(DefaultTailwindClass("backdrop-grayscale"))
   }
 
   // MARK: Effects
 
   /// `shadow-<value>`, e.g. `.shadow(.lg)`.
   public func shadow(_ shadow: some Shadow) -> Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("shadow-\(shadow.token)"))
+    appending(DefaultTailwindClass("shadow-\(shadow.token)"))
   }
   /// `drop-shadow-<value>`, e.g. `.dropShadow(.xl)`.
   public func dropShadow(_ shadow: some DropShadow) -> Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("drop-shadow-\(shadow.token)"))
+    appending(DefaultTailwindClass("drop-shadow-\(shadow.token)"))
   }
   /// `ring-<n>`, e.g. `.ring(4)`.
   public func ring(_ width: Int) -> Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("ring-\(width)"))
+    appending(DefaultTailwindClass("ring-\(width)"))
   }
   /// `opacity-<n>`, e.g. `.opacity(90)`.
   public func opacity(_ value: Int) -> Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("opacity-\(value)"))
+    appending(DefaultTailwindClass("opacity-\(value)"))
   }
   /// `object-<fit>`, e.g. `.object(.cover)`.
   public func object(_ fit: ObjectFit) -> Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("object-\(fit.token)"))
+    appending(DefaultTailwindClass("object-\(fit.token)"))
   }
 
   // MARK: Filters (parameterized)
@@ -98,16 +98,16 @@ extension EffectsStyling where Self: TailwindStyle {
   /// `backdrop-blur-<size>`, e.g. `.backdropBlur(.lg)`.
   public func backdropBlur(_ radius: some Radius) -> Self {
     radius.token.isEmpty
-      ? appending(TailwindStyleBuilder.DefaultTailwindClass("backdrop-blur"))
-      : appending(TailwindStyleBuilder.DefaultTailwindClass("backdrop-blur-\(radius.token)"))
+      ? appending(DefaultTailwindClass("backdrop-blur"))
+      : appending(DefaultTailwindClass("backdrop-blur-\(radius.token)"))
   }
   /// `backdrop-brightness-<n>`, e.g. `.backdropBrightness(50)`.
   public func backdropBrightness(_ value: Int) -> Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("backdrop-brightness-\(value)"))
+    appending(DefaultTailwindClass("backdrop-brightness-\(value)"))
   }
   /// `hue-rotate-<deg>`, e.g. `.hueRotate(180)`.
   public func hueRotate(_ degrees: Int) -> Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("hue-rotate-\(degrees)"))
+    appending(DefaultTailwindClass("hue-rotate-\(degrees)"))
   }
 }
 

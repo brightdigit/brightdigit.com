@@ -40,17 +40,13 @@ internal struct ServicesBuilder: PageBuilder {
 
   internal var bodyClasses: [String] { [] }
 
-  internal func main(
+  @ComponentBuilder internal func main(
     forLocation _: Page, withContext _: PublishingContext<BrightDigitSite>
   )
-    -> [Node<HTML.BodyContext>]
+    -> Component
   {
-    [
-      .components {
-        Services.PageHeader()
-        Services.Boxes()
-        Services.ProductsCTASection()
-      }
-    ]
+    Services.PageHeader()
+    Services.Boxes()
+    Services.ProductsCTASection()
   }
 }

@@ -40,15 +40,13 @@ internal struct ContactBuilder: PageBuilder {
 
   internal var bodyClasses: [String] { [] }
 
-  internal func main(
+  @ComponentBuilder internal func main(
     forLocation _: Page, withContext _: PublishingContext<BrightDigitSite>
   )
-    -> [Node<HTML.BodyContext>]
+    -> Component
   {
-    [
-      Contact.PageHeader().convertToNode(),
-      Contact.FormSection().convertToNode(),
-      Contact.SocialMediaSection().convertToNode(),
-    ]
+    Contact.PageHeader()
+    Contact.FormSection()
+    Contact.SocialMediaSection()
   }
 }

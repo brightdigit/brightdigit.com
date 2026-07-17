@@ -98,8 +98,8 @@ in extensions constrained on the `UnderlyingClientProtocol` seam).
   bare `Color`/`Size`/`Position`/… can collide with `SwiftUI.Color` etc. in a
   downstream file importing both — such a caller must write `TailwindKit.Color`.
   TailwindKit is server-side HTML with no SwiftUI consumers, so this is latent.
-  (The **seam** types `TailwindClass`/`Variant` stay nested under `TailwindStyleBuilder`
-  — they are infrastructure, and nesting keeps those generic names namespaced.)
+  (The **seam** types `TailwindClass`/`Variant` — and their `Default…` structs — are
+  also top-level, bare-named, one per file, matching the token types.)
 - **The extensible-token pattern (Approach C):** each family is a marker
   `public protocol Foo: TailwindToken {}`; built-ins live on a `public struct
   DefaultFoo: Foo` whose init is **internal** (so it is *not constructible by

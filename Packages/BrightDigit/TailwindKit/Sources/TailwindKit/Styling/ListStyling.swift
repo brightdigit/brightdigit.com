@@ -40,7 +40,7 @@ public protocol ListStyling {
 extension ListStyling where Self: TailwindStyle {
   /// `list-<style>`, e.g. `.list(.disc)`.
   public func list(_ value: ListStyle) -> Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("list-\(value.token)"))
+    appending(DefaultTailwindClass("list-\(value.token)"))
   }
 }
 

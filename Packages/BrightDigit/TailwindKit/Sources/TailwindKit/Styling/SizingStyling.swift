@@ -46,19 +46,19 @@ public protocol SizingStyling {
 extension SizingStyling where Self: TailwindStyle {
   /// `w-<size>`, e.g. `.w(.full)`.
   public func w(_ size: DefaultSize) -> Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("w-\(size.token)"))
+    appending(DefaultTailwindClass("w-\(size.token)"))
   }
   /// `h-<size>`, e.g. `.h(.full)`.
   public func h(_ size: DefaultSize) -> Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("h-\(size.token)"))
+    appending(DefaultTailwindClass("h-\(size.token)"))
   }
   /// `max-w-<size>`, e.g. `.maxW(.lg)`.
   public func maxW(_ size: some MaxWidth) -> Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("max-w-\(size.token)"))
+    appending(DefaultTailwindClass("max-w-\(size.token)"))
   }
   /// `max-h-<size>`, e.g. `.maxH(.full)`.
   public func maxH(_ size: DefaultSize) -> Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("max-h-\(size.token)"))
+    appending(DefaultTailwindClass("max-h-\(size.token)"))
   }
 }
 

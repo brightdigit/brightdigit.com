@@ -33,7 +33,7 @@ import Publish
 import PublishType
 
 extension NewsletterItem {
-  internal var featuredItemContent: Node<HTML.BodyContext> {
+  internal var featuredItemContent: Component {
     Newsletter.FeaturedCard(
       title: title,
       description: description,
@@ -42,12 +42,10 @@ extension NewsletterItem {
       publishedDate: publishedDate,
       sourcePath: source.path.string
     )
-    .convertToNode()
   }
 
-  internal var sectionItemContent: [Node<HTML.BodyContext>] {
-    [
-      .id("issue-\(issueNo)"),
+  internal var sectionItemContent: Component {
+    ListItem {
       Newsletter.SectionCard(
         title: title,
         description: description,
@@ -55,7 +53,7 @@ extension NewsletterItem {
         archiveURL: archiveURL,
         publishedDate: publishedDate
       )
-      .convertToNode(),
-    ]
+    }
+    .id("issue-\(issueNo)")
   }
 }

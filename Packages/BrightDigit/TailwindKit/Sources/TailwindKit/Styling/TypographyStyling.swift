@@ -75,62 +75,62 @@ extension TypographyStyling where Self: TailwindStyle {
 
   /// `text-white`.
   public var textWhite: Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("text-white"))
+    appending(DefaultTailwindClass("text-white"))
   }
   /// `text-black`.
   public var textBlack: Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("text-black"))
+    appending(DefaultTailwindClass("text-black"))
   }
   /// `italic`.
-  public var italic: Self { appending(TailwindStyleBuilder.DefaultTailwindClass("italic")) }
+  public var italic: Self { appending(DefaultTailwindClass("italic")) }
   /// `underline`.
-  public var underline: Self { appending(TailwindStyleBuilder.DefaultTailwindClass("underline")) }
+  public var underline: Self { appending(DefaultTailwindClass("underline")) }
   /// `no-underline`.
   public var noUnderline: Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("no-underline"))
+    appending(DefaultTailwindClass("no-underline"))
   }
   /// `uppercase`.
-  public var uppercase: Self { appending(TailwindStyleBuilder.DefaultTailwindClass("uppercase")) }
+  public var uppercase: Self { appending(DefaultTailwindClass("uppercase")) }
   /// `lowercase`.
-  public var lowercase: Self { appending(TailwindStyleBuilder.DefaultTailwindClass("lowercase")) }
+  public var lowercase: Self { appending(DefaultTailwindClass("lowercase")) }
   /// `capitalize`.
   public var capitalize: Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("capitalize"))
+    appending(DefaultTailwindClass("capitalize"))
   }
   /// `whitespace-pre-wrap`.
   public var whitespacePreWrap: Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("whitespace-pre-wrap"))
+    appending(DefaultTailwindClass("whitespace-pre-wrap"))
   }
   /// `leading-none` (`line-height: 1`).
   public var leadingNone: Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("leading-none"))
+    appending(DefaultTailwindClass("leading-none"))
   }
 
   // MARK: Parameterized
 
   /// `text-<size>`, e.g. `.text(.lg)`.
   public func text(_ size: some TextSize) -> Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("text-\(size.token)"))
+    appending(DefaultTailwindClass("text-\(size.token)"))
   }
   /// `text-<align>`, e.g. `.text(.center)`.
   public func text(_ align: TextAlign) -> Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("text-\(align.token)"))
+    appending(DefaultTailwindClass("text-\(align.token)"))
   }
   /// `font-<weight>`, e.g. `.font(.medium)`.
   public func font(_ weight: some FontWeight) -> Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("font-\(weight.token)"))
+    appending(DefaultTailwindClass("font-\(weight.token)"))
   }
   /// `align-<value>`, e.g. `.align(.middle)` → `align-middle`.
   public func align(_ value: VerticalAlign) -> Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("align-\(value.token)"))
+    appending(DefaultTailwindClass("align-\(value.token)"))
   }
   /// `tracking-<value>`, e.g. `.tracking(.tight)`.
   public func tracking(_ value: some Tracking) -> Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("tracking-\(value.token)"))
+    appending(DefaultTailwindClass("tracking-\(value.token)"))
   }
   /// `leading-<n>` (numeric line-height), e.g. `.leading(6)`.
   public func leading(_ value: Int) -> Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("leading-\(value)"))
+    appending(DefaultTailwindClass("leading-\(value)"))
   }
 }
 

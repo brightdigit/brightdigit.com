@@ -66,7 +66,7 @@ public struct ItemContent<
     [item.source.sectionID.rawValue]
   }
 
-  public var main: [Node<HTML.BodyContext>] {
+  public var main: Component {
     item.pageMainContent
   }
 

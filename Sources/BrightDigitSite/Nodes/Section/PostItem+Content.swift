@@ -44,7 +44,7 @@ extension PostItem {
     }
   }
 
-  internal var featuredItemContent: Node<HTML.BodyContext> {
+  internal var featuredItemContent: Component {
     Post.FeaturedCard(
       title: title,
       description: description,
@@ -52,12 +52,10 @@ extension PostItem {
       sourcePathAbsolute: source.path.absoluteString,
       publishedDate: publishedDate
     )
-    .convertToNode()
   }
 
-  internal var sectionItemContent: [Node<HTML.BodyContext>] {
-    [
-      .id("post-\(slug)"),
+  internal var sectionItemContent: Component {
+    ListItem {
       Post.SectionCard(
         title: title,
         description: description,
@@ -65,26 +63,24 @@ extension PostItem {
         sourcePathAbsolute: source.path.absoluteString,
         publishedDate: publishedDate
       )
-      .convertToNode(),
-    ]
+    }
+    .id("post-\(slug)")
   }
 
-  internal var pageHeader: Node<HTML.BodyContext> {
+  internal var pageHeader: some Component {
     Post.PageHeader(
       title: title,
       featuredImageURL: featuredImageURL,
       shareItems: shareListItems,
       readingTimeMinutes: source.readingTime.minutes
     )
-    .convertToNode()
   }
 
-  internal var pageFooter: Node<HTML.BodyContext> {
+  internal var pageFooter: some Component {
     Post.PageFooter(
       shareItems: shareListItems,
       subscriptionCTA: subscriptionCTA,
       sourcePath: source.path.string
     )
-    .convertToNode()
   }
 }

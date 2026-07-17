@@ -52,29 +52,29 @@ extension BorderStyling where Self: TailwindStyle {
   // MARK: Bare
 
   /// `border`.
-  public var border: Self { appending(TailwindStyleBuilder.DefaultTailwindClass("border")) }
+  public var border: Self { appending(DefaultTailwindClass("border")) }
   /// `rounded`.
-  public var rounded: Self { appending(TailwindStyleBuilder.DefaultTailwindClass("rounded")) }
+  public var rounded: Self { appending(DefaultTailwindClass("rounded")) }
   /// `border-none`.
   public var borderNone: Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("border-none"))
+    appending(DefaultTailwindClass("border-none"))
   }
 
   // MARK: Parameterized
 
   /// `border-<width>`, e.g. `.border(2)` → `border-2`.
   public func border(_ width: Int) -> Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("border-\(width)"))
+    appending(DefaultTailwindClass("border-\(width)"))
   }
   /// `border-<side>-<width>`, e.g. `.border(.t, 2)` → `border-t-2`.
   public func border(_ side: BorderSide, _ width: Int) -> Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("border-\(side.token)-\(width)"))
+    appending(DefaultTailwindClass("border-\(side.token)-\(width)"))
   }
   /// `rounded-<radius>`, e.g. `.rounded(.lg)` → `rounded-lg`.
   public func rounded(_ radius: some Radius) -> Self {
     radius.token.isEmpty
-      ? appending(TailwindStyleBuilder.DefaultTailwindClass("rounded"))
-      : appending(TailwindStyleBuilder.DefaultTailwindClass("rounded-\(radius.token)"))
+      ? appending(DefaultTailwindClass("rounded"))
+      : appending(DefaultTailwindClass("rounded-\(radius.token)"))
   }
 }
 

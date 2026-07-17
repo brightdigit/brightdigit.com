@@ -54,30 +54,30 @@ extension TransitionStyling where Self: TailwindStyle {
 
   /// `transition-all`.
   public var transitionAll: Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("transition-all"))
+    appending(DefaultTailwindClass("transition-all"))
   }
   /// `transition-opacity`.
   public var transitionOpacity: Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("transition-opacity"))
+    appending(DefaultTailwindClass("transition-opacity"))
   }
   /// `transition-colors`.
   public var transitionColors: Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("transition-colors"))
+    appending(DefaultTailwindClass("transition-colors"))
   }
   /// `transition-transform`.
   public var transitionTransform: Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("transition-transform"))
+    appending(DefaultTailwindClass("transition-transform"))
   }
 
   // MARK: Transitions (parameterized)
 
   /// `duration-<ms>`, e.g. `.duration(300)`.
   public func duration(_ milliseconds: Int) -> Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("duration-\(milliseconds)"))
+    appending(DefaultTailwindClass("duration-\(milliseconds)"))
   }
   /// `ease-<value>`, e.g. `.ease(.inOut)` → `ease-in-out`.
   public func ease(_ ease: some Ease) -> Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("ease-\(ease.token)"))
+    appending(DefaultTailwindClass("ease-\(ease.token)"))
   }
 }
 

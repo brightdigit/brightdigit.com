@@ -66,47 +66,47 @@ extension ColorStyling where Self: TailwindStyle {
   // MARK: Bare
 
   /// `bg-white`.
-  public var bgWhite: Self { appending(TailwindStyleBuilder.DefaultTailwindClass("bg-white")) }
+  public var bgWhite: Self { appending(DefaultTailwindClass("bg-white")) }
   /// `bg-black`.
-  public var bgBlack: Self { appending(TailwindStyleBuilder.DefaultTailwindClass("bg-black")) }
+  public var bgBlack: Self { appending(DefaultTailwindClass("bg-black")) }
   /// `bg-transparent`.
   public var bgTransparent: Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("bg-transparent"))
+    appending(DefaultTailwindClass("bg-transparent"))
   }
 
   // MARK: Color + shade
 
   /// `bg-<color>-<shade>`, e.g. `.bg(.blue, .s500)`.
   public func bg(_ color: some Color, _ shade: Shade) -> Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("bg-\(color.token)-\(shade.token)"))
+    appending(DefaultTailwindClass("bg-\(color.token)-\(shade.token)"))
   }
   /// `border-<color>-<shade>`, e.g. `.borderColor(.gray, .s200)`.
   public func borderColor(_ color: some Color, _ shade: Shade)
     -> Self
   {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("border-\(color.token)-\(shade.token)"))
+    appending(DefaultTailwindClass("border-\(color.token)-\(shade.token)"))
   }
   /// `text-<color>-<shade>`, e.g. `.text(.blue, .s500)`.
   public func text(_ color: some Color, _ shade: Shade) -> Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("text-\(color.token)-\(shade.token)"))
+    appending(DefaultTailwindClass("text-\(color.token)-\(shade.token)"))
   }
 
   // MARK: Color + shade + opacity
 
   /// `bg-white/<opacity>`, e.g. `.bgWhite(opacity: 90)` → `bg-white/90`.
   public func bgWhite(opacity: Int) -> Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("bg-white/\(opacity)"))
+    appending(DefaultTailwindClass("bg-white/\(opacity)"))
   }
   /// `bg-black/<opacity>`, e.g. `.bgBlack(opacity: 30)` → `bg-black/30`.
   public func bgBlack(opacity: Int) -> Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("bg-black/\(opacity)"))
+    appending(DefaultTailwindClass("bg-black/\(opacity)"))
   }
   /// `bg-<color>-<shade>/<opacity>`, e.g. `.bg(.gray, .s500, opacity: 50)`.
   public func bg(_ color: some Color, _ shade: Shade, opacity: Int)
     -> Self
   {
     appending(
-      TailwindStyleBuilder.DefaultTailwindClass("bg-\(color.token)-\(shade.token)/\(opacity)")
+      DefaultTailwindClass("bg-\(color.token)-\(shade.token)/\(opacity)")
     )
   }
   /// `text-<color>-<shade>/<opacity>`.
@@ -114,7 +114,7 @@ extension ColorStyling where Self: TailwindStyle {
     -> Self
   {
     appending(
-      TailwindStyleBuilder.DefaultTailwindClass("text-\(color.token)-\(shade.token)/\(opacity)")
+      DefaultTailwindClass("text-\(color.token)-\(shade.token)/\(opacity)")
     )
   }
   /// `border-<color>-<shade>/<opacity>`, e.g. `.borderColor(.gray, .s400, opacity: 10)`.
@@ -122,7 +122,7 @@ extension ColorStyling where Self: TailwindStyle {
     _ color: some Color, _ shade: Shade, opacity: Int
   ) -> Self {
     appending(
-      TailwindStyleBuilder.DefaultTailwindClass("border-\(color.token)-\(shade.token)/\(opacity)")
+      DefaultTailwindClass("border-\(color.token)-\(shade.token)/\(opacity)")
     )
   }
 }

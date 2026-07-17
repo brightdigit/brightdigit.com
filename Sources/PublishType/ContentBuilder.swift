@@ -40,5 +40,5 @@ public protocol ContentBuilder {
   func main(
     forLocation location: LocationType,
     withContext context: PublishingContext<WebsiteType>
-  ) -> [Node<HTML.BodyContext>]
+  ) -> Component
 }

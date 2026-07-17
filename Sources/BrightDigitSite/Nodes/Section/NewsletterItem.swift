@@ -59,8 +59,8 @@ internal struct NewsletterItem: SectionItem {
     nil
   }
 
-  internal var pageMainContent: [Node<HTML.BodyContext>] {
-    [.contentBody(source.body)]
+  internal var pageMainContent: Component {
+    Node<HTML.BodyContext>.contentBody(source.body)
   }
 
   internal var redirectURL: URL? {

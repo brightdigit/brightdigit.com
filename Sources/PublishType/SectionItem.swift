@@ -35,8 +35,8 @@ public protocol SectionItem: SectionContentFactory {
   static var sectionH1: String? { get }
   static var sectionTitle: String { get }
   static var sectionDescription: String { get }
-  var featuredItemContent: Node<HTML.BodyContext> { get }
-  var sectionItemContent: [Node<HTML.BodyContext>] { get }
+  var featuredItemContent: Component { get }
+  var sectionItemContent: Component { get }
   var isFeatured: Bool { get }
   var source: Item<WebsiteType> { get }
   var description: String { get }
@@ -44,7 +44,7 @@ public protocol SectionItem: SectionContentFactory {
 
   var pageBodyID: String? { get }
 
-  var pageMainContent: [Node<HTML.BodyContext>] { get }
+  var pageMainContent: Component { get }
 
   var redirectURL: URL? { get }
   var featuredImageURL: URL { get }

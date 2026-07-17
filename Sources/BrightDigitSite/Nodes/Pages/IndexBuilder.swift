@@ -40,17 +40,15 @@ internal struct IndexBuilder: ContentBuilder {
 
   internal var bodyClasses: [String] { [] }
 
-  internal func main(
+  @ComponentBuilder internal func main(
     forLocation _: Index, withContext context: PublishingContext<BrightDigitSite>
   )
-    -> [Node<HTML.BodyContext>]
+    -> Component
   {
-    [
-      Home.HeroHeader().convertToNode(),
-      Home.ServicesSection().convertToNode(),
-      Home.TestimonialsSection().convertToNode(),
-      Home.LatestArticlesSection(context: context).convertToNode(),
-      Home.NewsletterCTASection().convertToNode(),
-    ]
+    Home.HeroHeader()
+    Home.ServicesSection()
+    Home.TestimonialsSection()
+    Home.LatestArticlesSection(context: context)
+    Home.NewsletterCTASection()
   }
 }

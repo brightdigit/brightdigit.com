@@ -52,31 +52,31 @@ public protocol PositioningStyling {
 extension PositioningStyling where Self: TailwindStyle {
   /// `static` / `relative` / `absolute` / `fixed` / `sticky`, e.g. `.position(.absolute)`.
   public func position(_ value: Position) -> Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass(value.token))
+    appending(DefaultTailwindClass(value.token))
   }
   /// `top-<amount>`, e.g. `.top(.s4)`.
   public func top(_ amount: DefaultSpacing) -> Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("top-\(amount.token)"))
+    appending(DefaultTailwindClass("top-\(amount.token)"))
   }
   /// `right-<amount>`, e.g. `.right(.s4)`.
   public func right(_ amount: DefaultSpacing) -> Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("right-\(amount.token)"))
+    appending(DefaultTailwindClass("right-\(amount.token)"))
   }
   /// `bottom-<amount>`, e.g. `.bottom(.s4)`.
   public func bottom(_ amount: DefaultSpacing) -> Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("bottom-\(amount.token)"))
+    appending(DefaultTailwindClass("bottom-\(amount.token)"))
   }
   /// `left-<amount>`, e.g. `.left(.s4)`.
   public func left(_ amount: DefaultSpacing) -> Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("left-\(amount.token)"))
+    appending(DefaultTailwindClass("left-\(amount.token)"))
   }
   /// `inset-<amount>`, e.g. `.inset(.s4)`.
   public func inset(_ amount: DefaultSpacing) -> Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("inset-\(amount.token)"))
+    appending(DefaultTailwindClass("inset-\(amount.token)"))
   }
   /// `z-<index>`, e.g. `.z(10)`.
   public func z(_ index: Int) -> Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("z-\(index)"))
+    appending(DefaultTailwindClass("z-\(index)"))
   }
 }
 

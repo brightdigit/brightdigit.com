@@ -33,8 +33,8 @@ import Publish
 extension Podcast {
   /// The podcast episode main content: audio/video embeds plus show notes.
   internal struct MainContent: Component {
-    internal let transistorEmbed: Node<HTML.BodyContext>
-    internal let youtubeEmbed: Node<HTML.BodyContext>?
+    internal let transistorEmbed: Component
+    internal let youtubeEmbed: Component?
     internal let showNotesContent: Content.Body
 
     internal var body: Component {

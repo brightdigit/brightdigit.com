@@ -57,27 +57,27 @@ extension DisplayStyling where Self: TailwindStyle {
   // MARK: Bare
 
   /// `flex`.
-  public var flex: Self { appending(TailwindStyleBuilder.DefaultTailwindClass("flex")) }
+  public var flex: Self { appending(DefaultTailwindClass("flex")) }
   /// `inline-flex`.
   public var inlineFlex: Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("inline-flex"))
+    appending(DefaultTailwindClass("inline-flex"))
   }
   /// `grid`.
-  public var grid: Self { appending(TailwindStyleBuilder.DefaultTailwindClass("grid")) }
+  public var grid: Self { appending(DefaultTailwindClass("grid")) }
   /// `block`.
-  public var block: Self { appending(TailwindStyleBuilder.DefaultTailwindClass("block")) }
+  public var block: Self { appending(DefaultTailwindClass("block")) }
   /// `inline-block`.
   public var inlineBlock: Self {
-    appending(TailwindStyleBuilder.DefaultTailwindClass("inline-block"))
+    appending(DefaultTailwindClass("inline-block"))
   }
   /// `inline`.
-  public var inline: Self { appending(TailwindStyleBuilder.DefaultTailwindClass("inline")) }
+  public var inline: Self { appending(DefaultTailwindClass("inline")) }
   /// `hidden`.
-  public var hidden: Self { appending(TailwindStyleBuilder.DefaultTailwindClass("hidden")) }
+  public var hidden: Self { appending(DefaultTailwindClass("hidden")) }
   /// `container`.
-  public var container: Self { appending(TailwindStyleBuilder.DefaultTailwindClass("container")) }
+  public var container: Self { appending(DefaultTailwindClass("container")) }
   /// `contents`.
-  public var contents: Self { appending(TailwindStyleBuilder.DefaultTailwindClass("contents")) }
+  public var contents: Self { appending(DefaultTailwindClass("contents")) }
 }
 
 extension TailwindStyleBuilder: DisplayStyling {}
