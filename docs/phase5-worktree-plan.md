@@ -6,7 +6,7 @@
 
 ---
 
-## ⚡ Execution status — updated 2026-07-16 (Track A complete; #121 merged; #67+#53 in review on PR #157)
+## ⚡ Execution status — updated 2026-07-17 (Track A complete; #121 merged; #67+#53 in review on PR #157)
 
 The design below is the pre-execution plan; **this section reflects current reality.**
 
@@ -21,7 +21,7 @@ The design below is the pre-execution plan; **this section reflects current real
 | #127 archive one-shot | #156 | `phase5-buttondown-archive` | ✅ merged into `phase-05` |
 | #122 import new/missing | #155 | `phase5-buttondown-import` | ✅ merged into `phase-05` |
 | #121 Publish stack | #151 | `phase5-publish-upgrade` | ✅ merged into `phase-05` (commit `aed12dec`) |
-| #67 + #53 | **#157** | `phase5-component-migration` | 🔄 **open, ready for review — CI green (both workflows); awaiting Leo's merge** |
+| #67 + #53 | **#157** | `phase5-component-migration` | 🔄 **open; TailwindKit follow-up cleanup pending push/CI rerun; awaiting Leo's merge** |
 
 **Tracks A + B foundational work are fully landed on `phase-05`.** The only open Phase-5 PR is
 **#157 (#67 + #53, combined)**. All originally-planned Phase-5 code issues are now either merged
@@ -29,7 +29,7 @@ or in review on #157.
 
 New tracking issues filed: **#152** (remove vendored Files → stdlib `FilePath`/Foundation, staged, post-phase-5) · **#153** (reclaim parallel page generation — measure-first, likely not worth it).
 
-### #67 + #53 execution (PR #157, 2026-07-16) — READY FOR REVIEW
+### #67 + #53 execution (PR #157, 2026-07-16/17) — IN REVIEW
 
 **Leo decisions this session:** one **combined PR** for #67 + #53; TailwindKit models **only officially documented Tailwind v4 classes** (nothing custom); Mermaid is **verify-only**; success criterion is **semantic (whitespace-normalized) equivalence**, not strict byte-identical.
 
@@ -46,6 +46,13 @@ New tracking issues filed: **#152** (remove vendored Files → stdlib `FilePath`
 - **Lint follow-up:** fixed `Sources/BrightDigitSite/**` house style (only the CI `lint` job / repo-root `Scripts/lint.sh` covers the main app; package lints don't). Output unchanged.
 
 **Verification:** whole-repo `swift build`/`swift test` green (9 app + 86 Publish + 27 TailwindKit); repo-root + Publish + TailwindKit strict lint 0 violations; **both CI workflows green** on the final commit — `CI Pipeline` (build-linux, lint, package-linux, deploy) and `Packages CI` (Publish + TailwindKit on macOS + Ubuntu). **Do NOT merge — Leo reviews/merges.**
+
+**2026-07-17 TailwindKit follow-up on `phase5-component-migration`:**
+- Added the root package dependency on `Packages/BrightDigit/TailwindKit` so the main package can import the module.
+- Refined TailwindKit's capability seam: `TailwindStyleProtocol.appending(_:)` and `prefixing(_:_:)` now return `Self`, and the instance-side `*Styling` capability APIs preserve `Self`; static `TailwindStyle` entry points remain concrete.
+- Default token static mirrors still use constrained `static var` members for leading-dot syntax, but their backing `*Value` `static let`s are `fileprivate` and cached.
+- Organized `Sources/TailwindKit` into `Core/`, `Styling/`, `Tokens/Closed/`, `Tokens/Extensible/`, and `Plot/`.
+- Local verification: `CI=true LINT_MODE=STRICT ./Scripts/lint.sh` from `Packages/BrightDigit/TailwindKit` passes with 0 violations and a successful build. CI must rerun after this follow-up is pushed.
 
 **Gotchas recorded** (in `.claude/agent-notes.md`): the repo-root `./Scripts/lint.sh` WITHOUT `CI=1` runs `header.sh`, which pollutes ALL vendored Publish files with a duplicate BrightDigit header — always use `CI=1 LINT_MODE=STRICT` to check; swift-format `[LineLength]` (90) is separate from SwiftLint `line_length` and needs the long string on its own line inside the call.
 

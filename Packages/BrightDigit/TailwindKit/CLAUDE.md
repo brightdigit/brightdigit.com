@@ -33,19 +33,52 @@ only when `CI` is unset; in CI it lints and builds without mutating files.
 
 `TailwindStyle` is an immutable value builder that is **Plot-independent**. The
 core builder and its utility surface live in Plot-free files
-(`TailwindStyle.swift`, the `TailwindStyle+*Tokens.swift` token files,
-`TailwindStyle+Utilities.swift`, `TailwindStyle+Static.swift`,
-`TailwindStyle+Arbitrary.swift`). The **only** file that imports Plot is
+(`TailwindStyle.swift`, the `TailwindStyle+*Tokens.swift` token files, and the
+`*Styling.swift` capability files). The **only** file that imports Plot is
 `Node+Tailwind.swift`, which adds the single sugar `.tailwind(_ style:)` →
 `.class(style.rendered)` on `Node`/`Attribute`.
 
 - Every fluent member returns a new `TailwindStyle`. Bare utilities are computed
   properties (`.flex`, `.gap`); parameterized ones are methods (`.gap(4)`,
-  `.bg(.blue, .s500)`). Static mirrors in `TailwindStyle+Static.swift` let a
-  chain start with a leading dot.
-- To satisfy SwiftLint's `type_contents_order`, each of the utilities/static
-  files is split into a **bare-utilities (properties)** extension and a
-  **parameterized-utilities (methods)** extension.
+  `.bg(.blue, .s500)`). Static mirrors let a chain start with a leading dot.
+
+### The capability-protocol architecture (mirrors ButtondownKit)
+
+The fluent surface is organized into ~13 **public capability protocols** — one
+per CSS concern, noun + `Styling` suffix — each in its own file
+(`ColorStyling.swift`, `SpacingStyling.swift`, `FlexGridStyling.swift`, …). This
+mirrors `ButtondownKit`'s capability-protocol pattern (`EmailListing`, … witnessed
+in extensions constrained on the `UnderlyingClientProtocol` seam).
+
+- **The seam is `TailwindStyleProtocol`** (`TailwindStyleProtocol.swift`), a
+  **public** protocol exposing the two composition primitives
+  `appending(_ class: some TailwindClass)` and
+  `prefixing(_ variant: some Variant, _:)`. Each capability provides its members
+  in `extension XStyling where Self: TailwindStyleProtocol { public func … }`,
+  composing through the seam; `TailwindStyle` conforms to the seam + every
+  capability. The seam **must** be public — Swift forbids a `public` member in an
+  extension constrained on a non-public protocol.
+- **Why the seam takes typed values, not `String`.** A naive port of
+  ButtondownKit's `underlying` seam would expose `appending(_:String)`, breaking
+  the invariant that the public API never accepts raw strings. Instead the seam
+  takes `some TailwindClass` (a full class fragment; built-ins via
+  `DefaultTailwindClass`, **internal init**) and `some Variant`. So the seam is
+  public yet there is **no raw-string entry point**. The actual string
+  composition (`appendingToken`/`prefixingToken`) is **file-private** in
+  `TailwindStyle.swift`.
+- **`Variant`** (`Variant.swift`) is extensible exactly like `Color` — a
+  `public protocol Variant: TailwindToken` with `DefaultVariant` (internal init)
+  exposing `.sm`/`.md`/`.hover`/`.dark`/… A downstream module can register a
+  custom `@custom-variant` by conforming its own type. Variants **chain by
+  nesting**: `.md(.hover(.bg(.blue, .s700)))` → `md:hover:bg-blue-700`.
+- **Deliberate divergence from ButtondownKit:** `TailwindStyle` retains method
+  bodies (the seam witnesses) rather than being pure storage, because a value
+  type has no injected `underlying` collaborator to hide — the "seam" is an
+  implementation detail, not a dependency.
+- To satisfy SwiftLint's `type_contents_order`, within each capability file the
+  witnesses and static mirrors are split into **properties-before-methods**
+  extensions as needed. Every public witness carries a doc comment
+  (`missing_docs` is opt-in and CI runs `--strict`).
 - **Value tokens split by whether Tailwind v4 makes them customizable** (see
   `docs/tailwind-v4-value-model.md` for the per-family rationale, cited to the v4
   docs). The families backed by an extensible `@theme` namespace are modeled as a
@@ -54,9 +87,18 @@ core builder and its utility surface live in Plot-free files
   `Shadow`, `DropShadow`, `Tracking`, `Ease`. The fixed CSS-keyword families stay
   **closed enums** (custom values are meaningless): `Shade`, `Position`, `Flex`,
   `FlexDirection`, `ListStyle`, `Align`, `Justify`, `TextAlign`, `VerticalAlign`,
-  `ObjectFit`, `BorderSide`. Token types live in `TailwindStyle+*Tokens.swift`
-  (ColorTokens/SpacingTokens/TypographyTokens/EffectsTokens/LayoutTokens/Tokens),
-  the base protocol in `TailwindToken.swift`.
+  `ObjectFit`, `BorderSide`. The base protocol is in `TailwindToken.swift`.
+- **Token types are top-level, bare-named, one per file.** Each is its own file:
+  a protocol in `Color.swift`/`Radius.swift`/…, its `Default…` struct (carrying
+  the `where Self ==` static members) in `DefaultColor.swift`/…, each closed enum
+  in `Shade.swift`/`Position.swift`/… (one-declaration-per-file, so no lint
+  suppressions). They were previously nested as `TailwindStyle.Color`; un-nesting
+  removed ~375 `TailwindStyle.` qualifications across the module. **Tradeoff:**
+  bare `Color`/`Size`/`Position`/… can collide with `SwiftUI.Color` etc. in a
+  downstream file importing both — such a caller must write `TailwindKit.Color`.
+  TailwindKit is server-side HTML with no SwiftUI consumers, so this is latent.
+  (The **seam** types `TailwindClass`/`Variant` stay nested under `TailwindStyle`
+  — they are infrastructure, and nesting keeps those generic names namespaced.)
 - **The extensible-token pattern (Approach C):** each family is a marker
   `public protocol Foo: TailwindToken {}`; built-ins live on a `public struct
   DefaultFoo: Foo` whose init is **internal** (so it is *not constructible by
@@ -64,9 +106,9 @@ core builder and its utility surface live in Plot-free files
   `extension Foo where Self == DefaultFoo { public static var … }` (the `where
   Self ==` constraint is required for leading-dot syntax, and forces `DefaultFoo`
   to be a public type). Fluent methods take `some Foo` so a downstream module can
-  add a custom value by conforming its own type: `struct BrandColor:
-  TailwindStyle.Color { let token = "brand" }` → `TW.bg(.brand, .s500)`. Literal
-  families (`Spacing`/`Size`) instead take the concrete `DefaultSpacing`/`DefaultSize`
+  add a custom value by conforming its own type: `struct BrandColor: Color
+  { let token = "brand" }` → `TW.bg(.brand, .s500)`. Literal families
+  (`Spacing`/`Size`) instead take the concrete `DefaultSpacing`/`DefaultSize`
   so `.gap(4)`/`.p(2.5)` still work.
 - Related bare utilities are still grouped into cohesive enum "sets" (e.g.
   `Position`, `Flex`, `FlexDirection`, `ListStyle`) rather than a flat wall of

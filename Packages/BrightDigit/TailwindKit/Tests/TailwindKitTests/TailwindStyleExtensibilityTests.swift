@@ -39,10 +39,44 @@ import Testing
   /// A single fixture conforming to every extensible token protocol under test —
   /// a stand-in for the custom `@theme` values a downstream module would define.
   /// One `token` string drives whichever family it's passed as.
-  private struct Custom: TailwindStyle.Color, TailwindStyle.TextSize,
-    TailwindStyle.Radius
+  private struct Custom: Color, TextSize,
+    Radius
   {
     let token: String
+  }
+
+  /// A custom variant — the stand-in for a `@custom-variant` a downstream module
+  /// would register. Proves ``TailwindStyle/Variant`` is extensible like a color.
+  private struct CustomVariant: TailwindStyle.Variant {
+    let token: String
+  }
+
+  /// Proves the capability defaults preserve a custom seam conformer's `Self`
+  /// instead of widening fluent chains back to `TailwindStyle`.
+  private struct ProbeStyle: TailwindStyleProtocol,
+    DisplayStyling, SpacingStyling, VariantStyling
+  {
+    private var tokens = [String]()
+
+    var rendered: String {
+      tokens.joined(separator: " ")
+    }
+
+    func appending(_ tailwindClass: some TailwindStyle.TailwindClass) -> Self {
+      var copy = self
+      copy.tokens.append(tailwindClass.className)
+      return copy
+    }
+
+    func prefixing(
+      _ variant: some TailwindStyle.Variant, _ other: TailwindStyle
+    ) -> Self {
+      var copy = self
+      copy.tokens += other.rendered
+        .split(separator: " ")
+        .map { "\(variant.token):\($0)" }
+      return copy
+    }
   }
 
   @Test internal func customColorRendersWithBuiltInShade() {
@@ -80,5 +114,31 @@ import Testing
     #expect(TW.w(.arbitrary("137px")).rendered == "w-[137px]")
     // Spaces become underscores (Tailwind restores them at build time).
     #expect(TW.gap(.arbitrary("1fr 500px")).rendered == "gap-[1fr_500px]")
+  }
+
+  @Test internal func builtInVariantsRenderAndStack() {
+    // Built-in variants via the leading-dot fluent members, composed by nesting.
+    #expect(TW.md(.flex).rendered == "md:flex")
+    #expect(TW.hover(.bg(.blue, .s700)).rendered == "hover:bg-blue-700")
+    #expect(TW.md(.hover(.bg(.blue, .s700))).rendered == "md:hover:bg-blue-700")
+  }
+
+  @Test internal func customVariantViaCustomConformance() {
+    // A developer-defined variant flows through the seam like a built-in. The
+    // seam's `prefixing(_:_:)` is an instance member, so start from `TW()`.
+    let supportsGrid = CustomVariant(token: "supports-[display:grid]")
+    #expect(TW().prefixing(supportsGrid, .flex).rendered == "supports-[display:grid]:flex")
+    // Custom variant stacks with a built-in one.
+    #expect(
+      TW.md(TW().prefixing(supportsGrid, .flex)).rendered == "md:supports-[display:grid]:flex"
+    )
+  }
+
+  @Test internal func capabilityDefaultsPreserveSelf() {
+    expectProbeStyle(ProbeStyle().flex.p(4).md(.hidden))
+  }
+
+  private func expectProbeStyle(_ style: ProbeStyle) {
+    #expect(style.rendered == "flex p-4 md:hidden")
   }
 }
