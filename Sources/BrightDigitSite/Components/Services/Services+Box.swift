@@ -28,6 +28,7 @@
 //
 
 import Plot
+import TailwindKit
 
 extension Services {
   /// A single service offering box on the services page.
@@ -41,7 +42,7 @@ extension Services {
     internal var body: Component {
       Element(name: "section") {
         Header {
-          bigImage.class("rounded-lg")
+          bigImage.tailwind(.rounded(.lg))
         }
         Element(name: "main") {
           Header {
