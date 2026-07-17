@@ -34,49 +34,49 @@
 /// construct it directly — like SwiftUI's `DefaultButtonStyle`.
 public struct DefaultColor: Color {
   /// `slate`.
-  fileprivate static let slateValue = DefaultColor("slate")
+  public static let slate = DefaultColor("slate")
   /// `gray`.
-  fileprivate static let grayValue = DefaultColor("gray")
+  public static let gray = DefaultColor("gray")
   /// `zinc`.
-  fileprivate static let zincValue = DefaultColor("zinc")
+  public static let zinc = DefaultColor("zinc")
   /// `neutral`.
-  fileprivate static let neutralValue = DefaultColor("neutral")
+  public static let neutral = DefaultColor("neutral")
   /// `stone`.
-  fileprivate static let stoneValue = DefaultColor("stone")
+  public static let stone = DefaultColor("stone")
   /// `red`.
-  fileprivate static let redValue = DefaultColor("red")
+  public static let red = DefaultColor("red")
   /// `orange`.
-  fileprivate static let orangeValue = DefaultColor("orange")
+  public static let orange = DefaultColor("orange")
   /// `amber`.
-  fileprivate static let amberValue = DefaultColor("amber")
+  public static let amber = DefaultColor("amber")
   /// `yellow`.
-  fileprivate static let yellowValue = DefaultColor("yellow")
+  public static let yellow = DefaultColor("yellow")
   /// `lime`.
-  fileprivate static let limeValue = DefaultColor("lime")
+  public static let lime = DefaultColor("lime")
   /// `green`.
-  fileprivate static let greenValue = DefaultColor("green")
+  public static let green = DefaultColor("green")
   /// `emerald`.
-  fileprivate static let emeraldValue = DefaultColor("emerald")
+  public static let emerald = DefaultColor("emerald")
   /// `teal`.
-  fileprivate static let tealValue = DefaultColor("teal")
+  public static let teal = DefaultColor("teal")
   /// `cyan`.
-  fileprivate static let cyanValue = DefaultColor("cyan")
+  public static let cyan = DefaultColor("cyan")
   /// `sky`.
-  fileprivate static let skyValue = DefaultColor("sky")
+  public static let sky = DefaultColor("sky")
   /// `blue`.
-  fileprivate static let blueValue = DefaultColor("blue")
+  public static let blue = DefaultColor("blue")
   /// `indigo`.
-  fileprivate static let indigoValue = DefaultColor("indigo")
+  public static let indigo = DefaultColor("indigo")
   /// `violet`.
-  fileprivate static let violetValue = DefaultColor("violet")
+  public static let violet = DefaultColor("violet")
   /// `purple`.
-  fileprivate static let purpleValue = DefaultColor("purple")
+  public static let purple = DefaultColor("purple")
   /// `fuchsia`.
-  fileprivate static let fuchsiaValue = DefaultColor("fuchsia")
+  public static let fuchsia = DefaultColor("fuchsia")
   /// `pink`.
-  fileprivate static let pinkValue = DefaultColor("pink")
+  public static let pink = DefaultColor("pink")
   /// `rose`.
-  fileprivate static let roseValue = DefaultColor("rose")
+  public static let rose = DefaultColor("rose")
 
   /// The rendered fragment, e.g. `"blue"`.
   public let token: String
@@ -88,47 +88,47 @@ public struct DefaultColor: Color {
 
 extension Color where Self == DefaultColor {
   /// `slate`.
-  public static var slate: DefaultColor { .slateValue }
+  public static var slate: DefaultColor { .slate }
   /// `gray`.
-  public static var gray: DefaultColor { .grayValue }
+  public static var gray: DefaultColor { .gray }
   /// `zinc`.
-  public static var zinc: DefaultColor { .zincValue }
+  public static var zinc: DefaultColor { .zinc }
   /// `neutral`.
-  public static var neutral: DefaultColor { .neutralValue }
+  public static var neutral: DefaultColor { .neutral }
   /// `stone`.
-  public static var stone: DefaultColor { .stoneValue }
+  public static var stone: DefaultColor { .stone }
   /// `red`.
-  public static var red: DefaultColor { .redValue }
+  public static var red: DefaultColor { .red }
   /// `orange`.
-  public static var orange: DefaultColor { .orangeValue }
+  public static var orange: DefaultColor { .orange }
   /// `amber`.
-  public static var amber: DefaultColor { .amberValue }
+  public static var amber: DefaultColor { .amber }
   /// `yellow`.
-  public static var yellow: DefaultColor { .yellowValue }
+  public static var yellow: DefaultColor { .yellow }
   /// `lime`.
-  public static var lime: DefaultColor { .limeValue }
+  public static var lime: DefaultColor { .lime }
   /// `green`.
-  public static var green: DefaultColor { .greenValue }
+  public static var green: DefaultColor { .green }
   /// `emerald`.
-  public static var emerald: DefaultColor { .emeraldValue }
+  public static var emerald: DefaultColor { .emerald }
   /// `teal`.
-  public static var teal: DefaultColor { .tealValue }
+  public static var teal: DefaultColor { .teal }
   /// `cyan`.
-  public static var cyan: DefaultColor { .cyanValue }
+  public static var cyan: DefaultColor { .cyan }
   /// `sky`.
-  public static var sky: DefaultColor { .skyValue }
+  public static var sky: DefaultColor { .sky }
   /// `blue`.
-  public static var blue: DefaultColor { .blueValue }
+  public static var blue: DefaultColor { .blue }
   /// `indigo`.
-  public static var indigo: DefaultColor { .indigoValue }
+  public static var indigo: DefaultColor { .indigo }
   /// `violet`.
-  public static var violet: DefaultColor { .violetValue }
+  public static var violet: DefaultColor { .violet }
   /// `purple`.
-  public static var purple: DefaultColor { .purpleValue }
+  public static var purple: DefaultColor { .purple }
   /// `fuchsia`.
-  public static var fuchsia: DefaultColor { .fuchsiaValue }
+  public static var fuchsia: DefaultColor { .fuchsia }
   /// `pink`.
-  public static var pink: DefaultColor { .pinkValue }
+  public static var pink: DefaultColor { .pink }
   /// `rose`.
-  public static var rose: DefaultColor { .roseValue }
+  public static var rose: DefaultColor { .rose }
 }

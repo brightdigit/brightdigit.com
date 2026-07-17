@@ -30,7 +30,7 @@
 /// A `position` keyword (the whole class, e.g. `relative`, `absolute`).
 ///
 /// The class name *is* the token — Tailwind's position utilities carry no
-/// prefix — consumed by ``TailwindStyle/position(_:)``.
+/// prefix — consumed by ``TailwindStyleBuilder/position(_:)``.
 public enum Position: String, Sendable, CaseIterable {
   case relative, absolute, fixed, sticky
 

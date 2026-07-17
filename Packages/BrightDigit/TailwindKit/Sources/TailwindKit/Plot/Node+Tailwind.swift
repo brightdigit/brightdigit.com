@@ -30,7 +30,7 @@
 import Plot
 
 extension Node where Context: HTMLContext {
-  /// Render a ``TailwindStyle`` into this element's `class` attribute.
+  /// Render a ``TailwindStyleBuilder`` into this element's `class` attribute.
   ///
   /// Sugar for `.class(style.rendered)`:
   ///
@@ -39,18 +39,18 @@ extension Node where Context: HTMLContext {
   /// // <div class="flex items-center gap-4"></div>
   /// ```
   ///
-  /// For any class not modeled by ``TailwindStyle``, use Plot's existing
+  /// For any class not modeled by ``TailwindStyleBuilder``, use Plot's existing
   /// `.class("…")` directly.
-  public static func tailwind(_ style: TailwindStyle) -> Node {
+  public static func tailwind(_ style: TailwindStyleBuilder) -> Node {
     .class(style.rendered)
   }
 }
 
 extension Attribute where Context: HTMLContext {
-  /// Render a ``TailwindStyle`` into this element's `class` attribute.
+  /// Render a ``TailwindStyleBuilder`` into this element's `class` attribute.
   ///
   /// Sugar for `.class(style.rendered)`.
-  public static func tailwind(_ style: TailwindStyle) -> Attribute {
+  public static func tailwind(_ style: TailwindStyleBuilder) -> Attribute {
     .class(style.rendered)
   }
 }

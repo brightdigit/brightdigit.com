@@ -30,26 +30,26 @@
 /// The list-style utilities.
 ///
 /// A capability protocol whose members are witnessed against the
-/// ``TailwindStyleProtocol`` seam; ``TailwindStyle`` conforms to it. See
-/// ``TailwindStyleProtocol`` for why the surface is organized this way.
+/// ``TailwindStyle`` seam; ``TailwindStyleBuilder`` conforms to it. See
+/// ``TailwindStyle`` for why the surface is organized this way.
 public protocol ListStyling {
   /// `list-<style>`, e.g. `.list(.disc)`.
   func list(_ value: ListStyle) -> Self
 }
 
-extension ListStyling where Self: TailwindStyleProtocol {
+extension ListStyling where Self: TailwindStyle {
   /// `list-<style>`, e.g. `.list(.disc)`.
   public func list(_ value: ListStyle) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("list-\(value.token)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("list-\(value.token)"))
   }
 }
 
-extension TailwindStyle: ListStyling {}
+extension TailwindStyleBuilder: ListStyling {}
 
 // Static mirror so a list utility can start a chain with a leading dot.
-extension TailwindStyle {
+extension TailwindStyleBuilder {
   /// `list-<style>`.
-  public static func list(_ value: ListStyle) -> TailwindStyle {
-    TailwindStyle().list(value)
+  public static func list(_ value: ListStyle) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().list(value)
   }
 }

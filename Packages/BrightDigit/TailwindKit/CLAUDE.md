@@ -31,14 +31,15 @@ only when `CI` is unset; in CI it lints and builds without mutating files.
 
 ## Architecture — the one design decision
 
-`TailwindStyle` is an immutable value builder that is **Plot-independent**. The
-core builder and its utility surface live in Plot-free files
-(`TailwindStyle.swift`, the `TailwindStyle+*Tokens.swift` token files, and the
+`TailwindStyleBuilder` is an immutable value builder that is **Plot-independent**.
+The core builder and its utility surface live in Plot-free files
+(`TailwindStyleBuilder.swift`, the token files, and the
 `*Styling.swift` capability files). The **only** file that imports Plot is
 `Node+Tailwind.swift`, which adds the single sugar `.tailwind(_ style:)` →
-`.class(style.rendered)` on `Node`/`Attribute`.
+`.class(style.rendered)` on `Node`/`Attribute`. (The plain name `TailwindStyle`
+is the **seam protocol**, see below; `TW` is the typealias for the builder.)
 
-- Every fluent member returns a new `TailwindStyle`. Bare utilities are computed
+- Every fluent member returns a new `TailwindStyleBuilder`. Bare utilities are computed
   properties (`.flex`, `.gap`); parameterized ones are methods (`.gap(4)`,
   `.bg(.blue, .s500)`). Static mirrors let a chain start with a leading dot.
 
@@ -50,12 +51,12 @@ per CSS concern, noun + `Styling` suffix — each in its own file
 mirrors `ButtondownKit`'s capability-protocol pattern (`EmailListing`, … witnessed
 in extensions constrained on the `UnderlyingClientProtocol` seam).
 
-- **The seam is `TailwindStyleProtocol`** (`TailwindStyleProtocol.swift`), a
+- **The seam is `TailwindStyle`** (`TailwindStyle.swift`), a
   **public** protocol exposing the two composition primitives
   `appending(_ class: some TailwindClass)` and
   `prefixing(_ variant: some Variant, _:)`. Each capability provides its members
-  in `extension XStyling where Self: TailwindStyleProtocol { public func … }`,
-  composing through the seam; `TailwindStyle` conforms to the seam + every
+  in `extension XStyling where Self: TailwindStyle { public func … }`,
+  composing through the seam; `TailwindStyleBuilder` conforms to the seam + every
   capability. The seam **must** be public — Swift forbids a `public` member in an
   extension constrained on a non-public protocol.
 - **Why the seam takes typed values, not `String`.** A naive port of
@@ -65,13 +66,13 @@ in extensions constrained on the `UnderlyingClientProtocol` seam).
   `DefaultTailwindClass`, **internal init**) and `some Variant`. So the seam is
   public yet there is **no raw-string entry point**. The actual string
   composition (`appendingToken`/`prefixingToken`) is **file-private** in
-  `TailwindStyle.swift`.
+  `TailwindStyleBuilder.swift`.
 - **`Variant`** (`Variant.swift`) is extensible exactly like `Color` — a
   `public protocol Variant: TailwindToken` with `DefaultVariant` (internal init)
   exposing `.sm`/`.md`/`.hover`/`.dark`/… A downstream module can register a
   custom `@custom-variant` by conforming its own type. Variants **chain by
   nesting**: `.md(.hover(.bg(.blue, .s700)))` → `md:hover:bg-blue-700`.
-- **Deliberate divergence from ButtondownKit:** `TailwindStyle` retains method
+- **Deliberate divergence from ButtondownKit:** `TailwindStyleBuilder` retains method
   bodies (the seam witnesses) rather than being pure storage, because a value
   type has no injected `underlying` collaborator to hide — the "seam" is an
   implementation detail, not a dependency.
@@ -92,20 +93,24 @@ in extensions constrained on the `UnderlyingClientProtocol` seam).
   a protocol in `Color.swift`/`Radius.swift`/…, its `Default…` struct (carrying
   the `where Self ==` static members) in `DefaultColor.swift`/…, each closed enum
   in `Shade.swift`/`Position.swift`/… (one-declaration-per-file, so no lint
-  suppressions). They were previously nested as `TailwindStyle.Color`; un-nesting
-  removed ~375 `TailwindStyle.` qualifications across the module. **Tradeoff:**
+  suppressions). They were previously nested as `TailwindStyleBuilder.Color`; un-nesting
+  removed ~375 `TailwindStyleBuilder.` qualifications across the module. **Tradeoff:**
   bare `Color`/`Size`/`Position`/… can collide with `SwiftUI.Color` etc. in a
   downstream file importing both — such a caller must write `TailwindKit.Color`.
   TailwindKit is server-side HTML with no SwiftUI consumers, so this is latent.
-  (The **seam** types `TailwindClass`/`Variant` stay nested under `TailwindStyle`
+  (The **seam** types `TailwindClass`/`Variant` stay nested under `TailwindStyleBuilder`
   — they are infrastructure, and nesting keeps those generic names namespaced.)
 - **The extensible-token pattern (Approach C):** each family is a marker
   `public protocol Foo: TailwindToken {}`; built-ins live on a `public struct
   DefaultFoo: Foo` whose init is **internal** (so it is *not constructible by
-  name* — like SwiftUI's `DefaultButtonStyle`), exposed as static members via
-  `extension Foo where Self == DefaultFoo { public static var … }` (the `where
-  Self ==` constraint is required for leading-dot syntax, and forces `DefaultFoo`
-  to be a public type). Fluent methods take `some Foo` so a downstream module can
+  name* — like SwiftUI's `DefaultButtonStyle`). Each built-in value is a
+  `public static let` **on `DefaultFoo`** (e.g. `DefaultColor.slate`), and the
+  leading-dot surface is a thin computed forwarder in
+  `extension Foo where Self == DefaultFoo { public static var slate: DefaultColor { .slate } }`
+  (the `where Self ==` constraint is required for `.slate`-in-`some Foo` leading-dot
+  syntax, and forces `DefaultFoo` to be a public type; the forwarder must stay a
+  computed `var` because a stored `static let` cannot live in an extension — it
+  resolves to the concrete `DefaultFoo.slate` constant, so there is no recursion). Fluent methods take `some Foo` so a downstream module can
   add a custom value by conforming its own type: `struct BrandColor: Color
   { let token = "brand" }` → `TW.bg(.brand, .s500)`. Literal families
   (`Spacing`/`Size`) instead take the concrete `DefaultSpacing`/`DefaultSize`

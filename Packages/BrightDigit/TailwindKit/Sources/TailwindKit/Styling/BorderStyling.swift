@@ -30,8 +30,8 @@
 /// The **border** and **border-radius** utilities.
 ///
 /// A capability protocol whose members are witnessed against the
-/// ``TailwindStyleProtocol`` seam; ``TailwindStyle`` conforms to it. See
-/// ``TailwindStyleProtocol`` for why the surface is organized this way.
+/// ``TailwindStyle`` seam; ``TailwindStyleBuilder`` conforms to it. See
+/// ``TailwindStyle`` for why the surface is organized this way.
 public protocol BorderStyling {
   /// `border`.
   var border: Self { get }
@@ -48,59 +48,59 @@ public protocol BorderStyling {
   func rounded(_ radius: some Radius) -> Self
 }
 
-extension BorderStyling where Self: TailwindStyleProtocol {
+extension BorderStyling where Self: TailwindStyle {
   // MARK: Bare
 
   /// `border`.
-  public var border: Self { appending(TailwindStyle.DefaultTailwindClass("border")) }
+  public var border: Self { appending(TailwindStyleBuilder.DefaultTailwindClass("border")) }
   /// `rounded`.
-  public var rounded: Self { appending(TailwindStyle.DefaultTailwindClass("rounded")) }
+  public var rounded: Self { appending(TailwindStyleBuilder.DefaultTailwindClass("rounded")) }
   /// `border-none`.
   public var borderNone: Self {
-    appending(TailwindStyle.DefaultTailwindClass("border-none"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("border-none"))
   }
 
   // MARK: Parameterized
 
   /// `border-<width>`, e.g. `.border(2)` → `border-2`.
   public func border(_ width: Int) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("border-\(width)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("border-\(width)"))
   }
   /// `border-<side>-<width>`, e.g. `.border(.t, 2)` → `border-t-2`.
   public func border(_ side: BorderSide, _ width: Int) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("border-\(side.token)-\(width)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("border-\(side.token)-\(width)"))
   }
   /// `rounded-<radius>`, e.g. `.rounded(.lg)` → `rounded-lg`.
   public func rounded(_ radius: some Radius) -> Self {
     radius.token.isEmpty
-      ? appending(TailwindStyle.DefaultTailwindClass("rounded"))
-      : appending(TailwindStyle.DefaultTailwindClass("rounded-\(radius.token)"))
+      ? appending(TailwindStyleBuilder.DefaultTailwindClass("rounded"))
+      : appending(TailwindStyleBuilder.DefaultTailwindClass("rounded-\(radius.token)"))
   }
 }
 
-extension TailwindStyle: BorderStyling {}
+extension TailwindStyleBuilder: BorderStyling {}
 
 // Static mirrors so a border utility can start a chain with a leading dot.
-extension TailwindStyle {
+extension TailwindStyleBuilder {
   /// `border`.
-  public static var border: TailwindStyle { TailwindStyle().border }
+  public static var border: TailwindStyleBuilder { TailwindStyleBuilder().border }
   /// `rounded`.
-  public static var rounded: TailwindStyle { TailwindStyle().rounded }
+  public static var rounded: TailwindStyleBuilder { TailwindStyleBuilder().rounded }
   /// `border-none`.
-  public static var borderNone: TailwindStyle { TailwindStyle().borderNone }
+  public static var borderNone: TailwindStyleBuilder { TailwindStyleBuilder().borderNone }
 }
 
-extension TailwindStyle {
+extension TailwindStyleBuilder {
   /// `border-<width>`.
-  public static func border(_ width: Int) -> TailwindStyle {
-    TailwindStyle().border(width)
+  public static func border(_ width: Int) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().border(width)
   }
   /// `border-<side>-<width>`.
-  public static func border(_ side: BorderSide, _ width: Int) -> TailwindStyle {
-    TailwindStyle().border(side, width)
+  public static func border(_ side: BorderSide, _ width: Int) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().border(side, width)
   }
   /// `rounded-<radius>`.
-  public static func rounded(_ radius: some Radius) -> TailwindStyle {
-    TailwindStyle().rounded(radius)
+  public static func rounded(_ radius: some Radius) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().rounded(radius)
   }
 }

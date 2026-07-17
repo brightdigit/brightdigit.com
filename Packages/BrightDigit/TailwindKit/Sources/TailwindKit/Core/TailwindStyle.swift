@@ -27,88 +27,38 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-/// A type-safe, fluent builder for [Tailwind CSS v4](https://tailwindcss.com)
-/// utility class strings.
+/// The shared **seam** the TailwindKit capability protocols implement against.
 ///
-/// `TailwindStyle` is a pure value type with **no dependency on Plot** (or any
-/// HTML library). Every member — bare utilities exposed as computed properties
-/// and parameterized utilities exposed as methods — returns a new
-/// `TailwindStyle`, so styles are composed by chaining:
+/// Each capability (``ColorStyling``, ``SpacingStyling``, …) provides its fluent
+/// members in a protocol extension constrained on `Self: TailwindStyle`,
+/// composing new styles through the two primitives declared here, so
+/// ``TailwindStyleBuilder`` itself is only storage plus `init`/``TailwindStyleBuilder/rendered``
+/// — it carries no fluent method bodies. This mirrors how `ButtondownKit`'s
+/// capability protocols implement against `UnderlyingClientProtocol.underlying`.
 ///
-/// ```swift
-/// TW.flex.items(.center).gap(4).bg(.blue, .s500).rendered
-/// // "flex items-center gap-4 bg-blue-500"
-/// ```
+/// This protocol must be **public**: the capability protocols' members are
+/// public requirements witnessed by those constrained extensions, and Swift
+/// forbids a `public` member in an extension whose generic constraint refers to
+/// a non-public protocol ("cannot declare a public instance method in an
+/// extension with internal requirements").
 ///
-/// The final class string is produced by ``rendered``. To attach a style to a
-/// Plot element, use the single `.tailwind(_:)` convenience (see
-/// `Node+Tailwind.swift`):
-///
-/// ```swift
-/// Node.div(.tailwind(.flex.items(.center).gap(4)), .text("Hi"))
-/// ```
-///
-/// The set of modeled utilities is intentionally **closed** and grown
-/// component-driven: add cases as components need them. For any class not yet
-/// modeled, the escape hatch is Plot's existing `.class("…")` — `TailwindStyle`
-/// itself never accepts raw strings.
-public struct TailwindStyle: Sendable, Equatable, Hashable {
-  /// The ordered, fully-prefixed utility tokens (e.g. `"items-center"`,
-  /// `"md:gap-4"`), rendered space-separated by ``rendered``.
-  private let tokens: [String]
-
-  /// The composed Tailwind class string, tokens joined by a single space.
-  ///
-  /// ```swift
-  /// TW.flex.gap(4).rendered // "flex gap-4"
-  /// ```
-  public var rendered: String {
-    tokens.joined(separator: " ")
-  }
-
-  /// Creates an empty style.
-  ///
-  /// Chain utilities to build it up, or start a chain from a static member
-  /// such as `.flex`.
-  public init() {
-    self.tokens = []
-  }
-
-  private init(tokens: [String]) {
-    self.tokens = tokens
-  }
-
-  /// Returns a new style with the raw token string `token` appended.
-  ///
-  /// File-private: the only raw-string composition point. The public seam
-  /// (``appending(_:)`` taking a ``TailwindClass``) forwards here, so no
-  /// raw-string entry point is ever exposed.
-  private func appendingToken(_ token: String) -> TailwindStyle {
-    TailwindStyle(tokens: tokens + [token])
-  }
-
-  /// Returns a new style with every token of `other` prefixed by
-  /// `"\(prefix):"` and appended.
-  ///
-  /// Used to model responsive/state variants (e.g. `md`, `hover`); prefixes
-  /// stack, so `.md(.hover(.bg(.blue, .s700)))` renders `"md:hover:bg-blue-700"`.
-  private func prefixingToken(_ prefix: String, _ other: TailwindStyle) -> TailwindStyle {
-    TailwindStyle(tokens: tokens + other.tokens.map { "\(prefix):\($0)" })
-  }
-}
-
-// The public seam (see ``TailwindStyleProtocol``). Both primitives forward to the
-// file-private string helpers above; retyping the *public* surface to
-// ``TailwindClass`` / ``Variant`` is what lets the seam be public without ever
-// accepting a raw `String`.
-extension TailwindStyle: TailwindStyleProtocol {
+/// Crucially — and unlike a naive port of the `underlying` seam — neither
+/// primitive accepts a raw `String`. ``appending(_:)`` takes a ``TailwindClass``
+/// and ``prefixing(_:_:)`` takes a ``Variant``, both of whose built-in
+/// conformers have `internal` initializers. So exposing the seam publicly does
+/// **not** open a raw-string hole in the API; the modeled surface stays closed.
+public protocol TailwindStyle {
   /// Returns a new style with `tailwindClass` appended.
-  public func appending(_ tailwindClass: some TailwindClass) -> Self {
-    appendingToken(tailwindClass.className)
-  }
+  ///
+  /// The single composition primitive behind every non-variant utility. Built-in
+  /// utilities pass a ``DefaultTailwindClass``; a downstream module may pass its
+  /// own ``TailwindClass`` conformer.
+  func appending(_ tailwindClass: some TailwindStyleBuilder.TailwindClass) -> Self
 
   /// Returns a new style with every token of `other` prefixed by `variant`.
-  public func prefixing(_ variant: some Variant, _ other: TailwindStyle) -> Self {
-    prefixingToken(variant.token, other)
-  }
+  ///
+  /// Models responsive/state variants; prefixes stack, so
+  /// `.md(.hover(.bg(.blue, .s700)))` renders `"md:hover:bg-blue-700"`.
+  func prefixing(_ variant: some TailwindStyleBuilder.Variant, _ other: TailwindStyleBuilder)
+    -> Self
 }

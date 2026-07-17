@@ -30,8 +30,8 @@
 /// Transition utilities — the `transition-*` enabling classes plus `duration`
 /// and `ease`.
 ///
-/// A capability protocol witnessed against the ``TailwindStyleProtocol`` seam;
-/// ``TailwindStyle`` conforms to it. See ``TailwindStyleProtocol`` for the
+/// A capability protocol witnessed against the ``TailwindStyle`` seam;
+/// ``TailwindStyleBuilder`` conforms to it. See ``TailwindStyle`` for the
 /// architecture rationale.
 public protocol TransitionStyling {
   /// `transition-all`.
@@ -49,57 +49,65 @@ public protocol TransitionStyling {
   func ease(_ ease: some Ease) -> Self
 }
 
-extension TransitionStyling where Self: TailwindStyleProtocol {
+extension TransitionStyling where Self: TailwindStyle {
   // MARK: Transitions (bare)
 
   /// `transition-all`.
   public var transitionAll: Self {
-    appending(TailwindStyle.DefaultTailwindClass("transition-all"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("transition-all"))
   }
   /// `transition-opacity`.
   public var transitionOpacity: Self {
-    appending(TailwindStyle.DefaultTailwindClass("transition-opacity"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("transition-opacity"))
   }
   /// `transition-colors`.
   public var transitionColors: Self {
-    appending(TailwindStyle.DefaultTailwindClass("transition-colors"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("transition-colors"))
   }
   /// `transition-transform`.
   public var transitionTransform: Self {
-    appending(TailwindStyle.DefaultTailwindClass("transition-transform"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("transition-transform"))
   }
 
   // MARK: Transitions (parameterized)
 
   /// `duration-<ms>`, e.g. `.duration(300)`.
   public func duration(_ milliseconds: Int) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("duration-\(milliseconds)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("duration-\(milliseconds)"))
   }
   /// `ease-<value>`, e.g. `.ease(.inOut)` → `ease-in-out`.
   public func ease(_ ease: some Ease) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("ease-\(ease.token)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("ease-\(ease.token)"))
   }
 }
 
-extension TailwindStyle: TransitionStyling {}
+extension TailwindStyleBuilder: TransitionStyling {}
 
 // Static mirrors so a transition utility can start a chain with a leading dot.
-extension TailwindStyle {
+extension TailwindStyleBuilder {
   /// `transition-all`.
-  public static var transitionAll: TailwindStyle { TailwindStyle().transitionAll }
+  public static var transitionAll: TailwindStyleBuilder { TailwindStyleBuilder().transitionAll }
   /// `transition-opacity`.
-  public static var transitionOpacity: TailwindStyle { TailwindStyle().transitionOpacity }
+  public static var transitionOpacity: TailwindStyleBuilder {
+    TailwindStyleBuilder().transitionOpacity
+  }
   /// `transition-colors`.
-  public static var transitionColors: TailwindStyle { TailwindStyle().transitionColors }
+  public static var transitionColors: TailwindStyleBuilder {
+    TailwindStyleBuilder().transitionColors
+  }
   /// `transition-transform`.
-  public static var transitionTransform: TailwindStyle { TailwindStyle().transitionTransform }
+  public static var transitionTransform: TailwindStyleBuilder {
+    TailwindStyleBuilder().transitionTransform
+  }
 }
 
-extension TailwindStyle {
+extension TailwindStyleBuilder {
   /// `duration-<ms>`.
-  public static func duration(_ milliseconds: Int) -> TailwindStyle {
-    TailwindStyle().duration(milliseconds)
+  public static func duration(_ milliseconds: Int) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().duration(milliseconds)
   }
   /// `ease-<value>`.
-  public static func ease(_ ease: some Ease) -> TailwindStyle { TailwindStyle().ease(ease) }
+  public static func ease(_ ease: some Ease) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().ease(ease)
+  }
 }

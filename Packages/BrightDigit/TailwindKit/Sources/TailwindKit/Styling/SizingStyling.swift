@@ -30,8 +30,8 @@
 /// The width/height **sizing** utilities.
 ///
 /// A capability protocol whose members are witnessed against the
-/// ``TailwindStyleProtocol`` seam; ``TailwindStyle`` conforms to it. See
-/// ``TailwindStyleProtocol`` for why the surface is organized this way.
+/// ``TailwindStyle`` seam; ``TailwindStyleBuilder`` conforms to it. See
+/// ``TailwindStyle`` for why the surface is organized this way.
 public protocol SizingStyling {
   /// `w-<size>`, e.g. `.w(.full)`.
   func w(_ size: DefaultSize) -> Self
@@ -43,35 +43,43 @@ public protocol SizingStyling {
   func maxH(_ size: DefaultSize) -> Self
 }
 
-extension SizingStyling where Self: TailwindStyleProtocol {
+extension SizingStyling where Self: TailwindStyle {
   /// `w-<size>`, e.g. `.w(.full)`.
   public func w(_ size: DefaultSize) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("w-\(size.token)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("w-\(size.token)"))
   }
   /// `h-<size>`, e.g. `.h(.full)`.
   public func h(_ size: DefaultSize) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("h-\(size.token)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("h-\(size.token)"))
   }
   /// `max-w-<size>`, e.g. `.maxW(.lg)`.
   public func maxW(_ size: some MaxWidth) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("max-w-\(size.token)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("max-w-\(size.token)"))
   }
   /// `max-h-<size>`, e.g. `.maxH(.full)`.
   public func maxH(_ size: DefaultSize) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("max-h-\(size.token)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("max-h-\(size.token)"))
   }
 }
 
-extension TailwindStyle: SizingStyling {}
+extension TailwindStyleBuilder: SizingStyling {}
 
 // Static mirrors so a sizing utility can start a chain with a leading dot.
-extension TailwindStyle {
+extension TailwindStyleBuilder {
   /// `w-<size>`.
-  public static func w(_ size: DefaultSize) -> TailwindStyle { TailwindStyle().w(size) }
+  public static func w(_ size: DefaultSize) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().w(size)
+  }
   /// `h-<size>`.
-  public static func h(_ size: DefaultSize) -> TailwindStyle { TailwindStyle().h(size) }
+  public static func h(_ size: DefaultSize) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().h(size)
+  }
   /// `max-w-<size>`.
-  public static func maxW(_ size: some MaxWidth) -> TailwindStyle { TailwindStyle().maxW(size) }
+  public static func maxW(_ size: some MaxWidth) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().maxW(size)
+  }
   /// `max-h-<size>`.
-  public static func maxH(_ size: DefaultSize) -> TailwindStyle { TailwindStyle().maxH(size) }
+  public static func maxH(_ size: DefaultSize) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().maxH(size)
+  }
 }

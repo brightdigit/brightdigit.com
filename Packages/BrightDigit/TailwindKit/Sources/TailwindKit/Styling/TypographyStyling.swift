@@ -30,10 +30,10 @@
 /// Typography utilities — font size/weight/style, text decoration & transform,
 /// alignment, tracking, and line height.
 ///
-/// A capability protocol witnessed against the ``TailwindStyleProtocol`` seam;
-/// ``TailwindStyle`` conforms to it. The color-based `text(_:_:)` overloads live
+/// A capability protocol witnessed against the ``TailwindStyle`` seam;
+/// ``TailwindStyleBuilder`` conforms to it. The color-based `text(_:_:)` overloads live
 /// in ``ColorStyling``; here `text(_:)` covers size and alignment. See
-/// ``TailwindStyleProtocol`` for the architecture rationale.
+/// ``TailwindStyle`` for the architecture rationale.
 public protocol TypographyStyling {
   /// `text-white`.
   var textWhite: Self { get }
@@ -70,113 +70,121 @@ public protocol TypographyStyling {
   func leading(_ value: Int) -> Self
 }
 
-extension TypographyStyling where Self: TailwindStyleProtocol {
+extension TypographyStyling where Self: TailwindStyle {
   // MARK: Bare
 
   /// `text-white`.
   public var textWhite: Self {
-    appending(TailwindStyle.DefaultTailwindClass("text-white"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("text-white"))
   }
   /// `text-black`.
   public var textBlack: Self {
-    appending(TailwindStyle.DefaultTailwindClass("text-black"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("text-black"))
   }
   /// `italic`.
-  public var italic: Self { appending(TailwindStyle.DefaultTailwindClass("italic")) }
+  public var italic: Self { appending(TailwindStyleBuilder.DefaultTailwindClass("italic")) }
   /// `underline`.
-  public var underline: Self { appending(TailwindStyle.DefaultTailwindClass("underline")) }
+  public var underline: Self { appending(TailwindStyleBuilder.DefaultTailwindClass("underline")) }
   /// `no-underline`.
   public var noUnderline: Self {
-    appending(TailwindStyle.DefaultTailwindClass("no-underline"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("no-underline"))
   }
   /// `uppercase`.
-  public var uppercase: Self { appending(TailwindStyle.DefaultTailwindClass("uppercase")) }
+  public var uppercase: Self { appending(TailwindStyleBuilder.DefaultTailwindClass("uppercase")) }
   /// `lowercase`.
-  public var lowercase: Self { appending(TailwindStyle.DefaultTailwindClass("lowercase")) }
+  public var lowercase: Self { appending(TailwindStyleBuilder.DefaultTailwindClass("lowercase")) }
   /// `capitalize`.
   public var capitalize: Self {
-    appending(TailwindStyle.DefaultTailwindClass("capitalize"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("capitalize"))
   }
   /// `whitespace-pre-wrap`.
   public var whitespacePreWrap: Self {
-    appending(TailwindStyle.DefaultTailwindClass("whitespace-pre-wrap"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("whitespace-pre-wrap"))
   }
   /// `leading-none` (`line-height: 1`).
   public var leadingNone: Self {
-    appending(TailwindStyle.DefaultTailwindClass("leading-none"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("leading-none"))
   }
 
   // MARK: Parameterized
 
   /// `text-<size>`, e.g. `.text(.lg)`.
   public func text(_ size: some TextSize) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("text-\(size.token)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("text-\(size.token)"))
   }
   /// `text-<align>`, e.g. `.text(.center)`.
   public func text(_ align: TextAlign) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("text-\(align.token)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("text-\(align.token)"))
   }
   /// `font-<weight>`, e.g. `.font(.medium)`.
   public func font(_ weight: some FontWeight) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("font-\(weight.token)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("font-\(weight.token)"))
   }
   /// `align-<value>`, e.g. `.align(.middle)` → `align-middle`.
   public func align(_ value: VerticalAlign) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("align-\(value.token)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("align-\(value.token)"))
   }
   /// `tracking-<value>`, e.g. `.tracking(.tight)`.
   public func tracking(_ value: some Tracking) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("tracking-\(value.token)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("tracking-\(value.token)"))
   }
   /// `leading-<n>` (numeric line-height), e.g. `.leading(6)`.
   public func leading(_ value: Int) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("leading-\(value)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("leading-\(value)"))
   }
 }
 
-extension TailwindStyle: TypographyStyling {}
+extension TailwindStyleBuilder: TypographyStyling {}
 
 // Static mirrors so a typography utility can start a chain with a leading dot.
-extension TailwindStyle {
+extension TailwindStyleBuilder {
   /// `text-white`.
-  public static var textWhite: TailwindStyle { TailwindStyle().textWhite }
+  public static var textWhite: TailwindStyleBuilder { TailwindStyleBuilder().textWhite }
   /// `text-black`.
-  public static var textBlack: TailwindStyle { TailwindStyle().textBlack }
+  public static var textBlack: TailwindStyleBuilder { TailwindStyleBuilder().textBlack }
   /// `italic`.
-  public static var italic: TailwindStyle { TailwindStyle().italic }
+  public static var italic: TailwindStyleBuilder { TailwindStyleBuilder().italic }
   /// `underline`.
-  public static var underline: TailwindStyle { TailwindStyle().underline }
+  public static var underline: TailwindStyleBuilder { TailwindStyleBuilder().underline }
   /// `no-underline`.
-  public static var noUnderline: TailwindStyle { TailwindStyle().noUnderline }
+  public static var noUnderline: TailwindStyleBuilder { TailwindStyleBuilder().noUnderline }
   /// `uppercase`.
-  public static var uppercase: TailwindStyle { TailwindStyle().uppercase }
+  public static var uppercase: TailwindStyleBuilder { TailwindStyleBuilder().uppercase }
   /// `lowercase`.
-  public static var lowercase: TailwindStyle { TailwindStyle().lowercase }
+  public static var lowercase: TailwindStyleBuilder { TailwindStyleBuilder().lowercase }
   /// `capitalize`.
-  public static var capitalize: TailwindStyle { TailwindStyle().capitalize }
+  public static var capitalize: TailwindStyleBuilder { TailwindStyleBuilder().capitalize }
   /// `whitespace-pre-wrap`.
-  public static var whitespacePreWrap: TailwindStyle { TailwindStyle().whitespacePreWrap }
+  public static var whitespacePreWrap: TailwindStyleBuilder {
+    TailwindStyleBuilder().whitespacePreWrap
+  }
   /// `leading-none`.
-  public static var leadingNone: TailwindStyle { TailwindStyle().leadingNone }
+  public static var leadingNone: TailwindStyleBuilder { TailwindStyleBuilder().leadingNone }
 }
 
-extension TailwindStyle {
+extension TailwindStyleBuilder {
   /// `text-<size>`.
-  public static func text(_ size: some TextSize) -> TailwindStyle { TailwindStyle().text(size) }
+  public static func text(_ size: some TextSize) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().text(size)
+  }
   /// `text-<align>`.
-  public static func text(_ align: TextAlign) -> TailwindStyle { TailwindStyle().text(align) }
+  public static func text(_ align: TextAlign) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().text(align)
+  }
   /// `font-<weight>`.
-  public static func font(_ weight: some FontWeight) -> TailwindStyle {
-    TailwindStyle().font(weight)
+  public static func font(_ weight: some FontWeight) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().font(weight)
   }
   /// `align-<value>`.
-  public static func align(_ value: VerticalAlign) -> TailwindStyle {
-    TailwindStyle().align(value)
+  public static func align(_ value: VerticalAlign) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().align(value)
   }
   /// `tracking-<value>`.
-  public static func tracking(_ value: some Tracking) -> TailwindStyle {
-    TailwindStyle().tracking(value)
+  public static func tracking(_ value: some Tracking) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().tracking(value)
   }
   /// `leading-<n>`.
-  public static func leading(_ value: Int) -> TailwindStyle { TailwindStyle().leading(value) }
+  public static func leading(_ value: Int) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().leading(value)
+  }
 }

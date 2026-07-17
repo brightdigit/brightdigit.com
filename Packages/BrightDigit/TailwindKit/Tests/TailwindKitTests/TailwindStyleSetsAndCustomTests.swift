@@ -44,7 +44,7 @@ import Testing
     #expect(TW.position(.fixed).rendered == "fixed")
     #expect(TW.position(.sticky).rendered == "sticky")
     // Instance entry point agrees with the leading-dot static entry.
-    #expect(TailwindStyle().position(.relative) == TailwindStyle.position(.relative))
+    #expect(TailwindStyleBuilder().position(.relative) == TailwindStyleBuilder.position(.relative))
   }
 
   @Test internal func flexShorthandSet() {

@@ -30,17 +30,17 @@
 /// The built-in Tailwind v4 letter-spacing values.
 public struct DefaultTracking: Tracking {
   /// `tracking-tighter`.
-  fileprivate static let tighterValue = DefaultTracking("tighter")
+  public static let tighter = DefaultTracking("tighter")
   /// `tracking-tight`.
-  fileprivate static let tightValue = DefaultTracking("tight")
+  public static let tight = DefaultTracking("tight")
   /// `tracking-normal`.
-  fileprivate static let normalValue = DefaultTracking("normal")
+  public static let normal = DefaultTracking("normal")
   /// `tracking-wide`.
-  fileprivate static let wideValue = DefaultTracking("wide")
+  public static let wide = DefaultTracking("wide")
   /// `tracking-wider`.
-  fileprivate static let widerValue = DefaultTracking("wider")
+  public static let wider = DefaultTracking("wider")
   /// `tracking-widest`.
-  fileprivate static let widestValue = DefaultTracking("widest")
+  public static let widest = DefaultTracking("widest")
 
   /// The rendered fragment, e.g. `"tight"`.
   public let token: String
@@ -52,15 +52,15 @@ public struct DefaultTracking: Tracking {
 
 extension Tracking where Self == DefaultTracking {
   /// `tracking-tighter`.
-  public static var tighter: DefaultTracking { .tighterValue }
+  public static var tighter: DefaultTracking { .tighter }
   /// `tracking-tight`.
-  public static var tight: DefaultTracking { .tightValue }
+  public static var tight: DefaultTracking { .tight }
   /// `tracking-normal`.
-  public static var normal: DefaultTracking { .normalValue }
+  public static var normal: DefaultTracking { .normal }
   /// `tracking-wide`.
-  public static var wide: DefaultTracking { .wideValue }
+  public static var wide: DefaultTracking { .wide }
   /// `tracking-wider`.
-  public static var wider: DefaultTracking { .widerValue }
+  public static var wider: DefaultTracking { .wider }
   /// `tracking-widest`.
-  public static var widest: DefaultTracking { .widestValue }
+  public static var widest: DefaultTracking { .widest }
 }

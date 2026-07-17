@@ -57,7 +57,7 @@
 public protocol TailwindToken: Sendable {
   /// The rendered fragment, e.g. `"blue"`, `"lg"`, `"4"`.
   ///
-  /// Consumed by ``TailwindStyle`` builder methods when composing a class
+  /// Consumed by ``TailwindStyleBuilder`` builder methods when composing a class
   /// string; not intended to be read directly by callers.
   var token: String { get }
 }

@@ -34,9 +34,9 @@ public struct DefaultSpacing: Spacing,
   ExpressibleByIntegerLiteral, ExpressibleByFloatLiteral
 {
   /// The `px` keyword (a single CSS pixel), e.g. `p-px`.
-  fileprivate static let pxValue = DefaultSpacing("px")
+  public static let px = DefaultSpacing("px")  // swiftlint:disable:this identifier_name
   /// The `auto` keyword, e.g. `mx-auto`.
-  fileprivate static let autoValue = DefaultSpacing("auto")
+  public static let auto = DefaultSpacing("auto")
 
   /// The rendered fragment, e.g. `"4"`, `"2.5"`, `"px"`.
   public let token: String
@@ -63,11 +63,11 @@ public struct DefaultSpacing: Spacing,
 extension Spacing where Self == DefaultSpacing {
   /// The `px` keyword (a single CSS pixel), e.g. `p-px`.
   public static var px: DefaultSpacing {  // swiftlint:disable:this identifier_name
-    .pxValue
+    .px
   }
 
   /// The `auto` keyword, e.g. `mx-auto`.
-  public static var auto: DefaultSpacing { .autoValue }
+  public static var auto: DefaultSpacing { .auto }
 
   /// A negative spacing value, e.g. `.neg(2)` on `.mx` → `-mx-2`.
   ///

@@ -30,13 +30,13 @@
 /// The built-in Tailwind v4 easing values.
 public struct DefaultEase: Ease {
   /// `ease-linear`.
-  fileprivate static let linearValue = DefaultEase("linear")
+  public static let linear = DefaultEase("linear")
   /// `ease-in`.
-  fileprivate static let easeInValue = DefaultEase("in")
+  public static let easeIn = DefaultEase("in")
   /// `ease-out`.
-  fileprivate static let easeOutValue = DefaultEase("out")
+  public static let easeOut = DefaultEase("out")
   /// `ease-in-out`.
-  fileprivate static let inOutValue = DefaultEase("in-out")
+  public static let inOut = DefaultEase("in-out")
 
   /// The rendered fragment, e.g. `"in-out"`.
   public let token: String
@@ -48,11 +48,11 @@ public struct DefaultEase: Ease {
 
 extension Ease where Self == DefaultEase {
   /// `ease-linear`.
-  public static var linear: DefaultEase { .linearValue }
+  public static var linear: DefaultEase { .linear }
   /// `ease-in`.
-  public static var easeIn: DefaultEase { .easeInValue }
+  public static var easeIn: DefaultEase { .easeIn }
   /// `ease-out`.
-  public static var easeOut: DefaultEase { .easeOutValue }
+  public static var easeOut: DefaultEase { .easeOut }
   /// `ease-in-out`.
-  public static var inOut: DefaultEase { .inOutValue }
+  public static var inOut: DefaultEase { .inOut }
 }

@@ -30,12 +30,12 @@
 /// The responsive/state **variant** prefixes.
 ///
 /// A capability protocol whose members are witnessed against the
-/// ``TailwindStyleProtocol`` seam; ``TailwindStyle`` conforms to it. See
-/// ``TailwindStyleProtocol`` for why the surface is organized this way.
+/// ``TailwindStyle`` seam; ``TailwindStyleBuilder`` conforms to it. See
+/// ``TailwindStyle`` for why the surface is organized this way.
 ///
-/// Each member wraps a nested ``TailwindStyle`` and stacks a built-in
-/// ``Variant`` prefix onto it via ``TailwindStyleProtocol/prefixing(_:_:)``.
-/// Because the argument is itself a `TailwindStyle`, prefixes **stack by
+/// Each member wraps a nested ``TailwindStyleBuilder`` and stacks a built-in
+/// ``Variant`` prefix onto it via ``TailwindStyle/prefixing(_:_:)``.
+/// Because the argument is itself a `TailwindStyleBuilder`, prefixes **stack by
 /// nesting** — `.md(.hover(.bg(.blue, .s700)))` renders `"md:hover:bg-blue-700"`.
 ///
 /// Responsive breakpoints:
@@ -46,84 +46,100 @@
 /// - `xl2` (`2xl`) — ≥ 96rem
 public protocol VariantStyling {
   /// `sm:…` — ≥ 40rem breakpoint.
-  func sm(_ style: TailwindStyle) -> Self
+  func sm(_ style: TailwindStyleBuilder) -> Self
   /// `md:…` — ≥ 48rem breakpoint.
-  func md(_ style: TailwindStyle) -> Self
+  func md(_ style: TailwindStyleBuilder) -> Self
   /// `lg:…` — ≥ 64rem breakpoint.
-  func lg(_ style: TailwindStyle) -> Self
+  func lg(_ style: TailwindStyleBuilder) -> Self
   /// `xl:…` — ≥ 80rem breakpoint.
-  func xl(_ style: TailwindStyle) -> Self
+  func xl(_ style: TailwindStyleBuilder) -> Self
   /// `2xl:…` — ≥ 96rem breakpoint.
-  func xl2(_ style: TailwindStyle) -> Self
+  func xl2(_ style: TailwindStyleBuilder) -> Self
   /// `hover:…` state variant.
-  func hover(_ style: TailwindStyle) -> Self
+  func hover(_ style: TailwindStyleBuilder) -> Self
   /// `focus:…` state variant.
-  func focus(_ style: TailwindStyle) -> Self
+  func focus(_ style: TailwindStyleBuilder) -> Self
   /// `active:…` state variant.
-  func active(_ style: TailwindStyle) -> Self
+  func active(_ style: TailwindStyleBuilder) -> Self
   /// `disabled:…` state variant.
-  func disabled(_ style: TailwindStyle) -> Self
+  func disabled(_ style: TailwindStyleBuilder) -> Self
   /// `group-hover:…` state variant.
-  func groupHover(_ style: TailwindStyle) -> Self
+  func groupHover(_ style: TailwindStyleBuilder) -> Self
   /// `dark:…` color-scheme variant.
-  func dark(_ style: TailwindStyle) -> Self
+  func dark(_ style: TailwindStyleBuilder) -> Self
 }
 
-extension VariantStyling where Self: TailwindStyleProtocol {
+extension VariantStyling where Self: TailwindStyle {
   /// `sm:…` — ≥ 40rem breakpoint.
-  public func sm(_ style: TailwindStyle) -> Self { prefixing(.sm, style) }
+  public func sm(_ style: TailwindStyleBuilder) -> Self { prefixing(.sm, style) }
   /// `md:…` — ≥ 48rem breakpoint.
-  public func md(_ style: TailwindStyle) -> Self { prefixing(.md, style) }
+  public func md(_ style: TailwindStyleBuilder) -> Self { prefixing(.md, style) }
   /// `lg:…` — ≥ 64rem breakpoint.
-  public func lg(_ style: TailwindStyle) -> Self { prefixing(.lg, style) }
+  public func lg(_ style: TailwindStyleBuilder) -> Self { prefixing(.lg, style) }
   /// `xl:…` — ≥ 80rem breakpoint.
-  public func xl(_ style: TailwindStyle) -> Self { prefixing(.xl, style) }
+  public func xl(_ style: TailwindStyleBuilder) -> Self { prefixing(.xl, style) }
   /// `2xl:…` — ≥ 96rem breakpoint.
-  public func xl2(_ style: TailwindStyle) -> Self { prefixing(.xl2, style) }
+  public func xl2(_ style: TailwindStyleBuilder) -> Self { prefixing(.xl2, style) }
   /// `hover:…` state variant.
-  public func hover(_ style: TailwindStyle) -> Self { prefixing(.hover, style) }
+  public func hover(_ style: TailwindStyleBuilder) -> Self { prefixing(.hover, style) }
   /// `focus:…` state variant.
-  public func focus(_ style: TailwindStyle) -> Self { prefixing(.focus, style) }
+  public func focus(_ style: TailwindStyleBuilder) -> Self { prefixing(.focus, style) }
   /// `active:…` state variant.
-  public func active(_ style: TailwindStyle) -> Self { prefixing(.active, style) }
+  public func active(_ style: TailwindStyleBuilder) -> Self { prefixing(.active, style) }
   /// `disabled:…` state variant.
-  public func disabled(_ style: TailwindStyle) -> Self { prefixing(.disabled, style) }
+  public func disabled(_ style: TailwindStyleBuilder) -> Self { prefixing(.disabled, style) }
   /// `group-hover:…` state variant.
-  public func groupHover(_ style: TailwindStyle) -> Self { prefixing(.groupHover, style) }
+  public func groupHover(_ style: TailwindStyleBuilder) -> Self { prefixing(.groupHover, style) }
   /// `dark:…` color-scheme variant.
-  public func dark(_ style: TailwindStyle) -> Self { prefixing(.dark, style) }
+  public func dark(_ style: TailwindStyleBuilder) -> Self { prefixing(.dark, style) }
 }
 
-extension TailwindStyle: VariantStyling {}
+extension TailwindStyleBuilder: VariantStyling {}
 
 // Static mirrors so a variant can start a chain with a leading dot.
-extension TailwindStyle {
+extension TailwindStyleBuilder {
   /// `sm:…` — ≥ 40rem breakpoint.
-  public static func sm(_ style: TailwindStyle) -> TailwindStyle { TailwindStyle().sm(style) }
+  public static func sm(_ style: TailwindStyleBuilder) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().sm(style)
+  }
   /// `md:…` — ≥ 48rem breakpoint.
-  public static func md(_ style: TailwindStyle) -> TailwindStyle { TailwindStyle().md(style) }
+  public static func md(_ style: TailwindStyleBuilder) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().md(style)
+  }
   /// `lg:…` — ≥ 64rem breakpoint.
-  public static func lg(_ style: TailwindStyle) -> TailwindStyle { TailwindStyle().lg(style) }
+  public static func lg(_ style: TailwindStyleBuilder) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().lg(style)
+  }
   /// `xl:…` — ≥ 80rem breakpoint.
-  public static func xl(_ style: TailwindStyle) -> TailwindStyle { TailwindStyle().xl(style) }
+  public static func xl(_ style: TailwindStyleBuilder) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().xl(style)
+  }
   /// `2xl:…` — ≥ 96rem breakpoint.
-  public static func xl2(_ style: TailwindStyle) -> TailwindStyle { TailwindStyle().xl2(style) }
+  public static func xl2(_ style: TailwindStyleBuilder) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().xl2(style)
+  }
   /// `hover:…` state variant.
-  public static func hover(_ style: TailwindStyle) -> TailwindStyle { TailwindStyle().hover(style) }
+  public static func hover(_ style: TailwindStyleBuilder) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().hover(style)
+  }
   /// `focus:…` state variant.
-  public static func focus(_ style: TailwindStyle) -> TailwindStyle { TailwindStyle().focus(style) }
+  public static func focus(_ style: TailwindStyleBuilder) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().focus(style)
+  }
   /// `active:…` state variant.
-  public static func active(_ style: TailwindStyle) -> TailwindStyle {
-    TailwindStyle().active(style)
+  public static func active(_ style: TailwindStyleBuilder) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().active(style)
   }
   /// `disabled:…` state variant.
-  public static func disabled(_ style: TailwindStyle) -> TailwindStyle {
-    TailwindStyle().disabled(style)
+  public static func disabled(_ style: TailwindStyleBuilder) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().disabled(style)
   }
   /// `group-hover:…` state variant.
-  public static func groupHover(_ style: TailwindStyle) -> TailwindStyle {
-    TailwindStyle().groupHover(style)
+  public static func groupHover(_ style: TailwindStyleBuilder) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().groupHover(style)
   }
   /// `dark:…` color-scheme variant.
-  public static func dark(_ style: TailwindStyle) -> TailwindStyle { TailwindStyle().dark(style) }
+  public static func dark(_ style: TailwindStyleBuilder) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().dark(style)
+  }
 }

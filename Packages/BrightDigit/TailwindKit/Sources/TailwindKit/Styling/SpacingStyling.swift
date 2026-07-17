@@ -30,8 +30,8 @@
 /// The **padding** and **margin** spacing utilities.
 ///
 /// A capability protocol whose members are witnessed against the
-/// ``TailwindStyleProtocol`` seam; ``TailwindStyle`` conforms to it. See
-/// ``TailwindStyleProtocol`` for why the surface is organized this way.
+/// ``TailwindStyle`` seam; ``TailwindStyleBuilder`` conforms to it. See
+/// ``TailwindStyle`` for why the surface is organized this way.
 public protocol SpacingStyling {
   /// `p-<amount>`, e.g. `.p(.s4)`.
   func p(_ amount: DefaultSpacing) -> Self
@@ -64,36 +64,36 @@ public protocol SpacingStyling {
   func ml(_ amount: DefaultSpacing) -> Self
 }
 
-extension SpacingStyling where Self: TailwindStyleProtocol {
+extension SpacingStyling where Self: TailwindStyle {
   // MARK: Padding
 
   /// `p-<amount>`, e.g. `.p(.s4)`.
   public func p(_ amount: DefaultSpacing) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("p-\(amount.token)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("p-\(amount.token)"))
   }
   /// `px-<amount>`, e.g. `.px(.s4)`.
   public func px(_ amount: DefaultSpacing) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("px-\(amount.token)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("px-\(amount.token)"))
   }
   /// `py-<amount>`, e.g. `.py(.s4)`.
   public func py(_ amount: DefaultSpacing) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("py-\(amount.token)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("py-\(amount.token)"))
   }
   /// `pt-<amount>`, e.g. `.pt(.s4)`.
   public func pt(_ amount: DefaultSpacing) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("pt-\(amount.token)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("pt-\(amount.token)"))
   }
   /// `pr-<amount>`, e.g. `.pr(.s4)`.
   public func pr(_ amount: DefaultSpacing) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("pr-\(amount.token)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("pr-\(amount.token)"))
   }
   /// `pb-<amount>`, e.g. `.pb(.s4)`.
   public func pb(_ amount: DefaultSpacing) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("pb-\(amount.token)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("pb-\(amount.token)"))
   }
   /// `pl-<amount>`, e.g. `.pl(.s4)`.
   public func pl(_ amount: DefaultSpacing) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("pl-\(amount.token)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("pl-\(amount.token)"))
   }
 
   // MARK: Margin
@@ -117,42 +117,72 @@ extension SpacingStyling where Self: TailwindStyleProtocol {
 
   private func spaced(_ prefix: String, _ amount: DefaultSpacing) -> Self {
     amount.token.hasPrefix("-")
-      ? appending(TailwindStyle.DefaultTailwindClass("-\(prefix)-\(amount.token.dropFirst())"))
-      : appending(TailwindStyle.DefaultTailwindClass("\(prefix)-\(amount.token)"))
+      ? appending(
+        TailwindStyleBuilder.DefaultTailwindClass("-\(prefix)-\(amount.token.dropFirst())")
+      )
+      : appending(TailwindStyleBuilder.DefaultTailwindClass("\(prefix)-\(amount.token)"))
   }
 }
 
-extension TailwindStyle: SpacingStyling {}
+extension TailwindStyleBuilder: SpacingStyling {}
 
 // Static mirrors so a spacing utility can start a chain with a leading dot.
-extension TailwindStyle {
+extension TailwindStyleBuilder {
   /// `p-<amount>`.
-  public static func p(_ amount: DefaultSpacing) -> TailwindStyle { TailwindStyle().p(amount) }
+  public static func p(_ amount: DefaultSpacing) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().p(amount)
+  }
   /// `px-<amount>`.
-  public static func px(_ amount: DefaultSpacing) -> TailwindStyle { TailwindStyle().px(amount) }
+  public static func px(_ amount: DefaultSpacing) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().px(amount)
+  }
   /// `py-<amount>`.
-  public static func py(_ amount: DefaultSpacing) -> TailwindStyle { TailwindStyle().py(amount) }
+  public static func py(_ amount: DefaultSpacing) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().py(amount)
+  }
   /// `pt-<amount>`.
-  public static func pt(_ amount: DefaultSpacing) -> TailwindStyle { TailwindStyle().pt(amount) }
+  public static func pt(_ amount: DefaultSpacing) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().pt(amount)
+  }
   /// `pr-<amount>`.
-  public static func pr(_ amount: DefaultSpacing) -> TailwindStyle { TailwindStyle().pr(amount) }
+  public static func pr(_ amount: DefaultSpacing) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().pr(amount)
+  }
   /// `pb-<amount>`.
-  public static func pb(_ amount: DefaultSpacing) -> TailwindStyle { TailwindStyle().pb(amount) }
+  public static func pb(_ amount: DefaultSpacing) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().pb(amount)
+  }
   /// `pl-<amount>`.
-  public static func pl(_ amount: DefaultSpacing) -> TailwindStyle { TailwindStyle().pl(amount) }
+  public static func pl(_ amount: DefaultSpacing) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().pl(amount)
+  }
 
   /// `m-<amount>`.
-  public static func m(_ amount: DefaultSpacing) -> TailwindStyle { TailwindStyle().m(amount) }
+  public static func m(_ amount: DefaultSpacing) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().m(amount)
+  }
   /// `mx-<amount>`.
-  public static func mx(_ amount: DefaultSpacing) -> TailwindStyle { TailwindStyle().mx(amount) }
+  public static func mx(_ amount: DefaultSpacing) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().mx(amount)
+  }
   /// `my-<amount>`.
-  public static func my(_ amount: DefaultSpacing) -> TailwindStyle { TailwindStyle().my(amount) }
+  public static func my(_ amount: DefaultSpacing) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().my(amount)
+  }
   /// `mt-<amount>`.
-  public static func mt(_ amount: DefaultSpacing) -> TailwindStyle { TailwindStyle().mt(amount) }
+  public static func mt(_ amount: DefaultSpacing) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().mt(amount)
+  }
   /// `mr-<amount>`.
-  public static func mr(_ amount: DefaultSpacing) -> TailwindStyle { TailwindStyle().mr(amount) }
+  public static func mr(_ amount: DefaultSpacing) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().mr(amount)
+  }
   /// `mb-<amount>`.
-  public static func mb(_ amount: DefaultSpacing) -> TailwindStyle { TailwindStyle().mb(amount) }
+  public static func mb(_ amount: DefaultSpacing) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().mb(amount)
+  }
   /// `ml-<amount>`.
-  public static func ml(_ amount: DefaultSpacing) -> TailwindStyle { TailwindStyle().ml(amount) }
+  public static func ml(_ amount: DefaultSpacing) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().ml(amount)
+  }
 }

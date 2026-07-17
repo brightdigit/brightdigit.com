@@ -30,8 +30,8 @@
 /// The **arbitrary value** escape hatch utilities.
 ///
 /// A capability protocol whose members are witnessed against the
-/// ``TailwindStyleProtocol`` seam; ``TailwindStyle`` conforms to it. See
-/// ``TailwindStyleProtocol`` for why the surface is organized this way.
+/// ``TailwindStyle`` seam; ``TailwindStyleBuilder`` conforms to it. See
+/// ``TailwindStyle`` for why the surface is organized this way.
 ///
 /// These members intentionally take raw `String` arguments: they are the
 /// escape hatch for expressing Tailwind classes that have no strongly typed
@@ -50,7 +50,7 @@ public protocol ArbitraryStyling {
   func custom(property: String, value: String) -> Self
 }
 
-extension ArbitraryStyling where Self: TailwindStyleProtocol {
+extension ArbitraryStyling where Self: TailwindStyle {
   private func escapingSpaces(_ value: String) -> String {
     value.replacingOccurrences(of: " ", with: "_")
   }
@@ -59,34 +59,34 @@ extension ArbitraryStyling where Self: TailwindStyleProtocol {
   ///
   /// Spaces in `value` are escaped to underscores.
   public func arbitrary(_ prefix: String, value: String) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("\(prefix)-[\(escapingSpaces(value))]"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("\(prefix)-[\(escapingSpaces(value))]"))
   }
   /// `<prefix>-(<name>)`, e.g. `.arbitrary("bg", variable: "--brand")` → `bg-(--brand)`.
   public func arbitrary(_ prefix: String, variable name: String) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("\(prefix)-(\(name))"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("\(prefix)-(\(name))"))
   }
   /// `[<property>:<value>]`, e.g. `.custom(property: "mask-type", value: "luminance")`.
   ///
   /// Spaces in `value` are escaped to underscores.
   public func custom(property: String, value: String) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("[\(property):\(escapingSpaces(value))]"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("[\(property):\(escapingSpaces(value))]"))
   }
 }
 
-extension TailwindStyle: ArbitraryStyling {}
+extension TailwindStyleBuilder: ArbitraryStyling {}
 
 // Static mirrors so an arbitrary utility can start a chain with a leading dot.
-extension TailwindStyle {
+extension TailwindStyleBuilder {
   /// `<prefix>-[<value>]`.
-  public static func arbitrary(_ prefix: String, value: String) -> TailwindStyle {
-    TailwindStyle().arbitrary(prefix, value: value)
+  public static func arbitrary(_ prefix: String, value: String) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().arbitrary(prefix, value: value)
   }
   /// `<prefix>-(<name>)`.
-  public static func arbitrary(_ prefix: String, variable name: String) -> TailwindStyle {
-    TailwindStyle().arbitrary(prefix, variable: name)
+  public static func arbitrary(_ prefix: String, variable name: String) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().arbitrary(prefix, variable: name)
   }
   /// `[<property>:<value>]`.
-  public static func custom(property: String, value: String) -> TailwindStyle {
-    TailwindStyle().custom(property: property, value: value)
+  public static func custom(property: String, value: String) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().custom(property: property, value: value)
   }
 }

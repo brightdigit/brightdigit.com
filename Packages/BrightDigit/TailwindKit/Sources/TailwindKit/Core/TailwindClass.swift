@@ -27,16 +27,16 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-extension TailwindStyle {
+extension TailwindStyleBuilder {
   /// A fully-formed Tailwind utility class fragment — the whole `"bg-blue-500"`,
-  /// `"flex"`, or `"md:hover:gap-4"` that ``TailwindStyle`` appends to its token
+  /// `"flex"`, or `"md:hover:gap-4"` that ``TailwindStyleBuilder`` appends to its token
   /// list.
   ///
   /// `TailwindClass` is the **seam value** the public builder primitive
-  /// ``TailwindStyle/appending(_:)`` accepts. It exists so the seam can be
+  /// ``TailwindStyleBuilder/appending(_:)`` accepts. It exists so the seam can be
   /// `public` (required for the capability-protocol architecture — see
-  /// ``TailwindStyleProtocol``) *without* the public API ever accepting a raw
-  /// `String`: the built-in utilities construct a ``TailwindStyle/DefaultTailwindClass``,
+  /// ``TailwindStyle``) *without* the public API ever accepting a raw
+  /// `String`: the built-in utilities construct a ``TailwindStyleBuilder/DefaultTailwindClass``,
   /// whose initializer is `internal`, so a caller cannot mint one from an
   /// arbitrary string. This preserves TailwindKit's invariant that the modeled
   /// surface is closed and type-safe.
@@ -50,11 +50,11 @@ extension TailwindStyle {
     var className: String { get }
   }
 
-  /// The built-in ``TailwindStyle/TailwindClass`` used by every modeled utility.
+  /// The built-in ``TailwindStyleBuilder/TailwindClass`` used by every modeled utility.
   ///
   /// A `public` type (it is the concrete value the capability witnesses pass to
   /// the seam) with an `internal` initializer, so it is **not constructible by
-  /// name** outside the module — like ``TailwindStyle/DefaultColor``. This is
+  /// name** outside the module — like ``TailwindStyleBuilder/DefaultColor``. This is
   /// what keeps the public seam from becoming a raw-string entry point.
   public struct DefaultTailwindClass: TailwindClass {
     /// The rendered utility class, e.g. `"bg-blue-500"`.

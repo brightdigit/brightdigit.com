@@ -29,18 +29,20 @@
 
 /// The built-in `max-width` scale values plus `full`/`none`.
 public struct DefaultMaxWidth: MaxWidth {
+  // swiftlint:disable identifier_name
   /// `max-w-sm`.
-  fileprivate static let smValue = DefaultMaxWidth("sm")
+  public static let sm = DefaultMaxWidth("sm")
   /// `max-w-lg`.
-  fileprivate static let lgValue = DefaultMaxWidth("lg")
+  public static let lg = DefaultMaxWidth("lg")
+  // swiftlint:enable identifier_name
   /// `max-w-2xl`.
-  fileprivate static let xl2Value = DefaultMaxWidth("2xl")
+  public static let xl2 = DefaultMaxWidth("2xl")
   /// `max-w-4xl`.
-  fileprivate static let xl4Value = DefaultMaxWidth("4xl")
+  public static let xl4 = DefaultMaxWidth("4xl")
   /// `max-w-full`.
-  fileprivate static let fullValue = DefaultMaxWidth("full")
+  public static let full = DefaultMaxWidth("full")
   /// `max-w-none`.
-  fileprivate static let noneValue = DefaultMaxWidth("none")
+  public static let none = DefaultMaxWidth("none")
 
   /// The rendered fragment, e.g. `"4xl"`, `"full"`.
   public let token: String
@@ -53,18 +55,18 @@ public struct DefaultMaxWidth: MaxWidth {
 extension MaxWidth where Self == DefaultMaxWidth {
   // swiftlint:disable identifier_name
   /// `max-w-sm`.
-  public static var sm: DefaultMaxWidth { .smValue }
+  public static var sm: DefaultMaxWidth { .sm }
   /// `max-w-lg`.
-  public static var lg: DefaultMaxWidth { .lgValue }
+  public static var lg: DefaultMaxWidth { .lg }
   // swiftlint:enable identifier_name
   /// `max-w-2xl`.
-  public static var xl2: DefaultMaxWidth { .xl2Value }
+  public static var xl2: DefaultMaxWidth { .xl2 }
   /// `max-w-4xl`.
-  public static var xl4: DefaultMaxWidth { .xl4Value }
+  public static var xl4: DefaultMaxWidth { .xl4 }
   /// `max-w-full`.
-  public static var full: DefaultMaxWidth { .fullValue }
+  public static var full: DefaultMaxWidth { .full }
   /// `max-w-none`.
-  public static var none: DefaultMaxWidth { .noneValue }
+  public static var none: DefaultMaxWidth { .none }
 
   /// A documented arbitrary max-width, e.g. `.arbitrary("48rem")` →
   /// `max-w-[48rem]`. Spaces become underscores.

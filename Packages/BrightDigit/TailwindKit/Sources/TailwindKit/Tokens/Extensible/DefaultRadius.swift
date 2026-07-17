@@ -29,26 +29,28 @@
 
 /// The built-in Tailwind v4 border-radius values.
 public struct DefaultRadius: Radius {
+  // swiftlint:disable identifier_name
   /// `rounded-none`.
-  fileprivate static let noneValue = DefaultRadius("none")
+  public static let none = DefaultRadius("none")
   /// `rounded-xs`.
-  fileprivate static let xsValue = DefaultRadius("xs")
+  public static let xs = DefaultRadius("xs")
   /// `rounded-sm`.
-  fileprivate static let smValue = DefaultRadius("sm")
+  public static let sm = DefaultRadius("sm")
   /// Bare `rounded` (empty token).
-  fileprivate static let baseValue = DefaultRadius("")
+  public static let base = DefaultRadius("")
   /// `rounded-md`.
-  fileprivate static let mdValue = DefaultRadius("md")
+  public static let md = DefaultRadius("md")
   /// `rounded-lg`.
-  fileprivate static let lgValue = DefaultRadius("lg")
+  public static let lg = DefaultRadius("lg")
   /// `rounded-xl`.
-  fileprivate static let xlValue = DefaultRadius("xl")
+  public static let xl = DefaultRadius("xl")
+  // swiftlint:enable identifier_name
   /// `rounded-2xl`.
-  fileprivate static let xl2Value = DefaultRadius("2xl")
+  public static let xl2 = DefaultRadius("2xl")
   /// `rounded-3xl`.
-  fileprivate static let xl3Value = DefaultRadius("3xl")
+  public static let xl3 = DefaultRadius("3xl")
   /// `rounded-full`.
-  fileprivate static let fullValue = DefaultRadius("full")
+  public static let full = DefaultRadius("full")
 
   /// The rendered fragment, e.g. `"lg"`; `""` for the bare `rounded`.
   public let token: String
@@ -61,24 +63,24 @@ public struct DefaultRadius: Radius {
 extension Radius where Self == DefaultRadius {
   // swiftlint:disable identifier_name
   /// `rounded-none`.
-  public static var none: DefaultRadius { .noneValue }
+  public static var none: DefaultRadius { .none }
   /// `rounded-xs`.
-  public static var xs: DefaultRadius { .xsValue }
+  public static var xs: DefaultRadius { .xs }
   /// `rounded-sm`.
-  public static var sm: DefaultRadius { .smValue }
+  public static var sm: DefaultRadius { .sm }
   /// Bare `rounded` (empty token).
-  public static var base: DefaultRadius { .baseValue }
+  public static var base: DefaultRadius { .base }
   /// `rounded-md`.
-  public static var md: DefaultRadius { .mdValue }
+  public static var md: DefaultRadius { .md }
   /// `rounded-lg`.
-  public static var lg: DefaultRadius { .lgValue }
+  public static var lg: DefaultRadius { .lg }
   /// `rounded-xl`.
-  public static var xl: DefaultRadius { .xlValue }
+  public static var xl: DefaultRadius { .xl }
   // swiftlint:enable identifier_name
   /// `rounded-2xl`.
-  public static var xl2: DefaultRadius { .xl2Value }
+  public static var xl2: DefaultRadius { .xl2 }
   /// `rounded-3xl`.
-  public static var xl3: DefaultRadius { .xl3Value }
+  public static var xl3: DefaultRadius { .xl3 }
   /// `rounded-full`.
-  public static var full: DefaultRadius { .fullValue }
+  public static var full: DefaultRadius { .full }
 }

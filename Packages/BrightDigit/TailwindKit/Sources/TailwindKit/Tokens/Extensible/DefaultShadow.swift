@@ -29,22 +29,24 @@
 
 /// The built-in Tailwind v4 box-shadow values.
 public struct DefaultShadow: Shadow {
+  // swiftlint:disable identifier_name
   /// `shadow-2xs`.
-  fileprivate static let xs2Value = DefaultShadow("2xs")
+  public static let xs2 = DefaultShadow("2xs")
   /// `shadow-xs`.
-  fileprivate static let xsValue = DefaultShadow("xs")
+  public static let xs = DefaultShadow("xs")
   /// `shadow-sm`.
-  fileprivate static let smValue = DefaultShadow("sm")
+  public static let sm = DefaultShadow("sm")
   /// `shadow-md`.
-  fileprivate static let mdValue = DefaultShadow("md")
+  public static let md = DefaultShadow("md")
   /// `shadow-lg`.
-  fileprivate static let lgValue = DefaultShadow("lg")
+  public static let lg = DefaultShadow("lg")
   /// `shadow-xl`.
-  fileprivate static let xlValue = DefaultShadow("xl")
+  public static let xl = DefaultShadow("xl")
+  // swiftlint:enable identifier_name
   /// `shadow-2xl`.
-  fileprivate static let xl2Value = DefaultShadow("2xl")
+  public static let xl2 = DefaultShadow("2xl")
   /// `shadow-none`.
-  fileprivate static let noneValue = DefaultShadow("none")
+  public static let none = DefaultShadow("none")
 
   /// The rendered fragment, e.g. `"lg"`.
   public let token: String
@@ -57,20 +59,20 @@ public struct DefaultShadow: Shadow {
 extension Shadow where Self == DefaultShadow {
   // swiftlint:disable identifier_name
   /// `shadow-2xs`.
-  public static var xs2: DefaultShadow { .xs2Value }
+  public static var xs2: DefaultShadow { .xs2 }
   /// `shadow-xs`.
-  public static var xs: DefaultShadow { .xsValue }
+  public static var xs: DefaultShadow { .xs }
   /// `shadow-sm`.
-  public static var sm: DefaultShadow { .smValue }
+  public static var sm: DefaultShadow { .sm }
   /// `shadow-md`.
-  public static var md: DefaultShadow { .mdValue }
+  public static var md: DefaultShadow { .md }
   /// `shadow-lg`.
-  public static var lg: DefaultShadow { .lgValue }
+  public static var lg: DefaultShadow { .lg }
   /// `shadow-xl`.
-  public static var xl: DefaultShadow { .xlValue }
+  public static var xl: DefaultShadow { .xl }
   // swiftlint:enable identifier_name
   /// `shadow-2xl`.
-  public static var xl2: DefaultShadow { .xl2Value }
+  public static var xl2: DefaultShadow { .xl2 }
   /// `shadow-none`.
-  public static var none: DefaultShadow { .noneValue }
+  public static var none: DefaultShadow { .none }
 }

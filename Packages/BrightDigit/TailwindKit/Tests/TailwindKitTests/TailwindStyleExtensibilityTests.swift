@@ -46,14 +46,14 @@ import Testing
   }
 
   /// A custom variant — the stand-in for a `@custom-variant` a downstream module
-  /// would register. Proves ``TailwindStyle/Variant`` is extensible like a color.
-  private struct CustomVariant: TailwindStyle.Variant {
+  /// would register. Proves ``TailwindStyleBuilder/Variant`` is extensible like a color.
+  private struct CustomVariant: TailwindStyleBuilder.Variant {
     let token: String
   }
 
   /// Proves the capability defaults preserve a custom seam conformer's `Self`
-  /// instead of widening fluent chains back to `TailwindStyle`.
-  private struct ProbeStyle: TailwindStyleProtocol,
+  /// instead of widening fluent chains back to `TailwindStyleBuilder`.
+  private struct ProbeStyle: TailwindStyle,
     DisplayStyling, SpacingStyling, VariantStyling
   {
     private var tokens = [String]()
@@ -62,14 +62,14 @@ import Testing
       tokens.joined(separator: " ")
     }
 
-    func appending(_ tailwindClass: some TailwindStyle.TailwindClass) -> Self {
+    func appending(_ tailwindClass: some TailwindStyleBuilder.TailwindClass) -> Self {
       var copy = self
       copy.tokens.append(tailwindClass.className)
       return copy
     }
 
     func prefixing(
-      _ variant: some TailwindStyle.Variant, _ other: TailwindStyle
+      _ variant: some TailwindStyleBuilder.Variant, _ other: TailwindStyleBuilder
     ) -> Self {
       var copy = self
       copy.tokens += other.rendered

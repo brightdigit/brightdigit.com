@@ -30,8 +30,8 @@
 /// The **positioning** utilities.
 ///
 /// A capability protocol whose members are witnessed against the
-/// ``TailwindStyleProtocol`` seam; ``TailwindStyle`` conforms to it. See
-/// ``TailwindStyleProtocol`` for why the surface is organized this way.
+/// ``TailwindStyle`` seam; ``TailwindStyleBuilder`` conforms to it. See
+/// ``TailwindStyle`` for why the surface is organized this way.
 public protocol PositioningStyling {
   /// `static` / `relative` / `absolute` / `fixed` / `sticky`, e.g. `.position(.absolute)`.
   func position(_ value: Position) -> Self
@@ -49,67 +49,67 @@ public protocol PositioningStyling {
   func z(_ index: Int) -> Self
 }
 
-extension PositioningStyling where Self: TailwindStyleProtocol {
+extension PositioningStyling where Self: TailwindStyle {
   /// `static` / `relative` / `absolute` / `fixed` / `sticky`, e.g. `.position(.absolute)`.
   public func position(_ value: Position) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass(value.token))
+    appending(TailwindStyleBuilder.DefaultTailwindClass(value.token))
   }
   /// `top-<amount>`, e.g. `.top(.s4)`.
   public func top(_ amount: DefaultSpacing) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("top-\(amount.token)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("top-\(amount.token)"))
   }
   /// `right-<amount>`, e.g. `.right(.s4)`.
   public func right(_ amount: DefaultSpacing) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("right-\(amount.token)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("right-\(amount.token)"))
   }
   /// `bottom-<amount>`, e.g. `.bottom(.s4)`.
   public func bottom(_ amount: DefaultSpacing) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("bottom-\(amount.token)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("bottom-\(amount.token)"))
   }
   /// `left-<amount>`, e.g. `.left(.s4)`.
   public func left(_ amount: DefaultSpacing) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("left-\(amount.token)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("left-\(amount.token)"))
   }
   /// `inset-<amount>`, e.g. `.inset(.s4)`.
   public func inset(_ amount: DefaultSpacing) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("inset-\(amount.token)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("inset-\(amount.token)"))
   }
   /// `z-<index>`, e.g. `.z(10)`.
   public func z(_ index: Int) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("z-\(index)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("z-\(index)"))
   }
 }
 
-extension TailwindStyle: PositioningStyling {}
+extension TailwindStyleBuilder: PositioningStyling {}
 
 // Static mirrors so a positioning utility can start a chain with a leading dot.
-extension TailwindStyle {
+extension TailwindStyleBuilder {
   /// `static` / `relative` / `absolute` / `fixed` / `sticky`.
-  public static func position(_ value: Position) -> TailwindStyle {
-    TailwindStyle().position(value)
+  public static func position(_ value: Position) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().position(value)
   }
   /// `top-<amount>`.
-  public static func top(_ amount: DefaultSpacing) -> TailwindStyle {
-    TailwindStyle().top(amount)
+  public static func top(_ amount: DefaultSpacing) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().top(amount)
   }
   /// `right-<amount>`.
-  public static func right(_ amount: DefaultSpacing) -> TailwindStyle {
-    TailwindStyle().right(amount)
+  public static func right(_ amount: DefaultSpacing) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().right(amount)
   }
   /// `bottom-<amount>`.
-  public static func bottom(_ amount: DefaultSpacing) -> TailwindStyle {
-    TailwindStyle().bottom(amount)
+  public static func bottom(_ amount: DefaultSpacing) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().bottom(amount)
   }
   /// `left-<amount>`.
-  public static func left(_ amount: DefaultSpacing) -> TailwindStyle {
-    TailwindStyle().left(amount)
+  public static func left(_ amount: DefaultSpacing) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().left(amount)
   }
   /// `inset-<amount>`.
-  public static func inset(_ amount: DefaultSpacing) -> TailwindStyle {
-    TailwindStyle().inset(amount)
+  public static func inset(_ amount: DefaultSpacing) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().inset(amount)
   }
   /// `z-<index>`.
-  public static func z(_ index: Int) -> TailwindStyle {
-    TailwindStyle().z(index)
+  public static func z(_ index: Int) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().z(index)
   }
 }

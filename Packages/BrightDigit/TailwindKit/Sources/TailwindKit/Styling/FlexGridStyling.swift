@@ -30,8 +30,8 @@
 /// Flexbox & grid layout utilities — direction, wrapping, growth, gaps, and
 /// item/content alignment.
 ///
-/// A capability protocol witnessed against the ``TailwindStyleProtocol`` seam;
-/// ``TailwindStyle`` conforms to it. See ``TailwindStyleProtocol`` for the
+/// A capability protocol witnessed against the ``TailwindStyle`` seam;
+/// ``TailwindStyleBuilder`` conforms to it. See ``TailwindStyle`` for the
 /// architecture rationale.
 public protocol FlexGridStyling {
   /// `flex-wrap`.
@@ -81,88 +81,88 @@ public protocol FlexGridStyling {
   func spaceY(_ amount: DefaultSpacing) -> Self
 }
 
-extension FlexGridStyling where Self: TailwindStyleProtocol {
+extension FlexGridStyling where Self: TailwindStyle {
   // MARK: Bare
 
   /// `flex-wrap`.
-  public var flexWrap: Self { appending(TailwindStyle.DefaultTailwindClass("flex-wrap")) }
+  public var flexWrap: Self { appending(TailwindStyleBuilder.DefaultTailwindClass("flex-wrap")) }
   /// `grow`.
-  public var grow: Self { appending(TailwindStyle.DefaultTailwindClass("grow")) }
+  public var grow: Self { appending(TailwindStyleBuilder.DefaultTailwindClass("grow")) }
   /// `shrink`.
-  public var shrink: Self { appending(TailwindStyle.DefaultTailwindClass("shrink")) }
+  public var shrink: Self { appending(TailwindStyleBuilder.DefaultTailwindClass("shrink")) }
   /// `grow-0`.
-  public var grow0: Self { appending(TailwindStyle.DefaultTailwindClass("grow-0")) }
+  public var grow0: Self { appending(TailwindStyleBuilder.DefaultTailwindClass("grow-0")) }
   /// `shrink-0`.
-  public var shrink0: Self { appending(TailwindStyle.DefaultTailwindClass("shrink-0")) }
+  public var shrink0: Self { appending(TailwindStyleBuilder.DefaultTailwindClass("shrink-0")) }
   /// `gap` (bare).
-  public var gap: Self { appending(TailwindStyle.DefaultTailwindClass("gap")) }
+  public var gap: Self { appending(TailwindStyleBuilder.DefaultTailwindClass("gap")) }
 
   // MARK: Flex & grid
 
   /// `items-<align>` — cross-axis alignment, e.g. `.items(.center)`.
   public func items(_ align: Align) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("items-\(align.token)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("items-\(align.token)"))
   }
   /// `justify-<value>` — main-axis distribution, e.g. `.justify(.between)`.
   public func justify(_ value: Justify) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("justify-\(value.token)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("justify-\(value.token)"))
   }
   /// `grid-cols-<n>`, e.g. `.gridCols(3)`.
   public func gridCols(_ count: Int) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("grid-cols-\(count)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("grid-cols-\(count)"))
   }
   /// `gap-<n>`, e.g. `.gap(4)`.
   public func gap(_ amount: DefaultSpacing) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("gap-\(amount.token)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("gap-\(amount.token)"))
   }
   /// `gap-x-<n>`.
   public func gapX(_ amount: DefaultSpacing) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("gap-x-\(amount.token)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("gap-x-\(amount.token)"))
   }
   /// `gap-y-<n>`.
   public func gapY(_ amount: DefaultSpacing) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("gap-y-\(amount.token)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("gap-y-\(amount.token)"))
   }
   /// `flex-<value>` shorthand, e.g. `.flex(.one)` → `flex-1`.
   public func flex(_ value: Flex) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("flex-\(value.token)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("flex-\(value.token)"))
   }
   /// `flex-<direction>`, e.g. `.flexDirection(.col)` → `flex-col`.
   public func flexDirection(_ value: FlexDirection) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("flex-\(value.token)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("flex-\(value.token)"))
   }
   /// `self-<align>`, e.g. `.selfAlign(.start)` → `self-start`.
   public func selfAlign(_ align: Align) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("self-\(align.token)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("self-\(align.token)"))
   }
   /// `justify-items-<value>`, e.g. `.justifyItems(.end)`.
   public func justifyItems(_ align: Align) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("justify-items-\(align.token)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("justify-items-\(align.token)"))
   }
   /// `justify-self-<value>`, e.g. `.justifySelf(.center)`.
   public func justifySelf(_ align: Align) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("justify-self-\(align.token)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("justify-self-\(align.token)"))
   }
   /// `content-<value>`, e.g. `.content(.between)` → `content-between`.
   public func content(_ value: Justify) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("content-\(value.token)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("content-\(value.token)"))
   }
   /// `place-items-<align>`, e.g. `.placeItems(.stretch)`.
   public func placeItems(_ align: Align) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("place-items-\(align.token)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("place-items-\(align.token)"))
   }
   /// `place-self-<align>`, e.g. `.placeSelf(.center)`.
   public func placeSelf(_ align: Align) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("place-self-\(align.token)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("place-self-\(align.token)"))
   }
   /// `space-x-<n>`, e.g. `.spaceX(1)`.
   public func spaceX(_ amount: DefaultSpacing) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("space-x-\(amount.token)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("space-x-\(amount.token)"))
   }
   /// `space-y-<n>`.
   public func spaceY(_ amount: DefaultSpacing) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("space-y-\(amount.token)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("space-y-\(amount.token)"))
   }
 }
 
-extension TailwindStyle: FlexGridStyling {}
+extension TailwindStyleBuilder: FlexGridStyling {}

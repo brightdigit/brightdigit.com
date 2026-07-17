@@ -30,8 +30,8 @@
 /// The background/text/border **color** utilities.
 ///
 /// A capability protocol whose members are witnessed against the
-/// ``TailwindStyleProtocol`` seam; ``TailwindStyle`` conforms to it. See
-/// ``TailwindStyleProtocol`` for why the surface is organized this way.
+/// ``TailwindStyle`` seam; ``TailwindStyleBuilder`` conforms to it. See
+/// ``TailwindStyle`` for why the surface is organized this way.
 public protocol ColorStyling {
   /// `bg-white`.
   var bgWhite: Self { get }
@@ -62,110 +62,117 @@ public protocol ColorStyling {
     -> Self
 }
 
-extension ColorStyling where Self: TailwindStyleProtocol {
+extension ColorStyling where Self: TailwindStyle {
   // MARK: Bare
 
   /// `bg-white`.
-  public var bgWhite: Self { appending(TailwindStyle.DefaultTailwindClass("bg-white")) }
+  public var bgWhite: Self { appending(TailwindStyleBuilder.DefaultTailwindClass("bg-white")) }
   /// `bg-black`.
-  public var bgBlack: Self { appending(TailwindStyle.DefaultTailwindClass("bg-black")) }
+  public var bgBlack: Self { appending(TailwindStyleBuilder.DefaultTailwindClass("bg-black")) }
   /// `bg-transparent`.
   public var bgTransparent: Self {
-    appending(TailwindStyle.DefaultTailwindClass("bg-transparent"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("bg-transparent"))
   }
 
   // MARK: Color + shade
 
   /// `bg-<color>-<shade>`, e.g. `.bg(.blue, .s500)`.
   public func bg(_ color: some Color, _ shade: Shade) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("bg-\(color.token)-\(shade.token)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("bg-\(color.token)-\(shade.token)"))
   }
   /// `border-<color>-<shade>`, e.g. `.borderColor(.gray, .s200)`.
   public func borderColor(_ color: some Color, _ shade: Shade)
     -> Self
   {
-    appending(TailwindStyle.DefaultTailwindClass("border-\(color.token)-\(shade.token)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("border-\(color.token)-\(shade.token)"))
   }
   /// `text-<color>-<shade>`, e.g. `.text(.blue, .s500)`.
   public func text(_ color: some Color, _ shade: Shade) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("text-\(color.token)-\(shade.token)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("text-\(color.token)-\(shade.token)"))
   }
 
   // MARK: Color + shade + opacity
 
   /// `bg-white/<opacity>`, e.g. `.bgWhite(opacity: 90)` → `bg-white/90`.
   public func bgWhite(opacity: Int) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("bg-white/\(opacity)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("bg-white/\(opacity)"))
   }
   /// `bg-black/<opacity>`, e.g. `.bgBlack(opacity: 30)` → `bg-black/30`.
   public func bgBlack(opacity: Int) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("bg-black/\(opacity)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("bg-black/\(opacity)"))
   }
   /// `bg-<color>-<shade>/<opacity>`, e.g. `.bg(.gray, .s500, opacity: 50)`.
   public func bg(_ color: some Color, _ shade: Shade, opacity: Int)
     -> Self
   {
-    appending(TailwindStyle.DefaultTailwindClass("bg-\(color.token)-\(shade.token)/\(opacity)"))
+    appending(
+      TailwindStyleBuilder.DefaultTailwindClass("bg-\(color.token)-\(shade.token)/\(opacity)")
+    )
   }
   /// `text-<color>-<shade>/<opacity>`.
   public func text(_ color: some Color, _ shade: Shade, opacity: Int)
     -> Self
   {
-    appending(TailwindStyle.DefaultTailwindClass("text-\(color.token)-\(shade.token)/\(opacity)"))
+    appending(
+      TailwindStyleBuilder.DefaultTailwindClass("text-\(color.token)-\(shade.token)/\(opacity)")
+    )
   }
   /// `border-<color>-<shade>/<opacity>`, e.g. `.borderColor(.gray, .s400, opacity: 10)`.
   public func borderColor(
     _ color: some Color, _ shade: Shade, opacity: Int
   ) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("border-\(color.token)-\(shade.token)/\(opacity)"))
+    appending(
+      TailwindStyleBuilder.DefaultTailwindClass("border-\(color.token)-\(shade.token)/\(opacity)")
+    )
   }
 }
 
-extension TailwindStyle: ColorStyling {}
+extension TailwindStyleBuilder: ColorStyling {}
 
 // Static mirrors so a color utility can start a chain with a leading dot.
-extension TailwindStyle {
+extension TailwindStyleBuilder {
   /// `bg-white`.
-  public static var bgWhite: TailwindStyle { TailwindStyle().bgWhite }
+  public static var bgWhite: TailwindStyleBuilder { TailwindStyleBuilder().bgWhite }
   /// `bg-black`.
-  public static var bgBlack: TailwindStyle { TailwindStyle().bgBlack }
+  public static var bgBlack: TailwindStyleBuilder { TailwindStyleBuilder().bgBlack }
   /// `bg-transparent`.
-  public static var bgTransparent: TailwindStyle { TailwindStyle().bgTransparent }
+  public static var bgTransparent: TailwindStyleBuilder { TailwindStyleBuilder().bgTransparent }
 }
 
-extension TailwindStyle {
+extension TailwindStyleBuilder {
   /// `bg-<color>-<shade>`.
-  public static func bg(_ color: some Color, _ shade: Shade) -> TailwindStyle {
-    TailwindStyle().bg(color, shade)
+  public static func bg(_ color: some Color, _ shade: Shade) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().bg(color, shade)
   }
   /// `border-<color>-<shade>`.
-  public static func borderColor(_ color: some Color, _ shade: Shade) -> TailwindStyle {
-    TailwindStyle().borderColor(color, shade)
+  public static func borderColor(_ color: some Color, _ shade: Shade) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().borderColor(color, shade)
   }
   /// `text-<color>-<shade>`.
-  public static func text(_ color: some Color, _ shade: Shade) -> TailwindStyle {
-    TailwindStyle().text(color, shade)
+  public static func text(_ color: some Color, _ shade: Shade) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().text(color, shade)
   }
   /// `bg-white/<opacity>`.
-  public static func bgWhite(opacity: Int) -> TailwindStyle {
-    TailwindStyle().bgWhite(opacity: opacity)
+  public static func bgWhite(opacity: Int) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().bgWhite(opacity: opacity)
   }
   /// `bg-black/<opacity>`.
-  public static func bgBlack(opacity: Int) -> TailwindStyle {
-    TailwindStyle().bgBlack(opacity: opacity)
+  public static func bgBlack(opacity: Int) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().bgBlack(opacity: opacity)
   }
   /// `bg-<color>-<shade>/<opacity>`.
-  public static func bg(_ color: some Color, _ shade: Shade, opacity: Int) -> TailwindStyle {
-    TailwindStyle().bg(color, shade, opacity: opacity)
+  public static func bg(_ color: some Color, _ shade: Shade, opacity: Int) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().bg(color, shade, opacity: opacity)
   }
   /// `text-<color>-<shade>/<opacity>`.
-  public static func text(_ color: some Color, _ shade: Shade, opacity: Int) -> TailwindStyle {
-    TailwindStyle().text(color, shade, opacity: opacity)
+  public static func text(_ color: some Color, _ shade: Shade, opacity: Int) -> TailwindStyleBuilder
+  {
+    TailwindStyleBuilder().text(color, shade, opacity: opacity)
   }
   /// `border-<color>-<shade>/<opacity>`.
   public static func borderColor(_ color: some Color, _ shade: Shade, opacity: Int)
-    -> TailwindStyle
+    -> TailwindStyleBuilder
   {
-    TailwindStyle().borderColor(color, shade, opacity: opacity)
+    TailwindStyleBuilder().borderColor(color, shade, opacity: opacity)
   }
 }

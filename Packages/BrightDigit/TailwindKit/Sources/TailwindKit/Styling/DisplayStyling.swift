@@ -30,8 +30,8 @@
 /// The **display** utilities.
 ///
 /// A capability protocol whose members are witnessed against the
-/// ``TailwindStyleProtocol`` seam; ``TailwindStyle`` conforms to it. See
-/// ``TailwindStyleProtocol`` for why the surface is organized this way.
+/// ``TailwindStyle`` seam; ``TailwindStyleBuilder`` conforms to it. See
+/// ``TailwindStyle`` for why the surface is organized this way.
 public protocol DisplayStyling {
   /// `flex`.
   var flex: Self { get }
@@ -53,53 +53,53 @@ public protocol DisplayStyling {
   var contents: Self { get }
 }
 
-extension DisplayStyling where Self: TailwindStyleProtocol {
+extension DisplayStyling where Self: TailwindStyle {
   // MARK: Bare
 
   /// `flex`.
-  public var flex: Self { appending(TailwindStyle.DefaultTailwindClass("flex")) }
+  public var flex: Self { appending(TailwindStyleBuilder.DefaultTailwindClass("flex")) }
   /// `inline-flex`.
   public var inlineFlex: Self {
-    appending(TailwindStyle.DefaultTailwindClass("inline-flex"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("inline-flex"))
   }
   /// `grid`.
-  public var grid: Self { appending(TailwindStyle.DefaultTailwindClass("grid")) }
+  public var grid: Self { appending(TailwindStyleBuilder.DefaultTailwindClass("grid")) }
   /// `block`.
-  public var block: Self { appending(TailwindStyle.DefaultTailwindClass("block")) }
+  public var block: Self { appending(TailwindStyleBuilder.DefaultTailwindClass("block")) }
   /// `inline-block`.
   public var inlineBlock: Self {
-    appending(TailwindStyle.DefaultTailwindClass("inline-block"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("inline-block"))
   }
   /// `inline`.
-  public var inline: Self { appending(TailwindStyle.DefaultTailwindClass("inline")) }
+  public var inline: Self { appending(TailwindStyleBuilder.DefaultTailwindClass("inline")) }
   /// `hidden`.
-  public var hidden: Self { appending(TailwindStyle.DefaultTailwindClass("hidden")) }
+  public var hidden: Self { appending(TailwindStyleBuilder.DefaultTailwindClass("hidden")) }
   /// `container`.
-  public var container: Self { appending(TailwindStyle.DefaultTailwindClass("container")) }
+  public var container: Self { appending(TailwindStyleBuilder.DefaultTailwindClass("container")) }
   /// `contents`.
-  public var contents: Self { appending(TailwindStyle.DefaultTailwindClass("contents")) }
+  public var contents: Self { appending(TailwindStyleBuilder.DefaultTailwindClass("contents")) }
 }
 
-extension TailwindStyle: DisplayStyling {}
+extension TailwindStyleBuilder: DisplayStyling {}
 
 // Static mirrors so a display utility can start a chain with a leading dot.
-extension TailwindStyle {
+extension TailwindStyleBuilder {
   /// `flex`.
-  public static var flex: TailwindStyle { TailwindStyle().flex }
+  public static var flex: TailwindStyleBuilder { TailwindStyleBuilder().flex }
   /// `inline-flex`.
-  public static var inlineFlex: TailwindStyle { TailwindStyle().inlineFlex }
+  public static var inlineFlex: TailwindStyleBuilder { TailwindStyleBuilder().inlineFlex }
   /// `grid`.
-  public static var grid: TailwindStyle { TailwindStyle().grid }
+  public static var grid: TailwindStyleBuilder { TailwindStyleBuilder().grid }
   /// `block`.
-  public static var block: TailwindStyle { TailwindStyle().block }
+  public static var block: TailwindStyleBuilder { TailwindStyleBuilder().block }
   /// `inline-block`.
-  public static var inlineBlock: TailwindStyle { TailwindStyle().inlineBlock }
+  public static var inlineBlock: TailwindStyleBuilder { TailwindStyleBuilder().inlineBlock }
   /// `inline`.
-  public static var inline: TailwindStyle { TailwindStyle().inline }
+  public static var inline: TailwindStyleBuilder { TailwindStyleBuilder().inline }
   /// `hidden`.
-  public static var hidden: TailwindStyle { TailwindStyle().hidden }
+  public static var hidden: TailwindStyleBuilder { TailwindStyleBuilder().hidden }
   /// `container`.
-  public static var container: TailwindStyle { TailwindStyle().container }
+  public static var container: TailwindStyleBuilder { TailwindStyleBuilder().container }
   /// `contents`.
-  public static var contents: TailwindStyle { TailwindStyle().contents }
+  public static var contents: TailwindStyleBuilder { TailwindStyleBuilder().contents }
 }

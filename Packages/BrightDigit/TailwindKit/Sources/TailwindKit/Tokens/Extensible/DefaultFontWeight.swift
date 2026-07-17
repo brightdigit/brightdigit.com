@@ -30,23 +30,23 @@
 /// The built-in Tailwind v4 font weights.
 public struct DefaultFontWeight: FontWeight {
   /// `font-thin`.
-  fileprivate static let thinValue = DefaultFontWeight("thin")
+  public static let thin = DefaultFontWeight("thin")
   /// `font-extralight`.
-  fileprivate static let extralightValue = DefaultFontWeight("extralight")
+  public static let extralight = DefaultFontWeight("extralight")
   /// `font-light`.
-  fileprivate static let lightValue = DefaultFontWeight("light")
+  public static let light = DefaultFontWeight("light")
   /// `font-normal`.
-  fileprivate static let normalValue = DefaultFontWeight("normal")
+  public static let normal = DefaultFontWeight("normal")
   /// `font-medium`.
-  fileprivate static let mediumValue = DefaultFontWeight("medium")
+  public static let medium = DefaultFontWeight("medium")
   /// `font-semibold`.
-  fileprivate static let semiboldValue = DefaultFontWeight("semibold")
+  public static let semibold = DefaultFontWeight("semibold")
   /// `font-bold`.
-  fileprivate static let boldValue = DefaultFontWeight("bold")
+  public static let bold = DefaultFontWeight("bold")
   /// `font-extrabold`.
-  fileprivate static let extraboldValue = DefaultFontWeight("extrabold")
+  public static let extrabold = DefaultFontWeight("extrabold")
   /// `font-black`.
-  fileprivate static let blackValue = DefaultFontWeight("black")
+  public static let black = DefaultFontWeight("black")
 
   /// The rendered fragment, e.g. `"medium"`.
   public let token: String
@@ -58,21 +58,21 @@ public struct DefaultFontWeight: FontWeight {
 
 extension FontWeight where Self == DefaultFontWeight {
   /// `font-thin`.
-  public static var thin: DefaultFontWeight { .thinValue }
+  public static var thin: DefaultFontWeight { .thin }
   /// `font-extralight`.
-  public static var extralight: DefaultFontWeight { .extralightValue }
+  public static var extralight: DefaultFontWeight { .extralight }
   /// `font-light`.
-  public static var light: DefaultFontWeight { .lightValue }
+  public static var light: DefaultFontWeight { .light }
   /// `font-normal`.
-  public static var normal: DefaultFontWeight { .normalValue }
+  public static var normal: DefaultFontWeight { .normal }
   /// `font-medium`.
-  public static var medium: DefaultFontWeight { .mediumValue }
+  public static var medium: DefaultFontWeight { .medium }
   /// `font-semibold`.
-  public static var semibold: DefaultFontWeight { .semiboldValue }
+  public static var semibold: DefaultFontWeight { .semibold }
   /// `font-bold`.
-  public static var bold: DefaultFontWeight { .boldValue }
+  public static var bold: DefaultFontWeight { .bold }
   /// `font-extrabold`.
-  public static var extrabold: DefaultFontWeight { .extraboldValue }
+  public static var extrabold: DefaultFontWeight { .extrabold }
   /// `font-black`.
-  public static var black: DefaultFontWeight { .blackValue }
+  public static var black: DefaultFontWeight { .black }
 }

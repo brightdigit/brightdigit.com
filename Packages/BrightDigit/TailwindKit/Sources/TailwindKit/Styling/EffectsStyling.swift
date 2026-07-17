@@ -29,8 +29,8 @@
 
 /// Shadow, ring, opacity, object-fit, and filter utilities.
 ///
-/// A capability protocol witnessed against the ``TailwindStyleProtocol`` seam;
-/// ``TailwindStyle`` conforms to it. See ``TailwindStyleProtocol`` for the
+/// A capability protocol witnessed against the ``TailwindStyle`` seam;
+/// ``TailwindStyleBuilder`` conforms to it. See ``TailwindStyle`` for the
 /// architecture rationale.
 public protocol EffectsStyling {
   /// `invert` (`invert(100%)`).
@@ -58,39 +58,39 @@ public protocol EffectsStyling {
   func hueRotate(_ degrees: Int) -> Self
 }
 
-extension EffectsStyling where Self: TailwindStyleProtocol {
+extension EffectsStyling where Self: TailwindStyle {
   // MARK: Filters (bare)
 
   /// `invert` (`invert(100%)`).
-  public var invert: Self { appending(TailwindStyle.DefaultTailwindClass("invert")) }
+  public var invert: Self { appending(TailwindStyleBuilder.DefaultTailwindClass("invert")) }
   /// `grayscale` (`grayscale(100%)`).
-  public var grayscale: Self { appending(TailwindStyle.DefaultTailwindClass("grayscale")) }
+  public var grayscale: Self { appending(TailwindStyleBuilder.DefaultTailwindClass("grayscale")) }
   /// `backdrop-grayscale`.
   public var backdropGrayscale: Self {
-    appending(TailwindStyle.DefaultTailwindClass("backdrop-grayscale"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("backdrop-grayscale"))
   }
 
   // MARK: Effects
 
   /// `shadow-<value>`, e.g. `.shadow(.lg)`.
   public func shadow(_ shadow: some Shadow) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("shadow-\(shadow.token)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("shadow-\(shadow.token)"))
   }
   /// `drop-shadow-<value>`, e.g. `.dropShadow(.xl)`.
   public func dropShadow(_ shadow: some DropShadow) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("drop-shadow-\(shadow.token)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("drop-shadow-\(shadow.token)"))
   }
   /// `ring-<n>`, e.g. `.ring(4)`.
   public func ring(_ width: Int) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("ring-\(width)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("ring-\(width)"))
   }
   /// `opacity-<n>`, e.g. `.opacity(90)`.
   public func opacity(_ value: Int) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("opacity-\(value)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("opacity-\(value)"))
   }
   /// `object-<fit>`, e.g. `.object(.cover)`.
   public func object(_ fit: ObjectFit) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("object-\(fit.token)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("object-\(fit.token)"))
   }
 
   // MARK: Filters (parameterized)
@@ -98,56 +98,64 @@ extension EffectsStyling where Self: TailwindStyleProtocol {
   /// `backdrop-blur-<size>`, e.g. `.backdropBlur(.lg)`.
   public func backdropBlur(_ radius: some Radius) -> Self {
     radius.token.isEmpty
-      ? appending(TailwindStyle.DefaultTailwindClass("backdrop-blur"))
-      : appending(TailwindStyle.DefaultTailwindClass("backdrop-blur-\(radius.token)"))
+      ? appending(TailwindStyleBuilder.DefaultTailwindClass("backdrop-blur"))
+      : appending(TailwindStyleBuilder.DefaultTailwindClass("backdrop-blur-\(radius.token)"))
   }
   /// `backdrop-brightness-<n>`, e.g. `.backdropBrightness(50)`.
   public func backdropBrightness(_ value: Int) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("backdrop-brightness-\(value)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("backdrop-brightness-\(value)"))
   }
   /// `hue-rotate-<deg>`, e.g. `.hueRotate(180)`.
   public func hueRotate(_ degrees: Int) -> Self {
-    appending(TailwindStyle.DefaultTailwindClass("hue-rotate-\(degrees)"))
+    appending(TailwindStyleBuilder.DefaultTailwindClass("hue-rotate-\(degrees)"))
   }
 }
 
-extension TailwindStyle: EffectsStyling {}
+extension TailwindStyleBuilder: EffectsStyling {}
 
 // Static mirrors so an effect/filter utility can start a chain with a leading dot.
-extension TailwindStyle {
+extension TailwindStyleBuilder {
   /// `invert`.
-  public static var invert: TailwindStyle { TailwindStyle().invert }
+  public static var invert: TailwindStyleBuilder { TailwindStyleBuilder().invert }
   /// `grayscale`.
-  public static var grayscale: TailwindStyle { TailwindStyle().grayscale }
+  public static var grayscale: TailwindStyleBuilder { TailwindStyleBuilder().grayscale }
   /// `backdrop-grayscale`.
-  public static var backdropGrayscale: TailwindStyle { TailwindStyle().backdropGrayscale }
+  public static var backdropGrayscale: TailwindStyleBuilder {
+    TailwindStyleBuilder().backdropGrayscale
+  }
 }
 
-extension TailwindStyle {
+extension TailwindStyleBuilder {
   /// `shadow-<value>`.
-  public static func shadow(_ shadow: some Shadow) -> TailwindStyle {
-    TailwindStyle().shadow(shadow)
+  public static func shadow(_ shadow: some Shadow) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().shadow(shadow)
   }
   /// `drop-shadow-<value>`.
-  public static func dropShadow(_ shadow: some DropShadow) -> TailwindStyle {
-    TailwindStyle().dropShadow(shadow)
+  public static func dropShadow(_ shadow: some DropShadow) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().dropShadow(shadow)
   }
   /// `ring-<n>`.
-  public static func ring(_ width: Int) -> TailwindStyle { TailwindStyle().ring(width) }
+  public static func ring(_ width: Int) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().ring(width)
+  }
   /// `opacity-<n>`.
-  public static func opacity(_ value: Int) -> TailwindStyle { TailwindStyle().opacity(value) }
+  public static func opacity(_ value: Int) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().opacity(value)
+  }
   /// `object-<fit>`.
-  public static func object(_ fit: ObjectFit) -> TailwindStyle { TailwindStyle().object(fit) }
+  public static func object(_ fit: ObjectFit) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().object(fit)
+  }
   /// `backdrop-blur-<size>`.
-  public static func backdropBlur(_ radius: some Radius) -> TailwindStyle {
-    TailwindStyle().backdropBlur(radius)
+  public static func backdropBlur(_ radius: some Radius) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().backdropBlur(radius)
   }
   /// `backdrop-brightness-<n>`.
-  public static func backdropBrightness(_ value: Int) -> TailwindStyle {
-    TailwindStyle().backdropBrightness(value)
+  public static func backdropBrightness(_ value: Int) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().backdropBrightness(value)
   }
   /// `hue-rotate-<deg>`.
-  public static func hueRotate(_ degrees: Int) -> TailwindStyle {
-    TailwindStyle().hueRotate(degrees)
+  public static func hueRotate(_ degrees: Int) -> TailwindStyleBuilder {
+    TailwindStyleBuilder().hueRotate(degrees)
   }
 }

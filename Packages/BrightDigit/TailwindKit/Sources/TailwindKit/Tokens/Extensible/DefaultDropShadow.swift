@@ -29,20 +29,22 @@
 
 /// The built-in Tailwind v4 drop-shadow values.
 public struct DefaultDropShadow: DropShadow {
+  // swiftlint:disable identifier_name
   /// `drop-shadow-xs`.
-  fileprivate static let xsValue = DefaultDropShadow("xs")
+  public static let xs = DefaultDropShadow("xs")
   /// `drop-shadow-sm`.
-  fileprivate static let smValue = DefaultDropShadow("sm")
+  public static let sm = DefaultDropShadow("sm")
   /// `drop-shadow-md`.
-  fileprivate static let mdValue = DefaultDropShadow("md")
+  public static let md = DefaultDropShadow("md")
   /// `drop-shadow-lg`.
-  fileprivate static let lgValue = DefaultDropShadow("lg")
+  public static let lg = DefaultDropShadow("lg")
   /// `drop-shadow-xl`.
-  fileprivate static let xlValue = DefaultDropShadow("xl")
+  public static let xl = DefaultDropShadow("xl")
+  // swiftlint:enable identifier_name
   /// `drop-shadow-2xl`.
-  fileprivate static let xl2Value = DefaultDropShadow("2xl")
+  public static let xl2 = DefaultDropShadow("2xl")
   /// `drop-shadow-none`.
-  fileprivate static let noneValue = DefaultDropShadow("none")
+  public static let none = DefaultDropShadow("none")
 
   /// The rendered fragment, e.g. `"xl"`.
   public let token: String
@@ -55,18 +57,18 @@ public struct DefaultDropShadow: DropShadow {
 extension DropShadow where Self == DefaultDropShadow {
   // swiftlint:disable identifier_name
   /// `drop-shadow-xs`.
-  public static var xs: DefaultDropShadow { .xsValue }
+  public static var xs: DefaultDropShadow { .xs }
   /// `drop-shadow-sm`.
-  public static var sm: DefaultDropShadow { .smValue }
+  public static var sm: DefaultDropShadow { .sm }
   /// `drop-shadow-md`.
-  public static var md: DefaultDropShadow { .mdValue }
+  public static var md: DefaultDropShadow { .md }
   /// `drop-shadow-lg`.
-  public static var lg: DefaultDropShadow { .lgValue }
+  public static var lg: DefaultDropShadow { .lg }
   /// `drop-shadow-xl`.
-  public static var xl: DefaultDropShadow { .xlValue }
+  public static var xl: DefaultDropShadow { .xl }
   // swiftlint:enable identifier_name
   /// `drop-shadow-2xl`.
-  public static var xl2: DefaultDropShadow { .xl2Value }
+  public static var xl2: DefaultDropShadow { .xl2 }
   /// `drop-shadow-none`.
-  public static var none: DefaultDropShadow { .noneValue }
+  public static var none: DefaultDropShadow { .none }
 }

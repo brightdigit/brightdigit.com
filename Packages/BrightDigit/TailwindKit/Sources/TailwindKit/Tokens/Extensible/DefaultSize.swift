@@ -32,17 +32,17 @@ public struct DefaultSize: Size,
   ExpressibleByIntegerLiteral, ExpressibleByFloatLiteral
 {
   /// `full` — 100%.
-  fileprivate static let fullValue = DefaultSize("full")
+  public static let full = DefaultSize("full")
   /// `screen` — the viewport dimension.
-  fileprivate static let screenValue = DefaultSize("screen")
+  public static let screen = DefaultSize("screen")
   /// `auto`.
-  fileprivate static let autoValue = DefaultSize("auto")
+  public static let auto = DefaultSize("auto")
   /// `min` — `min-content`.
-  fileprivate static let minValue = DefaultSize("min")
+  public static let min = DefaultSize("min")
   /// `max` — `max-content`.
-  fileprivate static let maxValue = DefaultSize("max")
+  public static let max = DefaultSize("max")
   /// `fit` — `fit-content`.
-  fileprivate static let fitValue = DefaultSize("fit")
+  public static let fit = DefaultSize("fit")
 
   /// The rendered fragment, e.g. `"4"`, `"full"`, `"1/2"`.
   public let token: String
@@ -67,17 +67,17 @@ public struct DefaultSize: Size,
 
 extension Size where Self == DefaultSize {
   /// `full` — 100%.
-  public static var full: DefaultSize { .fullValue }
+  public static var full: DefaultSize { .full }
   /// `screen` — the viewport dimension.
-  public static var screen: DefaultSize { .screenValue }
+  public static var screen: DefaultSize { .screen }
   /// `auto`.
-  public static var auto: DefaultSize { .autoValue }
+  public static var auto: DefaultSize { .auto }
   /// `min` — `min-content`.
-  public static var min: DefaultSize { .minValue }
+  public static var min: DefaultSize { .min }
   /// `max` — `max-content`.
-  public static var max: DefaultSize { .maxValue }
+  public static var max: DefaultSize { .max }
   /// `fit` — `fit-content`.
-  public static var fit: DefaultSize { .fitValue }
+  public static var fit: DefaultSize { .fit }
 
   /// A documented width fraction, e.g. `.fraction(1, 2)` → `w-1/2`.
   ///

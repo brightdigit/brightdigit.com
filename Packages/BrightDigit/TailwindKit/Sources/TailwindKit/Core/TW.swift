@@ -27,8 +27,8 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-/// Convenient alias for ``TailwindStyle`` so chains can read `TW.flex.gap(4)`.
+/// Convenient alias for ``TailwindStyleBuilder`` so chains can read `TW.flex.gap(4)`.
 ///
 /// The name is intentionally two characters — `TW` is the mandated public
 /// spelling — so `type_name`'s minimum-length rule is disabled on this line.
-public typealias TW = TailwindStyle  // swiftlint:disable:this type_name
+public typealias TW = TailwindStyleBuilder  // swiftlint:disable:this type_name

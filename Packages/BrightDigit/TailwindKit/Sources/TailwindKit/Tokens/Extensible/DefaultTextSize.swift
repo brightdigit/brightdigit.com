@@ -29,32 +29,34 @@
 
 /// The built-in Tailwind v4 font sizes.
 public struct DefaultTextSize: TextSize {
+  // swiftlint:disable identifier_name
   /// `text-xs`.
-  fileprivate static let xsValue = DefaultTextSize("xs")
+  public static let xs = DefaultTextSize("xs")
   /// `text-sm`.
-  fileprivate static let smValue = DefaultTextSize("sm")
+  public static let sm = DefaultTextSize("sm")
   /// `text-base`.
-  fileprivate static let baseValue = DefaultTextSize("base")
+  public static let base = DefaultTextSize("base")
   /// `text-lg`.
-  fileprivate static let lgValue = DefaultTextSize("lg")
+  public static let lg = DefaultTextSize("lg")
   /// `text-xl`.
-  fileprivate static let xlValue = DefaultTextSize("xl")
+  public static let xl = DefaultTextSize("xl")
+  // swiftlint:enable identifier_name
   /// `text-2xl`.
-  fileprivate static let xl2Value = DefaultTextSize("2xl")
+  public static let xl2 = DefaultTextSize("2xl")
   /// `text-3xl`.
-  fileprivate static let xl3Value = DefaultTextSize("3xl")
+  public static let xl3 = DefaultTextSize("3xl")
   /// `text-4xl`.
-  fileprivate static let xl4Value = DefaultTextSize("4xl")
+  public static let xl4 = DefaultTextSize("4xl")
   /// `text-5xl`.
-  fileprivate static let xl5Value = DefaultTextSize("5xl")
+  public static let xl5 = DefaultTextSize("5xl")
   /// `text-6xl`.
-  fileprivate static let xl6Value = DefaultTextSize("6xl")
+  public static let xl6 = DefaultTextSize("6xl")
   /// `text-7xl`.
-  fileprivate static let xl7Value = DefaultTextSize("7xl")
+  public static let xl7 = DefaultTextSize("7xl")
   /// `text-8xl`.
-  fileprivate static let xl8Value = DefaultTextSize("8xl")
+  public static let xl8 = DefaultTextSize("8xl")
   /// `text-9xl`.
-  fileprivate static let xl9Value = DefaultTextSize("9xl")
+  public static let xl9 = DefaultTextSize("9xl")
 
   /// The rendered fragment, e.g. `"lg"`, `"2xl"`.
   public let token: String
@@ -67,30 +69,30 @@ public struct DefaultTextSize: TextSize {
 extension TextSize where Self == DefaultTextSize {
   // swiftlint:disable identifier_name
   /// `text-xs`.
-  public static var xs: DefaultTextSize { .xsValue }
+  public static var xs: DefaultTextSize { .xs }
   /// `text-sm`.
-  public static var sm: DefaultTextSize { .smValue }
+  public static var sm: DefaultTextSize { .sm }
   /// `text-base`.
-  public static var base: DefaultTextSize { .baseValue }
+  public static var base: DefaultTextSize { .base }
   /// `text-lg`.
-  public static var lg: DefaultTextSize { .lgValue }
+  public static var lg: DefaultTextSize { .lg }
   /// `text-xl`.
-  public static var xl: DefaultTextSize { .xlValue }
+  public static var xl: DefaultTextSize { .xl }
   // swiftlint:enable identifier_name
   /// `text-2xl`.
-  public static var xl2: DefaultTextSize { .xl2Value }
+  public static var xl2: DefaultTextSize { .xl2 }
   /// `text-3xl`.
-  public static var xl3: DefaultTextSize { .xl3Value }
+  public static var xl3: DefaultTextSize { .xl3 }
   /// `text-4xl`.
-  public static var xl4: DefaultTextSize { .xl4Value }
+  public static var xl4: DefaultTextSize { .xl4 }
   /// `text-5xl`.
-  public static var xl5: DefaultTextSize { .xl5Value }
+  public static var xl5: DefaultTextSize { .xl5 }
   /// `text-6xl`.
-  public static var xl6: DefaultTextSize { .xl6Value }
+  public static var xl6: DefaultTextSize { .xl6 }
   /// `text-7xl`.
-  public static var xl7: DefaultTextSize { .xl7Value }
+  public static var xl7: DefaultTextSize { .xl7 }
   /// `text-8xl`.
-  public static var xl8: DefaultTextSize { .xl8Value }
+  public static var xl8: DefaultTextSize { .xl8 }
   /// `text-9xl`.
-  public static var xl9: DefaultTextSize { .xl9Value }
+  public static var xl9: DefaultTextSize { .xl9 }
 }
