@@ -7,6 +7,6 @@
 	remote = git@github.com:BrightDigit/SwiftTube.git
 	branch = brightdigit-com-260621
 	commit = ebce30e058e5427bd406cd8dd81e2476520d3b61
-	parent = 6d7169cc6ea757473003ecf301cd98409ced2a26
+	parent = 3f8b5a94b2092cb706bcfef558d88eb32171a798
 	method = merge
 	cmdver = 0.4.9

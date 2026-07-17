@@ -1,5 +1,10 @@
 # How to add Swift syntax highlighting to Markdown code blocks
 
+> **BrightDigit note:** Splash / SplashPublishPlugin were **removed** from this
+> fork. Use client-side [highlight.js](using-highlight-js.md) instead (what the
+> site `Styling` bundle ships). The instructions below are retained only as
+> upstream historical reference.
+
 If you’re using Publish to write articles about Swift development, then you probably want to highlight the code blocks within those articles according to Swift’s syntax.
 
 While there are a number of tools that you can use to accomplish this (including several JavaScript-based tools that can be added to any website), Publish is fully compatible with the Swift syntax highlighter [Splash](https://github.com/JohnSundell/Splash), which can be easily added using its [official plugin](https://github.com/JohnSundell/SplashPublishPlugin).

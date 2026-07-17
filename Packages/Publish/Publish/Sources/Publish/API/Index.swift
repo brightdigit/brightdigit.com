@@ -7,7 +7,9 @@
 import Foundation
 
 /// A representation of a website's main index page
-public struct Index: Location {
-    public var path: Path { "" }
-    public var content = Content()
+public struct Index: Location, Sendable {
+  /// The index page's path, which is always the website's root.
+  public var path: Path { "" }
+  /// The index page's main content.
+  public var content = Content()
 }

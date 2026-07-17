@@ -40,118 +40,13 @@ internal struct ContactBuilder: PageBuilder {
 
   internal var bodyClasses: [String] { [] }
 
-  internal func main(
+  @ComponentBuilder internal func main(
     forLocation _: Page, withContext _: PublishingContext<BrightDigitSite>
   )
-    -> [Node<HTML.BodyContext>]
+    -> Component
   {
-    [
-      .header(
-        .h1("Contact Us")
-      ),
-      .makeContactUsFormWithPicture(),
-      .makeSocialMediaSection(),
-    ]
-  }
-}
-
-extension Node where Context == HTML.BodyContext {
-  // MARK: - makeContactUsFormWithPicture
-
-  // swiftlint:disable:next function_body_length
-  public static func makeContactUsFormWithPicture() -> Node {
-    .section(
-      .id("contact-us-form"),
-      .main(
-        .header(
-          .img(.src("/media/contact-us.svg"), .alt("Contact Us"))
-        ),
-        .main(
-          .div(
-            .p(
-              // swiftlint:disable:next line_length
-              "Want to chat about how we can help you and your company? Let us know how we help."
-            ),
-            .form(
-              .attribute(named: "name", value: "contact"),
-              .method(.post),
-              .data(named: "netlify", value: "true"),
-              .div(
-                .div(
-                  .input(.type(.text), .name("first-name"), .placeholder("Leo")),
-                  .label("First Name")
-                ),
-                .div(
-                  .input(.type(.text), .name("last-name"), .placeholder("Dion")),
-                  .label("Last Name")
-                )
-              ),
-              .div(
-                .div(
-                  .input(
-                    .type(.text), .name("email"), .placeholder("leo@brightdigit.com")
-                  ),
-                  .label("Email")
-                )
-              ),
-              .div(
-                .div(
-                  .textarea(.placeholder("You Message Here"), .name("message"))
-                )
-              ),
-              .div(
-                .div(
-                  .button("Send", .type(.submit))
-                )
-              )
-            )
-          )
-        )
-      )
-    )
-  }
-
-  // MARK: - makeSocialMediaSection
-
-  public static func makeSocialMediaSection() -> Node {
-    .section(
-      .id("social-media"),
-      .main(
-        .header(
-          .img(
-            .src("/media/social-media.svg"),
-            .alt("We are on Social Media")
-          )
-        ),
-        .main(
-          .p("There are other ways to get a hold of us too."),
-          .ol(
-            .class("social"),
-            .makeIconWithText("Twitter @brightdigit", href: "/", flatIcon: "twitter"),
-            .makeIconWithText("GitHub @brightdigit", href: "/", flatIcon: "github"),
-            .makeIconWithText("EmpowerApps.Show Podcast", href: "/", flatIcon: "podcast"),
-            .makeIconWithText("Youtube videos", href: "/", flatIcon: "youtube"),
-            .makeIconWithText("Our Newsletter", href: "/", flatIcon: "newletter"),
-            .makeIconWithText("Our Feed", href: "/", flatIcon: "rss")
-          )
-        )
-      )
-    )
-  }
-}
-
-// MARK: - makeIconWithText
-
-extension Node where Context == HTML.ListContext {
-  public static func makeIconWithText(_ text: String, href: String, flatIcon: String)
-    -> Node
-  {
-    .li(
-      .a(
-        .href(href),
-        .i(.class("flaticon-\(flatIcon)")),
-        .text(text)
-      )
-    )
+    Contact.PageHeader()
+    Contact.FormSection()
+    Contact.SocialMediaSection()
   }
 }

@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/ingydotnet/git-subrepo#readme
+;
+[subrepo]
+	remote = git@github.com:brightdigit/ContributeYouTube.git
+	branch = brightdigit-com-260717
+	commit = 4ed324280b65bb213d8cb057b4217766dc574574
+	method = merge
+	cmdver = 0.4.9
+	parent = 2abf9643a0e0cdfbdf9ca6e4705dbf995b58f0c7

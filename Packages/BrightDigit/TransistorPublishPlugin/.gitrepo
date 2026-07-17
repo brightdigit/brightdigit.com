@@ -6,7 +6,7 @@
 [subrepo]
 	remote = git@github.com:BrightDigit/TransistorPublishPlugin.git
 	branch = brightdigit-com-260406
-	commit = ce16e0c6c2670ffdf95c6896f95139c8a5060a93
-	parent = dbbbb276adbb702143c34a7a2236f6db964ac401
+	commit = 098d3e7cdac0d54e1272997c3e2921be0d25765a
+	parent = 3f8b5a94b2092cb706bcfef558d88eb32171a798
 	method = merge
 	cmdver = 0.4.9

@@ -7,18 +7,21 @@
 import Foundation
 
 internal struct ElementWrapper {
-    var wrappingElementName: String
-    var deferredAttributes = [AnyAttribute]()
-    var body: (Component) -> Component
+  internal var wrappingElementName: String
+  internal var deferredAttributes = [AnyAttribute]()
+  internal var body: (Component) -> Component
 }
 
 extension ElementWrapper {
-    init(wrappingElementName: String) {
-        self.wrappingElementName = wrappingElementName
-        self.body = {
-            Element(name: wrappingElementName, nodes: [
-                Node<Any>.component($0)
-            ])
-        }
+  internal init(wrappingElementName: String) {
+    self.wrappingElementName = wrappingElementName
+    self.body = {
+      Element(
+        name: wrappingElementName,
+        nodes: [
+          Node<Any>.component($0)
+        ]
+      )
     }
+  }
 }

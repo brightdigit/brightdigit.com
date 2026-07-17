@@ -5,15 +5,15 @@
 */
 
 internal protocol AnyAttribute {
-    var name: String { get }
-    var value: String? { get set }
-    var replaceExisting: Bool { get }
+  var name: String { get }
+  var value: String? { get set }
+  var replaceExisting: Bool { get }
 
-    func render() -> String
+  func render() -> String
 }
 
 extension AnyAttribute {
-    var nonEmptyValue: String? {
-        value?.isEmpty == false ? value : nil
-    }
+  internal var nonEmptyValue: String? {
+    value?.isEmpty == false ? value : nil
+  }
 }

@@ -11,7 +11,9 @@ import Foundation
 /// but when you don't actually want to render anything. Modifiers have no
 /// affect on this component.
 public struct EmptyComponent: Component {
-    /// Initialize an empty component.
-    public init() {}
-    public var body: Component { Node<Any>.empty }
+  /// The content and behavior of this component.
+  public var body: Component { Node<Any>.empty }
+
+  /// Initialize an empty component.
+  public init() {}
 }

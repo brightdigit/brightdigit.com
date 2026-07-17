@@ -4,19 +4,15 @@
 *  MIT license, see LICENSE file for details
 */
 
-internal struct HorizontalLine: Modifiable, HTMLConvertible, PlainTextConvertible {
-    var modifierTarget: Modifier.Target { .horizontalLines }
+internal struct HorizontalLine: Modifiable, HTMLConvertible {
+  internal var modifierTarget: Modifier.Target { .horizontalLines }
 
-    init() {}
+  internal init() {}
 
-    func html(usingURLs urls: NamedURLCollection,
-              modifiers: ModifierCollection) -> String {
-        "<hr>"
-    }
-
-    func plainText() -> String {
-        // Since we want to strip all HTML from plain text output,
-        // there is nothing to return here, just an empty string.
-        ""
-    }
+  internal func html(
+    usingURLs urls: NamedURLCollection,
+    modifiers: ModifierCollection
+  ) -> String {
+    "<hr>"
+  }
 }

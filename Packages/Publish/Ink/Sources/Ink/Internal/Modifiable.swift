@@ -5,5 +5,5 @@
 */
 
 internal protocol Modifiable {
-    var modifierTarget: Modifier.Target { get }
+  var modifierTarget: Modifier.Target { get }
 }

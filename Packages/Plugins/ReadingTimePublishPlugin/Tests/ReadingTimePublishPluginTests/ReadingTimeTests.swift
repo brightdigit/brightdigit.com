@@ -120,7 +120,7 @@ func Assert(
     wordsPerMinute: Int = 200,
     minutes: Int,
     timeMinutes: Double,
-    file: StaticString = #file,
+    file: StaticString = #filePath,
     line: UInt = #line
 ) {
     XCTAssertEqual(
@@ -141,7 +141,7 @@ func _Assert(
     wordsPerMinute: Int = 200,
     minutes: Int,
     timeMinutes: Double,
-    file: StaticString = #file,
+    file: StaticString = #filePath,
     line: UInt = #line
 ) {}
 

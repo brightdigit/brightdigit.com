@@ -8,6 +8,6 @@ import Foundation
 
 /// Enum describing various podcast types supported by Apple Podcasts.
 public enum PodcastType: String, Codable, Sendable {
-    case episodic
-    case serial
+  case episodic
+  case serial
 }

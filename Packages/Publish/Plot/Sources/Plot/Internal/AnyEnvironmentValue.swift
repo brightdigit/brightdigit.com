@@ -5,5 +5,5 @@
 */
 
 internal protocol AnyEnvironmentValue {
-    var environment: Environment.Reference { get }
+  var environment: Environment.Reference { get }
 }

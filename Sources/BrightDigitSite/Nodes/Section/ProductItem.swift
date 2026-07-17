@@ -83,8 +83,8 @@ internal struct ProductItem: SectionItem {
     nil
   }
 
-  internal var pageMainContent: [Plot.Node<Plot.HTML.BodyContext>] {
-    [.contentBody(source.body)]
+  internal var pageMainContent: Component {
+    Node<HTML.BodyContext>.contentBody(source.body)
   }
 
   internal var redirectURL: URL? {

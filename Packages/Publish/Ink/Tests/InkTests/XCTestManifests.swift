@@ -6,18 +6,19 @@
 
 import XCTest
 
+/// Returns the manifest of every test case, used to run the suite on Linux.
 public func allTests() -> [Linux.TestCase] {
-    return [
-        Linux.makeTestCase(using: CodeTests.allTests),
-        Linux.makeTestCase(using: HeadingTests.allTests),
-        Linux.makeTestCase(using: HorizontalLineTests.allTests),
-        Linux.makeTestCase(using: HTMLTests.allTests),
-        Linux.makeTestCase(using: ImageTests.allTests),
-        Linux.makeTestCase(using: LinkTests.allTests),
-        Linux.makeTestCase(using: ListTests.allTests),
-        Linux.makeTestCase(using: MarkdownTests.allTests),
-        Linux.makeTestCase(using: ModifierTests.allTests),
-        Linux.makeTestCase(using: TableTests.allTests),
-        Linux.makeTestCase(using: TextFormattingTests.allTests)
-    ]
+  [
+    Linux.makeTestCase(using: CodeTests.allTests),
+    Linux.makeTestCase(using: HeadingTests.allTests),
+    Linux.makeTestCase(using: HorizontalLineTests.allTests),
+    Linux.makeTestCase(using: HTMLTests.allTests),
+    Linux.makeTestCase(using: ImageTests.allTests),
+    Linux.makeTestCase(using: LinkTests.allTests),
+    Linux.makeTestCase(using: ListTests.allTests),
+    Linux.makeTestCase(using: MarkdownTests.allTests),
+    Linux.makeTestCase(using: ModifierTests.allTests),
+    Linux.makeTestCase(using: TableTests.allTests),
+    Linux.makeTestCase(using: TextFormattingTests.allTests),
+  ]
 }

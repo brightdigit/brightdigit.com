@@ -7,7 +7,7 @@
 import Foundation
 
 extension String {
-    static func unique() -> String {
-        UUID().uuidString
-    }
+  internal static func unique() -> String {
+    UUID().uuidString
+  }
 }

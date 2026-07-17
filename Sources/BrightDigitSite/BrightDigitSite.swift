@@ -33,7 +33,6 @@ import Plot
 import Publish
 import PublishType
 import ReadingTimePublishPlugin
-import SplashPublishPlugin
 import TransistorPublishPlugin
 import YoutubePublishPlugin
 
@@ -154,14 +153,15 @@ public struct BrightDigitSite: Website, MetadataAttached {
     .group([
       .installPlugin(.transistor()),
       .installPlugin(.youtube()),
-      .installPlugin(.splash(withClassPrefix: "")),
+      // Syntax highlighting is now handled client-side (highlight.js in the
+      // Styling bundle) rather than by the removed Splash plugin; Ink emits
+      // `<pre><code class="language-xxx">` which highlight.js targets directly.
     ]),
     .addMarkdownFiles(),
   ]
 
   internal static let postMarkdownSteps: [PublishingStep<BrightDigitSite>] = [
     .yamlStringFix,
-    .installPlugin(.readingTime()),
     .sortItems(by: \.date, order: .descending),
     .generateHTML(withTheme: .company, indentation: .spaces(2)),
     .group([

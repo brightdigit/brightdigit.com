@@ -6,7 +6,7 @@
 [subrepo]
 	remote = git@github.com:BrightDigit/NPMPublishPlugin.git
 	branch = brightdigit-com-260406
-	commit = ab86818f7d57e5424af180da0d90b2978ecc97f7
-	parent = 66e24a1ea7190db146dcf8b7b5b4728b5a951007
+	commit = 7614a01fa02c453b272050bbb3b259599055898b
+	parent = 3f8b5a94b2092cb706bcfef558d88eb32171a798
 	method = merge
 	cmdver = 0.4.9

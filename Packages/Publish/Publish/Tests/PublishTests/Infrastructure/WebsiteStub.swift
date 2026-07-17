@@ -5,39 +5,41 @@
 */
 
 import Foundation
-import Publish
 import Plot
+import Publish
 
-class WebsiteStub {
-    enum SectionID: String, WebsiteSectionID {
-        case one, two, three, customRawValue = "custom-raw-value"
-    }
+// Test website doubles, modeled as Sendable value types (no @unchecked). The
+// configuration properties remain mutable `var`s so tests can tweak them during
+// setup; being a struct keeps the whole thing Sendable.
+internal enum WebsiteStub {
+  internal typealias WithoutItemMetadata = Site<EmptyItemMetadata>
+  internal typealias WithPodcastMetadata = Site<PodcastItemMetadata>
+  internal typealias WithItemMetadata<ItemMetadata: WebsiteItemMetadata> = Site<ItemMetadata>
 
-    var url = URL(string: "https://swiftbysundell.com")!
-    var name = "WebsiteName"
-    var description = "Description"
-    var language = Language.english
-    var imagePath: Path? = nil
-    var faviconPath: Path? = nil
-    var tagHTMLConfig: TagHTMLConfiguration? = .default
+  internal enum SectionID: String, WebsiteSectionID {
+    case one, two, three
+    case customRawValue = "custom-raw-value"
+  }
 
-    required init() {}
+  internal struct EmptyItemMetadata: WebsiteItemMetadata {}
 
-    func title(for sectionID: WebsiteStub.SectionID) -> String {
-        sectionID.rawValue
-    }
-}
+  internal struct PodcastItemMetadata: PodcastCompatibleWebsiteItemMetadata {
+    internal var podcast: PodcastEpisodeMetadata?
+  }
 
-extension WebsiteStub {
-    final class WithItemMetadata<ItemMetadata: WebsiteItemMetadata>: WebsiteStub, Website {}
+  internal struct Site<ItemMetadata: WebsiteItemMetadata>: Website {
+    internal typealias SectionID = WebsiteStub.SectionID
 
-    final class WithPodcastMetadata: WebsiteStub, Website {
-        struct ItemMetadata: PodcastCompatibleWebsiteItemMetadata {
-            var podcast: PodcastEpisodeMetadata?
-        }
-    }
+    // A hard-coded, always-valid literal URL for the test stub website.
+    // swift-format-ignore: NeverForceUnwrap
+    // swiftlint:disable:next force_unwrapping
+    internal var url = URL(string: "https://swiftbysundell.com")!
+    internal var name = "WebsiteName"
+    internal var description = "Description"
+    internal var language = Language.english
+    internal var imagePath: Path?
+    internal var tagHTMLConfig: TagHTMLConfiguration? = .default
 
-    final class WithoutItemMetadata: WebsiteStub, Website {
-        struct ItemMetadata: WebsiteItemMetadata {}
-    }
+    internal init() {}
+  }
 }

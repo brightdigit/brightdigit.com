@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/ingydotnet/git-subrepo#readme
+;
+[subrepo]
+	remote = git@github.com:brightdigit/ContributeMailchimp.git
+	branch = brightdigit-com-260717
+	commit = 58554abad9cc64220ecea50a4fcea374b79614e5
+	method = merge
+	cmdver = 0.4.9
+	parent = 3947445151ab4a1282e4f504e67db25dc4dc8ce9

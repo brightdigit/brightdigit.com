@@ -4,9 +4,9 @@
 *  MIT license, see LICENSE file for details
 */
 
-import XCTest
 import InkTests
+import XCTest
 
-var tests = [XCTestCaseEntry]()
+internal var tests = [XCTestCaseEntry]()
 tests += InkTests.allTests()
 XCTMain(tests)
