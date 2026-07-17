@@ -25,6 +25,10 @@ let package = Package(
         "Contribute",
         .product(name: "Spinetail", package: "Spinetail")
       ]
+    ),
+    .testTarget(
+      name: "ContributeMailchimpTests",
+      dependencies: ["ContributeMailchimp"]
     )
   ]
 )

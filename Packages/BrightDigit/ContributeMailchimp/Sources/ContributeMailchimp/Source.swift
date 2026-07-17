@@ -51,7 +51,7 @@ extension Newsletter {
     public let html: String
     public let markdown: String
 
-    init(campaign: Campaign, html: String, markdown: String) {
+    internal init(campaign: Campaign, html: String, markdown: String) {
       slug = campaign.slug
       issueNo = campaign.issueNo
       campaignID = campaign.campaignID

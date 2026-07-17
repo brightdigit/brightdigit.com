@@ -21,6 +21,10 @@ let package = Package(
       dependencies: [
         .product(name: "Publish", package: "Publish")
       ]
+    ),
+    .testTarget(
+      name: "PublishTypeTests",
+      dependencies: ["PublishType"]
     )
   ]
 )

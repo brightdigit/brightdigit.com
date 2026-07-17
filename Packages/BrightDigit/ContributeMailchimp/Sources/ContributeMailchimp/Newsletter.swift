@@ -67,6 +67,8 @@ extension Newsletter {
   ///     metadata to import (with issue numbers assigned).
   ///   - htmlToMarkdown: Converts a campaign's archive HTML into Markdown.
   /// - Returns: The built newsletter sources.
+  /// - Throws: An error if listing the campaigns, the `select` mapping, or the
+  ///   HTML-to-Markdown conversion fails.
   public static func sources(
     from client: MailchimpClient,
     listID: String,
@@ -103,13 +105,19 @@ extension Newsletter {
       return collected
     }
 
+    return Self.collect(from: outcomes)
+  }
+
+  /// Splits the fetched outcomes into imported sources, logging any skipped
+  /// campaigns (unavailable archive content) to stderr.
+  private static func collect(from outcomes: [CampaignOutcome]) -> [Source] {
     var sources: [Source] = []
     var skipped: [String] = []
     for outcome in outcomes {
       switch outcome {
-      case let .imported(source):
+      case .imported(let source):
         sources.append(source)
-      case let .contentUnavailable(campaignID, reason):
+      case .contentUnavailable(let campaignID, let reason):
         skipped.append(campaignID)
         let line =
           "⚠️  import mailchimp: skipping \(campaignID) (unavailable): \(reason)\n"

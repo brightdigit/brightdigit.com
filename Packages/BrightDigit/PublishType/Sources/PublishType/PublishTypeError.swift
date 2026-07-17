@@ -34,6 +34,15 @@ public enum PublishTypeError: Error, LocalizedError {
   case missingContent(description: String)
   case missingItemField(field: String, path: String)
 
+  public var errorDescription: String? {
+    switch self {
+    case .missingContent(let description):
+      return "Missing content for location: \(description)"
+    case .missingItemField(let field, let path):
+      return "Missing field \(field) from \(path)"
+    }
+  }
+
   public static func missingContentFor(_ location: some Location) -> Self {
     .missingContent(description: String(describing: location))
   }
@@ -43,14 +52,5 @@ public enum PublishTypeError: Error, LocalizedError {
       field: String(describing: field),
       path: String(describing: item.path)
     )
-  }
-
-  public var errorDescription: String? {
-    switch self {
-    case let .missingContent(description):
-      return "Missing content for location: \(description)"
-    case let .missingItemField(field, path):
-      return "Missing field \(field) from \(path)"
-    }
   }
 }

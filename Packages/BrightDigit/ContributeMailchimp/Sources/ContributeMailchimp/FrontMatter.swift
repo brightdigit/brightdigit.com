@@ -37,13 +37,13 @@ import Foundation
 extension Newsletter {
   /// The YAML front matter emitted for a newsletter issue.
   public struct FrontMatter: Codable {
-    let issueNo: Int
-    let campaignID: String
-    let featuredImage: URL?
-    let longArchiveURL: URL
-    let newsletterTitle: String
-    let title: String
-    let date: String
-    let description: String?
+    internal let issueNo: Int
+    internal let campaignID: String
+    internal let featuredImage: URL?
+    internal let longArchiveURL: URL
+    internal let newsletterTitle: String
+    internal let title: String
+    internal let date: String
+    internal let description: String?
   }
 }

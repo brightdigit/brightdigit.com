@@ -25,6 +25,10 @@ let package = Package(
         "Contribute",
         .product(name: "SwiftTube", package: "SwiftTube")
       ]
+    ),
+    .testTarget(
+      name: "ContributeYouTubeTests",
+      dependencies: ["ContributeYouTube"]
     )
   ]
 )
