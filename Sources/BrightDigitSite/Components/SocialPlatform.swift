@@ -89,7 +89,9 @@ internal struct SocialPlatform: CaseIterable, Sendable {
   internal let href: String
   internal let flatIcon: String
   internal let rel: HTMLAnchorRelationship?
-  /// The Contact-page label. `nil` means the platform is footer-only.
+  /// The Contact-page label.
+  ///
+  /// `nil` means the platform is footer-only.
   internal let contactText: String?
 
   internal init(
