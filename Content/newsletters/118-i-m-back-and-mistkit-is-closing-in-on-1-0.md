@@ -13,8 +13,6 @@ It's been about six months since [the last one of these](http://eepurl.com/jufmO
 
 Back in December I wrote about [**rebuilding MistKit from scratch**](http://eepurl.com/jufmOc) — a 10-year-old CloudKit framework, redone in three months with Claude Code. Here's where that's gotten since: **MistKit is closing in on 1.0**, it's at **248 GitHub stars**, and `1.0.0-beta.2` shipped at the end of May.
 
-{{ subscribe_form }}
-
 ![MistKit Logo](https://assets.buttondown.email/images/80374c14-97f5-4fb5-981f-c2a48ff58a69.png?w=960&fit=max)
 
 ## MistKit: the road to 1.0

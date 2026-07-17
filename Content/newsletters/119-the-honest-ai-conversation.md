@@ -15,8 +15,6 @@ Since ChatGPT first launched, my feelings on AI have wavered from skepticism to 
 
 The conversation we should actually be having is about the real-world use of AI, the good and the bad, that's happening right now.
 
-{{ subscribe_form }}
-
 ## What is *Vibe Coding*
 
 I've spent the last stretch on a talk to help folks get started — **Vibe Coding: Finding Your Rhythm Between AI Assistance and Human Expertise**, which I brought to CocoaHeads Boston and DC iOS this spring. 
@@ -44,7 +42,7 @@ Your context window isn't a neat little bento box, it's a slop plate of everythi
 
 The second is a phrase I keep coming back to: **automate BY AI, not WITH AI**. Don't burn tokens having the model hand-edit forty files — have it write the inspectable bash script instead. When I want my Swift files split so each holds one type, I don't make Claude do it by hand; I have it *write the script that does it.* Use the model to build the guardrails and tooling that keep *you* in control, rather than handing it the wheel.
 
-[![Everyone Thinks They're Good at Prompting with Joe Fabisevich](https://i.ytimg.com/vi/yFPlov0UTZ4/maxresdefault.jpg)](https://brightdigit.com/episodes/210-practical-agents-with-donny-wals)
+[![Everyone Thinks They're Good at Prompting with Joe Fabisevich](https://i.ytimg.com/vi/yFPlov0UTZ4/maxresdefault.jpg)](https://brightdigit.com/episodes/208-everyone-thinks-they-re-good-at-prompting-with-joe-fabisevich/)
 
 ## Everyone Thinks They're Good at Prompting
 
