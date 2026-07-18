@@ -6,7 +6,7 @@
 [subrepo]
 	remote = git@github.com:brightdigit/ContributeYouTube.git
 	branch = brightdigit-com-260717
-	commit = 906e1dc98d80384c4e7ac89e8bd4ab7e59b2ae3a
+	commit = c4dfd8b84b9adf7c517b1c55835e00f4927e6966
 	method = merge
 	cmdver = 0.4.9
-	parent = 0e6f7afac2107a4f070999b9fee26186fcd469eb
+	parent = 4a7eab7aad8457abcb4b94128084c51595264f49
