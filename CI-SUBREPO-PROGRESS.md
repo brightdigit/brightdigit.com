@@ -112,8 +112,9 @@ break the String public API): store paths in **canonical forward-slash** form; k
 all `/`-based internal logic; convert to native separators only at FileManager /
 `URL(fileURLWithPath:)` boundaries. New `Sources/Path.swift` adds
 `String.canonicalizedPath/.nativePath/.isDriveRoot` + `Path.rootPath/.nativeSeparator`,
-all **no-ops off Windows** (macOS/Linux provably unchanged). `~` → `homeDirectoryForCurrentUser`
-(drops a POSIX-only HOME force-unwrap); `Folder.root` → current volume root on Windows;
+all **no-ops off Windows** (macOS/Linux provably unchanged). `~` → `NSHomeDirectory()`
+(drops a POSIX-only HOME force-unwrap; NOT `homeDirectoryForCurrentUser`, which is
+unavailable on iOS/tvOS/watchOS); `Folder.root` → current volume root on Windows;
 `makeParentPath` preserves the `C:` drive prefix. Tests stay XCTest: 3 assertions
 platform-aware via a `rootPath`/`canonical` helper (no `#if` in test bodies) + a new
 filesystem-free `PathTests` suite covering the separator/drive math on every platform.
@@ -122,8 +123,29 @@ UNC best-effort, `==` stays case-sensitive on all platforms.
 
 Pushed Files tip `bd520a8a`; dispatched full-matrix `workflow_dispatch` on Files +
 Publish (`brightdigit-com-260406`) to exercise the Windows legs. Windows CI is the
-ground truth (can't run Windows locally) — awaiting results. Any residual
-Publish-ONLY Windows failures after this = separate follow-up.
+ground truth (can't run Windows locally).
+
+### Windows CI RESULT (2026-07-18) — path fix works; delete-in-use remains
+
+- **Path canonicalization CONFIRMED working on Windows.** Paths are now clean
+  canonical (`C:/Users/runneradmin/.filesTest/folder/`); Foundation maps them to
+  native `C:\…` at the boundary. Hybrid `C:\…\folder/` + `makeParentPath`
+  inconsistency GONE.
+- **Regression found + fixed:** `homeDirectoryForCurrentUser` is unavailable on
+  iOS/tvOS/watchOS → broke those (green) Apple builds. Switched to `NSHomeDirectory()`
+  (all Apple platforms + Windows-aware); verified with a real `xcodebuild
+  -sdk iphonesimulator` build. Pushed (Files tip now newer than `bd520a8a`).
+- **STILL RED on Windows — NOT a path bug:** `FilesTests.setUp`
+  (`folder.empty()`→`delete()`) throws `deleteFailed` / `Win32Error(code: 32)` =
+  "file in use by another process." Windows won't delete a directory whose handle is
+  still open — a filesystem-SEMANTICS problem (delete-while-open / handle lifetime),
+  deeper than separators.
+
+**NEXT SESSION (resume here):** fix the Windows delete-in-use semantics in
+`Storage.delete`/`empty` (retry-on-lock and/or close `contentsOfDirectory`/child-
+sequence handles before delete); re-dispatch Files then Publish CI; then the overall
+`ci/ensure-remote-deps-path-rewrite` → `phase-05` PR (Leo owns). Full detail in
+`.Codex/files-windows-path-canonical-form.md`.
 
 ---
 

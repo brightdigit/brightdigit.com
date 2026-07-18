@@ -38,3 +38,35 @@ Scope is pragmatic: UNC paths are best-effort. Windows CI (the Files.yml
 `build-windows` leg on windows-2022/2025) is the ground truth — can't run Windows
 locally. Related: [[reldep-packages-standalone-migration]], subrepo CI on
 [[brightdigit-ci-template]].
+
+## Status as of 2026-07-18 (WIP — resume here next time)
+
+Done + pushed (branch `ci/ensure-remote-deps-path-rewrite`, Files subrepo tip on
+`brightdigit-com-260406`):
+- Canonical-forward-slash path fix is IMPLEMENTED and WORKS. Windows CI confirmed
+  paths are now clean canonical (`C:/Users/runneradmin/.filesTest/folder/`), Foundation
+  maps them to native `C:\…` at the boundary. The old hybrid `C:\…\folder/` and the
+  `makeParentPath` `/C:/…` vs `C:\…` inconsistency are GONE.
+- 71/71 tests pass on macOS; `CI=1 LINT_MODE=STRICT` clean; iOS-simulator build green.
+
+Regression fixed: `~` first used `FileManager.homeDirectoryForCurrentUser`, which is
+UNAVAILABLE on iOS/tvOS/watchOS — it broke those (green) Apple builds. Now uses
+`NSHomeDirectory()` (available on ALL Apple platforms + Windows-aware). Verified with a
+real `xcodebuild -scheme Files -sdk iphonesimulator` build, not just `swift test`.
+**Lesson: availability regressions need a cross-platform BUILD, not just macOS tests.**
+
+STILL RED on Windows — but NOT a path bug (separator work is done):
+- `FilesTests.setUp` (`folder.empty()`→`delete()`) throws `deleteFailed` /
+  `Win32Error(code: 32)` = "file in use by another process." Windows refuses to delete
+  a directory whose handle is still open. This is Windows filesystem SEMANTICS
+  (delete-while-open / handle lifetime), a deeper problem than separators.
+- Likely need: retry-on-lock in `Storage.delete`/`empty`, and/or ensuring child-sequence
+  enumeration handles are closed before delete. Investigate `contentsOfDirectory` handle
+  lifetime and `removeItem` behavior on Windows. May also need `moveItem`/rename checks.
+- Publish's Windows failures are downstream of Files; re-check Publish AFTER Files goes
+  green (some may be Publish-only — separate follow-up).
+
+Next steps: (1) fix the Windows delete-in-use semantics; (2) re-dispatch
+`gh workflow run Files.yml -R brightdigit/Files --ref brightdigit-com-260406` (Windows
+leg only runs on main/semver/dispatch); (3) re-dispatch Publish; (4) then the overall
+`ci/ensure-remote-deps-path-rewrite` → `phase-05` PR (Leo owns).
