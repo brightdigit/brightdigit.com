@@ -5,7 +5,13 @@ import PackageDescription
 
 let package = Package(
     name: "YoutubePublishPlugin",
-    platforms: [.macOS(.v15)],
+    // Files (via Publish) needs iOS 18 / tvOS 18 / watchOS 11 for Synchronization.Mutex.
+    platforms: [
+        .macOS(.v15),
+        .iOS(.v18),
+        .tvOS(.v18),
+        .watchOS(.v11)
+    ],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
