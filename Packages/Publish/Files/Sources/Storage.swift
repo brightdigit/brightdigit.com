@@ -61,9 +61,11 @@ public final class Storage<LocationType: Location>: Sendable {
     }
 
     if path.hasPrefix("~") {
-      // `homeDirectoryForCurrentUser` is platform-aware (Windows uses the user
-      // profile, not the POSIX-only `HOME` variable).
-      let homePath = FileManager.default.homeDirectoryForCurrentUser.path.canonicalizedPath
+      // `NSHomeDirectory()` is platform-aware (Windows resolves the user profile,
+      // not the POSIX-only `HOME` variable) and, unlike
+      // `FileManager.homeDirectoryForCurrentUser`, is available on every Apple
+      // platform (iOS/tvOS/watchOS included).
+      let homePath = NSHomeDirectory().canonicalizedPath
       path = homePath + path.dropFirst()
     }
 
