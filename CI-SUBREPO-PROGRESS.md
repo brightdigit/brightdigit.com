@@ -205,6 +205,18 @@ YoutubePublishPlugin 2/2, PublishType 1/1, and ReadingTimePublishPlugin 8/8 with
 use `skip-package-resolved: true` after their remote-dependency rewrite, so these
 monorepo lockfiles do not constrain standalone resolution.
 
+## Final parent verification
+
+PR #160's parent workflows completed successfully at commit `ad21adae`:
+
+- CI Pipeline `29659746540`: all 6 jobs successful/skipped, including strict lint,
+  Linux build/test, release packaging, and draft deployment.
+- Packages CI `29659746531`: all 62 jobs successful/skipped, covering Ubuntu and
+  macOS builds plus MistKit-style lint setup for all 20 packages.
+
+Every `.gitrepo` tip also has an exact-SHA successful primary workflow run. PR #160
+remains open against `phase-05`; it has not been merged.
+
 ---
 
 ## Autofix policy (standing)
@@ -222,8 +234,6 @@ From [`.claude/agent-notes.md`](.claude/agent-notes.md):
 
 - **git-subrepo:** Homebrew bash first on `PATH` (`/opt/homebrew/bin` before `/bin`). Tree must be clean for pull/push; stale `.gitrepo` `parent` → `./fix-subrepo-parents.sh`.
 - **TailwindKit** subrepo push sometimes needs manual clone → commit → push → `git subrepo pull` if “doesn’t contain upstream HEAD”.
-- **Monitor:** 10m loop armed during this work to survey tips and autofix; stop when greens settle or only Leo-blocked items remain.
-- Parent branch has **no** workflow runs (expected for `ci/ensure-remote-deps-path-rewrite`). `phase-05` / `main` parent CI were green at last check.
 
 ---
 
