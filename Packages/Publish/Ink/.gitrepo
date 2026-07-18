@@ -6,7 +6,7 @@
 [subrepo]
 	remote = git@github.com:brightdigit/Ink.git
 	branch = brightdigit-com-260406
-	commit = 97f12cc6289992f188439fab6008c8281b208649
-	parent = 0493996e477e6bc89f91a70355f10e0118cdfae0
+	commit = 84bf8e119acfe79372a2aed07d07d4e5ea1ee2c5
+	parent = 10eaa06fe32a3b8431c823f3e4082d064ce00466
 	method = merge
 	cmdver = 0.4.9
