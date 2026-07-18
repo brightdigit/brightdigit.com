@@ -185,6 +185,21 @@ identity. Publish and NPMPublishPlugin now pin Ink
 `29657047493` is green. NPMPublishPlugin's final exact-tip full run `29657044615`
 is green too.
 
+## Parent Packages CI lockfiles
+
+The expanded parent Packages CI runs every one of the 20 packages on Ubuntu and
+macOS using `--force-resolved-versions`. Its first PR #160 run exposed stale
+`Package.resolved` files in TransistorPublishPlugin, YoutubePublishPlugin, and
+PublishType: their local path to Publish now introduces Publish's remote Files,
+Ink, and Plot pins, but the consumer lockfiles predated those transitive pins.
+
+Regenerated all three lockfiles from their monorepo manifests and subrepo-pushed
+them. The exact parent-CI mode is green locally: Transistor 3/3,
+YoutubePublishPlugin 2/2, and PublishType 1/1 with
+`swift test --force-resolved-versions`. Standalone subrepo workflows continue to
+use `skip-package-resolved: true` after their remote-dependency rewrite, so these
+monorepo lockfiles do not constrain standalone resolution.
+
 ---
 
 ## Autofix policy (standing)
@@ -209,5 +224,5 @@ From [`.claude/agent-notes.md`](.claude/agent-notes.md):
 
 ## Next
 
-1. Push the parent branch and open `ci/ensure-remote-deps-path-rewrite` → `phase-05`.
-2. Do not merge; Leo owns review and merge.
+1. Review PR #160: `ci/ensure-remote-deps-path-rewrite` → `phase-05`.
+2. Do not merge automatically; Leo owns review and merge.
