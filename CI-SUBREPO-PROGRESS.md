@@ -189,13 +189,14 @@ is green too.
 
 The expanded parent Packages CI runs every one of the 20 packages on Ubuntu and
 macOS using `--force-resolved-versions`. Its first PR #160 run exposed stale
-`Package.resolved` files in TransistorPublishPlugin, YoutubePublishPlugin, and
-PublishType: their local path to Publish now introduces Publish's remote Files,
-Ink, and Plot pins, but the consumer lockfiles predated those transitive pins.
+`Package.resolved` files in TransistorPublishPlugin, YoutubePublishPlugin,
+PublishType, and ReadingTimePublishPlugin: their local path to Publish now
+introduces Publish's remote Files, Ink, and Plot pins, but the consumer lockfiles
+predated those transitive pins.
 
-Regenerated all three lockfiles from their monorepo manifests and subrepo-pushed
+Regenerated all four lockfiles from their monorepo manifests and subrepo-pushed
 them. The exact parent-CI mode is green locally: Transistor 3/3,
-YoutubePublishPlugin 2/2, and PublishType 1/1 with
+YoutubePublishPlugin 2/2, PublishType 1/1, and ReadingTimePublishPlugin 8/8 with
 `swift test --force-resolved-versions`. Standalone subrepo workflows continue to
 use `skip-package-resolved: true` after their remote-dependency rewrite, so these
 monorepo lockfiles do not constrain standalone resolution.
