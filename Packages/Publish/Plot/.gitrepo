@@ -6,7 +6,7 @@
 [subrepo]
 	remote = git@github.com:brightdigit/Plot.git
 	branch = brightdigit-com-260406
-	commit = 9bc696265abf75830c7a19c57da47b46ff9161dd
-	parent = 466cc4b2b28eec3f46318564c6bbef8cf26c3998
+	commit = c357a8a5303159900017176a1450f6b825e6fb93
+	parent = da0e04c6379ce2877559e53ac16ffd2e92a40f0c
 	method = merge
 	cmdver = 0.4.9
