@@ -6,7 +6,7 @@
 [subrepo]
 	remote = git@github.com:BrightDigit/SwiftTube.git
 	branch = brightdigit-com-260621
-	commit = ebce30e058e5427bd406cd8dd81e2476520d3b61
-	parent = 0493996e477e6bc89f91a70355f10e0118cdfae0
+	commit = 03a10ca31da359ce4da9b013ee578e662ab2fa68
+	parent = 69bf170dc5ab49a723cdd05709bca8fd7b7c236c
 	method = merge
 	cmdver = 0.4.9
