@@ -6,7 +6,7 @@
 [subrepo]
 	remote = git@github.com:brightdigit/ButtondownKit.git
 	branch = brightdigit-com-260621
-	commit = 3970c67896383fb26e6ed14df95053513f7c0f76
+	commit = 976e4b85f1bc64c75e8970ee7b8d9151625ec601
 	method = merge
 	cmdver = 0.4.9
-	parent = 0493996e477e6bc89f91a70355f10e0118cdfae0
+	parent = d2c972d195adf67441894e421c0fa90b8b19257d
