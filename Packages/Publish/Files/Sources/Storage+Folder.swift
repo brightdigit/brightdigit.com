@@ -36,19 +36,19 @@ extension Storage where LocationType == Folder {
   }
 
   internal func subfolder(at folderPath: String) throws(LocationError) -> Folder {
-    let folderPath = path + folderPath.removingPrefix("/")
+    let folderPath = path + folderPath.canonicalizedPath.removingPrefix("/")
     let storage = try Storage(path: folderPath)
     return Folder(storage: storage)
   }
 
   internal func file(at filePath: String) throws(LocationError) -> File {
-    let filePath = path + filePath.removingPrefix("/")
+    let filePath = path + filePath.canonicalizedPath.removingPrefix("/")
     let storage = try Storage<File>(path: filePath)
     return File(storage: storage)
   }
 
   internal func createSubfolder(at folderPath: String) throws(WriteError) -> Folder {
-    let folderPath = path + folderPath.removingPrefix("/")
+    let folderPath = path + folderPath.canonicalizedPath.removingPrefix("/")
 
     guard folderPath != path else {
       throw WriteError(path: folderPath, reason: .emptyPath)
@@ -56,7 +56,7 @@ extension Storage where LocationType == Folder {
 
     do {
       try FileManager.default.createDirectory(
-        atPath: folderPath,
+        atPath: folderPath.nativePath,
         withIntermediateDirectories: true
       )
 
@@ -68,7 +68,7 @@ extension Storage where LocationType == Folder {
   }
 
   internal func createFile(at filePath: String, contents: Data?) throws(WriteError) -> File {
-    let filePath = path + filePath.removingPrefix("/")
+    let filePath = path + filePath.canonicalizedPath.removingPrefix("/")
 
     guard let parentPath = makeParentPath(for: filePath) else {
       throw WriteError(path: filePath, reason: .emptyPath)
@@ -77,7 +77,7 @@ extension Storage where LocationType == Folder {
     if parentPath != path {
       do {
         try FileManager.default.createDirectory(
-          atPath: parentPath,
+          atPath: parentPath.nativePath,
           withIntermediateDirectories: true
         )
       } catch {
@@ -85,7 +85,7 @@ extension Storage where LocationType == Folder {
       }
     }
 
-    guard FileManager.default.createFile(atPath: filePath, contents: contents),
+    guard FileManager.default.createFile(atPath: filePath.nativePath, contents: contents),
       let storage = try? Storage<File>(path: filePath)
     else {
       throw WriteError(path: filePath, reason: .fileCreationFailed)

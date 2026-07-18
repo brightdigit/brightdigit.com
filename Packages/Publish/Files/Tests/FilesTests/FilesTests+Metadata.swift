@@ -96,13 +96,13 @@ extension FilesTests {
 
   internal func testRootFolderParentIsNil() {
     performTest {
-      try XCTAssertNil(Folder(path: "/").parent)
+      try XCTAssertNil(Folder(path: Self.rootPath).parent)
     }
   }
 
   internal func testRootSubfolderParentIsRoot() {
     performTest {
-      let rootFolder = try Folder(path: "/")
+      let rootFolder = try Folder(path: Self.rootPath)
       let subfolder = rootFolder.subfolders.first
       XCTAssertEqual(subfolder?.parent, rootFolder)
     }
@@ -148,7 +148,9 @@ extension FilesTests {
   internal func testAccessingCurrentWorkingDirectory() {
     performTest {
       let folder = try Folder(path: "")
-      XCTAssertEqual(FileManager.default.currentDirectoryPath + "/", folder.path)
+      // `folder.path` is in canonical (forward-slash) form; the current directory
+      // reported by FileManager uses the platform's native separator on Windows.
+      XCTAssertEqual(canonical(FileManager.default.currentDirectoryPath) + "/", folder.path)
       XCTAssertEqual(Folder.current, folder)
     }
   }

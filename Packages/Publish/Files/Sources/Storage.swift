@@ -43,13 +43,12 @@ public final class Storage<LocationType: Location>: Sendable {
     pathStorage = Mutex(try Storage.validatedPath(from: path))
   }
 
-  // The `HOME` environment variable is always present in a normal process
-  // environment, so force-unwrapping it preserves the library's original
-  // behavior; the path-normalization logic is inherently branchy.
-  // swift-format-ignore: NeverForceUnwrap
+  // Paths are stored in canonical (forward-slash) form; the normalization logic
+  // is inherently branchy.
   // swiftlint:disable:next cyclomatic_complexity
   private static func validatedPath(from inputPath: String) throws(LocationError) -> String {
-    var path = inputPath
+    // Accept either separator on input and work in canonical (forward-slash) form.
+    var path = inputPath.canonicalizedPath
 
     switch LocationType.kind {
     case .file:
@@ -57,13 +56,14 @@ public final class Storage<LocationType: Location>: Sendable {
         throw LocationError(path: path, reason: .emptyFilePath)
       }
     case .folder:
-      if path.isEmpty { path = FileManager.default.currentDirectoryPath }
+      if path.isEmpty { path = FileManager.default.currentDirectoryPath.canonicalizedPath }
       if !path.hasSuffix("/") { path += "/" }
     }
 
     if path.hasPrefix("~") {
-      // swiftlint:disable:next force_unwrapping
-      let homePath = ProcessInfo.processInfo.environment["HOME"]!
+      // `homeDirectoryForCurrentUser` is platform-aware (Windows uses the user
+      // profile, not the POSIX-only `HOME` variable).
+      let homePath = FileManager.default.homeDirectoryForCurrentUser.path.canonicalizedPath
       path = homePath + path.dropFirst()
     }
 
@@ -86,25 +86,40 @@ public final class Storage<LocationType: Location>: Sendable {
   }
 }
 
-/// Compute the path of the parent folder for a given path, or `nil` when the
-/// path represents the root of the file system.
+/// Compute the path of the parent folder for a given (canonical, forward-slash)
+/// path, or `nil` when the path represents the root of the file system.
 /// - parameter path: The path whose parent should be computed.
-/// - returns: The parent folder's path, or `nil` if `path` is the root.
+/// - returns: The parent folder's path in canonical form, or `nil` if `path` is
+///   the root (`/` on POSIX, a volume root such as `C:/` on Windows).
 internal func makeParentPath(for path: String) -> String? {
-  guard path != "/" else {
+  guard path != "/", !path.isDriveRoot else {
     return nil
   }
-  let url = URL(fileURLWithPath: path)
+
+  // On Windows, split off any drive prefix (e.g. "C:") so it can be restored
+  // after `URL.pathComponents` (which drops it) rejoins the remainder. On other
+  // platforms `drivePrefix` is empty and this is identical to the original logic.
+  let drivePrefix: String
+  let remainder: String
+  if let colon = path.firstIndex(of: ":") {
+    drivePrefix = String(path[...colon])
+    remainder = String(path[path.index(after: colon)...])
+  } else {
+    drivePrefix = ""
+    remainder = path
+  }
+
+  let url = URL(fileURLWithPath: remainder.nativePath)
   let components = url.pathComponents.dropFirst().dropLast()
   guard !components.isEmpty else {
-    return "/"
+    return drivePrefix.isEmpty ? "/" : drivePrefix + "/"
   }
-  return "/" + components.joined(separator: "/") + "/"
+  return drivePrefix + "/" + components.joined(separator: "/") + "/"
 }
 
 extension Storage {
   internal var attributes: [FileAttributeKey: Any] {
-    (try? FileManager.default.attributesOfItem(atPath: path)) ?? [:]
+    (try? FileManager.default.attributesOfItem(atPath: path.nativePath)) ?? [:]
   }
 
   internal func move(
@@ -112,13 +127,15 @@ extension Storage {
     errorReasonProvider: (any Error & Sendable) -> LocationErrorReason
   ) throws(LocationError) {
     do {
-      try FileManager.default.moveItem(atPath: path, toPath: newPath)
+      try FileManager.default.moveItem(atPath: path.nativePath, toPath: newPath.nativePath)
 
+      // Store the new path in canonical (forward-slash) form.
+      let canonical = newPath.canonicalizedPath
       switch LocationType.kind {
       case .file:
-        pathStorage.withLock { $0 = newPath }
+        pathStorage.withLock { $0 = canonical }
       case .folder:
-        pathStorage.withLock { $0 = newPath.appendingSuffixIfNeeded("/") }
+        pathStorage.withLock { $0 = canonical.appendingSuffixIfNeeded("/") }
       }
     } catch {
       throw LocationError(path: path, reason: errorReasonProvider(error))
@@ -128,8 +145,8 @@ extension Storage {
   internal func copy(to newPath: String) throws(LocationError) {
     do {
       try FileManager.default.copyItem(
-        at: URL(fileURLWithPath: path),
-        to: URL(fileURLWithPath: newPath)
+        at: URL(fileURLWithPath: path.nativePath),
+        to: URL(fileURLWithPath: newPath.nativePath)
       )
     } catch {
       throw LocationError(path: path, reason: .copyFailed(error))
@@ -138,7 +155,7 @@ extension Storage {
 
   internal func delete() throws(LocationError) {
     do {
-      try FileManager.default.removeItem(atPath: path)
+      try FileManager.default.removeItem(atPath: path.nativePath)
     } catch {
       throw LocationError(path: path, reason: .deleteFailed(error))
     }

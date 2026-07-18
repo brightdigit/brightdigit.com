@@ -104,6 +104,20 @@ internal class FilesTests: XCTestCase {
     ("testErrorDescriptions", testErrorDescriptions),
   ]
 
+  /// The canonical filesystem root for the current platform (`/`, or a volume
+  /// root such as `C:/` on Windows).
+  internal static var rootPath: String {
+    #if os(Windows)
+      let cwd = FileManager.default.currentDirectoryPath.replacingOccurrences(of: "\\", with: "/")
+      if let colon = cwd.firstIndex(of: ":") {
+        return String(cwd[...colon]) + "/"
+      }
+      return "/"
+    #else
+      return "/"
+    #endif
+  }
+
   // MARK: - Fixtures
 
   // The test folder is created in `setUp` before every test runs, so this
@@ -149,5 +163,19 @@ internal class FilesTests: XCTestCase {
     } catch {
       XCTAssertTrue(error is E)
     }
+  }
+
+  // MARK: - Platform helpers
+
+  /// The given path in the library's canonical (forward-slash) form.
+  ///
+  /// Mirrors `Files`' own (internal) canonicalization so assertions can express
+  /// expected paths without scattering `#if os(Windows)` through the test bodies.
+  internal func canonical(_ path: String) -> String {
+    #if os(Windows)
+      return path.replacingOccurrences(of: "\\", with: "/")
+    #else
+      return path
+    #endif
   }
 }

@@ -55,10 +55,13 @@ extension Folder {
 
   // swift-format-ignore: NeverUseForceTry
   /// The root folder of the file system.
+  ///
+  /// On Windows this is the root of the current working volume (e.g. `C:/`),
+  /// because Windows has no single filesystem root; elsewhere it is `/`.
   public static var root: Folder {
     // The file system root always exists.
     // swiftlint:disable:next force_try
-    try! Folder(path: "/")
+    try! Folder(path: Path.rootPath)
   }
 
   // swift-format-ignore: NeverUseForceTry

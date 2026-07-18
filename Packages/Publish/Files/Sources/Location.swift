@@ -52,7 +52,7 @@ extension Location {
 
   /// A URL representation of the location's `path`.
   public var url: URL {
-    URL(fileURLWithPath: path)
+    URL(fileURLWithPath: path.nativePath)
   }
 
   // swift-format-ignore: NeverForceUnwrap
@@ -109,6 +109,11 @@ extension Location {
   }
 
   /// Compare two locations for equality based on their paths.
+  ///
+  /// Paths are stored in canonical (forward-slash) form, so this comparison is
+  /// separator-independent. It is case-sensitive on every platform (matching the
+  /// library's original behavior); Windows/macOS filesystem case-insensitivity is
+  /// intentionally not reflected here.
   /// - Parameters:
   ///   - lhs: The first location to compare.
   ///   - rhs: The second location to compare.

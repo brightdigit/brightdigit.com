@@ -131,7 +131,7 @@ extension Folder {
     // swiftlint:enable cyclomatic_complexity
 
     private mutating func loadItemNames() -> [String] {
-      let contents = try? fileManager.contentsOfDirectory(atPath: folder.path)
+      let contents = try? fileManager.contentsOfDirectory(atPath: folder.path.nativePath)
       let names = contents?.sorted() ?? []
       return reverseTopLevelTraversal ? names.reversed() : names
     }
