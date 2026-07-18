@@ -6,7 +6,7 @@
 [subrepo]
 	remote = git@github.com:brightdigit/TailwindKit.git
 	branch = brightdigit-com-260717
-	commit = bcb0a7f7e3567a0525a8591c696ba9c77e2256fc
+	commit = ff7afc8bd3503a75bd3f5fb5a1b6ca7f68818451
 	method = merge
 	cmdver = 0.4.9
 	parent = 0493996e477e6bc89f91a70355f10e0118cdfae0
