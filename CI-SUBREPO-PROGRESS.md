@@ -96,7 +96,34 @@ these five for green before opening the PR.
 ### Still OUT OF SCOPE (follow-up, per Leo)
 - **Files Windows** + **Publish Windows** legs fail on REAL cross-platform test bugs
   (FilesTests path separators `/C:/…` vs `C:\…`; Publish `HTMLGenerationTests`
-  filesystem errors) — not swiftly infra. Separate effort.
+  filesystem errors) — not swiftly infra. Separate effort. **← addressed below.**
+
+---
+
+## Update (2026-07-18, Files Windows support)
+
+Fixed the Files-rooted Windows path bug (the source of Files' + most of Publish's
+Windows failures). Root cause: Files hardcoded POSIX `/` while Foundation returns
+native `\` on Windows; `makeParentPath` split via `URL.pathComponents` but rejoined
+with `/`, so a folder's computed `parent.path` never string-`==` its stored path.
+
+Fix (library-side, NO swift-system — its Windows support is "Unstable" and it'd
+break the String public API): store paths in **canonical forward-slash** form; keep
+all `/`-based internal logic; convert to native separators only at FileManager /
+`URL(fileURLWithPath:)` boundaries. New `Sources/Path.swift` adds
+`String.canonicalizedPath/.nativePath/.isDriveRoot` + `Path.rootPath/.nativeSeparator`,
+all **no-ops off Windows** (macOS/Linux provably unchanged). `~` → `homeDirectoryForCurrentUser`
+(drops a POSIX-only HOME force-unwrap); `Folder.root` → current volume root on Windows;
+`makeParentPath` preserves the `C:` drive prefix. Tests stay XCTest: 3 assertions
+platform-aware via a `rootPath`/`canonical` helper (no `#if` in test bodies) + a new
+filesystem-free `PathTests` suite covering the separator/drive math on every platform.
+Local: 71/71 tests pass on macOS, `CI=1 LINT_MODE=STRICT` clean. Pragmatic scope:
+UNC best-effort, `==` stays case-sensitive on all platforms.
+
+Pushed Files tip `bd520a8a`; dispatched full-matrix `workflow_dispatch` on Files +
+Publish (`brightdigit-com-260406`) to exercise the Windows legs. Windows CI is the
+ground truth (can't run Windows locally) — awaiting results. Any residual
+Publish-ONLY Windows failures after this = separate follow-up.
 
 ---
 
