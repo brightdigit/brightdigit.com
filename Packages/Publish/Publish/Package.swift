@@ -23,7 +23,7 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/brightdigit/Ink.git", revision: "84bf8e119acfe79372a2aed07d07d4e5ea1ee2c5"),
         .package(url: "https://github.com/brightdigit/Plot.git", revision: "daa8daa44f8eb0a1865085ee0f36ca02aa16b7f4"),
-        .package(url: "https://github.com/brightdigit/Files.git", revision: "ec08c20088b17630ada2069e5021fd1bdf85cc75")
+        .package(url: "https://github.com/brightdigit/Files.git", revision: "b9204ee5f86cccc0b1c1c26d4c153c91b77b54d5")
     ],
     targets: [
         .target(

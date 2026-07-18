@@ -1,12 +1,12 @@
 {
-  "originHash" : "a34c7fa230c934bc30f50dce3a83ddc6a4b1bd4e4cf68e3f8c4fc85d16f865e4",
+  "originHash" : "72c3c806ec3c2e832221e5e4f63db7cfd7344652babc8d63af3dc984bbb08ade",
   "pins" : [
     {
       "identity" : "files",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/brightdigit/Files.git",
       "state" : {
-        "revision" : "ec08c20088b17630ada2069e5021fd1bdf85cc75"
+        "revision" : "b9204ee5f86cccc0b1c1c26d4c153c91b77b54d5"
       }
     },
     {
