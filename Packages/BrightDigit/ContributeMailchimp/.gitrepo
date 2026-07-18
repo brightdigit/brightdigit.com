@@ -6,7 +6,7 @@
 [subrepo]
 	remote = git@github.com:brightdigit/ContributeMailchimp.git
 	branch = brightdigit-com-260717
-	commit = 75b7bd4707d890d1593fc8ed963ab0a0d34e0d03
+	commit = 1c88c22274890d09307bb614eaec522631c3f56f
 	method = merge
 	cmdver = 0.4.9
-	parent = 1d83740e8ee643eea21d9d75776aaa3d5115cb50
+	parent = 63d3cb83df70885c89138f336ab933fbfcc23974
