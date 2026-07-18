@@ -6,7 +6,7 @@
 [subrepo]
 	remote = git@github.com:brightdigit/ReadingTimePublishPlugin.git
 	branch = brightdigit-com-260406
-	commit = b9626d21927255671a1da300ddaf47852c99bd14
-	parent = 5bde27f280f49f8519d34f6be70e3a22ecb8c0e7
+	commit = badc124a51c90fe4133ef6aac952540a3fd10be9
+	parent = 3bf9bab24cda192817d54deec1ff7783cd61585c
 	method = merge
 	cmdver = 0.4.9
