@@ -1,6 +1,30 @@
 {
-  "originHash" : "b87d6a6e1ed33cdc8536e9caf120237ea62dee835fc32cd1e1afc35d5e01b425",
+  "originHash" : "a34c7fa230c934bc30f50dce3a83ddc6a4b1bd4e4cf68e3f8c4fc85d16f865e4",
   "pins" : [
+    {
+      "identity" : "files",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/brightdigit/Files.git",
+      "state" : {
+        "revision" : "ec08c20088b17630ada2069e5021fd1bdf85cc75"
+      }
+    },
+    {
+      "identity" : "ink",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/brightdigit/Ink.git",
+      "state" : {
+        "revision" : "84bf8e119acfe79372a2aed07d07d4e5ea1ee2c5"
+      }
+    },
+    {
+      "identity" : "plot",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/brightdigit/Plot.git",
+      "state" : {
+        "revision" : "daa8daa44f8eb0a1865085ee0f36ca02aa16b7f4"
+      }
+    },
     {
       "identity" : "swift-cmark",
       "kind" : "remoteSourceControl",

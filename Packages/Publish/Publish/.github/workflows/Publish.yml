@@ -25,10 +25,6 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
-env:
-  INK_BRANCH: brightdigit-com-260406
-  PLOT_BRANCH: brightdigit-com-260406
-  FILES_BRANCH: brightdigit-com-260406
 
 jobs:
   build-ubuntu:
@@ -47,13 +43,9 @@ jobs:
         type: ${{ fromJSON(needs.configure.outputs.ubuntu-type) }}
     steps:
       - uses: actions/checkout@v6
-      - name: Ensure remote deps
-        shell: bash
-        run: ./Scripts/ensure-remote-deps.sh
       - uses: brightdigit/swift-build@v1
         id: build
         with:
-          skip-package-resolved: true
           type: ${{ matrix.type }}
           # wasm / wasm-embedded are build-only: WasmKit doesn't mount the Foundation
           # resource bundles the tests load, and embedded hits OpenAPIRuntime keypath
@@ -101,9 +93,6 @@ jobs:
       ubuntu-type: ${{ steps.check.outputs.ubuntu-type }}
     steps:
       - uses: actions/checkout@v6
-      - name: Ensure remote deps
-        shell: bash
-        run: ./Scripts/ensure-remote-deps.sh
       - id: check
         name: Determine matrix scope
         run: |
@@ -138,13 +127,9 @@ jobs:
     if: ${{ !contains(github.event.head_commit.message, 'ci skip') }}
     steps:
       - uses: actions/checkout@v6
-      - name: Ensure remote deps
-        shell: bash
-        run: ./Scripts/ensure-remote-deps.sh
       - uses: brightdigit/swift-build@v1
         id: build
         with:
-          skip-package-resolved: true
           xcode: "/Applications/Xcode-beta.app"
       - name: Process coverage
         if: steps.build.outputs.contains-code-coverage == 'true'
@@ -177,13 +162,9 @@ jobs:
             build: 6.4.x-DEVELOPMENT-SNAPSHOT-2026-06-01-a
     steps:
       - uses: actions/checkout@v6
-      - name: Ensure remote deps
-        shell: bash
-        run: ./Scripts/ensure-remote-deps.sh
       - uses: brightdigit/swift-build@v1
         id: build
         with:
-          skip-package-resolved: true
           windows-swift-version: ${{ matrix.swift.version }}
           windows-swift-build: ${{ matrix.swift.build }}
 
@@ -208,9 +189,6 @@ jobs:
           - { type: tvos,    deviceName: "Apple TV 4K (3rd generation)", osVersion: "27.0" }
     steps:
       - uses: actions/checkout@v6
-      - name: Ensure remote deps
-        shell: bash
-        run: ./Scripts/ensure-remote-deps.sh
       - name: Build and Test
         id: build
         # watchOS disabled where ENABLE_WATCHOS=false (SwiftPM #10188, watchOS-27
@@ -218,7 +196,6 @@ jobs:
         if: ${{ !(matrix.type == 'watchos' && vars.ENABLE_WATCHOS == 'false') }}
         uses: brightdigit/swift-build@v1
         with:
-          skip-package-resolved: true
           type: ${{ matrix.type }}
           xcode: "/Applications/Xcode-beta.app"
           deviceName: ${{ matrix.deviceName }}
@@ -251,9 +228,6 @@ jobs:
         android-api-level: [34]
     steps:
       - uses: actions/checkout@v6
-      - name: Ensure remote deps
-        shell: bash
-        run: ./Scripts/ensure-remote-deps.sh
       - name: Free disk space
         uses: jlumbroso/free-disk-space@v1.3.1
         with:
@@ -266,7 +240,6 @@ jobs:
           swap-storage: true
       - uses: brightdigit/swift-build@v1
         with:
-          skip-package-resolved: true
           type: android
           android-swift-version: 6.4.x-DEVELOPMENT-SNAPSHOT-2026-06-15-a
           android-sdk-url: https://download.swift.org/swift-6.4.x-branch/android-sdk/swift-6.4.x-DEVELOPMENT-SNAPSHOT-2026-06-15-a/swift-6.4.x-DEVELOPMENT-SNAPSHOT-2026-06-15-a_android.artifactbundle.tar.gz
@@ -286,9 +259,6 @@ jobs:
           apt-get update -q
           apt-get install -y --no-install-recommends curl ca-certificates
       - uses: actions/checkout@v6
-      - name: Ensure remote deps
-        shell: bash
-        run: ./Scripts/ensure-remote-deps.sh
       - uses: jdx/mise-action@v4
         env:
           MISE_HTTP_TIMEOUT: 300s

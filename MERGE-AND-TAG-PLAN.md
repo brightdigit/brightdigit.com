@@ -62,9 +62,13 @@ When a package is permanently switched to `from:` in a later wave, remove the sc
 workflow step for that package (path deps are gone).
 
 **Limit:** dual-mode only fixes a package whose deps are themselves path-free when fetched
-by URL (Wave-0 leaves). Consumers of `Publish` (Wave-2) stay broken in *their* standalone
-CI until `Publish` is permanently rewritten to `url:` deps and pushed — SPM does not run
-`ensure-remote-deps.sh` inside a fetched dependency.
+by URL (Wave-0 leaves). SPM does not run `ensure-remote-deps.sh` inside a fetched
+dependency.
+
+**Done (early Wave 1):** `Publish` is permanently on `url:` + `revision:` pins for
+Ink/Plot/Files (branch tips of `brightdigit-com-260406`). Its ensure script / CI rewrite
+steps are removed. Wave-2 consumers keep dual-mode and can resolve Publish standalone;
+swap those `revision:` pins to `from:` when Wave-0 leaf tags exist.
 
 ## The one repeatable unit of work: "release a package"
 
@@ -103,7 +107,8 @@ only on earlier waves, so a whole wave can be released in parallel.
 ### Wave 1 — depend only on Wave 0
 `Publish` · `TailwindKit` · `ContributeButtondown` · `ContributeMailchimp` · `ContributeRSS` · `ContributeWordPress` · `ContributeYouTube`
 
-- `Publish` → rewrite `../Ink`, `../Plot`, `../Files` → tagged Wave-0 urls.
+- `Publish` → **done early** with `url:` + `revision:` (not yet `from:`); remaining work is
+  bump pins to tagged Wave-0 urls once leaves are tagged.
 - `TailwindKit` → rewrite `../../Publish/Plot` → tagged `Plot` url. (Parked — do only if unparking.)
 - Each `Contribute*` importer → rewrite its two `../../` deps → `Contribute` + its Wave-0 client.
 

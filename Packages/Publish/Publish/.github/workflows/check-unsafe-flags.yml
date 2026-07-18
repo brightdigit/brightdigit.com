@@ -6,10 +6,6 @@ on:
   pull_request:
     branches: [ "main" ]
 
-env:
-  INK_BRANCH: brightdigit-com-260406
-  PLOT_BRANCH: brightdigit-com-260406
-  FILES_BRANCH: brightdigit-com-260406
 
 jobs:
   dump-package-check:
@@ -20,9 +16,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-      - name: Ensure remote deps
-        shell: bash
-        run: ./Scripts/ensure-remote-deps.sh
 
       - name: Install jq
         run: |
