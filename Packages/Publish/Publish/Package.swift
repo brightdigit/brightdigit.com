@@ -21,7 +21,7 @@ let package = Package(
         .library(name: "Publish", targets: ["Publish"])
     ],
     dependencies: [
-        .package(url: "https://github.com/brightdigit/Ink.git", revision: "1cec1bfeb5ff81c51c3c12ea8ecda87bb9710fd9"),
+        .package(url: "https://github.com/brightdigit/Ink.git", revision: "443d80e352ec3cdd07eed54bd84a9789378d8665"),
         .package(url: "https://github.com/brightdigit/Plot.git", revision: "daa8daa44f8eb0a1865085ee0f36ca02aa16b7f4"),
         .package(url: "https://github.com/brightdigit/Files.git", revision: "2983eb8104844a0e874bb375356e690e31d2716e")
     ],
