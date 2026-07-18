@@ -62,6 +62,44 @@ Exact job lists move as dispatches finish; re-survey before acting.
 
 ---
 
+## Update (2026-07-18, later) — corrected root causes + fixes pushed
+
+Live-log triage replaced the "PLAT" guesses above with exact causes, and the fixes
+were committed on `ci/ensure-remote-deps-path-rewrite` and `git subrepo push`ed to
+each public repo.
+
+- **Self-hosted was NOT the cause.** Plot/Contribute/etc. build green on the same
+  `[self-hosted, macOS]` runner. Per Leo (public repos → hosted), the Publish-stack
+  macOS jobs were migrated to the **GitHub-hosted `xcode-27` runner label**
+  (`/Applications/Xcode_27.0.app`, Xcode 27 beta = Swift 6.4-dev, 27.0 SDKs) with
+  `download-platform: true` on sim legs. Applied to Files/Ink/Publish
+  `build-macos` + `build-macos-platforms`.
+- **Files macOS** red was a stale checked-in `Files.xcodeproj` (schemes
+  `Files-iOS/-macOS/-tvOS`) shadowing swift-build's auto `Files` scheme →
+  *"does not contain a scheme named Files"*. Removed the xcodeproj + the dead
+  `buddybuild_postbuild.sh`. **Files primary now GREEN.**
+- **Ink macOS** red was `Synchronization.Mutex` in `InkTests` needing iOS 18 /
+  tvOS 18 / watchOS 11. Added those floors to Ink `Package.swift` (mirrors Files).
+- **TailwindKit lint** (82→0): removed the superseded legacy 2022 `Tailwind.*` API
+  (`TailwindKit.swift` struct + Flexbox/AspectRatio/Display/Breakpoints + their
+  XCTest suites), excluded the Danger DSL from SwiftLint.
+- **ReadingTimePublishPlugin lint** (0): doc-comments, fixtures split, explicit ACL,
+  `ReadingTime.swift`→`ReadingTimeMetadata.swift` for `file_name`. 8 tests pass.
+
+Pushed tips: Files `b075ae23`, Ink `1cec1bfe`, Publish `d0cabb07`,
+ReadingTimePublishPlugin `02be3784`, TailwindKit `983b8e1d`. Files/Ink/Publish/
+ReadingTime primaries auto-triggered on push; **TailwindKit only runs push on
+main/tags**, so its run was started via `workflow_dispatch` on `brightdigit-com-260717`
+(its subrepo tip commit also carried `[skip ci]` from the parent-reset). Re-survey
+these five for green before opening the PR.
+
+### Still OUT OF SCOPE (follow-up, per Leo)
+- **Files Windows** + **Publish Windows** legs fail on REAL cross-platform test bugs
+  (FilesTests path separators `/C:/…` vs `C:\…`; Publish `HTMLGenerationTests`
+  filesystem errors) — not swiftly infra. Separate effort.
+
+---
+
 ## Waiting on Leo
 
 ### NPMPublishPlugin + `swift-subprocess`
