@@ -74,5 +74,9 @@
   {
     "name": "Publish",
     "path": "Packages/Publish/Publish"
+  },
+  {
+    "name": "ReadingTimePublishPlugin",
+    "path": "Packages/Plugins/ReadingTimePublishPlugin"
   }
 ]

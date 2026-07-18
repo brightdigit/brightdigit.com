@@ -23,6 +23,7 @@
 //  SOFTWARE.
 //
 
+import Foundation
 import XCTest
 
 @testable import Files
@@ -77,6 +78,13 @@ internal final class PathTests: XCTestCase {
     XCTAssertEqual(makeParentPath(for: "C:/Users/example/folder/"), "C:/Users/example/")
     XCTAssertEqual(makeParentPath(for: "C:/Users/file"), "C:/Users/")
     XCTAssertEqual(makeParentPath(for: "C:/file"), "C:/")
+  }
+
+  internal func testMakeParentPathTreatsEmptyPathAsCurrentDirectory() {
+    XCTAssertEqual(
+      makeParentPath(for: ""),
+      makeParentPath(for: FileManager.default.currentDirectoryPath)
+    )
   }
 
   internal func testMakeParentPathAtDriveRootIsNilOnWindows() {

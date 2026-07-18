@@ -125,10 +125,13 @@ internal class FilesTests: XCTestCase {
   // swiftlint:disable:next implicitly_unwrapped_optional
   internal var folder: Folder!
 
+  private var originalWorkingDirectoryPath = ""
+
   // MARK: - XCTestCase
 
   override internal func setUp() {
     super.setUp()
+    originalWorkingDirectoryPath = FileManager.default.currentDirectoryPath
     // Test scaffolding: the shared test folder must exist for every test, so
     // failing fast here is the desired behavior.
     // swiftlint:disable:next force_try
@@ -138,6 +141,10 @@ internal class FilesTests: XCTestCase {
   }
 
   override internal func tearDown() {
+    // Some relative-path tests change the process working directory into the
+    // fixture. Windows refuses to delete a directory that is still the current
+    // working directory, so restore it before removing the fixture.
+    XCTAssertTrue(FileManager.default.changeCurrentDirectoryPath(originalWorkingDirectoryPath))
     try? folder.delete()
     super.tearDown()
   }

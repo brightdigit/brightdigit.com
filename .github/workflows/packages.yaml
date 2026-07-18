@@ -11,12 +11,14 @@ on:
     paths:
       - 'Packages/BrightDigit/**'
       - 'Packages/Publish/**'
+      - 'Packages/Plugins/**'
       - '.github/packages.json'
       - '.github/workflows/packages.yaml'
   pull_request:
     paths:
       - 'Packages/BrightDigit/**'
       - 'Packages/Publish/**'
+      - 'Packages/Plugins/**'
       - '.github/packages.json'
       - '.github/workflows/packages.yaml'
   workflow_dispatch:
@@ -184,7 +186,7 @@ jobs:
   build-macos:
     name: Build ${{ matrix.package.name }} on macOS
     needs: configure
-    runs-on: [self-hosted, macOS]
+    runs-on: xcode-27
     strategy:
       fail-fast: false
       matrix:
@@ -196,7 +198,7 @@ jobs:
         uses: brightdigit/swift-build@v1
         with:
           working-directory: ${{ matrix.package.path }}
-          xcode: "/Applications/Xcode-beta.app"
+          xcode: "/Applications/Xcode_27.0.app"
       - name: Process Coverage
         if: steps.build.outputs.contains-code-coverage == 'true'
         uses: sersoft-gmbh/swift-coverage-action@v5
@@ -222,31 +224,31 @@ jobs:
         include:
           # macOS
           - type: macos
-            runs-on: macos-26
-            xcode: "/Applications/Xcode_26.4.app"
+            runs-on: xcode-27
+            xcode: "/Applications/Xcode_27.0.app"
 
           # iOS
           - type: ios
-            runs-on: macos-26
-            xcode: "/Applications/Xcode_26.4.app"
+            runs-on: xcode-27
+            xcode: "/Applications/Xcode_27.0.app"
             deviceName: "iPhone 17 Pro"
-            osVersion: "26.4.1"
+            osVersion: "27.0"
             download-platform: true
 
           # watchOS
           - type: watchos
-            runs-on: macos-26
-            xcode: "/Applications/Xcode_26.4.app"
+            runs-on: xcode-27
+            xcode: "/Applications/Xcode_27.0.app"
             deviceName: "Apple Watch Ultra 3 (49mm)"
-            osVersion: "26.4"
+            osVersion: "27.0"
             download-platform: true
 
           # tvOS
           - type: tvos
-            runs-on: macos-26
-            xcode: "/Applications/Xcode_26.4.app"
-            deviceName: "Apple TV"
-            osVersion: "26.4"
+            runs-on: xcode-27
+            xcode: "/Applications/Xcode_27.0.app"
+            deviceName: "Apple TV 4K (3rd generation)"
+            osVersion: "27.0"
             download-platform: true
     steps:
       - uses: actions/checkout@v6

@@ -94,6 +94,15 @@ public final class Storage<LocationType: Location>: Sendable {
 /// - returns: The parent folder's path in canonical form, or `nil` if `path` is
 ///   the root (`/` on POSIX, a volume root such as `C:/` on Windows).
 internal func makeParentPath(for path: String) -> String? {
+  // An empty path means "the current directory" (for example when resolving a
+  // leading `../`). Resolve it before splitting off a Windows drive prefix;
+  // otherwise `URL(fileURLWithPath: "")` turns `C:` into a path component and
+  // produces the invalid canonical form `/C:/...`.
+  let path =
+    path.isEmpty
+    ? FileManager.default.currentDirectoryPath.canonicalizedPath
+    : path.canonicalizedPath
+
   guard path != "/", !path.isDriveRoot else {
     return nil
   }
