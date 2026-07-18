@@ -1,4 +1,4 @@
-name: ContributeRSS
+name: TransistorPublishPlugin
 
 # Standalone CI for this BrightDigit Swift package on Swift 6.4 (the BrightDigit
 # CI template). These five workflows are kept byte-identical except the name above;
@@ -26,8 +26,8 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  CONTRIBUTE_BRANCH: brightdigit-com-260621
-  SYNDIKIT_BRANCH: brightdigit-com-260621
+  PUBLISH_BRANCH: brightdigit-com-260406
+  INK_BRANCH: brightdigit-com-260406
 
 jobs:
   build-ubuntu:
