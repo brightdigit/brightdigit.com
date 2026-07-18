@@ -15,9 +15,9 @@ let package = Package(
         .library(name: "Publish", targets: ["Publish"])
     ],
     dependencies: [
-        .package(path: "../Ink"),
-        .package(path: "../Plot"),
-        .package(path: "../Files")
+        .package(name: "Ink", path: "../Ink"),
+        .package(name: "Plot", path: "../Plot"),
+        .package(name: "Files", path: "../Files")
     ],
     targets: [
         .target(

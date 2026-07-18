@@ -15,8 +15,8 @@ let package = Package(
     )
   ],
   dependencies: [
-    .package(path: "../../BrightDigit/Contribute"),
-    .package(path: "../../BrightDigit/SwiftTube")
+    .package(name: "Contribute", path: "../../BrightDigit/Contribute"),
+    .package(name: "SwiftTube", path: "../../BrightDigit/SwiftTube")
   ],
   targets: [
     .target(

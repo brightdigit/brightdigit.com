@@ -45,6 +45,27 @@ point at.
 > (do not pull). Deprecated modules (`ContributeMailchimp`, `ContributeYouTube`,
 > `KannaMarkdownGenerator`) get tagged for graph-completeness only — no code changes.
 
+## Step 0 — Standalone CI path rewrite (done in-tree; push with each subrepo)
+
+Before tagging, every package with `.package(path:)` deps uses the **SundialKitStream /
+setup-sundialkit dual-mode pattern** so its *own* GitHub Actions CI can resolve deps when
+the package is checked out alone:
+
+- `Package.swift` keeps named path deps (monorepo `packages.yaml` unchanged).
+- `Scripts/ensure-remote-deps.sh` rewrites those paths to
+  `.package(url:…, revision:<SHA>)` (branch pin via `git ls-remote`), then deletes
+  `Package.resolved`.
+- Standalone workflows call that script after `actions/checkout` and before
+  `swift-build` / lint.
+
+When a package is permanently switched to `from:` in a later wave, remove the script +
+workflow step for that package (path deps are gone).
+
+**Limit:** dual-mode only fixes a package whose deps are themselves path-free when fetched
+by URL (Wave-0 leaves). Consumers of `Publish` (Wave-2) stay broken in *their* standalone
+CI until `Publish` is permanently rewritten to `url:` deps and pushed — SPM does not run
+`ensure-remote-deps.sh` inside a fetched dependency.
+
 ## The one repeatable unit of work: "release a package"
 
 For each package, in wave order, do this loop. Steps 2–3 only apply to packages that have
@@ -55,10 +76,10 @@ For each package, in wave order, do this loop. Steps 2–3 only apply to package
 2. **Rewrite its in-repo deps** to versioned `url:` — inside the package's own repo, change
    each `.package(path: "../../…/Dep")` to
    `.package(url: "https://github.com/brightdigit/Dep.git", from: "<Dep's just-tagged version>")`.
-   Every dep it references is already tagged because we work bottom-up.
+   Every dep it references is already tagged because we work bottom-up. Remove
+   `Scripts/ensure-remote-deps.sh` and its workflow calls for that package.
 3. **Verify it builds standalone** — clone/checkout the package alone and `swift build`
-   (this is the check that today fails per the
-   [rel-dep standalone migration](.claude) note; converting the deps to `url:` is what fixes it).
+   (without relying on the CI rewrite script).
 4. **Tag & release** — cut the next semver tag on the package's own repo and push it.
 5. **Bump consumers** — anything in a later wave that depends on this package now points at
    the new tag (handled when that later wave runs).
@@ -116,12 +137,14 @@ only on earlier waves, so a whole wave can be released in parallel.
 
 Mark each as: ☐ todo · ◐ deps-rewritten · ✅ tagged `vX.Y.Z`
 
-**Wave 0:** ☐ Plot ☐ Files ☐ Ink ☐ SyndiKit ☐ ButtondownKit ☐ Contribute
+⚠ = open milestoned GitHub issue work remains on this package (does not block tagging unless noted).
+
+**Wave 0:** ☐ Plot ☐ Files ☐ Ink ☐ SyndiKit ☐ ButtondownKit ⚠ [#31](https://github.com/brightdigit/brightdigit.com/issues/31) [#33](https://github.com/brightdigit/brightdigit.com/issues/33) [#140](https://github.com/brightdigit/brightdigit.com/issues/140) ☐ Contribute
 (⏭ SwiftTube / Spinetail — use existing tag)
 
 **Wave 1:** ☐ Publish ☐ ContributeButtondown ☐ ContributeMailchimp ☐ ContributeRSS ☐ ContributeWordPress ☐ ContributeYouTube
 (⏭ TailwindKit — parked)
 
-**Wave 2:** ☐ PublishType ☐ YoutubePublishPlugin ☐ ReadingTimePublishPlugin ☐ TransistorPublishPlugin ☐ NPMPublishPlugin
+**Wave 2:** ☐ PublishType ⚠ [#135](https://github.com/brightdigit/brightdigit.com/issues/135) ☐ YoutubePublishPlugin ☐ ReadingTimePublishPlugin ☐ TransistorPublishPlugin ☐ NPMPublishPlugin
 
-**Wave 3:** ☐ BrightDigit (root cutover)
+**Wave 3:** ☐ BrightDigit (root cutover) ⚠ [#129](https://github.com/brightdigit/brightdigit.com/issues/129) [#50](https://github.com/brightdigit/brightdigit.com/issues/50) [#70](https://github.com/brightdigit/brightdigit.com/issues/70) [#135](https://github.com/brightdigit/brightdigit.com/issues/135) [#140](https://github.com/brightdigit/brightdigit.com/issues/140) [#92](https://github.com/brightdigit/brightdigit.com/issues/92)
