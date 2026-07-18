@@ -6,7 +6,7 @@
 [subrepo]
 	remote = git@github.com:brightdigit/ContributeRSS.git
 	branch = brightdigit-com-260717
-	commit = 6dcc002ebad79a01c8a48974fc8ecca50bac6258
+	commit = 45fe3f26c935b19c2d33c9c12c5830ec904c20af
 	method = merge
 	cmdver = 0.4.9
-	parent = ca8123d90219f93657c6101f9aa140ade1065776
+	parent = 049f90c69abb8e85b0619f3919906f588e7e6072
