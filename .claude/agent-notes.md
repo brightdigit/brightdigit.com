@@ -54,3 +54,5 @@ rather than leaving both.
 - Public subrepos run macOS CI on the GitHub-HOSTED runner label `xcode-27` (macOS 26.5, default Xcode 27.0 beta at `/Applications/Xcode_27.0.app`, Swift 6.4-dev, iOS/tvOS/watchOS/visionOS 27.0 SDKs) — NOT `[self-hosted, macOS]` and NOT `macos-26`. Hosted sim legs need `download-platform: true` (runtimes not preinstalled). This is why hosted macOS can build the nightly-6.4 packages without a swiftly snapshot install.
 - For package lint CI, follow MistKit's workflow pattern at commit `16b0d830ae4ecf4d7855fe171bb6e19aee21770e` rather than using `jdx/mise-action` directly.
 - MistKit is public; when its workflow is referenced, fetch it directly from `raw.githubusercontent.com/brightdigit/MistKit/refs/heads/main/...` before trying authenticated API, browser, or clone access.
+- For this all-subrepo CI repair, run the approved plan unattended through CI verification and PR creation; do not pause for routine status or confirmation when safe in-scope work remains.
+- Use SSH remotes for git/subrepo network operations in this repository; do not rewrite them to HTTPS.

@@ -50,15 +50,15 @@ Tip commits had `[skip ci]` and push only targets `main`; sync PRs needed a non-
 
 ## Snapshot (2026-07-18 tip primaries)
 
-Rough rollup from latest `Package.yml` run per `.gitrepo` tip (re-runs still in flight for several):
+All 20 primary workflows were normalized and exercised with their full matrices.
 
 | Status | Packages |
 |--------|----------|
-| **GREEN** | ButtondownKit, Contribute, ContributeButtondown, ContributeMailchimp, ContributeYouTube, SwiftTube, SyndiKit, Plot |
-| **In flight / queued** | ContributeRSS, PublishType, Spinetail (extra runs), TransistorPublishPlugin, YoutubePublishPlugin, ReadingTimePublishPlugin |
-| **Still red** | ContributeWordPress (PLAT), NPMPublishPlugin (PLAT), TailwindKit (**Linting**), Files (PLAT), Ink (PLAT), Publish (Windows leg on one run) |
+| **GREEN (20/20)** | ButtondownKit, Contribute, ContributeButtondown, ContributeMailchimp, ContributeRSS, ContributeWordPress, ContributeYouTube, NPMPublishPlugin, PublishType, Spinetail, SwiftTube, SyndiKit, TailwindKit, TransistorPublishPlugin, YoutubePublishPlugin, ReadingTimePublishPlugin, Files, Ink, Plot, Publish |
 
-Exact job lists move as dispatches finish; re-survey before acting.
+The preceding Transistor run was superseded after both Windows jobs exposed the
+same revision conflict. Replacement full run `29657047493` is green. Every newest
+exact-tip PR run is also green, including the MistKit-style lint action.
 
 ---
 
@@ -93,10 +93,28 @@ main/tags**, so its run was started via `workflow_dispatch` on `brightdigit-com-
 (its subrepo tip commit also carried `[skip ci]` from the parent-reset). Re-survey
 these five for green before opening the PR.
 
-### Still OUT OF SCOPE (follow-up, per Leo)
-- **Files Windows** + **Publish Windows** legs fail on REAL cross-platform test bugs
-  (FilesTests path separators `/C:/…` vs `C:\…`; Publish `HTMLGenerationTests`
-  filesystem errors) — not swiftly infra. Separate effort. **← addressed below.**
+### Cross-platform workflow normalization
+
+- All 20 primary workflows use hosted `xcode-27`,
+  `/Applications/Xcode_27.0.app`, iOS/tvOS/watchOS 27.0 simulator destinations,
+  and `download-platform: true` for simulator runtimes.
+- Full dispatch matrices enable Ubuntu Noble, macOS, Windows Server 2022 + 2025,
+  Android API 34, iOS 27, and tvOS 27 for every repo. watchOS 27 is enabled except
+  where the live repository variable explicitly disables it: ButtondownKit,
+  Contribute, Spinetail, and SwiftTube.
+- `ENABLE_WASM=false` is set on all 20 repositories. visionOS is not configured.
+- Root `.github/packages.json` and `.github/workflows/packages.yaml` cover all 20
+  packages, including ReadingTimePublishPlugin and the Plugins paths.
+- All 20 primary workflow files pass `actionlint`.
+
+### MistKit-style lint tool setup
+
+- Added a repo-local `.github/actions/setup-tools/action.yml` to each subrepo,
+  adapted from MistKit's public workflow/composite action.
+- Lint jobs cache `~/.local/share/mise/installs` by OS/architecture and `.mise.toml`
+  hash. A cache hit runs `jdx/mise-action@v4` with `install: false`; a miss installs
+  tools with mise caching disabled so the explicit cache owns persistence.
+- The primary workflows no longer call `jdx/mise-action` directly.
 
 ---
 
@@ -125,7 +143,7 @@ Pushed Files tip `bd520a8a`; dispatched full-matrix `workflow_dispatch` on Files
 Publish (`brightdigit-com-260406`) to exercise the Windows legs. Windows CI is the
 ground truth (can't run Windows locally).
 
-### Windows CI RESULT (2026-07-18) — path fix works; delete-in-use remains
+### Windows CI RESULT (2026-07-18) — GREEN
 
 - **Path canonicalization CONFIRMED working on Windows.** Paths are now clean
   canonical (`C:/Users/runneradmin/.filesTest/folder/`); Foundation maps them to
@@ -135,31 +153,37 @@ ground truth (can't run Windows locally).
   iOS/tvOS/watchOS → broke those (green) Apple builds. Switched to `NSHomeDirectory()`
   (all Apple platforms + Windows-aware); verified with a real `xcodebuild
   -sdk iphonesimulator` build. Pushed (Files tip now newer than `bd520a8a`).
-- **STILL RED on Windows — NOT a path bug:** `FilesTests.setUp`
-  (`folder.empty()`→`delete()`) throws `deleteFailed` / `Win32Error(code: 32)` =
-  "file in use by another process." Windows won't delete a directory whose handle is
-  still open — a filesystem-SEMANTICS problem (delete-while-open / handle lifetime),
-  deeper than separators.
-
-**NEXT SESSION (resume here):** fix the Windows delete-in-use semantics in
-`Storage.delete`/`empty` (retry-on-lock and/or close `contentsOfDirectory`/child-
-sequence handles before delete); re-dispatch Files then Publish CI; then the overall
-`ci/ensure-remote-deps-path-rewrite` → `phase-05` PR (Leo owns). Full detail in
-`.Codex/files-windows-path-canonical-form.md`.
+- **Final Files root cause:** an empty path reached Windows drive splitting before
+  it was resolved to `FileManager.currentDirectoryPath`. Resolve the current
+  directory first, then split/canonicalize the drive. Tests also now restore the
+  original current working directory before deleting their fixture, so Windows has
+  no live cwd handle inside the directory being removed.
+- Files full dispatch `29653202558` is green on Windows 2022 + 2025 and every Apple
+  platform. Local Files suite: 72/72.
+- Publish full dispatch `29653222856` is green, including both Windows jobs.
 
 ---
 
-## Waiting on Leo
+## NPMPublishPlugin Apple platforms — GREEN
 
-### NPMPublishPlugin + `swift-subprocess`
+Per Leo, macOS/iOS/tvOS/watchOS support was retained. `Subprocess` is now a
+conditional SwiftPM product dependency for macOS/Linux/Windows/Android, and the
+Subprocess-backed implementation, tests, and `.npm` PublishingStep API use
+`#if canImport(Subprocess)`. The non-Subprocess Apple targets compile without linking
+that product. Full dispatch `29653222816` is green on iOS 27, tvOS 27, watchOS 27,
+macOS, Ubuntu, Windows 2022/2025, and Android.
 
-Apple platform jobs fail because Subprocess requires roughly **iOS 99.0** / tvOS·watchOS **27** (unavailable on those platforms). `canImport` does not fix a Package.swift product dependency.
+## Transistor revision alignment
 
-Options to choose:
-
-1. Declare **macOS-only** platforms for NPMPublishPlugin  
-2. Drop / gate Subprocess so Apple targets don’t link it  
-3. Skip iOS/tvOS/watchOS CI legs for this package only  
+Transistor directly pins the current Ink branch tip during standalone CI and also
+fetches Publish. After the all-subrepo push advanced Ink, Publish still pinned the
+preceding Ink revision, which SwiftPM rejects as two revision requirements for one
+identity. Publish and NPMPublishPlugin now pin Ink
+`443d80e352ec3cdd07eed54bd84a9789378d8665`; Publish 86/86 and NPMPublishPlugin
+31/31 tests pass locally. Publish was subrepo-pushed at
+`7648facf2aeea2b7c2bcb678cc5bc71629997f4a`; final Transistor full run
+`29657047493` is green. NPMPublishPlugin's final exact-tip full run `29657044615`
+is green too.
 
 ---
 
@@ -185,7 +209,5 @@ From [`.claude/agent-notes.md`](.claude/agent-notes.md):
 
 ## Next
 
-1. Let in-flight platform re-runs finish; triage remaining PLAT / lint (TailwindKit lint is autofix-eligible).
-2. Resolve NPMPublishPlugin per Leo.
-3. When tips are green enough, open PR `ci/ensure-remote-deps-path-rewrite` → `phase-05` (Leo merges).
-4. Resume MERGE-AND-TAG-PLAN waves (Wave-0 tags → `from:` pins; Wave-2 permanent consumer rewrites).
+1. Push the parent branch and open `ci/ensure-remote-deps-path-rewrite` → `phase-05`.
+2. Do not merge; Leo owns review and merge.
