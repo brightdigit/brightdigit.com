@@ -7,3 +7,4 @@ Never put full memory content here. See the "Memory & Corrections Convention" se
 `AGENTS.md` for the rules.
 
 - [Memory & Corrections Convention](AGENTS.md) — how repo memory and the corrections log work
+- [Files canonical path form](.Codex/files-windows-path-canonical-form.md) — Files stores paths as forward-slash internally, native only at FileManager boundary (Windows support); helpers in Sources/Path.swift are no-ops off Windows
