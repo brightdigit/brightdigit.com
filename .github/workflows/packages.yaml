@@ -307,7 +307,7 @@ jobs:
           apt-get update -q
           apt-get install -y --no-install-recommends curl ca-certificates
       - uses: actions/checkout@v6
-      - uses: jdx/mise-action@v4
+      - uses: ./.github/actions/setup-tools
         env:
           # Raise the default 30s download timeout: GitHub throttles the SwiftLint
           # release zip when many matrix lint jobs fetch it in parallel. Authenticate
@@ -315,8 +315,7 @@ jobs:
           MISE_HTTP_TIMEOUT: 300s
           MISE_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          working_directory: ${{ matrix.package.path }}
-          cache: true
+          working-directory: ${{ matrix.package.path }}
       - name: Lint
         working-directory: ${{ matrix.package.path }}
         run: ./Scripts/lint.sh

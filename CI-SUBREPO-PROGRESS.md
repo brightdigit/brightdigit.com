@@ -115,6 +115,10 @@ these five for green before opening the PR.
   hash. A cache hit runs `jdx/mise-action@v4` with `install: false`; a miss installs
   tools with mise caching disabled so the explicit cache owns persistence.
 - The primary workflows no longer call `jdx/mise-action` directly.
+- Parent Packages CI uses the same repo-local cache wrapper with a
+  `working-directory` input for its 20-package lint matrix; neither the parent
+  Packages workflow nor the primary subrepo workflows invoke `jdx/mise-action`
+  directly.
 
 ---
 
