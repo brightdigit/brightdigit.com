@@ -1,6 +1,24 @@
 {
-  "originHash" : "7b5e9f8e8d69db6121743e1298e1e9e46b4acbc0ab9b6185095face4d8346036",
+  "originHash" : "a16844b452d5ff2359336bf34789857587c048ff9f78262bffd67acf91ffd3a9",
   "pins" : [
+    {
+      "identity" : "contribute",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/brightdigit/Contribute.git",
+      "state" : {
+        "branch" : "brightdigit-com-260621",
+        "revision" : "b674f44579bfcc55c389676ec6bd5af584d3dcbb"
+      }
+    },
+    {
+      "identity" : "spinetail",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/brightdigit/Spinetail.git",
+      "state" : {
+        "branch" : "brightdigit-com-260621",
+        "revision" : "1845f73fcdbde047e5190ebcbb52c6db2a10b3a1"
+      }
+    },
     {
       "identity" : "swift-cmark",
       "kind" : "remoteSourceControl",
