@@ -3,6 +3,10 @@
 Last verified: 2026-07-18, after the all-subrepo CI repair recorded in
 [`CI-SUBREPO-PROGRESS.md`](../CI-SUBREPO-PROGRESS.md).
 
+Checkpoint note (2026-07-20): `Packages/` is temporarily absent while these 20
+repositories are consumed from their `brightdigit-com-*` branches. This inventory
+continues to describe the standalone repositories and their restored subrepo layout.
+
 This inventory separates two different meanings of “support”:
 
 - **Declared Apple minimums** are the deployment targets explicitly listed in each

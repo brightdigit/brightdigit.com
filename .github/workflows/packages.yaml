@@ -2,9 +2,10 @@ name: Packages CI
 
 # CI for the vendored BrightDigit packages, following the BrightDigit CI
 # template (MistKit/SundialKit/SyndiKit workflows) with an extra `package`
-# matrix dimension. In the monorepo checkout every sibling already sits at its
-# relative-path location (../../Publish/*, ../Contribute, ...), so each
-# package resolves in-place with no dependency reconstruction.
+# matrix dimension. `Packages/` is temporarily absent during the branch-based
+# release checkpoint; in that state the configure job succeeds and all package
+# matrices are intentionally skipped. The manifest and workflow stay canonical
+# for when the subrepos are restored.
 on:
   push:
     branches: [main]
@@ -33,6 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       full-matrix: ${{ steps.check.outputs.full }}
+      packages-present: ${{ steps.packages.outputs.present }}
       packages: ${{ steps.matrix.outputs.packages }}
       # lint-packages — the subset carrying their own lint tooling
       # (Scripts/lint.sh + mise config). The vendored Publish packages set
@@ -47,6 +49,17 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
+
+      - id: packages
+        name: Detect vendored packages
+        run: |
+          if [[ -d Packages ]]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+            echo "Packages directory present; package matrices enabled."
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "Packages directory intentionally absent; package matrices disabled."
+          fi
 
       - id: check
         name: Determine matrix scope
@@ -77,6 +90,7 @@ jobs:
 
       - id: matrix
         name: Build matrix values
+        if: steps.packages.outputs.present == 'true'
         # Single source of truth: .github/packages.json declares each vendored
         # package exactly once (name + path). The matrix inputs are DERIVED from
         # it with jq — adding/renaming a package is a one-line manifest edit
@@ -127,6 +141,7 @@ jobs:
   build-ubuntu:
     name: Build ${{ matrix.package.name }} on Ubuntu
     needs: configure
+    if: needs.configure.outputs.packages-present == 'true'
     runs-on: ubuntu-latest
     container: swiftlang/swift:nightly-6.4.x-${{ matrix.os }}
     strategy:
@@ -186,6 +201,7 @@ jobs:
   build-macos:
     name: Build ${{ matrix.package.name }} on macOS
     needs: configure
+    if: needs.configure.outputs.packages-present == 'true'
     runs-on: xcode-27
     strategy:
       fail-fast: false
@@ -216,7 +232,7 @@ jobs:
   build-macos-platforms:
     name: Build SyndiKit on macOS (Platforms)
     needs: configure
-    if: ${{ needs.configure.outputs.full-matrix == 'true' }}
+    if: ${{ needs.configure.outputs.packages-present == 'true' && needs.configure.outputs.full-matrix == 'true' }}
     runs-on: ${{ matrix.runs-on }}
     strategy:
       fail-fast: false
@@ -281,7 +297,7 @@ jobs:
     # proceed past skipped (not failed) dependencies. lint.sh is non-mutating
     # under CI ($CI is set) and builds tests itself, resolving siblings
     # in-place.
-    if: ${{ !cancelled() && !failure() }}
+    if: ${{ needs.configure.outputs.packages-present == 'true' && !cancelled() && !failure() }}
     needs: [configure, build-ubuntu, build-macos, build-macos-platforms]
     runs-on: ubuntu-latest
     # Lint on the Swift 6.4 nightly (the project's target toolchain) so swift-format

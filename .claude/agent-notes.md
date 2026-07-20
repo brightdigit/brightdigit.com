@@ -57,3 +57,4 @@ rather than leaving both.
 - For this all-subrepo CI repair, run the approved plan unattended through CI verification and PR creation; do not pause for routine status or confirmation when safe in-scope work remains.
 - Use SSH remotes for git/subrepo network operations in this repository; do not rewrite them to HTTPS.
 - PR #160 is merged; commit the requested subrepo platform-support inventory directly on `phase-05` with `[skip ci]`.
+- Branch dependency release checkpoint (2026-07-20): do not merge or tag in this phase; keep the root PR unmerged while all 20 packages use `brightdigit-com-*` branches, then restore canonical subrepos after rebasing onto `main` for `v2.0.0-alpha.2` development.
