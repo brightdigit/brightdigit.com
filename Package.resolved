@@ -1,6 +1,15 @@
 {
-  "originHash" : "31152720989a4316c3a28088404c9ec96d522eef339b6806e8869bdc7ff27ba9",
+  "originHash" : "0cc2d58aeeedc051cf473480be3f9f28c376f1961b8793477f3332d82dcace24",
   "pins" : [
+    {
+      "identity" : "buttondownkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/brightdigit/ButtondownKit.git",
+      "state" : {
+        "branch" : "brightdigit-com-260621",
+        "revision" : "d2f7930b8aa9687f7887877bd43ce58cc070e5a3"
+      }
+    },
     {
       "identity" : "configkeykit",
       "kind" : "remoteSourceControl",
@@ -11,11 +20,129 @@
       }
     },
     {
+      "identity" : "contribute",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/brightdigit/Contribute.git",
+      "state" : {
+        "branch" : "brightdigit-com-260621",
+        "revision" : "b674f44579bfcc55c389676ec6bd5af584d3dcbb"
+      }
+    },
+    {
+      "identity" : "contributebuttondown",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/brightdigit/ContributeButtondown.git",
+      "state" : {
+        "branch" : "brightdigit-com-260717",
+        "revision" : "990f5d508a2fa1f1a778e1cd180af87ef54f15c4"
+      }
+    },
+    {
+      "identity" : "contributemailchimp",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/brightdigit/ContributeMailchimp.git",
+      "state" : {
+        "branch" : "brightdigit-com-260717",
+        "revision" : "06935382aadf943e8c0bbbd80ebbeee31e09a694"
+      }
+    },
+    {
+      "identity" : "contributerss",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/brightdigit/ContributeRSS.git",
+      "state" : {
+        "branch" : "brightdigit-com-260717",
+        "revision" : "499908a3a451f6f795e09d7bb258965f6b1acd0d"
+      }
+    },
+    {
+      "identity" : "contributewordpress",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/brightdigit/ContributeWordPress.git",
+      "state" : {
+        "branch" : "brightdigit-com-260406",
+        "revision" : "d11253824914acaadb8bd7715e15b4311a1edcfb"
+      }
+    },
+    {
+      "identity" : "contributeyoutube",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/brightdigit/ContributeYouTube.git",
+      "state" : {
+        "branch" : "brightdigit-com-260717",
+        "revision" : "41bf7aaa45b99655f3eab81fda28b84f66a74935"
+      }
+    },
+    {
       "identity" : "files",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/brightdigit/Files.git",
       "state" : {
-        "revision" : "2983eb8104844a0e874bb375356e690e31d2716e"
+        "branch" : "brightdigit-com-260406",
+        "revision" : "7ee69ba0bfc0d2c771458ea17ee4933545e896a8"
+      }
+    },
+    {
+      "identity" : "ink",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/brightdigit/Ink.git",
+      "state" : {
+        "branch" : "brightdigit-com-260406",
+        "revision" : "443d80e352ec3cdd07eed54bd84a9789378d8665"
+      }
+    },
+    {
+      "identity" : "npmpublishplugin",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/brightdigit/NPMPublishPlugin.git",
+      "state" : {
+        "branch" : "brightdigit-com-260406",
+        "revision" : "06e538e1d05aba14077ffe69b0f9ee3c764a3e80"
+      }
+    },
+    {
+      "identity" : "plot",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/brightdigit/Plot.git",
+      "state" : {
+        "branch" : "brightdigit-com-260406",
+        "revision" : "c357a8a5303159900017176a1450f6b825e6fb93"
+      }
+    },
+    {
+      "identity" : "publish",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/brightdigit/Publish.git",
+      "state" : {
+        "branch" : "brightdigit-com-260406",
+        "revision" : "7118f0a6967a98f3e8e0b69c696be85258504ed2"
+      }
+    },
+    {
+      "identity" : "publishtype",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/brightdigit/PublishType.git",
+      "state" : {
+        "branch" : "brightdigit-com-260717",
+        "revision" : "a511e37ceb5ac999d00f42c84822a1e44a706d7a"
+      }
+    },
+    {
+      "identity" : "readingtimepublishplugin",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/brightdigit/ReadingTimePublishPlugin.git",
+      "state" : {
+        "branch" : "brightdigit-com-260406",
+        "revision" : "c6a872bdcf52b192589bdae7ed29d949e82cfa54"
+      }
+    },
+    {
+      "identity" : "spinetail",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/brightdigit/Spinetail.git",
+      "state" : {
+        "branch" : "brightdigit-com-260621",
+        "revision" : "1845f73fcdbde047e5190ebcbb52c6db2a10b3a1"
       }
     },
     {
@@ -95,8 +222,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-openapi-urlsession",
       "state" : {
-        "revision" : "576a65b4ffb8c12ddad4950dc21eea2ef071bec2",
-        "version" : "1.3.0"
+        "revision" : "08796d36c99ad2318929bfa1d1e40f82194b65cc",
+        "version" : "1.3.1"
       }
     },
     {
@@ -136,12 +263,48 @@
       }
     },
     {
+      "identity" : "swifttube",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/brightdigit/SwiftTube.git",
+      "state" : {
+        "branch" : "brightdigit-com-260621",
+        "revision" : "06812e9bbe140c4f0052976a1651fb67bb8abd1f"
+      }
+    },
+    {
+      "identity" : "syndikit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/brightdigit/SyndiKit.git",
+      "state" : {
+        "branch" : "brightdigit-com-260621",
+        "revision" : "5496b47244628daafc747f6151d44ed9e9accfdb"
+      }
+    },
+    {
+      "identity" : "tailwindkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/brightdigit/TailwindKit.git",
+      "state" : {
+        "branch" : "brightdigit-com-260717",
+        "revision" : "8e76eef04a5a325aa2b26891edeb106e4c8b89b4"
+      }
+    },
+    {
+      "identity" : "transistorpublishplugin",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/brightdigit/TransistorPublishPlugin.git",
+      "state" : {
+        "branch" : "brightdigit-com-260406",
+        "revision" : "a9c963e5bf8f9d7e181e6da9209809d3582cec5d"
+      }
+    },
+    {
       "identity" : "xmlcoder",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/CoreOffice/XMLCoder",
       "state" : {
-        "revision" : "b2b5d72345bab9e1938a483cf862b498aeed3796",
-        "version" : "0.18.1"
+        "revision" : "42f62383dbcd074440cb1f6a750b9c02df9e7325",
+        "version" : "0.18.2"
       }
     },
     {
@@ -151,6 +314,15 @@
       "state" : {
         "revision" : "a27b21e0c81c5bf42049b897a62aaf387e80f279",
         "version" : "6.2.2"
+      }
+    },
+    {
+      "identity" : "youtubepublishplugin",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/brightdigit/YoutubePublishPlugin.git",
+      "state" : {
+        "branch" : "brightdigit-com-260406",
+        "revision" : "10fa49d2cd9a36cf8d3b86becf7e02a55fe0911c"
       }
     }
   ],

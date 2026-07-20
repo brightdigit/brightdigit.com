@@ -22,25 +22,73 @@ let package = Package(
     .library(name: "BrightDigitPodcast", targets: ["BrightDigitPodcast"])
   ],
   dependencies: [
-    .package(path: "Packages/Publish/Publish"),
+    .package(
+      url: "https://github.com/brightdigit/Publish.git",
+      branch: "brightdigit-com-260406"
+    ),
 
-    .package(path: "Packages/BrightDigit/YoutubePublishPlugin"),
-    .package(path: "Packages/Plugins/ReadingTimePublishPlugin"),
+    .package(
+      url: "https://github.com/brightdigit/YoutubePublishPlugin.git",
+      branch: "brightdigit-com-260406"
+    ),
+    .package(
+      url: "https://github.com/brightdigit/ReadingTimePublishPlugin.git",
+      branch: "brightdigit-com-260406"
+    ),
 
-    .package(path: "Packages/BrightDigit/TailwindKit"),
-    .package(path: "Packages/BrightDigit/Spinetail"),
-    .package(path: "Packages/BrightDigit/ButtondownKit"),
-    .package(path: "Packages/BrightDigit/SyndiKit"),
+    .package(
+      url: "https://github.com/brightdigit/TailwindKit.git",
+      branch: "brightdigit-com-260717"
+    ),
+    .package(
+      url: "https://github.com/brightdigit/Spinetail.git",
+      branch: "brightdigit-com-260621"
+    ),
+    .package(
+      url: "https://github.com/brightdigit/ButtondownKit.git",
+      branch: "brightdigit-com-260621"
+    ),
+    .package(
+      url: "https://github.com/brightdigit/SyndiKit.git",
+      branch: "brightdigit-com-260621"
+    ),
     // .package(url: "https://github.com/BrightDigit/Options.git", from: "0.2.0"),
-    .package(path: "Packages/BrightDigit/NPMPublishPlugin"),
-    .package(path: "Packages/BrightDigit/Contribute"),
-    .package(path: "Packages/BrightDigit/ContributeButtondown"),
-    .package(path: "Packages/BrightDigit/ContributeMailchimp"),
-    .package(path: "Packages/BrightDigit/ContributeRSS"),
-    .package(path: "Packages/BrightDigit/ContributeYouTube"),
-    .package(path: "Packages/BrightDigit/ContributeWordPress"),
-    .package(path: "Packages/BrightDigit/PublishType"),
-    .package(path: "Packages/BrightDigit/TransistorPublishPlugin"),
+    .package(
+      url: "https://github.com/brightdigit/NPMPublishPlugin.git",
+      branch: "brightdigit-com-260406"
+    ),
+    .package(
+      url: "https://github.com/brightdigit/Contribute.git",
+      branch: "brightdigit-com-260621"
+    ),
+    .package(
+      url: "https://github.com/brightdigit/ContributeButtondown.git",
+      branch: "brightdigit-com-260717"
+    ),
+    .package(
+      url: "https://github.com/brightdigit/ContributeMailchimp.git",
+      branch: "brightdigit-com-260717"
+    ),
+    .package(
+      url: "https://github.com/brightdigit/ContributeRSS.git",
+      branch: "brightdigit-com-260717"
+    ),
+    .package(
+      url: "https://github.com/brightdigit/ContributeYouTube.git",
+      branch: "brightdigit-com-260717"
+    ),
+    .package(
+      url: "https://github.com/brightdigit/ContributeWordPress.git",
+      branch: "brightdigit-com-260406"
+    ),
+    .package(
+      url: "https://github.com/brightdigit/PublishType.git",
+      branch: "brightdigit-com-260717"
+    ),
+    .package(
+      url: "https://github.com/brightdigit/TransistorPublishPlugin.git",
+      branch: "brightdigit-com-260406"
+    ),
 
     .package(url: "https://github.com/jpsim/Yams.git", from: "6.0.0"),
     .package(url: "https://github.com/brightdigit/ConfigKeyKit.git", exact: "1.0.0-beta.2"),
