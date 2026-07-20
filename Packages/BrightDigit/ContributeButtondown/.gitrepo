@@ -6,7 +6,7 @@
 [subrepo]
 	remote = git@github.com:brightdigit/ContributeButtondown.git
 	branch = brightdigit-com-260717
-	commit = d6800208f4ed564d2d5ca4d53644f897e4dc226c
+	commit = 990f5d508a2fa1f1a778e1cd180af87ef54f15c4
 	method = merge
 	cmdver = 0.4.9
-	parent = 93455e4df1bae7c3086850087de2d7b85f0a1138
+	parent = db32578030d3cc373e28daff91a3975758a62de2
