@@ -96,7 +96,7 @@ these five for green before opening the PR.
 ### Cross-platform workflow normalization
 
 The durable per-repository platform, OS-version, deployment-minimum, and exclusion
-inventory is in [`.Codex/subrepo-platform-support.md`](.Codex/subrepo-platform-support.md).
+inventory is in [`.claude/memory/subrepo-platform-support.md`](.claude/memory/subrepo-platform-support.md).
 
 - All 20 primary workflows use hosted `xcode-27`,
   `/Applications/Xcode_27.0.app`, iOS/tvOS/watchOS 27.0 simulator destinations,

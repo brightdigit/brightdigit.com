@@ -21,9 +21,9 @@ sessions), not only into a private auto-memory store. Two mechanisms:
 - Every memory you form is persisted into the repo. Each memory goes into a `MEMORY.md` index
   line **and** a durable location, routed by how urgently the fact must be read at launch:
   - **Urgent / broad facts** → `AGENTS.md` (always loaded into context at launch).
-  - **Lower-urgency facts** → a file under `.Codex/` (loaded on demand). Note: this does **not**
-    mean `agent-notes.md` — that file is only the corrections log; use other `.Codex/` files for
-    reference facts, project notes, etc.
+  - **Lower-urgency facts** → a file under `.claude/memory/` (loaded on demand). Note: this does
+    **not** mean `agent-notes.md` — that file is only the corrections log; use other
+    `.claude/memory/` files for reference facts, project notes, etc.
 - `MEMORY.md` is an **index only**: one line per memory (`- [Title](path) — hook`), never the
   full memory content.
 - Before saving, check for an existing file/line that already covers the fact and update it
@@ -96,7 +96,8 @@ Always exits 0 by default (never gates a build). Not wired into CI yet.
 temporarily consumes all 20 first-party packages from their existing `brightdigit-com-*` branches,
 as recorded in `Package.swift` and `Package.resolved`, so the package repositories can be merged and
 tagged independently. The root checkpoint PR stays unmerged until every direct and transitive
-first-party dependency uses a released tag.
+first-party dependency uses a released tag. Branch table and next-gate detail:
+[`.claude/memory/dependency-release-checkpoint.md`](.claude/memory/dependency-release-checkpoint.md).
 
 The subrepo model remains canonical. Keep `.github/packages.json`,
 `.github/workflows/packages.yaml`, and `fix-subrepo-parents.sh`; package-side

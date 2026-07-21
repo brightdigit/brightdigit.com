@@ -59,3 +59,4 @@ rather than leaving both.
 - PR #160 is merged; commit the requested subrepo platform-support inventory directly on `phase-05` with `[skip ci]`.
 - Branch dependency release checkpoint (2026-07-20): do not merge or tag in this phase; keep the root PR unmerged while all 20 packages use `brightdigit-com-*` branches, then restore canonical subrepos after rebasing onto `main` for `v2.0.0-alpha.2` development.
 - For the branch-based de-vendoring checkpoint, continue unattended through verification, branch push, CI, and PR creation; do not pause for routine safe steps.
+- Agent memory: lower-urgency reference facts live under `.claude/memory/` (indexed by `MEMORY.md`); never use `.Codex/` — that directory is retired. Corrections log stays at `.claude/agent-notes.md`.

@@ -11,7 +11,7 @@ let package = Package(
   platforms: [
     // Raised from .v13 for issue #44: ConfigKeyKit 1.0.0-beta.2 requires macOS 15.
     // Deploy target is Linux (no platform floor), so this only affects local
-    // macOS development/builds. See Documentation/Migration/44-config-migration.md.
+    // macOS development/builds.
     .macOS(.v15)
   ],
   products: [
