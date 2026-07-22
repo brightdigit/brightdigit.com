@@ -50,7 +50,7 @@ let package = Package(
     ),
     .package(
       url: "https://github.com/brightdigit/SyndiKit.git",
-      branch: "brightdigit-com-260621"
+      branch: "v1.0.0"
     ),
     // .package(url: "https://github.com/BrightDigit/Options.git", from: "0.2.0"),
     .package(
