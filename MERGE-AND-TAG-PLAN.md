@@ -39,10 +39,11 @@ point at.
   (start it at `0.1.0` or `1.0.0-alpha.1`). Confirm each package's actual latest tag before
   choosing its next version (`git ls-remote --tags`).
 
-> **Excluded from active work:** `SwiftTube` and `Spinetail` are mid-rebuild on the OpenAPI
-> generator — do **not** re-tag or migrate their manifests as part of this sweep; consume
-> whatever their current published tag is. `TailwindKit` is intentionally parked
-> (do not pull). Deprecated modules (`ContributeMailchimp`, `ContributeYouTube`,
+> **Update (2026-07-22):** `SwiftTube` and `Spinetail` have **finished** their OpenAPI-generator
+> rebuild and are cut to a `v1.0.0` branch, so they are no longer excluded — they are back in the
+> active Wave 0 set. Their rebuild renamed public types (Spinetail `MailchimpCampaign` → `Campaign`;
+> SwiftTube Videos rename); consumers must adopt the new names. `TailwindKit` is still intentionally
+> parked (do not pull). Deprecated modules (`ContributeMailchimp`, `ContributeYouTube`,
 > `KannaMarkdownGenerator`) get tagged for graph-completeness only — no code changes.
 
 ## Step 0 — Standalone CI path rewrite (done in-tree; push with each subrepo)
@@ -144,8 +145,14 @@ Mark each as: ☐ todo · ◐ deps-rewritten · ✅ tagged `vX.Y.Z`
 
 ⚠ = open milestoned GitHub issue work remains on this package (does not block tagging unless noted).
 
-**Wave 0:** ☐ Plot ☐ Files ☐ Ink ☐ SyndiKit ☐ ButtondownKit ⚠ [#31](https://github.com/brightdigit/brightdigit.com/issues/31) [#33](https://github.com/brightdigit/brightdigit.com/issues/33) [#140](https://github.com/brightdigit/brightdigit.com/issues/140) ☐ Contribute
-(⏭ SwiftTube / Spinetail — use existing tag)
+**Wave 0:** ☐ Plot ☐ Files ☐ Ink ☐ SyndiKit ◐ ButtondownKit `v1.0.0` ⚠ [#31](https://github.com/brightdigit/brightdigit.com/issues/31) [#33](https://github.com/brightdigit/brightdigit.com/issues/33) [#140](https://github.com/brightdigit/brightdigit.com/issues/140) ◐ Contribute `v1.0.0` ◐ SwiftTube `v1.0.0` ◐ Spinetail `v1.0.0`
+(ButtondownKit / SwiftTube / Spinetail / Contribute merged to a `v1.0.0` branch — only `v1.0.0` + `main` remain, old `-260621` deleted; SwiftTube/Spinetail rebuild renames done. SyndiKit stays on `brightdigit-com-260621`. Not yet cut as `v`-less semver tags.)
+
+> **Root (phase-05) consumption (2026-07-22):** the root `Package.swift` now pins Contribute,
+> Spinetail, and ButtondownKit to `branch: "v1.0.0"`; SyndiKit stays on `brightdigit-com-260621`.
+> **Blocker:** a full resolve additionally requires every Wave-1 `Contribute*` satellite
+> (`brightdigit-com-260717`) to repin its Contribute/Spinetail/ButtondownKit/SwiftTube deps to
+> `v1.0.0` — they currently still pin the deleted `-260621` branches, which conflicts with the root.
 
 **Wave 1:** ☐ Publish ☐ ContributeButtondown ☐ ContributeMailchimp ☐ ContributeRSS ☐ ContributeWordPress ☐ ContributeYouTube
 (⏭ TailwindKit — parked)

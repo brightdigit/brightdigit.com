@@ -53,7 +53,7 @@ extension Buttondown.ReconcileCommand {
   /// Mirrors `Import.MailchimpCommand.isBrightDigitNewsletter` (which is private);
   /// kept identical so reconcile and import agree on which campaigns count.
   private static func isBrightDigitNewsletter(
-    campaign: MailchimpCampaign,
+    campaign: Campaign,
     subjectLine: String
   ) -> Bool {
     let brightdigitSent =
@@ -65,10 +65,10 @@ extension Buttondown.ReconcileCommand {
   /// - Parameter campaigns: Every sent campaign returned by Mailchimp.
   /// - Returns: BrightDigit newsletter campaigns with send times, oldest first.
   private static func sortedNewsletters(
-    from campaigns: [MailchimpCampaign]
-  ) -> [(campaign: MailchimpCampaign, sendTime: Date)] {
+    from campaigns: [Campaign]
+  ) -> [(campaign: Campaign, sendTime: Date)] {
     campaigns
-      .compactMap { campaign -> (campaign: MailchimpCampaign, sendTime: Date)? in
+      .compactMap { campaign -> (campaign: Campaign, sendTime: Date)? in
         let subjectLine = campaign.subjectLine ?? ""
         guard
           isBrightDigitNewsletter(campaign: campaign, subjectLine: subjectLine),
@@ -84,7 +84,7 @@ extension Buttondown.ReconcileCommand {
   /// Parses an explicit newsletter issue number from a campaign subject.
   /// - Parameter campaign: The campaign whose subject should be parsed.
   /// - Returns: The explicit issue number, if the subject contains one.
-  private static func explicitIssueNumber(for campaign: MailchimpCampaign) -> Int? {
+  private static func explicitIssueNumber(for campaign: Campaign) -> Int? {
     Import.MailchimpCommand.parseIssueNumber(from: campaign.subjectLine ?? "")
   }
 
@@ -99,7 +99,7 @@ extension Buttondown.ReconcileCommand {
   /// - Parameter campaigns: Every sent campaign returned by Mailchimp.
   /// - Returns: The numbered newsletters, in send-time (oldest-first) order.
   internal static func numberedCampaigns(
-    from campaigns: [MailchimpCampaign]
+    from campaigns: [Campaign]
   ) -> [NumberedCampaign] {
     let newsletters = sortedNewsletters(from: campaigns)
     let numbered = newsletters.filter { explicitIssueNumber(for: $0.campaign) != nil }

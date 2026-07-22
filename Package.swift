@@ -42,11 +42,11 @@ let package = Package(
     ),
     .package(
       url: "https://github.com/brightdigit/Spinetail.git",
-      branch: "brightdigit-com-260621"
+      branch: "v1.0.0"
     ),
     .package(
       url: "https://github.com/brightdigit/ButtondownKit.git",
-      branch: "brightdigit-com-260621"
+      branch: "v1.0.0"
     ),
     .package(
       url: "https://github.com/brightdigit/SyndiKit.git",
@@ -59,7 +59,7 @@ let package = Package(
     ),
     .package(
       url: "https://github.com/brightdigit/Contribute.git",
-      branch: "brightdigit-com-260621"
+      branch: "v1.0.0"
     ),
     .package(
       url: "https://github.com/brightdigit/ContributeButtondown.git",

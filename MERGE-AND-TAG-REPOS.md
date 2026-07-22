@@ -21,12 +21,22 @@ in-repo dependency it needs is already tagged.
 | Files | https://github.com/brightdigit/Files | `brightdigit-com-260406` | [#1](https://github.com/brightdigit/Files/pull/1) | [#2](https://github.com/brightdigit/Files/pull/2) |
 | Ink | https://github.com/brightdigit/Ink | `brightdigit-com-260406` | [#1](https://github.com/brightdigit/Ink/pull/1) | [#2](https://github.com/brightdigit/Ink/pull/2) |
 | SyndiKit | https://github.com/brightdigit/SyndiKit | `brightdigit-com-260621` | [#129](https://github.com/brightdigit/SyndiKit/pull/129) | [#130](https://github.com/brightdigit/SyndiKit/pull/130) |
-| ButtondownKit | https://github.com/brightdigit/ButtondownKit | `brightdigit-com-260621` | [#4](https://github.com/brightdigit/ButtondownKit/pull/4) | [#5](https://github.com/brightdigit/ButtondownKit/pull/5) |
-| SwiftTube | https://github.com/brightdigit/SwiftTube | `brightdigit-com-260621` | [#18](https://github.com/brightdigit/SwiftTube/pull/18) | [#19](https://github.com/brightdigit/SwiftTube/pull/19) |
-| Spinetail | https://github.com/brightdigit/Spinetail | `brightdigit-com-260621` | [#31](https://github.com/brightdigit/Spinetail/pull/31) | [#32](https://github.com/brightdigit/Spinetail/pull/32) |
-| Contribute | https://github.com/brightdigit/Contribute | `brightdigit-com-260621` | [#14](https://github.com/brightdigit/Contribute/pull/14) → `v1.0.0` | [#15](https://github.com/brightdigit/Contribute/pull/15) |
+| ButtondownKit | https://github.com/brightdigit/ButtondownKit | `v1.0.0` (old `-260621` deleted) | [#4](https://github.com/brightdigit/ButtondownKit/pull/4) | [#5](https://github.com/brightdigit/ButtondownKit/pull/5) |
+| SwiftTube | https://github.com/brightdigit/SwiftTube | `v1.0.0` (old `-260621` deleted) | [#18](https://github.com/brightdigit/SwiftTube/pull/18) | [#19](https://github.com/brightdigit/SwiftTube/pull/19) |
+| Spinetail | https://github.com/brightdigit/Spinetail | `v1.0.0` (old `-260621` deleted) | [#31](https://github.com/brightdigit/Spinetail/pull/31) | [#32](https://github.com/brightdigit/Spinetail/pull/32) |
+| Contribute | https://github.com/brightdigit/Contribute | `v1.0.0` (old `-260621` deleted) | [#14](https://github.com/brightdigit/Contribute/pull/14) → `v1.0.0` | [#15](https://github.com/brightdigit/Contribute/pull/15) |
 
 Highest-leverage starts: **Plot** and **Contribute**.
+
+> **Wave 0 → `v1.0.0` (2026-07-22):** ButtondownKit, SwiftTube, Spinetail, and Contribute have been
+> merged to a `v1.0.0` branch and now carry only two branches (`v1.0.0` + `main`); their old
+> `brightdigit-com-260621` working branches are **deleted**. SwiftTube/Spinetail completed their
+> OpenAPI rebuild, which renamed public types (Spinetail `MailchimpCampaign` → `Campaign`, SwiftTube
+> Videos rename). **SyndiKit is intentionally held on `brightdigit-com-260621`** so the Wave-1
+> `Contribute*` satellites (which still pin SyndiKit there) keep resolving. Plot/Files/Ink remain on
+> `brightdigit-com-260406`. **Note:** the root and every Wave-1 `Contribute*` satellite must pin
+> Contribute/Spinetail/ButtondownKit/SwiftTube to `v1.0.0` *together* — a fresh resolve fails if any
+> consumer still points at the deleted `-260621` branches.
 
 > **Wave 0 review-feedback fixes (2026-07-21):** each *Feedback fixes PR* above branches from and
 > targets its package's merge-PR branch (`…-feedback-fixes` → `brightdigit-com-260406`/`-260621`),
@@ -34,7 +44,27 @@ Highest-leverage starts: **Plot** and **Contribute**.
 > codecov cleanup; ungate watchOS + add visionOS; `.spi.yml` normalized; devcontainer → standard
 > Swift 6.4 image; add `RELEASE_NOTES.md`, `.claude/agent-notes.md`, Memory & Corrections Convention,
 > `.claude/skills/`). Plot/Files/Ink additionally preserve John Sundell's MIT attribution (NOTICE +
-> README fork note + `header.sh` guard). None merged — pending review.
+> README fork note + the Sundell-fork `header.sh`, see below). None merged — pending review.
+
+### `header.sh` — two versions
+
+`Scripts/header.sh` is a local-only (never-CI) lint step that strips the leading license comment
+from every `*.swift` file and re-prepends a fresh one. There are **two versions of the file**
+(both named `header.sh`, both using the same skeleton — `-d -c -o -p -y` args, `find` loop,
+`/Generated/` + `swift-format-ignore` skips, idempotent prepend). The **only** difference is the
+header text:
+
+| Version | Repos | Emits | Invocation (in `Scripts/lint.sh`) |
+| --- | --- | --- | --- |
+| **BrightDigit** | every non-fork package (SyndiKit, ButtondownKit, SwiftTube, Spinetail, Contribute, …) | `//` block: filename + package, `Created by Leo Dion / Copyright © <year> BrightDigit`, full inline MIT | `header.sh -d Sources -c "Leo Dion" -o "BrightDigit" -p "<Package>"` |
+| **Sundell forks** | Plot, Files, Ink | John Sundell's compact `/**` block (`*  <Package>` / `*  Copyright (c) John Sundell <year>` / `*  MIT license, see LICENSE file for details`) | `header.sh -d Sources -c "John Sundell" -o "John Sundell" -p "<Package>" -y <year>` |
+
+The fork version differs mechanically in one place — its `awk` strips a leading `/* … */` block
+(not just `//` lines) so it stays idempotent and converts Files' longer `//` header to the compact
+block. Copyright year = the **latest year in each fork's original headers**, passed via `-y`:
+**Plot → 2021, Ink → 2020, Files → 2019.** Canonical fork script:
+[`reference/sundell-fork/Scripts/header.sh`](reference/sundell-fork/Scripts/header.sh) — copy it to
+each fork repo's `Scripts/header.sh` and update that repo's `Scripts/lint.sh` header line.
 
 ### Other open PRs (Wave 0)
 
@@ -49,8 +79,9 @@ Highest-leverage starts: **Plot** and **Contribute**.
 | Contribute | [#13](https://github.com/brightdigit/Contribute/pull/13) | docs → `v1.0.0` |
 | Contribute | [#12](https://github.com/brightdigit/Contribute/pull/12) | docs → working branch |
 
-> `MERGE-AND-TAG-PLAN.md` previously said skip re-tagging SwiftTube/Spinetail and use
-> existing published tags — confirm before cutting new ones.
+> ~~`MERGE-AND-TAG-PLAN.md` previously said skip re-tagging SwiftTube/Spinetail and use existing
+> published tags~~ — superseded: SwiftTube/Spinetail finished their OpenAPI rebuild and are now cut
+> to `v1.0.0` (with the public renames above), so they are back in the active Wave 0 set.
 
 ---
 

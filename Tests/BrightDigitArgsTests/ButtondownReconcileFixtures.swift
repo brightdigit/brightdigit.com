@@ -19,8 +19,8 @@ internal enum ButtondownReconcileFixtures {
     segment: String? = "brightdigit-business",
     previewText: String? = nil,
     socialCardImageURL: String? = nil
-  ) -> MailchimpCampaign {
-    MailchimpCampaign(
+  ) -> Campaign {
+    Campaign(
       id: id,
       longArchiveURL: "https://archive.example/\(id)",
       sendTime: sendTime,
