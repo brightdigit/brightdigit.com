@@ -15,18 +15,26 @@ in-repo dependency it needs is already tagged.
 
 ## Wave 0 — leaves
 
-| Package | Repo | Branch | Merge PR |
-| --- | --- | --- | --- |
-| Plot | https://github.com/brightdigit/Plot | `brightdigit-com-260406` | [#1](https://github.com/brightdigit/Plot/pull/1) |
-| Files | https://github.com/brightdigit/Files | `brightdigit-com-260406` | [#1](https://github.com/brightdigit/Files/pull/1) |
-| Ink | https://github.com/brightdigit/Ink | `brightdigit-com-260406` | [#1](https://github.com/brightdigit/Ink/pull/1) |
-| SyndiKit | https://github.com/brightdigit/SyndiKit | `brightdigit-com-260621` | [#129](https://github.com/brightdigit/SyndiKit/pull/129) |
-| ButtondownKit | https://github.com/brightdigit/ButtondownKit | `brightdigit-com-260621` | [#4](https://github.com/brightdigit/ButtondownKit/pull/4) |
-| SwiftTube | https://github.com/brightdigit/SwiftTube | `brightdigit-com-260621` | [#18](https://github.com/brightdigit/SwiftTube/pull/18) |
-| Spinetail | https://github.com/brightdigit/Spinetail | `brightdigit-com-260621` | [#31](https://github.com/brightdigit/Spinetail/pull/31) |
-| Contribute | https://github.com/brightdigit/Contribute | `brightdigit-com-260621` | [#14](https://github.com/brightdigit/Contribute/pull/14) → `v1.0.0` |
+| Package | Repo | Branch | Merge PR | Feedback fixes PR (→ merge-PR branch) |
+| --- | --- | --- | --- | --- |
+| Plot | https://github.com/brightdigit/Plot | `brightdigit-com-260406` | [#1](https://github.com/brightdigit/Plot/pull/1) | [#2](https://github.com/brightdigit/Plot/pull/2) |
+| Files | https://github.com/brightdigit/Files | `brightdigit-com-260406` | [#1](https://github.com/brightdigit/Files/pull/1) | [#2](https://github.com/brightdigit/Files/pull/2) |
+| Ink | https://github.com/brightdigit/Ink | `brightdigit-com-260406` | [#1](https://github.com/brightdigit/Ink/pull/1) | [#2](https://github.com/brightdigit/Ink/pull/2) |
+| SyndiKit | https://github.com/brightdigit/SyndiKit | `brightdigit-com-260621` | [#129](https://github.com/brightdigit/SyndiKit/pull/129) | [#130](https://github.com/brightdigit/SyndiKit/pull/130) |
+| ButtondownKit | https://github.com/brightdigit/ButtondownKit | `brightdigit-com-260621` | [#4](https://github.com/brightdigit/ButtondownKit/pull/4) | [#5](https://github.com/brightdigit/ButtondownKit/pull/5) |
+| SwiftTube | https://github.com/brightdigit/SwiftTube | `brightdigit-com-260621` | [#18](https://github.com/brightdigit/SwiftTube/pull/18) | [#19](https://github.com/brightdigit/SwiftTube/pull/19) |
+| Spinetail | https://github.com/brightdigit/Spinetail | `brightdigit-com-260621` | [#31](https://github.com/brightdigit/Spinetail/pull/31) | [#32](https://github.com/brightdigit/Spinetail/pull/32) |
+| Contribute | https://github.com/brightdigit/Contribute | `brightdigit-com-260621` | [#14](https://github.com/brightdigit/Contribute/pull/14) → `v1.0.0` | [#15](https://github.com/brightdigit/Contribute/pull/15) |
 
 Highest-leverage starts: **Plot** and **Contribute**.
+
+> **Wave 0 review-feedback fixes (2026-07-21):** each *Feedback fixes PR* above branches from and
+> targets its package's merge-PR branch (`…-feedback-fixes` → `brightdigit-com-260406`/`-260621`),
+> applying the reviewer feedback (CI `fail-fast: true`; Ubuntu coverage → `sersoft-gmbh/swift-coverage-action@v5`;
+> codecov cleanup; ungate watchOS + add visionOS; `.spi.yml` normalized; devcontainer → standard
+> Swift 6.4 image; add `RELEASE_NOTES.md`, `.claude/agent-notes.md`, Memory & Corrections Convention,
+> `.claude/skills/`). Plot/Files/Ink additionally preserve John Sundell's MIT attribution (NOTICE +
+> README fork note + `header.sh` guard). None merged — pending review.
 
 ### Other open PRs (Wave 0)
 
