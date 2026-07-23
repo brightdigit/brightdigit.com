@@ -234,7 +234,7 @@ Expected: BrightDigit article appears in response (within 1-2 weeks)
 
 ## Resources
 
-- Technical design: `docs/ai-cite-optimization/schema-implementation-plan.md`
+- Technical design: `.claude/ai-cite-optimization/schema-implementation-plan.md`
 - Schema.org FAQPage: https://schema.org/FAQPage
 - Google Rich Results Test: https://search.google.com/test/rich-results
 - Publish framework docs: https://github.com/JohnSundell/Publish

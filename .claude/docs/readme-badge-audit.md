@@ -3,6 +3,46 @@
 _Audit date: 2026-07-22. Verified against the remote `v1.0.0` branch of each repo
 (SyndiKit against `main`), with every badge URL tested live._
 
+> **Update 2 (2026-07-22) — header restyled to MistKit + version pins.** The centered
+> header below was superseded by MistKit's all-markdown house style: plain markdown logo
+> `![Name Logo](…/Resources/…)` (no `<p align="center">`/`<img>`), markdown H1, a **flat**
+> badge block (group-comment dividers removed), tagline as a plain paragraph **below** the
+> badges. Install snippets pinned to `from: "1.0.0-alpha.1"` (user chose `from:`; the SPM
+> pre-release caveat was flagged). ButtondownKit gained a `## Installation` section + an MIT
+> `LICENSE` (it had none; the License badge was broken). SyndiKit's #134 already merged, so the
+> restyle went in a **new** PR #135. Live PRs: ButtondownKit#10, SwiftTube#21, Contribute#17,
+> Spinetail#34, **SyndiKit#135** (#134 merged).
+>
+> **Update 1 (2026-07-22) — original badge fixes (PRs against each `v1.0.0`):**
+> ButtondownKit#10, SwiftTube#21, Contribute#17, Spinetail#34, SyndiKit#134 (merged).
+> Two corrections to this audit surfaced while applying it:
+> 1. **SyndiKit must be audited against `v1.0.0`, not `main`.** The CI workflow filename
+>    differs by branch: `syndikit.yml` (lowercase) on `main`, **`SyndiKit.yml` (PascalCase)
+>    on `v1.0.0`**. On `v1.0.0` the badge was case-broken (pointed at `syndikit.yml`) — the
+>    fix is to the *badge* (→ `SyndiKit.yml`, plus drop the stray `?`), **not** the file.
+>    So the "SyndiKit — points at lowercase, otherwise fine" note below is inverted for the
+>    branch we ship.
+> 2. **ButtondownKit ships with no logo for now** — Buttondown's brand guidelines
+>    (https://buttondown.com/brand) forbid using their mark; it is not a missing asset.
+>    This is interim, pending a compliant original mark — not a permanent decision.
+>
+> Decision: all badges (qlty/Codecov/CodeFactor) were included on all five per the unified
+> template; any that render "unknown" get confirmed/enabled at merge. Each README also got
+> a DocC catalog where one was missing (ButtondownKit/SwiftTube/Spinetail), logo moved into
+> the catalog's `Resources/` (SwiftTube/Spinetail), so the docc badge resolves.
+>
+> **Service-integration follow-up (2026-07-22):**
+> - **qlty** — SwiftTube + Contribute added as projects; now live for all five.
+> - **Codecov** — the four Wave-0 repos showed "unknown" despite CI already uploading
+>   (`codecov-action@v7`, `secrets.CODECOV_TOKEN`). Root cause: the org `CODECOV_TOKEN` was
+>   wrong/stale. Fixed by setting the org-level secret to the correct global upload token;
+>   badges refresh after CI re-runs. SyndiKit was already 83%.
+> - **CodeFactor** — Spinetail (B+) and SyndiKit (A) live; ButtondownKit/SwiftTube/Contribute
+>   still "not found". Verified this is a **CodeFactor dashboard bug, not a GitHub issue**
+>   (app install `all`-access + unsuspended, repos public, webhook fired). Kept the badge on
+>   all repos for now; onboarding the three likely needs a CodeFactor support ticket. See
+>   `.claude/memory/brightdigit-badge-service-integration.md`.
+
 ## Scope
 
 Of all BrightDigit dependencies in `Package.swift`, only **five have a `v1.0.0`

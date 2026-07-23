@@ -203,7 +203,7 @@ Create branded BrightDigit methodologies (AI-CITE "E" - Exclusive POV).
 
 ## Quick Reference
 
-**Issue Template Location:** `docs/ai-cite-optimization/issues/`
+**Issue Template Location:** `.claude/ai-cite-optimization/issues/`
 
 **Related Documents:**
 - [00-README.md](../00-README.md) - Overview and quick links

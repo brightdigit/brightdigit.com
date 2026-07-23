@@ -204,8 +204,8 @@ After batch optimization, test these queries in ChatGPT:
 - `Content/articles/vapor-review.md`
 
 **Reference:**
-- AI-CITE audit: `docs/ai-cite-optimization/ai-cite-audit.md`
-- Completed example: `docs/ai-cite-optimization/issues/003-optimize-mise-setup-guide.md`
+- AI-CITE audit: `.claude/ai-cite-optimization/ai-cite-audit.md`
+- Completed example: `.claude/ai-cite-optimization/issues/003-optimize-mise-setup-guide.md`
 
 ---
 

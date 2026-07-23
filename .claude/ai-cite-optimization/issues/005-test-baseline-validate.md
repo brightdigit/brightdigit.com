@@ -71,7 +71,7 @@ Test these queries and document whether BrightDigit appears:
     - [ ] Quote used:
 ```
 
-**Save baseline to:** `docs/ai-cite-optimization/testing/baseline-week1.md`
+**Save baseline to:** `.claude/ai-cite-optimization/testing/baseline-week1.md`
 
 ### Google AI Overview Check
 
@@ -231,7 +231,7 @@ Re-test all 10 queries:
 Create these markdown files:
 
 ```
-docs/ai-cite-optimization/testing/
+.claude/ai-cite-optimization/testing/
 ├── baseline-week1.md
 ├── monitoring-week2.md
 ├── monitoring-week3.md
