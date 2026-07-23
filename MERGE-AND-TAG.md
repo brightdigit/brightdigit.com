@@ -30,8 +30,19 @@ via URL + branch pins in [`Package.swift`](Package.swift) /
 All eight Wave 0 packages are on **`main`** (release PRs `v1.0.0` → `main` merged).
 Stale `v1.0.0` branches may still exist but are not the consumer pin. Plot/Files/Ink
 working branches (`brightdigit-com-260406`) are **deleted**. Root and Wave 1/2
-consumers pin Wave 0 deps to `branch: "main"`. Dual-mode `ensure-remote-deps.sh`
+consumers pin Wave 0 deps to `branch: "main"` — completed 2026-07-23 across the root
+and the eight Wave 1/2 packages that consume a Wave 0 package (Publish,
+TransistorPublishPlugin, ContributeWordPress, TailwindKit, ContributeButtondown,
+ContributeMailchimp, ContributeRSS, ContributeYouTube). YoutubePublishPlugin,
+ReadingTimePublishPlugin, NPMPublishPlugin and PublishType needed no change — their
+only first-party dep is Publish (Wave 1). Dual-mode `ensure-remote-deps.sh`
 was removed earlier from packages whose manifests already use `url:` + `branch:`.
+
+SwiftPM rejects two branch requirements for the same package
+(`error: … required using two different revision-based requirements`), so a Wave 0 dep
+must move to `main` in the root **and** every Wave 1/2 consumer in the same step. Follow
+the manifest edit with `swift package update`, not `swift package resolve` — resolve
+reuses the revisions already in `Package.resolved` and re-reads the old manifests.
 
 ---
 

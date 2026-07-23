@@ -14,7 +14,21 @@ first-party package from a URL + branch pin; packages are not tagged yet. Living
 | `brightdigit-com-260717` | ContributeButtondown, ContributeMailchimp, ContributeRSS, ContributeYouTube, PublishType, TailwindKit |
 
 Wave 0 `brightdigit-com-*` / `v1.0.0` working branches are obsolete for consumers — pin Wave 0
-deps to `main`. Dual-mode `ensure-remote-deps.sh` was removed from Wave 1/2 packages whose
+deps to `main`. **Done (2026-07-23):** the root and all eight Wave 1/2 packages that consume a
+Wave 0 package now declare `branch: "main"` for those deps. The stale `v1.0.0` branches still
+exist on the Wave 0 remotes; delete them only after tagging.
+
+Wave 1/2 packages remain pinned to their `brightdigit-com-*` working branches, which are **not
+merged to `main`** — each repo's `main` is behind its working branch and missing essential
+commits, so repinning them to `main` would resolve to old code.
+
+Note: SwiftPM cannot mix two branch requirements for one package
+(`error: … required using two different revision-based requirements`), so the root and every
+Wave 1/2 consumer must move a given Wave 0 dep to `main` together. After such a repin,
+`swift package update` is required — plain `swift package resolve` reuses the revisions already
+recorded in `Package.resolved` and keeps reading the old manifests.
+
+Dual-mode `ensure-remote-deps.sh` was removed from Wave 1/2 packages whose
 manifests already use `url:` + `branch:`.
 
 `Package.swift` declares the 16 direct dependencies. `Package.resolved` records those packages plus

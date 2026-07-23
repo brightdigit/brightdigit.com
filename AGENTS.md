@@ -93,8 +93,9 @@ Always exits 0 by default (never gates a build). Not wired into CI yet.
 ### Subrepos (`Packages/`)
 
 `Packages/` is intentionally absent during the branch-based release checkpoint. The root package
-temporarily consumes all 20 first-party packages from URL + branch pins (`v1.0.0` for Wave 0;
-`brightdigit-com-*` for Wave 1/2), as recorded in `Package.swift` and `Package.resolved`, so the
+temporarily consumes all 20 first-party packages from URL + branch pins (`main` for Wave 0, whose
+release PRs are merged; `brightdigit-com-*` for Wave 1/2, which are not yet merged to `main`), as
+recorded in `Package.swift` and `Package.resolved`, so the
 package repositories can be merged and tagged independently. The root checkpoint PR stays unmerged
 until every direct and transitive first-party dependency uses a released tag. Branch table and
 next-gate detail:
