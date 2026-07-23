@@ -232,7 +232,7 @@ branches on their default branch.
 
 | Package | Repo | Branch | Merge PR | Base | Ahead | Wave 0 deps |
 | --- | --- | --- | --- | --- | --- | --- |
-| Publish | https://github.com/brightdigit/Publish | `brightdigit-com-260406` | [#1](https://github.com/brightdigit/Publish/pull/1) | **`master`** | +19 | Ink, Plot, Files |
+| Publish | https://github.com/brightdigit/Publish | `brightdigit-com-260406` | [#1](https://github.com/brightdigit/Publish/pull/1) | `main` | +19 | Ink, Plot, Files |
 | TailwindKit | https://github.com/brightdigit/TailwindKit | `brightdigit-com-260717` | [#1](https://github.com/brightdigit/TailwindKit/pull/1) | `main` | +13 | Plot |
 | ContributeButtondown | https://github.com/brightdigit/ContributeButtondown | `brightdigit-com-260717` | [#1](https://github.com/brightdigit/ContributeButtondown/pull/1) | `main` | +14 | Contribute, ButtondownKit |
 | ContributeMailchimp | https://github.com/brightdigit/ContributeMailchimp | `brightdigit-com-260717` | [#1](https://github.com/brightdigit/ContributeMailchimp/pull/1) | `main` | +15 | Contribute, Spinetail |
@@ -244,8 +244,14 @@ All seven PRs are open and **MERGEABLE**, and in every repo the base branch is a
 strict ancestor of the working branch (no divergence, no conflicts) — "Ahead" is how
 many commits the working branch adds. Use the existing PRs; do not open new ones.
 
-⏭ **TailwindKit is parked** in the progress tracker. It is technically ready to merge
-like the rest, but confirm the park is lifted before landing it.
+**TailwindKit's old park does not block this merge.** That park was scoped to
+`git subrepo pull` / `push --all` snagging: its standalone `main` carried an older,
+superseded implementation with no common ancestor, so pulling would re-import those
+files into the monorepo. Merging pushes the correct content the other way — PR #1
+explicitly **deletes** all five stale files (`Flexbox.swift`, `Layout/AspectRatio.swift`,
+`Layout/Display.swift`, `Shared/Breakpoints.swift`, `TailwindKit.swift`), leaving no
+orphans. Landing it makes `main` authoritative and retires the divergence. Its `.gitrepo`
+commit is still stale at `bcb0a7f7`, which matters only when `Packages/` is restored.
 
 Also: ContributeWordPress [#11](https://github.com/brightdigit/ContributeWordPress/pull/11) docs (draft).
 
@@ -269,13 +275,10 @@ six Contribute*/TailwindKit packages have no in-repo consumers within Wave 1.
    package that depends on it, in the same step (see the SwiftPM note below), followed
    by `swift package update` in each.
 
-#### Two blockers to decide before merging
+#### Open item
 
-- **Publish's default branch is `master`, and the repo has no `main`.** Every other
-  first-party repo uses `main`. Decide whether to (a) merge into `master` and leave the
-  inconsistency, or (b) rename `master` → `main` first (updates the PR base
-  automatically; workflow `branches:` filters and any consumer pinning `master` need a
-  look). This choice does not block the other six.
+- ~~Publish's default branch is `master`~~ — **resolved 2026-07-23:** renamed to `main`.
+  PR #1 auto-retargeted and remains MERGEABLE.
 - **`.swift-version` drift.** TransistorPublishPlugin and ContributeWordPress pin
   toolchain `5.8`; every other repo and the root use `6.4.x-snapshot`. CI passes today,
   but `swift package update` fails locally under swiftly in those two repos until the
@@ -327,7 +330,7 @@ Mark: ☐ todo · ◐ on `main` (release PR merged; untagged) · ✅ tagged `vX.
 
 **Wave 1:** all seven consume Wave 0 from `branch: "main"` with refreshed lockfiles and
 green CI; each has an open MERGEABLE PR awaiting merge (see the Wave 1 section).
-☐ Publish (base `master`) · ⏭ TailwindKit · ☐ ContributeButtondown · ☐ ContributeMailchimp · ☐ ContributeRSS · ☐ ContributeWordPress · ☐ ContributeYouTube
+☐ Publish · ☐ TailwindKit · ☐ ContributeButtondown · ☐ ContributeMailchimp · ☐ ContributeRSS · ☐ ContributeWordPress · ☐ ContributeYouTube
 
 **Wave 2:** ☐ PublishType ⚠ [#135](https://github.com/brightdigit/brightdigit.com/issues/135) · ☐ YoutubePublishPlugin · ☐ ReadingTimePublishPlugin · ☐ TransistorPublishPlugin · ☐ NPMPublishPlugin
 
