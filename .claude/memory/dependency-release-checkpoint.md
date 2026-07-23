@@ -5,18 +5,17 @@ repositories can move through their merge and tag sequence independently. The ro
 first-party package from a URL + branch pin; packages are not tagged yet. Living checklist:
 [`MERGE-AND-TAG.md`](../../MERGE-AND-TAG.md).
 
-## Working Branches (2026-07-22)
+## Working Branches (2026-07-23)
 
 | Branch | Packages |
 | --- | --- |
-| `v1.0.0` | Plot, Files, Ink, SyndiKit, ButtondownKit, SwiftTube, Spinetail, Contribute (all Wave 0; each has an open `v1.0.0` → `main` release PR) |
+| `main` | Plot, Files, Ink, SyndiKit, ButtondownKit, SwiftTube, Spinetail, Contribute (Wave 0; release PRs merged; untagged) |
 | `brightdigit-com-260406` | Publish, ContributeWordPress, NPMPublishPlugin, TransistorPublishPlugin, YoutubePublishPlugin, ReadingTimePublishPlugin |
 | `brightdigit-com-260717` | ContributeButtondown, ContributeMailchimp, ContributeRSS, ContributeYouTube, PublishType, TailwindKit |
 
-Wave 0 `brightdigit-com-260406` / `-260621` working branches are deleted (except SyndiKit still
-retains `brightdigit-com-260621` alongside `v1.0.0`). Consumers of Plot/Files/Ink/SyndiKit pin
-`v1.0.0`. Dual-mode `ensure-remote-deps.sh` was removed from Wave 1/2 packages whose manifests
-already use `url:` + `branch:`.
+Wave 0 `brightdigit-com-*` / `v1.0.0` working branches are obsolete for consumers — pin Wave 0
+deps to `main`. Dual-mode `ensure-remote-deps.sh` was removed from Wave 1/2 packages whose
+manifests already use `url:` + `branch:`.
 
 `Package.swift` declares the 16 direct dependencies. `Package.resolved` records those packages plus
 the four first-party transitive dependencies, producing the complete 20-package branch graph.
@@ -37,10 +36,10 @@ launching build or lint matrices.
 
 ## Next Release Gate
 
-The next phase merges Wave 0 release PRs to `main`, tags packages from the most independent wave to
-the least dependent wave, and replaces branch requirements with released `from:` versions. Untagged
-packages begin at `1.0.0-alpha.1` (or ship the `v1.0.0` line when that is the release); existing
-stable releases receive patch bumps, and existing prerelease lines advance.
+Wave 0 is on `main`. Next: tag packages from the most independent wave to the least dependent wave,
+and replace branch requirements with released `from:` versions. Untagged packages begin at
+`1.0.0-alpha.1` (or ship the `v1.0.0` line when that is the release); existing stable releases
+receive patch bumps, and existing prerelease lines advance.
 
 The root PR remains unmerged until every direct and transitive first-party dependency uses a released
 tag. After that merge, subsequent development rebases onto `main` and restores the subrepos for the

@@ -19,19 +19,19 @@ in-repo dependency it needs is already tagged.
 via URL + branch pins in [`Package.swift`](Package.swift) /
 [`Package.resolved`](Package.resolved).
 
-### Root pins (2026-07-22)
+### Root pins (2026-07-23)
 
 | Branch | Packages |
 | --- | --- |
-| `v1.0.0` | Contribute, Spinetail, ButtondownKit, SyndiKit (+ transitive Plot, Files, Ink, SwiftTube) |
+| `main` | Contribute, Spinetail, ButtondownKit, SyndiKit (+ transitive Plot, Files, Ink, SwiftTube) |
 | `brightdigit-com-260406` | Publish, YoutubePublishPlugin, ReadingTimePublishPlugin, NPMPublishPlugin, TransistorPublishPlugin, ContributeWordPress |
 | `brightdigit-com-260717` | TailwindKit, ContributeButtondown, ContributeMailchimp, ContributeRSS, ContributeYouTube, PublishType |
 
-All eight Wave 0 packages now live on a `v1.0.0` branch (+ `main`). Plot/Files/Ink
-working branches (`brightdigit-com-260406`) are **deleted**. Wave 1/2 consumers
-that depended on those tips (and SyndiKit’s old `brightdigit-com-260621`) have
-been repinned to `v1.0.0`, and dual-mode `ensure-remote-deps.sh` was removed from
-packages whose manifests already use `url:` + `branch:`.
+All eight Wave 0 packages are on **`main`** (release PRs `v1.0.0` → `main` merged).
+Stale `v1.0.0` branches may still exist but are not the consumer pin. Plot/Files/Ink
+working branches (`brightdigit-com-260406`) are **deleted**. Root and Wave 1/2
+consumers pin Wave 0 deps to `branch: "main"`. Dual-mode `ensure-remote-deps.sh`
+was removed earlier from packages whose manifests already use `url:` + `branch:`.
 
 ---
 
@@ -174,18 +174,18 @@ and workflow steps were removed in the 2026-07-22 `v1.0.0` consumer cutover.
 
 ## Living checklist
 
-### Wave 0 — leaves (`v1.0.0` → `main`)
+### Wave 0 — leaves (on `main`; untagged)
 
-| Package | Repo | Branch | Release PR |
+| Package | Repo | Branch | Release PR (merged) |
 | --- | --- | --- | --- |
-| Plot | https://github.com/brightdigit/Plot | `v1.0.0` | [#4](https://github.com/brightdigit/Plot/pull/4) |
-| Files | https://github.com/brightdigit/Files | `v1.0.0` | [#5](https://github.com/brightdigit/Files/pull/5) |
-| Ink | https://github.com/brightdigit/Ink | `v1.0.0` | [#8](https://github.com/brightdigit/Ink/pull/8) |
-| SyndiKit | https://github.com/brightdigit/SyndiKit | `v1.0.0` | [#133](https://github.com/brightdigit/SyndiKit/pull/133) |
-| ButtondownKit | https://github.com/brightdigit/ButtondownKit | `v1.0.0` | [#9](https://github.com/brightdigit/ButtondownKit/pull/9) |
-| SwiftTube | https://github.com/brightdigit/SwiftTube | `v1.0.0` | [#16](https://github.com/brightdigit/SwiftTube/pull/16) |
-| Spinetail | https://github.com/brightdigit/Spinetail | `v1.0.0` | [#28](https://github.com/brightdigit/Spinetail/pull/28) |
-| Contribute | https://github.com/brightdigit/Contribute | `v1.0.0` | [#5](https://github.com/brightdigit/Contribute/pull/5) |
+| Plot | https://github.com/brightdigit/Plot | `main` | [#4](https://github.com/brightdigit/Plot/pull/4) |
+| Files | https://github.com/brightdigit/Files | `main` | [#5](https://github.com/brightdigit/Files/pull/5) |
+| Ink | https://github.com/brightdigit/Ink | `main` | [#8](https://github.com/brightdigit/Ink/pull/8) |
+| SyndiKit | https://github.com/brightdigit/SyndiKit | `main` | [#133](https://github.com/brightdigit/SyndiKit/pull/133) |
+| ButtondownKit | https://github.com/brightdigit/ButtondownKit | `main` | [#9](https://github.com/brightdigit/ButtondownKit/pull/9) |
+| SwiftTube | https://github.com/brightdigit/SwiftTube | `main` | [#16](https://github.com/brightdigit/SwiftTube/pull/16) |
+| Spinetail | https://github.com/brightdigit/Spinetail | `main` | [#28](https://github.com/brightdigit/Spinetail/pull/28) |
+| Contribute | https://github.com/brightdigit/Contribute | `main` | [#5](https://github.com/brightdigit/Contribute/pull/5) |
 
 Merge/feedback history (done): Plot #1/#2, Files #3/#2, Ink #1/#3/#5/#6, SyndiKit #129/#130,
 SwiftTube #18/#19, Spinetail #31/#32, Contribute #14/#15/#13. No new `1.0.0` /
@@ -194,6 +194,12 @@ SwiftTube #18/#19, Spinetail #31/#32, Contribute #14/#15/#13. No new `1.0.0` /
 SwiftTube/Spinetail OpenAPI rebuild renamed public types (Spinetail
 `MailchimpCampaign` → `Campaign`; SwiftTube Videos rename); consumers adopted the
 new names when repinning.
+
+**SyndiKit Android CI:** on-device tests for the Swift 6.4 nightly Android SDK fail
+with `not executable: 64-bit ELF file` on the emulator (6.3 passes). Workaround
+merged in [#138](https://github.com/brightdigit/SyndiKit/pull/138)
+(`android-run-tests: false`); re-enable tracked in
+[#137](https://github.com/brightdigit/SyndiKit/issues/137).
 
 ### `header.sh` — two versions
 
@@ -245,10 +251,10 @@ rebases onto `main` and restores subrepos for `v2.0.0-alpha.2`.
 
 ## Progress tracker
 
-Mark: ☐ todo · ◐ on `v1.0.0` branch / deps rewritten · ✅ tagged `vX.Y.Z`  
+Mark: ☐ todo · ◐ on `main` (release PR merged; untagged) · ✅ tagged `vX.Y.Z`  
 ⏭ = parked · ⚠ = open milestoned issue work
 
-**Wave 0:** ◐ Plot · ◐ Files · ◐ Ink · ◐ SyndiKit · ◐ ButtondownKit · ◐ SwiftTube · ◐ Spinetail · ◐ Contribute — release PRs open; **none ✅ tagged**
+**Wave 0:** ◐ Plot · ◐ Files · ◐ Ink · ◐ SyndiKit · ◐ ButtondownKit · ◐ SwiftTube · ◐ Spinetail · ◐ Contribute — on `main`; **none ✅ tagged**
 
 **Wave 1:** ☐ Publish · ⏭ TailwindKit · ☐ ContributeButtondown · ☐ ContributeMailchimp · ☐ ContributeRSS · ☐ ContributeWordPress · ☐ ContributeYouTube
 
