@@ -50,7 +50,15 @@ launching build or lint matrices.
 
 ## Next Release Gate
 
-Wave 0 is on `main`. Next: tag packages from the most independent wave to the least dependent wave,
+Wave 0 is on `main`, and every Wave 1/2 consumer now pins its Wave 0 deps to `branch: "main"` with
+a refreshed `Package.resolved` and green CI. **Immediate next step: merge the seven Wave 1 working
+branches into their default branch** via the already-open, MERGEABLE PRs — merge Publish first
+(Wave 2 depends on it), then the rest in parallel. Keep the working branches until the root is
+repinned. Per-repo checklist, merge order, and the two open decisions (Publish's default branch is
+`master` not `main`; `.swift-version` 5.8 drift in TransistorPublishPlugin + ContributeWordPress)
+are in [`MERGE-AND-TAG.md`](../../MERGE-AND-TAG.md).
+
+After that: tag packages from the most independent wave to the least dependent wave,
 and replace branch requirements with released `from:` versions. Untagged packages begin at
 `1.0.0-alpha.1` (or ship the `v1.0.0` line when that is the release); existing stable releases
 receive patch bumps, and existing prerelease lines advance.

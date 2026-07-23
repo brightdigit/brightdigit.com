@@ -226,17 +226,75 @@ The Sundell strip must preserve `///` doc comments (do not match `///` when clea
 
 ### Wave 1 — depend only on Wave 0
 
-| Package | Repo | Branch | Merge PR |
-| --- | --- | --- | --- |
-| Publish | https://github.com/brightdigit/Publish | `brightdigit-com-260406` | [#1](https://github.com/brightdigit/Publish/pull/1) |
-| TailwindKit | https://github.com/brightdigit/TailwindKit | `brightdigit-com-260717` | [#1](https://github.com/brightdigit/TailwindKit/pull/1) |
-| ContributeButtondown | https://github.com/brightdigit/ContributeButtondown | `brightdigit-com-260717` | [#1](https://github.com/brightdigit/ContributeButtondown/pull/1) |
-| ContributeMailchimp | https://github.com/brightdigit/ContributeMailchimp | `brightdigit-com-260717` | [#1](https://github.com/brightdigit/ContributeMailchimp/pull/1) |
-| ContributeRSS | https://github.com/brightdigit/ContributeRSS | `brightdigit-com-260717` | [#1](https://github.com/brightdigit/ContributeRSS/pull/1) |
-| ContributeWordPress | https://github.com/brightdigit/ContributeWordPress | `brightdigit-com-260406` | [#18](https://github.com/brightdigit/ContributeWordPress/pull/18) |
-| ContributeYouTube | https://github.com/brightdigit/ContributeYouTube | `brightdigit-com-260717` | [#1](https://github.com/brightdigit/ContributeYouTube/pull/1) |
+**Ready to merge.** Every Wave 1 package now pins its Wave 0 deps to `branch: "main"`
+with a refreshed `Package.resolved` and green CI, so nothing blocks landing these
+branches on their default branch.
+
+| Package | Repo | Branch | Merge PR | Base | Ahead | Wave 0 deps |
+| --- | --- | --- | --- | --- | --- | --- |
+| Publish | https://github.com/brightdigit/Publish | `brightdigit-com-260406` | [#1](https://github.com/brightdigit/Publish/pull/1) | **`master`** | +19 | Ink, Plot, Files |
+| TailwindKit | https://github.com/brightdigit/TailwindKit | `brightdigit-com-260717` | [#1](https://github.com/brightdigit/TailwindKit/pull/1) | `main` | +13 | Plot |
+| ContributeButtondown | https://github.com/brightdigit/ContributeButtondown | `brightdigit-com-260717` | [#1](https://github.com/brightdigit/ContributeButtondown/pull/1) | `main` | +14 | Contribute, ButtondownKit |
+| ContributeMailchimp | https://github.com/brightdigit/ContributeMailchimp | `brightdigit-com-260717` | [#1](https://github.com/brightdigit/ContributeMailchimp/pull/1) | `main` | +15 | Contribute, Spinetail |
+| ContributeRSS | https://github.com/brightdigit/ContributeRSS | `brightdigit-com-260717` | [#1](https://github.com/brightdigit/ContributeRSS/pull/1) | `main` | +14 | Contribute, SyndiKit |
+| ContributeWordPress | https://github.com/brightdigit/ContributeWordPress | `brightdigit-com-260406` | [#18](https://github.com/brightdigit/ContributeWordPress/pull/18) | `main` | +23 | Contribute, SyndiKit |
+| ContributeYouTube | https://github.com/brightdigit/ContributeYouTube | `brightdigit-com-260717` | [#1](https://github.com/brightdigit/ContributeYouTube/pull/1) | `main` | +14 | Contribute, SwiftTube |
+
+All seven PRs are open and **MERGEABLE**, and in every repo the base branch is a
+strict ancestor of the working branch (no divergence, no conflicts) — "Ahead" is how
+many commits the working branch adds. Use the existing PRs; do not open new ones.
+
+⏭ **TailwindKit is parked** in the progress tracker. It is technically ready to merge
+like the rest, but confirm the park is lifted before landing it.
 
 Also: ContributeWordPress [#11](https://github.com/brightdigit/ContributeWordPress/pull/11) docs (draft).
+
+#### Merge order
+
+Merge **Publish first**, then the other six in any order (or in parallel). Publish is
+the only Wave 1 package that Wave 2 consumes, so landing it first unblocks Wave 2; the
+six Contribute*/TailwindKit packages have no in-repo consumers within Wave 1.
+
+#### Per-repo checklist
+
+1. **Confirm CI is green** on the PR head.
+2. **Merge the PR** into the base branch. These are true fast-forwards, so any merge
+   strategy works — but prefer a **merge commit** over squash: a squash rewrites the
+   branch tip, which orphans the `.gitrepo` parent refs used when `Packages/` is
+   restored (recover with `./fix-subrepo-parents.sh` if it happens).
+3. **Do not delete the working branch yet.** The root still pins Wave 1/2 packages to
+   `brightdigit-com-*`; deleting the branch would break root resolution. Delete only
+   after the root is repinned.
+4. **Repin consumers to `main`** once a package is merged — the root and any Wave 2
+   package that depends on it, in the same step (see the SwiftPM note below), followed
+   by `swift package update` in each.
+
+#### Two blockers to decide before merging
+
+- **Publish's default branch is `master`, and the repo has no `main`.** Every other
+  first-party repo uses `main`. Decide whether to (a) merge into `master` and leave the
+  inconsistency, or (b) rename `master` → `main` first (updates the PR base
+  automatically; workflow `branches:` filters and any consumer pinning `master` need a
+  look). This choice does not block the other six.
+- **`.swift-version` drift.** TransistorPublishPlugin and ContributeWordPress pin
+  toolchain `5.8`; every other repo and the root use `6.4.x-snapshot`. CI passes today,
+  but `swift package update` fails locally under swiftly in those two repos until the
+  toolchain is overridden (`swiftly run swift package update +6.4.x-snapshot-…`).
+
+#### Repin gotchas (learned in the Wave 0 cutover)
+
+SwiftPM refuses two branch requirements for one package
+(`error: … required using two different revision-based requirements`), so when a Wave 1
+package moves to `main`, **every consumer must move in the same step** — the root and
+each Wave 2 dependent together, not one at a time.
+
+After any repin, run **`swift package update`**, not `swift package resolve`: resolve
+reuses the revisions already in `Package.resolved` and keeps reading the old manifests.
+Commit the regenerated lockfile **in the same commit as the manifest edit** — a stale
+lockfile hard-fails any CI leg that runs with automatic resolution disabled
+(`error: an out-of-date resolved file was detected`). Note `swift package update` also
+floats external semver-range deps; use `swift package update <name>` to limit the blast
+radius.
 
 ### Wave 2 — Publish plugins / type layer
 
@@ -267,7 +325,9 @@ Mark: ☐ todo · ◐ on `main` (release PR merged; untagged) · ✅ tagged `vX.
 
 **Wave 0:** ◐ Plot · ◐ Files · ◐ Ink · ◐ SyndiKit · ◐ ButtondownKit · ◐ SwiftTube · ◐ Spinetail · ◐ Contribute — on `main`; **none ✅ tagged**
 
-**Wave 1:** ☐ Publish · ⏭ TailwindKit · ☐ ContributeButtondown · ☐ ContributeMailchimp · ☐ ContributeRSS · ☐ ContributeWordPress · ☐ ContributeYouTube
+**Wave 1:** all seven consume Wave 0 from `branch: "main"` with refreshed lockfiles and
+green CI; each has an open MERGEABLE PR awaiting merge (see the Wave 1 section).
+☐ Publish (base `master`) · ⏭ TailwindKit · ☐ ContributeButtondown · ☐ ContributeMailchimp · ☐ ContributeRSS · ☐ ContributeWordPress · ☐ ContributeYouTube
 
 **Wave 2:** ☐ PublishType ⚠ [#135](https://github.com/brightdigit/brightdigit.com/issues/135) · ☐ YoutubePublishPlugin · ☐ ReadingTimePublishPlugin · ☐ TransistorPublishPlugin · ☐ NPMPublishPlugin
 
