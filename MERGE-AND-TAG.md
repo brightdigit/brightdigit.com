@@ -11,6 +11,13 @@ on `release/branch-based-devendoring`.
 Within a wave, packages can proceed in parallel. Do not tag a package until every
 in-repo dependency it needs is already tagged.
 
+> **Coordinated landing (2026-07-24):** brightdigit/Contribute#19 (raise to
+> `swift-tools-version 6.4`) hardens the download stack for `Sendable`, which **breaks
+> ContributeWordPress** until its companion fix lands. **Contribute #19 and
+> ContributeWordPress #18 must merge together** (either order, but not one without the
+> other). Details in the Wave 0 / Wave 1 sections below and in
+> [`.claude/memory/wave1-hygiene-pass.md`](.claude/memory/wave1-hygiene-pass.md).
+
 ---
 
 ## Current checkpoint
@@ -212,6 +219,34 @@ merged in [#138](https://github.com/brightdigit/SyndiKit/pull/138)
 (`android-run-tests: false`); re-enable tracked in
 [#137](https://github.com/brightdigit/SyndiKit/issues/137).
 
+**Wave 0 hygiene follow-ups (2026-07-24) — open, unmerged.**
+
+- **Contribute → Swift 6.4** ([#19](https://github.com/brightdigit/Contribute/pull/19)):
+  Contribute declared `swift-tools-version 5.8` (advertised 5.8+ but CI only ever tested
+  6.4 nightly). Raised to `6.4` to match the stack; strict-concurrency errors fixed
+  properly (`Sendable` on `MarkdownContentBuilderOptions`, `ImportError` payloads →
+  `any Sendable`, and the `FileManagerProtocol`/`URLSessionable`/`URLDownloader` download
+  stack → `Sendable` with `@escaping @Sendable` completions). Platform floors unchanged
+  (`.macOS(.v12)/.iOS(.v13)/.tvOS(.v13)/.watchOS(.v6)`). 15/15 CI green. **Must land with
+  ContributeWordPress #18** (see Wave 1). Contribute is still `◐ on main`; #19 sits on top.
+- **Stale CI-comment cleanup** (comment-only): Contribute
+  [#18](https://github.com/brightdigit/Contribute/pull/18), Plot
+  [#5](https://github.com/brightdigit/Plot/pull/5), Files
+  [#6](https://github.com/brightdigit/Files/pull/6), Ink
+  [#9](https://github.com/brightdigit/Ink/pull/9), SwiftTube
+  [#23](https://github.com/brightdigit/SwiftTube/pull/23), Spinetail
+  [#36](https://github.com/brightdigit/Spinetail/pull/36) — drop a dead
+  "brightdigit fork of swift-coverage-action" comment (Contribute only; the step is
+  `sersoft-gmbh/swift-coverage-action@v5`) and a phantom `ENABLE_WATCHOS` gate comment
+  (no repo references `vars.ENABLE_WATCHOS`). All builds green.
+- **⚠ Plot / Files / Ink `claude-review` fails** on every PR: those three repos lack the
+  `CLAUDE_CODE_OAUTH_TOKEN` repo secret (SwiftTube/Spinetail/Contribute have it and pass).
+  Add the secret or grant an org secret to the three repos — needs the token value +
+  `admin:org`. Pre-existing; not caused by any change here.
+- **⚠ SyndiKit has no `build-macos-platforms` job** — the only Wave 0 repo with no
+  iOS/tvOS/watchOS/visionOS simulator coverage. Its wide Swift matrix (5.10→6.3 + 6.4
+  nightly) is correct for its 5.10 floor; adding a sim suite is a separate decision.
+
 ### `header.sh` — two versions
 
 `Scripts/header.sh` is a local-only lint step. Two versions, same skeleton, different header text:
@@ -230,6 +265,31 @@ The Sundell strip must preserve `///` doc comments (do not match `///` when clea
 with a refreshed `Package.resolved` and green CI, so nothing blocks landing these
 branches on their default branch.
 
+**Hygiene pass landed on all seven working branches (2026-07-24), PRs left in their
+original draft state.** Each repo was brought to the Wave 0 standard (CI hygiene,
+`.claude/` tooling, `AGENTS.md` + `CLAUDE.md` symlink, unified README/badges, DocC + logo,
+`.spi.yml` `swift_version: "6.4"`, `.swift-version` `6.4.x-snapshot`, `dependabot.yml`) —
+no merges, no tags, no branch deletions, no root repin. Highlights:
+- **ContributeYouTube / ContributeMailchimp un-deprecated.** Both carried blanket
+  `@available(*, deprecated)` (added in `1e3a815`) with no replacement while the root
+  actively compiles them; swift-testing also hard-errors on `@Suite`/`@Test` under a
+  deprecated declaration, blocking tests. All 17 attributes removed, real tests added
+  (27 / 17). Rule ("in active use ⇒ tested ⇒ not deprecated") recorded in each repo's
+  `.claude/agent-notes.md`.
+- **ContributeWordPress:** `.swift-version` `5.8`→`6.4.x-snapshot` (resolves the drift
+  noted under *Open item*), `.spi.yml` target-name typo (`ContributeWordpress`) fixed,
+  and a **real pre-existing data race fixed** in `AssetDownloader` (see the coordinated-
+  landing note below). Kept its existing `Documentation.docc` name.
+- **Publish** (Sundell fork): copyright headers normalized to 2021 (were 2019/2020, so
+  `lint.sh -y 2021` produced a recurring 80-file diff) and an MIT-attribution hazard in
+  `lint.sh` (`-c "Leo Dion" -o "BrightDigit"` on a Sundell fork) fixed. Restricted fork
+  scope: README `+2/-0`, LICENSE untouched, no DocC/badge-block.
+- **TailwindKit:** the two non-green checks were dead `macos-12` workflows
+  (`DangerPR.yml`, `TailwindKitTest.yml`) stuck pending forever; deleting them made the
+  PR green. Added the missing `LICENSE` and `.spi.yml`.
+
+Full record: [`.claude/memory/wave1-hygiene-pass.md`](.claude/memory/wave1-hygiene-pass.md).
+
 | Package | Repo | Branch | Merge PR | Base | Ahead | Wave 0 deps |
 | --- | --- | --- | --- | --- | --- | --- |
 | Publish | https://github.com/brightdigit/Publish | `brightdigit-com-260406` | [#1](https://github.com/brightdigit/Publish/pull/1) | `main` | +19 | Ink, Plot, Files |
@@ -237,12 +297,20 @@ branches on their default branch.
 | ContributeButtondown | https://github.com/brightdigit/ContributeButtondown | `brightdigit-com-260717` | [#1](https://github.com/brightdigit/ContributeButtondown/pull/1) | `main` | +14 | Contribute, ButtondownKit |
 | ContributeMailchimp | https://github.com/brightdigit/ContributeMailchimp | `brightdigit-com-260717` | [#1](https://github.com/brightdigit/ContributeMailchimp/pull/1) | `main` | +15 | Contribute, Spinetail |
 | ContributeRSS | https://github.com/brightdigit/ContributeRSS | `brightdigit-com-260717` | [#1](https://github.com/brightdigit/ContributeRSS/pull/1) | `main` | +14 | Contribute, SyndiKit |
-| ContributeWordPress | https://github.com/brightdigit/ContributeWordPress | `brightdigit-com-260406` | [#18](https://github.com/brightdigit/ContributeWordPress/pull/18) | `main` | +23 | Contribute, SyndiKit |
+| ContributeWordPress | https://github.com/brightdigit/ContributeWordPress | `brightdigit-com-260406` | [#18](https://github.com/brightdigit/ContributeWordPress/pull/18) ⚠ | `main` | +23 | Contribute, SyndiKit |
 | ContributeYouTube | https://github.com/brightdigit/ContributeYouTube | `brightdigit-com-260717` | [#1](https://github.com/brightdigit/ContributeYouTube/pull/1) | `main` | +14 | Contribute, SwiftTube |
 
 All seven PRs are open and **MERGEABLE**, and in every repo the base branch is a
 strict ancestor of the working branch (no divergence, no conflicts) — "Ahead" is how
 many commits the working branch adds. Use the existing PRs; do not open new ones.
+"Ahead" counts predate the 2026-07-24 hygiene commits and are now higher.
+
+**⚠ ContributeWordPress #18 must land together with Contribute #19.** Contribute #19
+hardens the download stack for `Sendable`, which breaks ContributeWordPress's
+`AssetDownloader`; #18 carries the companion fix (a real data race — a `DispatchGroup`
+fan-out wrote an unsynchronized `[URL: Error]` from `URLSession`'s delegate queue, now
+behind an `NSLock`). #18's fix is verified compiling against **both** Contribute `main`
+and #19, so ordering within the pair is free — but do not land one without the other.
 
 **TailwindKit's old park does not block this merge.** That park was scoped to
 `git subrepo pull` / `push --all` snagging: its standalone `main` carried an older,
@@ -279,10 +347,12 @@ six Contribute*/TailwindKit packages have no in-repo consumers within Wave 1.
 
 - ~~Publish's default branch is `master`~~ — **resolved 2026-07-23:** renamed to `main`.
   PR #1 auto-retargeted and remains MERGEABLE.
-- **`.swift-version` drift.** TransistorPublishPlugin and ContributeWordPress pin
-  toolchain `5.8`; every other repo and the root use `6.4.x-snapshot`. CI passes today,
-  but `swift package update` fails locally under swiftly in those two repos until the
-  toolchain is overridden (`swiftly run swift package update +6.4.x-snapshot-…`).
+- **`.swift-version` drift.** ~~TransistorPublishPlugin and ContributeWordPress pin
+  toolchain `5.8`~~ — ContributeWordPress fixed to `6.4.x-snapshot` in the 2026-07-24
+  hygiene pass. **TransistorPublishPlugin still pins `5.8`**; every other repo and the
+  root use `6.4.x-snapshot`. CI passes today, but `swift package update` fails locally
+  under swiftly there until the toolchain is overridden
+  (`swiftly run swift package update +6.4.x-snapshot-…`).
 
 #### Repin gotchas (learned in the Wave 0 cutover)
 
@@ -329,8 +399,10 @@ Mark: ☐ todo · ◐ on `main` (release PR merged; untagged) · ✅ tagged `vX.
 **Wave 0:** ◐ Plot · ◐ Files · ◐ Ink · ◐ SyndiKit · ◐ ButtondownKit · ◐ SwiftTube · ◐ Spinetail · ◐ Contribute — on `main`; **none ✅ tagged**
 
 **Wave 1:** all seven consume Wave 0 from `branch: "main"` with refreshed lockfiles and
-green CI; each has an open MERGEABLE PR awaiting merge (see the Wave 1 section).
-☐ Publish · ☐ TailwindKit · ☐ ContributeButtondown · ☐ ContributeMailchimp · ☐ ContributeRSS · ☐ ContributeWordPress · ☐ ContributeYouTube
+green CI; each has an open MERGEABLE PR awaiting merge (see the Wave 1 section). Hygiene
+pass landed on all seven branches 2026-07-24 (PRs still draft). ContributeWordPress must
+land with Contribute #19.
+☐ Publish · ☐ TailwindKit · ☐ ContributeButtondown · ☐ ContributeMailchimp · ☐ ContributeRSS · ☐ ContributeWordPress ⚠(pairs with Contribute #19) · ☐ ContributeYouTube
 
 **Wave 2:** ☐ PublishType ⚠ [#135](https://github.com/brightdigit/brightdigit.com/issues/135) · ☐ YoutubePublishPlugin · ☐ ReadingTimePublishPlugin · ☐ TransistorPublishPlugin · ☐ NPMPublishPlugin
 
