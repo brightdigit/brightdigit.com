@@ -25,7 +25,7 @@
       "location" : "https://github.com/brightdigit/Contribute.git",
       "state" : {
         "branch" : "main",
-        "revision" : "5dc9049fb106ca684ba432935ed24f32dfc83065"
+        "revision" : "a749708eb8ceba8cfcf2452ba697d3640a6e779e"
       }
     },
     {
@@ -61,7 +61,7 @@
       "location" : "https://github.com/brightdigit/ContributeWordPress.git",
       "state" : {
         "branch" : "brightdigit-com-260406",
-        "revision" : "5224866adcd77adcc779e05123903b12af435c0f"
+        "revision" : "68d84d22575fc2d866b7cff3a5f77e4815a3f566"
       }
     },
     {
