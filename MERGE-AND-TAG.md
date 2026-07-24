@@ -11,12 +11,16 @@ on `release/branch-based-devendoring`.
 Within a wave, packages can proceed in parallel. Do not tag a package until every
 in-repo dependency it needs is already tagged.
 
-> **Coordinated landing (2026-07-24):** brightdigit/Contribute#19 (raise to
-> `swift-tools-version 6.4`) hardens the download stack for `Sendable`, which **breaks
-> ContributeWordPress** until its companion fix lands. **Contribute #19 and
-> ContributeWordPress #18 must merge together** (either order, but not one without the
-> other). Details in the Wave 0 / Wave 1 sections below and in
-> [`.claude/memory/wave1-hygiene-pass.md`](.claude/memory/wave1-hygiene-pass.md).
+> **~~Coordinated landing~~ — discharged 2026-07-24.** brightdigit/Contribute
+> [#19](https://github.com/brightdigit/Contribute/pull/19) is **merged** (`a749708`), followed by
+> [#18](https://github.com/brightdigit/Contribute/pull/18) (CI comments only), so Contribute
+> `main` is now **`2d346bd`**. The pairing constraint no longer applies: ContributeWordPress #18
+> can land on its own.
+>
+> What #19 actually shipped differs from the original plan — the download stack went to
+> **`async`/`await`** rather than `@escaping @Sendable` completions, and ContributeWordPress's
+> data race is now fixed **structurally** by `withThrowingTaskGroup` instead of by a lock
+> (`AssetDownloadErrors.swift` is deleted). See *GCD removal* below.
 
 ---
 
@@ -26,11 +30,11 @@ in-repo dependency it needs is already tagged.
 via URL + branch pins in [`Package.swift`](Package.swift) /
 [`Package.resolved`](Package.resolved).
 
-### Root pins (2026-07-23)
+### Root pins (2026-07-24)
 
 | Branch | Packages |
 | --- | --- |
-| `main` | Contribute, Spinetail, ButtondownKit, SyndiKit (+ transitive Plot, Files, Ink, SwiftTube) |
+| `main` | Contribute (`2d346bd`), Spinetail, ButtondownKit, SyndiKit (+ transitive Plot, Files, Ink, SwiftTube) |
 | `brightdigit-com-260406` | Publish, YoutubePublishPlugin, ReadingTimePublishPlugin, NPMPublishPlugin, TransistorPublishPlugin, ContributeWordPress |
 | `brightdigit-com-260717` | TailwindKit, ContributeButtondown, ContributeMailchimp, ContributeRSS, ContributeYouTube, PublishType |
 
@@ -219,18 +223,25 @@ merged in [#138](https://github.com/brightdigit/SyndiKit/pull/138)
 (`android-run-tests: false`); re-enable tracked in
 [#137](https://github.com/brightdigit/SyndiKit/issues/137).
 
-**Wave 0 hygiene follow-ups (2026-07-24) — open, unmerged.**
+**Wave 0 hygiene follow-ups (2026-07-24) — Contribute #19 and #18 MERGED; the rest still open.**
 
-- **Contribute → Swift 6.4** ([#19](https://github.com/brightdigit/Contribute/pull/19)):
+- ✅ **Contribute → Swift 6.4 + async download stack**
+  ([#19](https://github.com/brightdigit/Contribute/pull/19), **merged** `a749708`):
   Contribute declared `swift-tools-version 5.8` (advertised 5.8+ but CI only ever tested
-  6.4 nightly). Raised to `6.4` to match the stack; strict-concurrency errors fixed
-  properly (`Sendable` on `MarkdownContentBuilderOptions`, `ImportError` payloads →
-  `any Sendable`, and the `FileManagerProtocol`/`URLSessionable`/`URLDownloader` download
-  stack → `Sendable` with `@escaping @Sendable` completions). Platform floors unchanged
-  (`.macOS(.v12)/.iOS(.v13)/.tvOS(.v13)/.watchOS(.v6)`). 15/15 CI green. **Must land with
-  ContributeWordPress #18** (see Wave 1). Contribute is still `◐ on main`; #19 sits on top.
-- **Stale CI-comment cleanup** (comment-only): Contribute
-  [#18](https://github.com/brightdigit/Contribute/pull/18), Plot
+  6.4 nightly). Raised to `6.4` to match the stack. The strict-concurrency fixes went
+  **further than originally planned**: rather than hardening completion handlers with
+  `@escaping @Sendable`, the whole download stack
+  (`URLSessionable`/`URLDownloader`/`FileURLDownloader`) became `async throws`, backed by
+  Foundation's native `URLSession.download(from:)`. `#if !os(WASI)` guards were added
+  (`URLSession`/`URLResponse` don't exist there; a remote URL now throws
+  `URLDownloaderError.networkUnavailable`) — Contribute sets `ENABLE_WASM=false` because Yams
+  can't build for wasm, so the guards were verified by cross-compiling the download stack as a
+  standalone wasm target. Also a behavior fix: the old code discarded the session error when a
+  destination URL was returned. Platform floors unchanged
+  (`.macOS(.v12)/.iOS(.v13)/.tvOS(.v13)/.watchOS(.v6)`). 15/15 CI green on `165dfc4`.
+- ✅ **Stale CI-comment cleanup for Contribute**
+  ([#18](https://github.com/brightdigit/Contribute/pull/18), **merged** → `2d346bd`).
+- **Stale CI-comment cleanup, still open** (comment-only): Plot
   [#5](https://github.com/brightdigit/Plot/pull/5), Files
   [#6](https://github.com/brightdigit/Files/pull/6), Ink
   [#9](https://github.com/brightdigit/Ink/pull/9), SwiftTube
@@ -261,9 +272,22 @@ The Sundell strip must preserve `///` doc comments (do not match `///` when clea
 
 ### Wave 1 — depend only on Wave 0
 
-**Ready to merge.** Every Wave 1 package now pins its Wave 0 deps to `branch: "main"`
-with a refreshed `Package.resolved` and green CI, so nothing blocks landing these
-branches on their default branch.
+**Ready to merge** — pending Leo's review of all seven PRs (2026-07-24). Every Wave 1 package
+pins its Wave 0 deps to `branch: "main"` with a refreshed `Package.resolved`.
+
+**CI status (2026-07-24), verified against each PR's current head:**
+
+| PR | Head | CI |
+| --- | --- | --- |
+| ContributeWordPress #18 | `b1658cb` | ✅ green — Ubuntu **45/45**, nightly-6.4 source-compat, Windows ×2, Android, 4 Apple sims. One pre-existing `CodeFactor` advisory ("3 issues found", identical on the two prior commits — static analysis, not a build failure). |
+| Publish #1 | `dd7e7af` | ✅ green — Ubuntu **86/86**, nightly-6.4 source-compat, Windows ×2, Android, 4 Apple sims. Still marked **draft**. |
+| TailwindKit #1, ContributeButtondown #1, ContributeMailchimp #1, ContributeRSS #1, ContributeYouTube #1 | — | last verified during the 2026-07-24 hygiene pass; re-confirm before merging. |
+
+Publish's Linux leg is the notable one: the `DispatchSemaphore`/`ResultBox`/`TagCache` removal had
+only ever been checked on macOS, and Ubuntu now runs the full 86-test suite clean — no deadlock,
+no hang. The known ContributeWordPress test bug
+([#19](https://github.com/brightdigit/ContributeWordPress/issues/19),
+`testFailedCreateDirectory` vs. root in a container) did **not** fire in CI; it remains latent.
 
 **Hygiene pass landed on all seven working branches (2026-07-24), PRs left in their
 original draft state.** Each repo was brought to the Wave 0 standard (CI hygiene,
@@ -305,12 +329,41 @@ strict ancestor of the working branch (no divergence, no conflicts) — "Ahead" 
 many commits the working branch adds. Use the existing PRs; do not open new ones.
 "Ahead" counts predate the 2026-07-24 hygiene commits and are now higher.
 
-**⚠ ContributeWordPress #18 must land together with Contribute #19.** Contribute #19
-hardens the download stack for `Sendable`, which breaks ContributeWordPress's
-`AssetDownloader`; #18 carries the companion fix (a real data race — a `DispatchGroup`
-fan-out wrote an unsynchronized `[URL: Error]` from `URLSession`'s delegate queue, now
-behind an `NSLock`). #18's fix is verified compiling against **both** Contribute `main`
-and #19, so ordering within the pair is free — but do not land one without the other.
+#### GCD removal (2026-07-24) — supersedes the `NSLock` plan
+
+`AssetDownloader` fanned downloads over a `DispatchGroup`, every completion writing an
+unsynchronized `[URL: Error]`; with the real `FileURLDownloader` those callbacks arrive
+concurrently on `URLSession`'s delegate queue, so the writes raced (`group.wait()` orders only
+the final read). The originally-planned fix guarded that dictionary with an `NSLock`
+(`AssetDownloadErrors.swift`).
+
+**That file is now deleted.** `withThrowingTaskGroup` removes the shared state instead of
+guarding it: each child returns its own `(URL, any Error)?` and the parent collects at the join
+point, where there is no concurrency to synchronize. `Downloader.download` and
+`MarkdownProcessor.begin` are `async throws`; `Sources/wpublish/main.swift` became a `@main`
+type in `WPublish.swift` (top-level code cannot `await`). Two more `NSLock`s disappeared from the
+test doubles (`FileDownloaderSpy`, `AssetDownloaderSpy` are now actors). A regression test fans
+out 200 failing downloads and asserts every error survives.
+
+Publish lost the last GCD in the graph: the synchronous `publish` overloads, their
+`DispatchSemaphore`, and the `Mutex`-backed `ResultBox` are deleted (the async overloads already
+existed and consumers already used them), and `PublishingContext`'s `TagCache` `Mutex` is gone —
+`allTags` is computed on demand.
+
+**Files keeps its `Mutex`** (`Sources/Storage.swift`) by decision: `File`/`Folder` are structs
+wrapping a `final class Storage` so `move`/`rename` mutate through a `let`. Removing it means
+either an actor (async on every path accessor, `AsyncSequence` children) or value semantics (a
+breaking API change). Deferred to
+[brightdigit.com#162](https://github.com/brightdigit/brightdigit.com/issues/162).
+
+**⚠ Lockfile trap.** ContributeWordPress #18's CI was red on every platform with
+`stored property 'urlDownloader' … has non-Sendable type 'any URLDownloader'` — its committed
+`Package.resolved` still pinned Contribute at `5dc9049` (pre-merge `main`) even though the
+manifest says `branch: "main"`. SwiftPM honours the lockfile revision. Fixed in `b1658cb`.
+Local builds could not see it because Contribute was in `swift package edit` mode, which drops
+the dependency from `Package.resolved` and substitutes a working copy — **passing local tests
+say nothing about what CI resolves.** Check every Wave 1 PR's lockfile pins against what its
+manifest branch actually points to.
 
 **TailwindKit's old park does not block this merge.** That park was scoped to
 `git subrepo pull` / `push --all` snagging: its standalone `main` carried an older,
@@ -398,11 +451,11 @@ Mark: ☐ todo · ◐ on `main` (release PR merged; untagged) · ✅ tagged `vX.
 
 **Wave 0:** ◐ Plot · ◐ Files · ◐ Ink · ◐ SyndiKit · ◐ ButtondownKit · ◐ SwiftTube · ◐ Spinetail · ◐ Contribute — on `main`; **none ✅ tagged**
 
-**Wave 1:** all seven consume Wave 0 from `branch: "main"` with refreshed lockfiles and
-green CI; each has an open MERGEABLE PR awaiting merge (see the Wave 1 section). Hygiene
-pass landed on all seven branches 2026-07-24 (PRs still draft). ContributeWordPress must
-land with Contribute #19.
-☐ Publish · ☐ TailwindKit · ☐ ContributeButtondown · ☐ ContributeMailchimp · ☐ ContributeRSS · ☐ ContributeWordPress ⚠(pairs with Contribute #19) · ☐ ContributeYouTube
+**Wave 1:** all seven consume Wave 0 from `branch: "main"` with refreshed lockfiles; each has an
+open MERGEABLE PR **awaiting Leo's review** (see the Wave 1 section). Hygiene pass landed on all
+seven branches 2026-07-24; six PRs are still drafts. The Contribute #19 pairing constraint is
+**discharged** — #19 is merged, so ContributeWordPress #18 lands on its own.
+☐ Publish (CI ✅) · ☐ TailwindKit · ☐ ContributeButtondown · ☐ ContributeMailchimp · ☐ ContributeRSS · ☐ ContributeWordPress (CI ✅) · ☐ ContributeYouTube
 
 **Wave 2:** ☐ PublishType ⚠ [#135](https://github.com/brightdigit/brightdigit.com/issues/135) · ☐ YoutubePublishPlugin · ☐ ReadingTimePublishPlugin · ☐ TransistorPublishPlugin · ☐ NPMPublishPlugin
 
