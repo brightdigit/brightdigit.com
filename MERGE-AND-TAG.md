@@ -30,20 +30,21 @@ in-repo dependency it needs is already tagged.
   tagging hasn't started. Leftovers: five comment-only CI-cleanup PRs (details in the
   Wave 0 section). The Plot/Files/Ink `claude-review` secret gap is **resolved**
   (org-wide `CLAUDE_CODE_OAUTH_TOKEN`, 2026-07-26).
-- **Wave 1:** all seven PRs open, none merged, all MERGEABLE — **blocked on Leo's
-  review**. Three ready for review (ContributeButtondown, ContributeRSS,
+- **Wave 1:** all seven PRs open, none merged, all MERGEABLE (`clean`), and **all
+  seven are now fully green** — re-verified head-by-head 2026-07-26, zero failures
+  anywhere. Three ready for review (ContributeButtondown, ContributeRSS,
   ContributeWordPress), four still drafts (Publish, TailwindKit, ContributeMailchimp,
-  ContributeYouTube). Contribute-family logos landed on four branches 2026-07-26;
-  the CI runs those pushes triggered were still finishing at last check.
-  **Leo's review comments are addressed (2026-07-26)** — see *Wave 1 review fixes*
-  below. Only three of the seven PRs carried comments; the other four had bot
-  output only.
+  ContributeYouTube). **Leo's review comments are all addressed** — see *Wave 1
+  review fixes* below. Only three of the seven PRs carried comments; the other four
+  had CodeRabbit/Codecov output only. Nothing blocks merging but Leo's approval.
 - **Wave 2:** five PRs open, untouched pending Publish. TransistorPublishPlugin still
   pins `.swift-version` `5.8` (see *Open item*).
 - **Wave 3:** root PR #161 open and MERGEABLE; stays open until every dep is a released tag.
 
-**What remains, in order:** (1) Leo reviews + merges Publish #1, then the other six
-Wave 1 PRs; (2) repin root + Wave 2 consumers to `main` per merge (same-step rule below);
+**What remains, in order:** (1) Leo approves + merges Publish #1, then the other six
+Wave 1 PRs — all seven are green and `clean`, so the only gates left are approval and
+**undrafting the four drafts** (Publish, TailwindKit, ContributeMailchimp,
+ContributeYouTube); (2) repin root + Wave 2 consumers to `main` per merge (same-step rule below);
 (3) review/merge Wave 2 PRs, repin root; (4) tag Wave 0 → 1 → 2 bottom-up
 (`1.0.0`/`1.0.0-alpha.1` per the ordering constraints), rewriting each package's in-repo
 deps to `from:` before its tag — Wave 0 has no in-repo deps, so its tags can be cut at
@@ -198,15 +199,25 @@ graph TD
 Leo's review left five comments across three of the seven PRs; the other four
 (ContributeMailchimp, ContributeRSS, ContributeWordPress, ContributeYouTube) had
 CodeRabbit/Codecov output only. All five are addressed and pushed to the existing
-PR head branches — **no merges, no tags.**
+PR head branches, with a reply on each thread — **no merges, no tags.**
 
-| PR | Comment | Resolution |
-| --- | --- | --- |
-| Publish #1 | remove Splash references | Deleted `using-splash.md` (nothing linked to it) and cleaned three other prose sites. **Kept** the `AGENTS.md` bullet — it exists to stop Splash being re-added. Splash was already gone from the code. |
-| ContributeButtondown #1 | remove the logo | Deleted the placeholder PNG, its empty `Resources/`, and the README image line. Matches the standing "ContributeButtondown gets no logo" decision. |
-| ContributeButtondown #1 | too BrightDigit-specific | Added public `IssueNumbering` holding the subject regex; `.default` preserves today's behavior and `init(subjectPattern:)` **throws** (it is consumer input now, so it must not trap). Threaded as a **defaulted** `numbering:` param, so the root call site was untouched. |
-| TailwindKit #1 | Fix the logo | The committed PNG was the wrong artwork (1200×630 gradient banner + wordmark). Replaced from Leo's SVG: vector source + 600×600 + `@2x`. |
-| TailwindKit #1 | remove Plot dependency? | **Yes — removed.** Plot was reachable from 1 of 56 source files. Added the `TailwindClassAttribute` seam (one static requirement + protocol extension); the consumer supplies the binding. |
+| PR | Comment | Resolution | Commit |
+| --- | --- | --- | --- |
+| Publish #1 | remove Splash references | Deleted `using-splash.md` (nothing linked to it) and cleaned three other prose sites. **Kept** the `AGENTS.md` bullet — it exists to stop Splash being re-added. Splash was already gone from the code. | `18dfc84` |
+| ContributeButtondown #1 | remove the logo | Deleted the placeholder PNG, its empty `Resources/`, and the README image line. Matches the standing "ContributeButtondown gets no logo" decision. | `19504bf` |
+| ContributeButtondown #1 | too BrightDigit-specific | Added public `IssueNumbering` holding the subject regex; `.default` preserves today's behavior and `init(subjectPattern:)` **throws** (it is consumer input now, so it must not trap). Threaded as a **defaulted** `numbering:` param, so the root call site was untouched. Also fixed the pre-existing dangling ``IssueNumbering`` DocC link in `Source.swift`. | `4726346` |
+| TailwindKit #1 | Fix the logo | The committed PNG was the wrong artwork (1200×630 gradient banner + wordmark), not merely stale. Replaced from Leo's SVG: vector source + 600×600 + `@2x`. | `b25bd3d` |
+| TailwindKit #1 | remove Plot dependency? | **Yes — removed.** Plot was reachable from 1 of 56 source files. Added the `TailwindClassAttribute` seam (one static requirement + protocol extension); the consumer supplies the binding. | `b7a2dba` |
+
+Leo chose *injectable pattern* over relocating the numbering code to the root, and
+specified the TailwindKit shape himself ("protocol and extension in TailwindKit …
+in BrightDigit we just add an extension for the Plot elements").
+
+**TailwindKit branch handling.** The Plot work was pushed to a scratch branch first,
+then **fast-forwarded onto `brightdigit-com-260717`** so PR #1 shows it — otherwise the
+PR under review would still display the pre-fix code. The scratch branch is deleted and
+the root pins the canonical branch. `brightdigit-com-260717` is unchanged for the other
+five packages that share it.
 
 Two things worth carrying forward:
 
@@ -328,11 +339,15 @@ The Sundell strip must preserve `///` doc comments (do not match `///` when clea
 
 ### Wave 1 — depend only on Wave 0
 
-**Ready to merge** — pending Leo's review of all seven PRs. Every Wave 1 package
-pins its Wave 0 deps to `branch: "main"` with a refreshed `Package.resolved`.
-Three PRs are now **ready for review** (ContributeButtondown, ContributeRSS,
-ContributeWordPress); four remain **drafts** (Publish, TailwindKit,
-ContributeMailchimp, ContributeYouTube).
+**Ready to merge** — pending Leo's approval of all seven PRs. Every Wave 1 package
+pins its Wave 0 deps to `branch: "main"` with a refreshed `Package.resolved`
+(TailwindKit no longer has any). Three PRs are **ready for review**
+(ContributeButtondown, ContributeRSS, ContributeWordPress); four remain **drafts**
+(Publish, TailwindKit, ContributeMailchimp, ContributeYouTube) and need undrafting
+before they can merge.
+
+Leo's review comments landed 2026-07-26 and are **all resolved** (see *Wave 1 review
+fixes*), with a reply on each thread. CI is green across all seven.
 
 **Logo rollout (2026-07-26).** Pixelmator Contribute-family composite SVGs replaced the
 placeholder/wrong logos on ContributeMailchimp, ContributeRSS, ContributeYouTube, and
@@ -341,20 +356,22 @@ reference `*Logo.svg` (~200px presentation height); png/@2x/webp kept as compani
 only. ContributeMailchimp's Freddie outlines fixed in `fb4a49c` (white evenodd strokes →
 black). ContributeButtondown still has no Contribute-family mark (none provided).
 
-**CI status (2026-07-26), verified against each PR's current head:**
+**CI status — re-verified against each PR's current head 2026-07-26 (after the review
+fixes). All seven green, zero failures, all `mergeable_state: clean`:**
 
-| PR | Head | CI |
-| --- | --- | --- |
-| Publish #1 | `dd7e7af` | ✅ 15/15 pass (Ubuntu 86/86 tests, nightly-6.4 source-compat, Windows ×2, Android, 4 Apple sims). Still **draft**. |
-| TailwindKit #1 | `6e1c9c1` | ✅ 15/15 pass. Still **draft**. |
-| ContributeButtondown #1 | `898465b` | ✅ 15/15 pass. Ready for review. |
-| ContributeMailchimp #1 | `fb4a49c` | ⏳ running (4 pass / 10 pending) after the Freddie-outline fix. Still **draft**. |
-| ContributeRSS #1 | `bfd9d83` | ⏳ 13 pass, visionOS sim leg still running after the logo push. Ready for review. |
-| ContributeWordPress #18 | `f663445` | ⏳ 15 pass, Linting still running after the logo push. Ready for review. Pre-existing `CodeFactor` advisory unchanged. |
-| ContributeYouTube #1 | `aa2f742` | ✅ 15/15 pass. Still **draft**. |
+| PR | Head | Draft | CI |
+| --- | --- | --- | --- |
+| Publish #1 | `18dfc84` | draft | ✅ 14/14 (Ubuntu 86/86 tests, nightly-6.4 source-compat, Windows ×2, Android, 4 Apple sims) |
+| TailwindKit #1 | `b7a2dba` | draft | ✅ 14/14 — incl. Ubuntu/Windows/Android, which is what proves the Foundation removal |
+| ContributeButtondown #1 | `4726346` | ready | ✅ all green |
+| ContributeMailchimp #1 | `fb4a49c` | draft | ✅ 14/14 (the Freddie-outline run finished clean) |
+| ContributeRSS #1 | `bfd9d83` | ready | ✅ 14/14 (visionOS leg finished) |
+| ContributeWordPress #18 | `f663445` | ready | ✅ 15/15 (Linting finished). Pre-existing `CodeFactor` advisory unchanged. |
+| ContributeYouTube #1 | `aa2f742` | draft | ✅ 14/14 |
 
-Re-check the three ⏳ rows before merging — those runs were kicked off by the
-2026-07-26 logo commits and were still in flight at last verification.
+The three previously-⏳ rows (ContributeMailchimp, ContributeRSS, ContributeWordPress)
+have since completed clean. Counts exclude the on-demand `claude` bot check, which
+reports `skipped` unless `@claude` is mentioned — that is not a failure.
 
 Publish's Linux leg is the notable one: the `DispatchSemaphore`/`ResultBox`/`TagCache` removal had
 only ever been checked on macOS, and Ubuntu now runs the full 86-test suite clean — no deadlock,
@@ -390,7 +407,7 @@ Full record: [`.claude/memory/wave1-hygiene-pass.md`](.claude/memory/wave1-hygie
 | Package | Repo | Branch | Merge PR | Base | Ahead | Wave 0 deps |
 | --- | --- | --- | --- | --- | --- | --- |
 | Publish | https://github.com/brightdigit/Publish | `brightdigit-com-260406` | [#1](https://github.com/brightdigit/Publish/pull/1) | `main` | +19 | Ink, Plot, Files |
-| TailwindKit | https://github.com/brightdigit/TailwindKit | `brightdigit-com-260717` | [#1](https://github.com/brightdigit/TailwindKit/pull/1) | `main` | +13 | Plot |
+| TailwindKit | https://github.com/brightdigit/TailwindKit | `brightdigit-com-260717` | [#1](https://github.com/brightdigit/TailwindKit/pull/1) | `main` | +13 | **none** (dropped Plot 2026-07-26) |
 | ContributeButtondown | https://github.com/brightdigit/ContributeButtondown | `brightdigit-com-260717` | [#1](https://github.com/brightdigit/ContributeButtondown/pull/1) | `main` | +14 | Contribute, ButtondownKit |
 | ContributeMailchimp | https://github.com/brightdigit/ContributeMailchimp | `brightdigit-com-260717` | [#1](https://github.com/brightdigit/ContributeMailchimp/pull/1) | `main` | +15 | Contribute, Spinetail |
 | ContributeRSS | https://github.com/brightdigit/ContributeRSS | `brightdigit-com-260717` | [#1](https://github.com/brightdigit/ContributeRSS/pull/1) | `main` | +14 | Contribute, SyndiKit |
@@ -528,12 +545,13 @@ Mark: ☐ todo · ◐ on `main` (release PR merged; untagged) · ✅ tagged `vX.
 
 **Wave 0:** ◐ Plot · ◐ Files · ◐ Ink · ◐ SyndiKit · ◐ ButtondownKit · ◐ SwiftTube · ◐ Spinetail · ◐ Contribute — on `main`; **none ✅ tagged**
 
-**Wave 1:** all seven consume Wave 0 from `branch: "main"` with refreshed lockfiles; each has an
-open MERGEABLE PR **awaiting Leo's review** (see the Wave 1 section). Hygiene pass landed on all
-seven branches 2026-07-24; Contribute-family logos on four branches 2026-07-26. Three PRs are
-ready for review, four still drafts. The Contribute #19 pairing constraint is
-**discharged** — #19 is merged, so ContributeWordPress #18 lands on its own.
-☐ Publish (CI ✅, draft) · ☐ TailwindKit (CI ✅, draft) · ☐ ContributeButtondown (CI ✅, ready) · ☐ ContributeMailchimp (CI ⏳, draft) · ☐ ContributeRSS (CI ⏳, ready) · ☐ ContributeWordPress (CI ⏳, ready) · ☐ ContributeYouTube (CI ✅, draft)
+**Wave 1:** all seven consume Wave 0 from `branch: "main"` with refreshed lockfiles (TailwindKit
+now has no deps at all); each has an open MERGEABLE PR **awaiting Leo's approval** (see the Wave 1
+section). Hygiene pass landed on all seven branches 2026-07-24; Contribute-family logos on four
+branches 2026-07-26; Leo's five review comments resolved 2026-07-26. **CI green on all seven**,
+re-verified head-by-head. Three PRs ready for review, four still drafts. The Contribute #19
+pairing constraint is **discharged** — #19 is merged, so ContributeWordPress #18 lands on its own.
+☐ Publish (CI ✅, draft) · ☐ TailwindKit (CI ✅, draft) · ☐ ContributeButtondown (CI ✅, ready) · ☐ ContributeMailchimp (CI ✅, draft) · ☐ ContributeRSS (CI ✅, ready) · ☐ ContributeWordPress (CI ✅, ready) · ☐ ContributeYouTube (CI ✅, draft)
 
 **Wave 2:** ☐ PublishType ⚠ [#135](https://github.com/brightdigit/brightdigit.com/issues/135) · ☐ YoutubePublishPlugin · ☐ ReadingTimePublishPlugin · ☐ TransistorPublishPlugin · ☐ NPMPublishPlugin
 
