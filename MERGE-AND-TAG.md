@@ -24,6 +24,28 @@ in-repo dependency it needs is already tagged.
 
 ---
 
+## Where things stand (2026-07-26)
+
+- **Wave 0:** all eight on `main` (release PRs merged). **No tags cut anywhere yet** —
+  tagging hasn't started. Leftovers: five comment-only CI-cleanup PRs and the
+  Plot/Files/Ink `claude-review` secret gap (details in the Wave 0 section).
+- **Wave 1:** all seven PRs open, none merged, all MERGEABLE — **blocked on Leo's
+  review**. Three ready for review (ContributeButtondown, ContributeRSS,
+  ContributeWordPress), four still drafts (Publish, TailwindKit, ContributeMailchimp,
+  ContributeYouTube). Contribute-family logos landed on four branches 2026-07-26;
+  the CI runs those pushes triggered were still finishing at last check.
+- **Wave 2:** five PRs open, untouched pending Publish. TransistorPublishPlugin still
+  pins `.swift-version` `5.8` (see *Open item*).
+- **Wave 3:** root PR #161 open and MERGEABLE; stays open until every dep is a released tag.
+
+**What remains, in order:** (1) Leo reviews + merges Publish #1, then the other six
+Wave 1 PRs; (2) repin root + Wave 2 consumers to `main` per merge (same-step rule below);
+(3) review/merge Wave 2 PRs, repin root; (4) tag Wave 0 → 1 → 2 bottom-up
+(`1.0.0`/`1.0.0-alpha.1` per the ordering constraints), rewriting each package's in-repo
+deps to `from:` before its tag — Wave 0 has no in-repo deps, so its tags can be cut at
+any point; (5) rewrite root pins to `from:`, verify, merge #161,
+restore subrepos for `v2.0.0-alpha.2`.
+
 ## Current checkpoint
 
 `Packages/` is intentionally absent. The root consumes every first-party package
@@ -211,7 +233,8 @@ and workflow steps were removed in the 2026-07-22 `v1.0.0` consumer cutover.
 
 Merge/feedback history (done): Plot #1/#2, Files #3/#2, Ink #1/#3/#5/#6, SyndiKit #129/#130,
 SwiftTube #18/#19, Spinetail #31/#32, Contribute #14/#15/#13. No new `1.0.0` /
-`v1.0.0` **tags** cut yet (ancient Files `1.0.0` from 2017 does not count).
+`v1.0.0` **tags** cut yet (ancient Files `1.0.0` from 2017 does not count) —
+re-verified via `git ls-remote --tags` across all eight repos 2026-07-26.
 
 SwiftTube/Spinetail OpenAPI rebuild renamed public types (Spinetail
 `MailchimpCampaign` → `Campaign`; SwiftTube Videos rename); consumers adopted the
@@ -241,7 +264,7 @@ merged in [#138](https://github.com/brightdigit/SyndiKit/pull/138)
   (`.macOS(.v12)/.iOS(.v13)/.tvOS(.v13)/.watchOS(.v6)`). 15/15 CI green on `165dfc4`.
 - ✅ **Stale CI-comment cleanup for Contribute**
   ([#18](https://github.com/brightdigit/Contribute/pull/18), **merged** → `2d346bd`).
-- **Stale CI-comment cleanup, still open** (comment-only): Plot
+- **Stale CI-comment cleanup, still open** (comment-only; re-verified open 2026-07-26): Plot
   [#5](https://github.com/brightdigit/Plot/pull/5), Files
   [#6](https://github.com/brightdigit/Files/pull/6), Ink
   [#9](https://github.com/brightdigit/Ink/pull/9), SwiftTube
@@ -272,16 +295,33 @@ The Sundell strip must preserve `///` doc comments (do not match `///` when clea
 
 ### Wave 1 — depend only on Wave 0
 
-**Ready to merge** — pending Leo's review of all seven PRs (2026-07-24). Every Wave 1 package
+**Ready to merge** — pending Leo's review of all seven PRs. Every Wave 1 package
 pins its Wave 0 deps to `branch: "main"` with a refreshed `Package.resolved`.
+Three PRs are now **ready for review** (ContributeButtondown, ContributeRSS,
+ContributeWordPress); four remain **drafts** (Publish, TailwindKit,
+ContributeMailchimp, ContributeYouTube).
 
-**CI status (2026-07-24), verified against each PR's current head:**
+**Logo rollout (2026-07-26).** Pixelmator Contribute-family composite SVGs replaced the
+placeholder/wrong logos on ContributeMailchimp, ContributeRSS, ContributeYouTube, and
+ContributeWordPress, pushed onto the existing PR branches (no new PRs). README + DocC
+reference `*Logo.svg` (~200px presentation height); png/@2x/webp kept as companion rasters
+only. ContributeMailchimp's Freddie outlines fixed in `fb4a49c` (white evenodd strokes →
+black). ContributeButtondown still has no Contribute-family mark (none provided).
+
+**CI status (2026-07-26), verified against each PR's current head:**
 
 | PR | Head | CI |
 | --- | --- | --- |
-| ContributeWordPress #18 | `b1658cb` | ✅ green — Ubuntu **45/45**, nightly-6.4 source-compat, Windows ×2, Android, 4 Apple sims. One pre-existing `CodeFactor` advisory ("3 issues found", identical on the two prior commits — static analysis, not a build failure). |
-| Publish #1 | `dd7e7af` | ✅ green — Ubuntu **86/86**, nightly-6.4 source-compat, Windows ×2, Android, 4 Apple sims. Still marked **draft**. |
-| TailwindKit #1, ContributeButtondown #1, ContributeMailchimp #1, ContributeRSS #1, ContributeYouTube #1 | — | last verified during the 2026-07-24 hygiene pass; re-confirm before merging. |
+| Publish #1 | `dd7e7af` | ✅ 15/15 pass (Ubuntu 86/86 tests, nightly-6.4 source-compat, Windows ×2, Android, 4 Apple sims). Still **draft**. |
+| TailwindKit #1 | `6e1c9c1` | ✅ 15/15 pass. Still **draft**. |
+| ContributeButtondown #1 | `898465b` | ✅ 15/15 pass. Ready for review. |
+| ContributeMailchimp #1 | `fb4a49c` | ⏳ running (4 pass / 10 pending) after the Freddie-outline fix. Still **draft**. |
+| ContributeRSS #1 | `bfd9d83` | ⏳ 13 pass, visionOS sim leg still running after the logo push. Ready for review. |
+| ContributeWordPress #18 | `f663445` | ⏳ 15 pass, Linting still running after the logo push. Ready for review. Pre-existing `CodeFactor` advisory unchanged. |
+| ContributeYouTube #1 | `aa2f742` | ✅ 15/15 pass. Still **draft**. |
+
+Re-check the three ⏳ rows before merging — those runs were kicked off by the
+2026-07-26 logo commits and were still in flight at last verification.
 
 Publish's Linux leg is the notable one: the `DispatchSemaphore`/`ResultBox`/`TagCache` removal had
 only ever been checked on macOS, and Ubuntu now runs the full 86-test suite clean — no deadlock,
@@ -327,7 +367,8 @@ Full record: [`.claude/memory/wave1-hygiene-pass.md`](.claude/memory/wave1-hygie
 All seven PRs are open and **MERGEABLE**, and in every repo the base branch is a
 strict ancestor of the working branch (no divergence, no conflicts) — "Ahead" is how
 many commits the working branch adds. Use the existing PRs; do not open new ones.
-"Ahead" counts predate the 2026-07-24 hygiene commits and are now higher.
+"Ahead" counts predate the 2026-07-24 hygiene commits and the 2026-07-26 logo
+commits and are now higher.
 
 #### GCD removal (2026-07-24) — supersedes the `NSLock` plan
 
@@ -424,13 +465,16 @@ radius.
 
 ### Wave 2 — Publish plugins / type layer
 
-| Package | Repo | Branch | Merge PR |
-| --- | --- | --- | --- |
-| PublishType | https://github.com/brightdigit/PublishType | `brightdigit-com-260717` | [#1](https://github.com/brightdigit/PublishType/pull/1) |
-| YoutubePublishPlugin | https://github.com/brightdigit/YoutubePublishPlugin | `brightdigit-com-260406` | [#1](https://github.com/brightdigit/YoutubePublishPlugin/pull/1) |
-| ReadingTimePublishPlugin | https://github.com/brightdigit/ReadingTimePublishPlugin | `brightdigit-com-260406` | [#1](https://github.com/brightdigit/ReadingTimePublishPlugin/pull/1) |
-| TransistorPublishPlugin | https://github.com/brightdigit/TransistorPublishPlugin | `brightdigit-com-260406` | [#6](https://github.com/brightdigit/TransistorPublishPlugin/pull/6) |
-| NPMPublishPlugin | https://github.com/brightdigit/NPMPublishPlugin | `brightdigit-com-260406` | [#9](https://github.com/brightdigit/NPMPublishPlugin/pull/9) |
+All five PRs open (2026-07-26). Do not merge before Publish lands and each package's
+Publish pin moves to `main` (with the root, in the same step).
+
+| Package | Repo | Branch | Merge PR | State |
+| --- | --- | --- | --- | --- |
+| PublishType | https://github.com/brightdigit/PublishType | `brightdigit-com-260717` | [#1](https://github.com/brightdigit/PublishType/pull/1) | draft |
+| YoutubePublishPlugin | https://github.com/brightdigit/YoutubePublishPlugin | `brightdigit-com-260406` | [#1](https://github.com/brightdigit/YoutubePublishPlugin/pull/1) | ready |
+| ReadingTimePublishPlugin | https://github.com/brightdigit/ReadingTimePublishPlugin | `brightdigit-com-260406` | [#1](https://github.com/brightdigit/ReadingTimePublishPlugin/pull/1) | draft |
+| TransistorPublishPlugin | https://github.com/brightdigit/TransistorPublishPlugin | `brightdigit-com-260406` | [#6](https://github.com/brightdigit/TransistorPublishPlugin/pull/6) | ready |
+| NPMPublishPlugin | https://github.com/brightdigit/NPMPublishPlugin | `brightdigit-com-260406` | [#9](https://github.com/brightdigit/NPMPublishPlugin/pull/9) | ready |
 
 ### Wave 3 — root cutover
 
@@ -453,9 +497,10 @@ Mark: ☐ todo · ◐ on `main` (release PR merged; untagged) · ✅ tagged `vX.
 
 **Wave 1:** all seven consume Wave 0 from `branch: "main"` with refreshed lockfiles; each has an
 open MERGEABLE PR **awaiting Leo's review** (see the Wave 1 section). Hygiene pass landed on all
-seven branches 2026-07-24; six PRs are still drafts. The Contribute #19 pairing constraint is
+seven branches 2026-07-24; Contribute-family logos on four branches 2026-07-26. Three PRs are
+ready for review, four still drafts. The Contribute #19 pairing constraint is
 **discharged** — #19 is merged, so ContributeWordPress #18 lands on its own.
-☐ Publish (CI ✅) · ☐ TailwindKit · ☐ ContributeButtondown · ☐ ContributeMailchimp · ☐ ContributeRSS · ☐ ContributeWordPress (CI ✅) · ☐ ContributeYouTube
+☐ Publish (CI ✅, draft) · ☐ TailwindKit (CI ✅, draft) · ☐ ContributeButtondown (CI ✅, ready) · ☐ ContributeMailchimp (CI ⏳, draft) · ☐ ContributeRSS (CI ⏳, ready) · ☐ ContributeWordPress (CI ⏳, ready) · ☐ ContributeYouTube (CI ✅, draft)
 
 **Wave 2:** ☐ PublishType ⚠ [#135](https://github.com/brightdigit/brightdigit.com/issues/135) · ☐ YoutubePublishPlugin · ☐ ReadingTimePublishPlugin · ☐ TransistorPublishPlugin · ☐ NPMPublishPlugin
 
