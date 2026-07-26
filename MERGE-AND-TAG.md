@@ -27,8 +27,9 @@ in-repo dependency it needs is already tagged.
 ## Where things stand (2026-07-26)
 
 - **Wave 0:** all eight on `main` (release PRs merged). **No tags cut anywhere yet** —
-  tagging hasn't started. Leftovers: five comment-only CI-cleanup PRs and the
-  Plot/Files/Ink `claude-review` secret gap (details in the Wave 0 section).
+  tagging hasn't started. Leftovers: five comment-only CI-cleanup PRs (details in the
+  Wave 0 section). The Plot/Files/Ink `claude-review` secret gap is **resolved**
+  (org-wide `CLAUDE_CODE_OAUTH_TOKEN`, 2026-07-26).
 - **Wave 1:** all seven PRs open, none merged, all MERGEABLE — **blocked on Leo's
   review**. Three ready for review (ContributeButtondown, ContributeRSS,
   ContributeWordPress), four still drafts (Publish, TailwindKit, ContributeMailchimp,
@@ -273,13 +274,11 @@ merged in [#138](https://github.com/brightdigit/SyndiKit/pull/138)
   "brightdigit fork of swift-coverage-action" comment (Contribute only; the step is
   `sersoft-gmbh/swift-coverage-action@v5`) and a phantom `ENABLE_WATCHOS` gate comment
   (no repo references `vars.ENABLE_WATCHOS`). All builds green.
-- **⚠ Plot / Files / Ink `claude-review` fails** on every PR: those three repos lack the
-  `CLAUDE_CODE_OAUTH_TOKEN` repo secret (SwiftTube/Spinetail/Contribute have it and pass).
-  Add the secret or grant an org secret to the three repos — needs the token value +
-  `admin:org`. Pre-existing; not caused by any change here.
-- **⚠ SyndiKit has no `build-macos-platforms` job** — the only Wave 0 repo with no
-  iOS/tvOS/watchOS/visionOS simulator coverage. Its wide Swift matrix (5.10→6.3 + 6.4
-  nightly) is correct for its 5.10 floor; adding a sim suite is a separate decision.
+- ✅ **Plot / Files / Ink `claude-review` secret gap — resolved 2026-07-26.**
+  `CLAUDE_CODE_OAUTH_TOKEN` is now a **brightdigit org secret** (visibility ALL), so the
+  `claude.yml` / `claude-code-review.yml` workflows authenticate on all three forks (and
+  every other org repo) with no repo-level secret. SyndiKit keeps its older repo-level
+  copy by choice — it shadows the org secret there but works.
 
 ### `header.sh` — two versions
 
