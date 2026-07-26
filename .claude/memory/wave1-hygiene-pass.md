@@ -74,3 +74,15 @@ Contribute #18, Plot #5, Files #6, Ink #9, SwiftTube #23, Spinetail #36.
   wrong (a truncated read).
 - Contribute's README Requirements (Swift 5.8+ / macOS 12+) was **not** stale — it matched
   `Package.swift` exactly. (Now superseded by the 6.4 raise in #19.)
+
+## Contribute logos (2026-07-26)
+
+Replaced placeholder/wrong logos on ContributeMailchimp, ContributeRSS, ContributeYouTube,
+and ContributeWordPress with the Pixelmator Contribute-family SVGs. README + DocC markdown
+point at `*Logo.svg`; png/@2x/webp kept as companions only. ContributeButtondown still has
+no Contribute-family mark (none provided). Pushed onto existing PR branches:
+Mailchimp/RSS/YouTube `brightdigit-com-260717`, WordPress `brightdigit-com-260406`.
+
+Follow-ups same day: presentation size set to ~200px tall (viewBox unchanged);
+ContributeMailchimp Freddie outlines fixed (Pixelmator white evenodd strokes → black)
+in `fb4a49c`.
