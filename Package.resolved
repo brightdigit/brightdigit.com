@@ -34,7 +34,7 @@
       "location" : "https://github.com/brightdigit/ContributeButtondown.git",
       "state" : {
         "branch" : "brightdigit-com-260717",
-        "revision" : "c425cc67fa9e5ef5ccf66be525844e0899284704"
+        "revision" : "4726346b9affef06791629f307509ffa9233600f"
       }
     },
     {
@@ -286,7 +286,7 @@
       "location" : "https://github.com/brightdigit/TailwindKit.git",
       "state" : {
         "branch" : "brightdigit-com-260717",
-        "revision" : "851c30acf0374bf481cbe674d29a22e36e978435"
+        "revision" : "b7a2dba09b7277380bb48ad616f2f5637015f717"
       }
     },
     {
