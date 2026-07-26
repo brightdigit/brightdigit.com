@@ -65,9 +65,9 @@ Contribute #18, Plot #5, Files #6, Ink #9, SwiftTube #23, Spinetail #36.
    identity federation is required`). SwiftTube/Spinetail/Contribute have it and pass —
    perfect correlation, unrelated to any change here. Add the secret (needs the token value
    + `admin:org` to inspect org secrets), or grant an org secret to those three repos.
-2. **SyndiKit has no `build-macos-platforms` job at all** — the only repo with no iOS/tvOS/
-   watchOS/visionOS simulator coverage. Its wide Swift matrix (5.10→6.3 + 6.4 nightly) is
-   correct for its 5.10 floor. Adding a sim suite is substantive, not hygiene — left for Leo.
+2. ~~**SyndiKit has no `build-macos-platforms` job**~~ — **incorrect (2026-07-26).** SyndiKit
+   covers iOS/tvOS/watchOS/visionOS via its `build-macos` job + `.github/matrices/macos-full.json`
+   (full-matrix runs), not a separately named `build-macos-platforms` job. No coverage gap.
 
 ## Corrections to claims made earlier in the session
 - Contribute **already had** the visionOS matrix row (line 186). Earlier "it's missing" was
