@@ -35,6 +35,9 @@ in-repo dependency it needs is already tagged.
   ContributeWordPress), four still drafts (Publish, TailwindKit, ContributeMailchimp,
   ContributeYouTube). Contribute-family logos landed on four branches 2026-07-26;
   the CI runs those pushes triggered were still finishing at last check.
+  **Leo's review comments are addressed (2026-07-26)** — see *Wave 1 review fixes*
+  below. Only three of the seven PRs carried comments; the other four had bot
+  output only.
 - **Wave 2:** five PRs open, untouched pending Publish. TransistorPublishPlugin still
   pins `.swift-version` `5.8` (see *Open item*).
 - **Wave 3:** root PR #161 open and MERGEABLE; stays open until every dep is a released tag.
@@ -89,7 +92,7 @@ swift-openapi, XMLCoder, swift-markdown, etc.) are already versioned upstream.
 | Wave | Tag these (all in parallel) | Why they're ready |
 | --- | --- | --- |
 | **0** | Plot, Files, Ink, SyndiKit, ButtondownKit, SwiftTube, Spinetail, Contribute | No in-repo package deps — the leaves |
-| **1** | Publish, TailwindKit, ContributeButtondown, ContributeMailchimp, ContributeRSS, ContributeWordPress, ContributeYouTube | Depend only on Wave 0 |
+| **1** | Publish, TailwindKit, ContributeButtondown, ContributeMailchimp, ContributeRSS, ContributeWordPress, ContributeYouTube | Depend only on Wave 0 (TailwindKit now has **no** deps at all — it could tag with Wave 0, but stays here since nothing depends on it landing earlier) |
 | **2** | PublishType, YoutubePublishPlugin, ReadingTimePublishPlugin, TransistorPublishPlugin, NPMPublishPlugin | Depend on Publish (Wave 1); Transistor also on Ink |
 | **3** | BrightDigit (root) | Aggregation hub — depends on all 16 first-party packages |
 
@@ -130,7 +133,8 @@ graph LR
 
 ### Site libraries & plugins
 - **PublishType** → Publish
-- **TailwindKit** → Plot
+- **TailwindKit** → *(none)* — dropped Plot 2026-07-26; the `TailwindClassAttribute`
+  seam moves the binding to the consumer, so it now has no dependencies at all
 - **YoutubePublishPlugin** → Publish
 - **ReadingTimePublishPlugin** → Publish
 - **TransistorPublishPlugin** → Publish, Ink
@@ -176,7 +180,6 @@ graph TD
   ContributeYouTube --> SwiftTube
 
   PublishType --> Publish
-  TailwindKit --> Plot
   YoutubePublishPlugin --> Publish
   ReadingTimePublishPlugin --> Publish
   TransistorPublishPlugin --> Publish
@@ -189,6 +192,37 @@ graph TD
 ```
 
 ---
+
+## Wave 1 review fixes (2026-07-26)
+
+Leo's review left five comments across three of the seven PRs; the other four
+(ContributeMailchimp, ContributeRSS, ContributeWordPress, ContributeYouTube) had
+CodeRabbit/Codecov output only. All five are addressed and pushed to the existing
+PR head branches — **no merges, no tags.**
+
+| PR | Comment | Resolution |
+| --- | --- | --- |
+| Publish #1 | remove Splash references | Deleted `using-splash.md` (nothing linked to it) and cleaned three other prose sites. **Kept** the `AGENTS.md` bullet — it exists to stop Splash being re-added. Splash was already gone from the code. |
+| ContributeButtondown #1 | remove the logo | Deleted the placeholder PNG, its empty `Resources/`, and the README image line. Matches the standing "ContributeButtondown gets no logo" decision. |
+| ContributeButtondown #1 | too BrightDigit-specific | Added public `IssueNumbering` holding the subject regex; `.default` preserves today's behavior and `init(subjectPattern:)` **throws** (it is consumer input now, so it must not trap). Threaded as a **defaulted** `numbering:` param, so the root call site was untouched. |
+| TailwindKit #1 | Fix the logo | The committed PNG was the wrong artwork (1200×630 gradient banner + wordmark). Replaced from Leo's SVG: vector source + 600×600 + `@2x`. |
+| TailwindKit #1 | remove Plot dependency? | **Yes — removed.** Plot was reachable from 1 of 56 source files. Added the `TailwindClassAttribute` seam (one static requirement + protocol extension); the consumer supplies the binding. |
+
+Two things worth carrying forward:
+
+- **TailwindKit now has zero dependencies — not even Foundation.** Four files
+  called `String.replacingOccurrences` and compiled only because `import Plot`
+  leaked Foundation in transitively; they now use `escapingSpaces(_:)` in
+  `Core/ArbitraryValue.swift`. Removing Plot alone would not have built.
+- **Plot's `Component` cannot use the seam.** Swift forbids retroactively
+  conforming a protocol to another protocol, and `Component.class` returns an
+  existential rather than `Self`. The root keeps a hand-written one-liner in
+  `Sources/BrightDigitSite/Nodes/Node+Tailwind.swift`. That asymmetry is a
+  language limitation, not an oversight — don't "fix" it.
+
+The root repin and the Plot conformance landed in **one commit** on
+`release/branch-based-devendoring`, so the branch is never resolvable without the
+binding.
 
 ## Process: release a package
 
