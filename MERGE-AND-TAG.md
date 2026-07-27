@@ -361,94 +361,36 @@ The Sundell strip must preserve `///` doc comments (do not match `///` when clea
 
 ### Wave 1 — depend only on Wave 0
 
-**Ready to merge** — pending Leo's approval of all seven PRs. Every Wave 1 package
-pins its Wave 0 deps to `branch: "main"` with a refreshed `Package.resolved`
-(TailwindKit no longer has any). Three PRs are **ready for review**
-(ContributeButtondown, ContributeRSS, ContributeWordPress); four remain **drafts**
-(Publish, TailwindKit, ContributeMailchimp, ContributeYouTube) and need undrafting
-before they can merge.
+**Merged 2026-07-27.** All seven release PRs landed on `main`; working branches deleted;
+root + Wave 2 consumers pin Wave 1 packages (Publish) to `branch: "main"`. Untagged —
+tagging is the next gate after Wave 2.
 
-**PR review threads — resolved 2026-07-27.** All 48 open threads across
-ContributeButtondown #1, ContributeMailchimp #1, ContributeRSS #1, and ContributeWordPress #18 are
-resolved on GitHub (Leo's two Buttondown threads plus CodeRabbit). Package-specific
-follow-ups landed on the PR heads (`46ee03d`, `8a908e2`, `f56ede8`, `4edc481`); shared
-boilerplate threads were dismissed as out of scope for the release PRs. Helper:
+| Package | Repo | Merged PR | Merge commit on `main` |
+| --- | --- | --- | --- |
+| Publish | https://github.com/brightdigit/Publish | [#1](https://github.com/brightdigit/Publish/pull/1) | `22229e1` |
+| TailwindKit | https://github.com/brightdigit/TailwindKit | [#1](https://github.com/brightdigit/TailwindKit/pull/1) | `20731db` |
+| ContributeButtondown | https://github.com/brightdigit/ContributeButtondown | [#1](https://github.com/brightdigit/ContributeButtondown/pull/1) | `62ef181` |
+| ContributeMailchimp | https://github.com/brightdigit/ContributeMailchimp | [#1](https://github.com/brightdigit/ContributeMailchimp/pull/1) | `bbd8d93` |
+| ContributeRSS | https://github.com/brightdigit/ContributeRSS | [#1](https://github.com/brightdigit/ContributeRSS/pull/1) | `814a3f7` |
+| ContributeWordPress | https://github.com/brightdigit/ContributeWordPress | [#18](https://github.com/brightdigit/ContributeWordPress/pull/18) | `426247f` |
+| ContributeYouTube | https://github.com/brightdigit/ContributeYouTube | [#1](https://github.com/brightdigit/ContributeYouTube/pull/1) | `5f4b537` |
+
+Pre-merge history (review fixes, logos, hygiene, GCD removal) retained below for the record.
+
+**PR review threads — resolved 2026-07-27** before merge. Helper:
 [`Scripts/resolve-pr-threads.sh`](Scripts/resolve-pr-threads.sh).
 
-Leo's review comments landed 2026-07-26 and are **all resolved** (see *Wave 1 review
-fixes*), with a reply on each thread. CI is green across all seven.
+Leo's review comments (2026-07-26) were **all resolved** before merge — see *Wave 1 review
+fixes*.
 
-**Logo rollout (2026-07-26).** Pixelmator Contribute-family composite SVGs replaced the
-placeholder/wrong logos on ContributeMailchimp, ContributeRSS, ContributeYouTube, and
-ContributeWordPress, pushed onto the existing PR branches (no new PRs). README + DocC
-reference `*Logo.svg` (~200px presentation height); png/@2x/webp kept as companion rasters
-only. ContributeMailchimp's Freddie outlines fixed in `fb4a49c` (white evenodd strokes →
-black). ContributeButtondown still has no Contribute-family mark (none provided).
+**Logo / hygiene (pre-merge).** Contribute-family logos landed 2026-07-26; hygiene pass
+2026-07-24. Full hygiene record:
+[`.claude/memory/wave1-hygiene-pass.md`](.claude/memory/wave1-hygiene-pass.md).
+Still-relevant highlights: ContributeYouTube/Mailchimp un-deprecated; ContributeWordPress
+`.swift-version` → `6.4.x-snapshot` + AssetDownloader `withThrowingTaskGroup` fix;
+Publish Sundell-fork header hygiene; TailwindKit dropped Plot (zero deps).
 
-**CI status — verified against each PR's current head. All seven fully green, zero
-failures, all `mergeable_state: clean`. Six rows verified 2026-07-26; TailwindKit
-re-verified 2026-07-27 on its new head after the seam/`String` follow-up:**
-
-| PR | Head | Draft | CI |
-| --- | --- | --- | --- |
-| Publish #1 | `18dfc84` | draft | ✅ 14/14 (Ubuntu 86/86 tests, nightly-6.4 source-compat, Windows ×2, Android, 4 Apple sims) |
-| TailwindKit #1 | `4d1465c` | draft | ✅ 15/15 after the seam/`String` follow-up — incl. Ubuntu/Windows ×2/Android, which is what proves the Foundation removal, plus Linting |
-| ContributeButtondown #1 | `46ee03d` | ready | ✅ 14/14 (review-thread cleanup + URL/numbering follow-ups) |
-| ContributeMailchimp #1 | `8a908e2` | draft | ✅ 14/14 (archive-catch fix + lint green) |
-| ContributeRSS #1 | `f56ede8` | ready | ✅ 14/14 (bounded RSSError diagnostics) |
-| ContributeWordPress #18 | `4edc481` | ready | ✅ 15/15 (`redirectFormatter`, throwing site init, test helper). Pre-existing `CodeFactor` advisory unchanged. |
-| ContributeYouTube #1 | `aa2f742` | draft | ✅ 14/14 |
-
-The three previously-⏳ rows (ContributeMailchimp, ContributeRSS, ContributeWordPress)
-have since completed clean. Counts exclude the on-demand `claude` bot check, which
-reports `skipped` unless `@claude` is mentioned — that is not a failure.
-
-Publish's Linux leg is the notable one: the `DispatchSemaphore`/`ResultBox`/`TagCache` removal had
-only ever been checked on macOS, and Ubuntu now runs the full 86-test suite clean — no deadlock,
-no hang. The known ContributeWordPress test bug
-([#19](https://github.com/brightdigit/ContributeWordPress/issues/19),
-`testFailedCreateDirectory` vs. root in a container) did **not** fire in CI; it remains latent.
-
-**Hygiene pass landed on all seven working branches (2026-07-24), PRs left in their
-original draft state.** Each repo was brought to the Wave 0 standard (CI hygiene,
-`.claude/` tooling, `AGENTS.md` + `CLAUDE.md` symlink, unified README/badges, DocC + logo,
-`.spi.yml` `swift_version: "6.4"`, `.swift-version` `6.4.x-snapshot`, `dependabot.yml`) —
-no merges, no tags, no branch deletions, no root repin. Highlights:
-- **ContributeYouTube / ContributeMailchimp un-deprecated.** Both carried blanket
-  `@available(*, deprecated)` (added in `1e3a815`) with no replacement while the root
-  actively compiles them; swift-testing also hard-errors on `@Suite`/`@Test` under a
-  deprecated declaration, blocking tests. All 17 attributes removed, real tests added
-  (27 / 17). Rule ("in active use ⇒ tested ⇒ not deprecated") recorded in each repo's
-  `.claude/agent-notes.md`.
-- **ContributeWordPress:** `.swift-version` `5.8`→`6.4.x-snapshot` (resolves the drift
-  noted under *Open item*), `.spi.yml` target-name typo (`ContributeWordpress`) fixed,
-  and a **real pre-existing data race fixed** in `AssetDownloader` (see the coordinated-
-  landing note below). Kept its existing `Documentation.docc` name.
-- **Publish** (Sundell fork): copyright headers normalized to 2021 (were 2019/2020, so
-  `lint.sh -y 2021` produced a recurring 80-file diff) and an MIT-attribution hazard in
-  `lint.sh` (`-c "Leo Dion" -o "BrightDigit"` on a Sundell fork) fixed. Restricted fork
-  scope: README `+2/-0`, LICENSE untouched, no DocC/badge-block.
-- **TailwindKit:** the two non-green checks were dead `macos-12` workflows
-  (`DangerPR.yml`, `TailwindKitTest.yml`) stuck pending forever; deleting them made the
-  PR green. Added the missing `LICENSE` and `.spi.yml`.
-
-Full record: [`.claude/memory/wave1-hygiene-pass.md`](.claude/memory/wave1-hygiene-pass.md).
-
-| Package | Repo | Branch | Merge PR | Base | Ahead | Wave 0 deps |
-| --- | --- | --- | --- | --- | --- | --- |
-| Publish | https://github.com/brightdigit/Publish | `brightdigit-com-260406` | [#1](https://github.com/brightdigit/Publish/pull/1) | `main` | +19 | Ink, Plot, Files |
-| TailwindKit | https://github.com/brightdigit/TailwindKit | `brightdigit-com-260717` | [#1](https://github.com/brightdigit/TailwindKit/pull/1) | `main` | +13 | **none** (dropped Plot 2026-07-26) |
-| ContributeButtondown | https://github.com/brightdigit/ContributeButtondown | `brightdigit-com-260717` | [#1](https://github.com/brightdigit/ContributeButtondown/pull/1) | `main` | +14 | Contribute, ButtondownKit |
-| ContributeMailchimp | https://github.com/brightdigit/ContributeMailchimp | `brightdigit-com-260717` | [#1](https://github.com/brightdigit/ContributeMailchimp/pull/1) | `main` | +15 | Contribute, Spinetail |
-| ContributeRSS | https://github.com/brightdigit/ContributeRSS | `brightdigit-com-260717` | [#1](https://github.com/brightdigit/ContributeRSS/pull/1) | `main` | +14 | Contribute, SyndiKit |
-| ContributeWordPress | https://github.com/brightdigit/ContributeWordPress | `brightdigit-com-260406` | [#18](https://github.com/brightdigit/ContributeWordPress/pull/18) ⚠ | `main` | +23 | Contribute, SyndiKit |
-| ContributeYouTube | https://github.com/brightdigit/ContributeYouTube | `brightdigit-com-260717` | [#1](https://github.com/brightdigit/ContributeYouTube/pull/1) | `main` | +14 | Contribute, SwiftTube |
-
-All seven PRs are open and **MERGEABLE**, and in every repo the base branch is a
-strict ancestor of the working branch (no divergence, no conflicts) — "Ahead" is how
-many commits the working branch adds. Use the existing PRs; do not open new ones.
-"Ahead" counts predate the 2026-07-24 hygiene commits and the 2026-07-26 logo
-commits and are now higher.
+Also: ContributeWordPress [#11](https://github.com/brightdigit/ContributeWordPress/pull/11) docs (draft) — unrelated to the release PR.
 
 #### GCD removal (2026-07-24) — supersedes the `NSLock` plan
 
