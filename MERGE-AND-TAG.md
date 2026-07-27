@@ -437,7 +437,6 @@ explicitly **deletes** all five stale files (`Flexbox.swift`, `Layout/AspectRati
 orphans. Landing it makes `main` authoritative and retires the divergence. Its `.gitrepo`
 commit is still stale at `bcb0a7f7`, which matters only when `Packages/` is restored.
 
-Also: ContributeWordPress [#11](https://github.com/brightdigit/ContributeWordPress/pull/11) docs (draft).
 
 #### Merge order
 
