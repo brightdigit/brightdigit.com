@@ -5,26 +5,25 @@ repositories can move through their merge and tag sequence independently. The ro
 first-party package from a URL + branch pin; packages are not tagged yet. Living checklist:
 [`MERGE-AND-TAG.md`](../../MERGE-AND-TAG.md).
 
-## Working Branches (2026-07-23)
+## Working Branches (2026-07-27)
 
 | Branch | Packages |
 | --- | --- |
-| `main` | Plot, Files, Ink, SyndiKit, ButtondownKit, SwiftTube, Spinetail, Contribute (Wave 0; release PRs merged; untagged) |
-| `brightdigit-com-260406` | Publish, ContributeWordPress, NPMPublishPlugin, TransistorPublishPlugin, YoutubePublishPlugin, ReadingTimePublishPlugin |
-| `brightdigit-com-260717` | ContributeButtondown, ContributeMailchimp, ContributeRSS, ContributeYouTube, PublishType, TailwindKit |
+| `main` | Wave 0 (Plot, Files, Ink, SyndiKit, ButtondownKit, SwiftTube, Spinetail, Contribute) + Wave 1 (Publish, TailwindKit, ContributeButtondown, ContributeMailchimp, ContributeRSS, ContributeWordPress, ContributeYouTube) — release PRs merged; untagged |
+| `brightdigit-com-260406` | YoutubePublishPlugin, ReadingTimePublishPlugin, NPMPublishPlugin, TransistorPublishPlugin (Wave 2 PR heads; each pins Publish to `main`) |
+| `brightdigit-com-260717` | PublishType (Wave 2 PR head; pins Publish to `main`) |
 
-Wave 0 `brightdigit-com-*` / `v1.0.0` working branches are obsolete for consumers — pin Wave 0
-deps to `main`. **Done (2026-07-23):** the root and all eight Wave 1/2 packages that consume a
-Wave 0 package now declare `branch: "main"` for those deps. The stale `v1.0.0` branches still
-exist on the Wave 0 remotes; delete them only after tagging.
+Wave 0 and Wave 1 `brightdigit-com-*` working branches are **deleted** (2026-07-27). Root pins
+every Wave 0/1 package to `branch: "main"`. Wave 2 packages remain on working branches until
+their release PRs merge; after each merge, repin that package in the root to the repo default
+(`main`, except ReadingTimePublishPlugin → `master`).
 
-Wave 1/2 packages remain pinned to their `brightdigit-com-*` working branches, which are **not
-merged to `main`** — each repo's `main` is behind its working branch and missing essential
-commits, so repinning them to `main` would resolve to old code.
+**Done (2026-07-27):** same-step Publish → `main` repin across the root and all five Wave 2
+consumers (`swift package update` + committed lockfiles). Root smoke-builds clean.
 
 Note: SwiftPM cannot mix two branch requirements for one package
 (`error: … required using two different revision-based requirements`), so the root and every
-Wave 1/2 consumer must move a given Wave 0 dep to `main` together. After such a repin,
+Wave 2 consumer must move Publish to `main` together. After such a repin,
 `swift package update` is required — plain `swift package resolve` reuses the revisions already
 recorded in `Package.resolved` and keeps reading the old manifests.
 
@@ -50,13 +49,10 @@ launching build or lint matrices.
 
 ## Next Release Gate
 
-Wave 0 is on `main`, and every Wave 1/2 consumer now pins its Wave 0 deps to `branch: "main"` with
-a refreshed `Package.resolved` and green CI. **Immediate next step: merge the seven Wave 1 working
-branches into their default branch** via the already-open, MERGEABLE PRs — merge Publish first
-(Wave 2 depends on it), then the rest in parallel. Keep the working branches until the root is
-repinned. Per-repo checklist, merge order, and the two open decisions (Publish's default branch is
-`master` not `main`; `.swift-version` 5.8 drift in TransistorPublishPlugin + ContributeWordPress)
-are in [`MERGE-AND-TAG.md`](../../MERGE-AND-TAG.md).
+Wave 0 and Wave 1 are on `main` with working branches deleted. Root and Wave 2 consumers pin
+Publish to `branch: "main"`. **Immediate next step: review/merge the five Wave 2 PRs**, then
+repin each merged package in the root from its working branch to the repo default. Keep Wave 2
+working branches until the root is repinned off them.
 
 After that: tag packages from the most independent wave to the least dependent wave,
 and replace branch requirements with released `from:` versions. Untagged packages begin at

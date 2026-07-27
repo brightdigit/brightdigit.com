@@ -24,7 +24,7 @@ let package = Package(
   dependencies: [
     .package(
       url: "https://github.com/brightdigit/Publish.git",
-      branch: "brightdigit-com-260406"
+      branch: "main"
     ),
 
     .package(
@@ -38,7 +38,7 @@ let package = Package(
 
     .package(
       url: "https://github.com/brightdigit/TailwindKit.git",
-      branch: "brightdigit-com-260717"
+      branch: "main"
     ),
     .package(
       url: "https://github.com/brightdigit/Spinetail.git",
@@ -63,23 +63,23 @@ let package = Package(
     ),
     .package(
       url: "https://github.com/brightdigit/ContributeButtondown.git",
-      branch: "brightdigit-com-260717"
+      branch: "main"
     ),
     .package(
       url: "https://github.com/brightdigit/ContributeMailchimp.git",
-      branch: "brightdigit-com-260717"
+      branch: "main"
     ),
     .package(
       url: "https://github.com/brightdigit/ContributeRSS.git",
-      branch: "brightdigit-com-260717"
+      branch: "main"
     ),
     .package(
       url: "https://github.com/brightdigit/ContributeYouTube.git",
-      branch: "brightdigit-com-260717"
+      branch: "main"
     ),
     .package(
       url: "https://github.com/brightdigit/ContributeWordPress.git",
-      branch: "brightdigit-com-260406"
+      branch: "main"
     ),
     .package(
       url: "https://github.com/brightdigit/PublishType.git",

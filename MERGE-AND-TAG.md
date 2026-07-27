@@ -24,31 +24,23 @@ in-repo dependency it needs is already tagged.
 
 ---
 
-## Where things stand (2026-07-26)
+## Where things stand (2026-07-27)
 
-- **Wave 0:** all eight on `main` (release PRs merged). **No tags cut anywhere yet** —
-  tagging hasn't started. Leftovers: five comment-only CI-cleanup PRs (details in the
-  Wave 0 section). The Plot/Files/Ink `claude-review` secret gap is **resolved**
-  (org-wide `CLAUDE_CODE_OAUTH_TOKEN`, 2026-07-26).
-- **Wave 1:** all seven PRs open, none merged, all MERGEABLE (`clean`), and **all
-  seven are now fully green** — re-verified head-by-head 2026-07-26, zero failures
-  anywhere. Three ready for review (ContributeButtondown, ContributeRSS,
-  ContributeWordPress), four still drafts (Publish, TailwindKit, ContributeMailchimp,
-  ContributeYouTube). **Leo's review comments are all addressed** — see *Wave 1
-  review fixes* below. Only three of the seven PRs carried comments; the other four
-  had CodeRabbit/Codecov output only. Nothing blocks merging but Leo's approval.
-- **Wave 2:** five PRs open, untouched pending Publish. TransistorPublishPlugin still
-  pins `.swift-version` `5.8` (see *Open item*).
-- **Wave 3:** root PR #161 open and MERGEABLE; stays open until every dep is a released tag.
+- **Wave 0:** all eight on `main` (release PRs merged). **No tags cut anywhere yet**.
+  Working branches deleted; remotes clean of `brightdigit-com-*` / `v1.0.0`.
+- **Wave 1:** all seven release PRs **merged** to `main` (2026-07-27). Working branches
+  deleted. Root pins every Wave 1 package to `branch: "main"`. Wave 2 consumers all
+  pin Publish (and Ink where applicable) to `branch: "main"` — same-step repin done.
+- **Wave 2:** five PRs still open on their working branches. Publish pin already moved
+  to `main` on each PR head. TransistorPublishPlugin still pins `.swift-version` `5.8`
+  (see *Open item*). ReadingTimePublishPlugin's default branch is **`master`**, not `main`.
+- **Wave 3:** root PR #161 open; stays open until every dep is a released tag.
 
-**What remains, in order:** (1) Leo approves + merges Publish #1, then the other six
-Wave 1 PRs — all seven are green and `clean`, so the only gates left are approval and
-**undrafting the four drafts** (Publish, TailwindKit, ContributeMailchimp,
-ContributeYouTube); (2) repin root + Wave 2 consumers to `main` per merge (same-step rule below);
-(3) review/merge Wave 2 PRs, repin root; (4) tag Wave 0 → 1 → 2 bottom-up
+**What remains, in order:** (1) review/merge Wave 2 PRs, then repin root Wave 2 packages
+from working branches to each repo's default branch; (2) tag Wave 0 → 1 → 2 bottom-up
 (`1.0.0`/`1.0.0-alpha.1` per the ordering constraints), rewriting each package's in-repo
 deps to `from:` before its tag — Wave 0 has no in-repo deps, so its tags can be cut at
-any point; (5) rewrite root pins to `from:`, verify, merge #161,
+any point; (3) rewrite root pins to `from:`, verify, merge #161,
 restore subrepos for `v2.0.0-alpha.2`.
 
 ## Current checkpoint
@@ -57,29 +49,21 @@ restore subrepos for `v2.0.0-alpha.2`.
 via URL + branch pins in [`Package.swift`](Package.swift) /
 [`Package.resolved`](Package.resolved).
 
-### Root pins (2026-07-24)
+### Root pins (2026-07-27)
 
 | Branch | Packages |
 | --- | --- |
-| `main` | Contribute (`2d346bd`), Spinetail, ButtondownKit, SyndiKit (+ transitive Plot, Files, Ink, SwiftTube) |
-| `brightdigit-com-260406` | Publish, YoutubePublishPlugin, ReadingTimePublishPlugin, NPMPublishPlugin, TransistorPublishPlugin, ContributeWordPress |
-| `brightdigit-com-260717` | TailwindKit, ContributeButtondown, ContributeMailchimp, ContributeRSS, ContributeYouTube, PublishType |
+| `main` | Wave 0 (Plot, Files, Ink, SyndiKit, ButtondownKit, SwiftTube, Spinetail, Contribute) + Wave 1 (Publish `22229e1`, TailwindKit, ContributeButtondown, ContributeMailchimp, ContributeRSS, ContributeWordPress, ContributeYouTube) |
+| `brightdigit-com-260406` | YoutubePublishPlugin, ReadingTimePublishPlugin, NPMPublishPlugin, TransistorPublishPlugin (Wave 2 PR heads; Publish → `main`) |
+| `brightdigit-com-260717` | PublishType (Wave 2 PR head; Publish → `main`) |
 
-All eight Wave 0 packages are on **`main`** (release PRs `v1.0.0` → `main` merged).
-Stale `v1.0.0` branches may still exist but are not the consumer pin. Plot/Files/Ink
-working branches (`brightdigit-com-260406`) are **deleted**. Root and Wave 1/2
-consumers pin Wave 0 deps to `branch: "main"` — completed 2026-07-23 across the root
-and the eight Wave 1/2 packages that consume a Wave 0 package (Publish,
-TransistorPublishPlugin, ContributeWordPress, TailwindKit, ContributeButtondown,
-ContributeMailchimp, ContributeRSS, ContributeYouTube). YoutubePublishPlugin,
-ReadingTimePublishPlugin, NPMPublishPlugin and PublishType needed no change — their
-only first-party dep is Publish (Wave 1). Dual-mode `ensure-remote-deps.sh`
+Wave 0 and Wave 1 working branches are **deleted**. Dual-mode `ensure-remote-deps.sh`
 was removed earlier from packages whose manifests already use `url:` + `branch:`.
 
 SwiftPM rejects two branch requirements for the same package
-(`error: … required using two different revision-based requirements`), so a Wave 0 dep
-must move to `main` in the root **and** every Wave 1/2 consumer in the same step. Follow
-the manifest edit with `swift package update`, not `swift package resolve` — resolve
+(`error: … required using two different revision-based requirements`), so a Wave 1 dep
+(Publish) must move to `main` in the root **and** every Wave 2 consumer in the same step.
+Follow the manifest edit with `swift package update`, not `swift package resolve` — resolve
 reuses the revisions already in `Package.resolved` and re-reads the old manifests.
 
 ---
@@ -384,6 +368,13 @@ pins its Wave 0 deps to `branch: "main"` with a refreshed `Package.resolved`
 (Publish, TailwindKit, ContributeMailchimp, ContributeYouTube) and need undrafting
 before they can merge.
 
+**PR review threads — resolved 2026-07-27.** All 48 open threads across
+ContributeButtondown #1, ContributeMailchimp #1, ContributeRSS #1, and ContributeWordPress #18 are
+resolved on GitHub (Leo's two Buttondown threads plus CodeRabbit). Package-specific
+follow-ups landed on the PR heads (`46ee03d`, `8a908e2`, `f56ede8`, `4edc481`); shared
+boilerplate threads were dismissed as out of scope for the release PRs. Helper:
+[`Scripts/resolve-pr-threads.sh`](Scripts/resolve-pr-threads.sh).
+
 Leo's review comments landed 2026-07-26 and are **all resolved** (see *Wave 1 review
 fixes*), with a reply on each thread. CI is green across all seven.
 
@@ -402,10 +393,10 @@ re-verified 2026-07-27 on its new head after the seam/`String` follow-up:**
 | --- | --- | --- | --- |
 | Publish #1 | `18dfc84` | draft | ✅ 14/14 (Ubuntu 86/86 tests, nightly-6.4 source-compat, Windows ×2, Android, 4 Apple sims) |
 | TailwindKit #1 | `4d1465c` | draft | ✅ 15/15 after the seam/`String` follow-up — incl. Ubuntu/Windows ×2/Android, which is what proves the Foundation removal, plus Linting |
-| ContributeButtondown #1 | `65907c6` | ready | ✅ 14/14 (incl. the front-matter follow-up) |
-| ContributeMailchimp #1 | `fb4a49c` | draft | ✅ 14/14 (the Freddie-outline run finished clean) |
-| ContributeRSS #1 | `bfd9d83` | ready | ✅ 14/14 (visionOS leg finished) |
-| ContributeWordPress #18 | `f663445` | ready | ✅ 15/15 (Linting finished). Pre-existing `CodeFactor` advisory unchanged. |
+| ContributeButtondown #1 | `46ee03d` | ready | ✅ 14/14 (review-thread cleanup + URL/numbering follow-ups) |
+| ContributeMailchimp #1 | `8a908e2` | draft | ✅ 14/14 (archive-catch fix + lint green) |
+| ContributeRSS #1 | `f56ede8` | ready | ✅ 14/14 (bounded RSSError diagnostics) |
+| ContributeWordPress #18 | `4edc481` | ready | ✅ 15/15 (`redirectFormatter`, throwing site init, test helper). Pre-existing `CodeFactor` advisory unchanged. |
 | ContributeYouTube #1 | `aa2f742` | draft | ✅ 14/14 |
 
 The three previously-⏳ rows (ContributeMailchimp, ContributeRSS, ContributeWordPress)
@@ -508,28 +499,27 @@ Also: ContributeWordPress [#11](https://github.com/brightdigit/ContributeWordPre
 
 #### Merge order
 
-Merge **Publish first**, then the other six in any order (or in parallel). Publish is
-the only Wave 1 package that Wave 2 consumes, so landing it first unblocks Wave 2; the
-six Contribute*/TailwindKit packages have no in-repo consumers within Wave 1.
+~~Merge **Publish first**, then the other six in any order.~~ **Done 2026-07-27** — all
+seven Wave 1 release PRs merged. Publish is on `main` (`22229e1`); Wave 2 consumers and
+the root pin Publish to `branch: "main"`.
 
-#### Per-repo checklist
+#### Per-repo checklist (Wave 1 — complete)
 
-1. **Confirm CI is green** on the PR head.
-2. **Merge the PR** into the base branch. These are true fast-forwards, so any merge
-   strategy works — but prefer a **merge commit** over squash: a squash rewrites the
-   branch tip, which orphans the `.gitrepo` parent refs used when `Packages/` is
-   restored (recover with `./fix-subrepo-parents.sh` if it happens).
-3. **Do not delete the working branch yet.** The root still pins Wave 1/2 packages to
-   `brightdigit-com-*`; deleting the branch would break root resolution. Delete only
-   after the root is repinned.
-4. **Repin consumers to `main`** once a package is merged — the root and any Wave 2
-   package that depends on it, in the same step (see the SwiftPM note below), followed
-   by `swift package update` in each.
+1. ~~Confirm CI is green~~ ✅
+2. ~~Merge the PR~~ ✅ (all seven, 2026-07-27)
+3. ~~Repin consumers to `main`~~ ✅ — root Wave 1 packages + every Wave 2 Publish pin,
+   then `swift package update` (2026-07-27)
+4. ~~Delete working branches~~ ✅ — Publish / TailwindKit / ContributeButtondown /
+   ContributeYouTube deleted after the repin; Mailchimp / RSS / WordPress were already gone
+
+For **Wave 2**, reuse the same checklist: keep the working branch until the root is
+repinned off it after merge.
 
 #### Open item
 
 - ~~Publish's default branch is `master`~~ — **resolved 2026-07-23:** renamed to `main`.
-  PR #1 auto-retargeted and remains MERGEABLE.
+- **ReadingTimePublishPlugin's default branch is `master`**, not `main` — when its Wave 2
+  PR merges, repin the root to `branch: "master"`.
 - **`.swift-version` drift.** ~~TransistorPublishPlugin and ContributeWordPress pin
   toolchain `5.8`~~ — ContributeWordPress fixed to `6.4.x-snapshot` in the 2026-07-24
   hygiene pass. **TransistorPublishPlugin still pins `5.8`**; every other repo and the
@@ -542,7 +532,8 @@ six Contribute*/TailwindKit packages have no in-repo consumers within Wave 1.
 SwiftPM refuses two branch requirements for one package
 (`error: … required using two different revision-based requirements`), so when a Wave 1
 package moves to `main`, **every consumer must move in the same step** — the root and
-each Wave 2 dependent together, not one at a time.
+each Wave 2 dependent together, not one at a time. **Wave 1 same-step Publish → `main`
+repin completed 2026-07-27.**
 
 After any repin, run **`swift package update`**, not `swift package resolve`: resolve
 reuses the revisions already in `Package.resolved` and keeps reading the old manifests.
@@ -554,16 +545,18 @@ radius.
 
 ### Wave 2 — Publish plugins / type layer
 
-All five PRs open (2026-07-26). Do not merge before Publish lands and each package's
-Publish pin moves to `main` (with the root, in the same step).
+All five PRs open. **Publish → `main` same-step repin done 2026-07-27** on every PR head
+(and root). Ready for Leo's review/merge. After each merge, repin that package in the root
+from its working branch to the repo default (`main`, except ReadingTimePublishPlugin →
+`master`).
 
-| Package | Repo | Branch | Merge PR | State |
-| --- | --- | --- | --- | --- |
-| PublishType | https://github.com/brightdigit/PublishType | `brightdigit-com-260717` | [#1](https://github.com/brightdigit/PublishType/pull/1) | draft |
-| YoutubePublishPlugin | https://github.com/brightdigit/YoutubePublishPlugin | `brightdigit-com-260406` | [#1](https://github.com/brightdigit/YoutubePublishPlugin/pull/1) | ready |
-| ReadingTimePublishPlugin | https://github.com/brightdigit/ReadingTimePublishPlugin | `brightdigit-com-260406` | [#1](https://github.com/brightdigit/ReadingTimePublishPlugin/pull/1) | draft |
-| TransistorPublishPlugin | https://github.com/brightdigit/TransistorPublishPlugin | `brightdigit-com-260406` | [#6](https://github.com/brightdigit/TransistorPublishPlugin/pull/6) | ready |
-| NPMPublishPlugin | https://github.com/brightdigit/NPMPublishPlugin | `brightdigit-com-260406` | [#9](https://github.com/brightdigit/NPMPublishPlugin/pull/9) | ready |
+| Package | Repo | Branch | Merge PR | State | Publish pin |
+| --- | --- | --- | --- | --- | --- |
+| PublishType | https://github.com/brightdigit/PublishType | `brightdigit-com-260717` | [#1](https://github.com/brightdigit/PublishType/pull/1) | draft | `main` (`cffea6a`) |
+| YoutubePublishPlugin | https://github.com/brightdigit/YoutubePublishPlugin | `brightdigit-com-260406` | [#1](https://github.com/brightdigit/YoutubePublishPlugin/pull/1) | ready | `main` (`dab8581`) |
+| ReadingTimePublishPlugin | https://github.com/brightdigit/ReadingTimePublishPlugin | `brightdigit-com-260406` | [#1](https://github.com/brightdigit/ReadingTimePublishPlugin/pull/1) | draft | `main` (`27bc0c6`); default branch is `master` |
+| TransistorPublishPlugin | https://github.com/brightdigit/TransistorPublishPlugin | `brightdigit-com-260406` | [#6](https://github.com/brightdigit/TransistorPublishPlugin/pull/6) | ready | `main` (`65ba23e`) |
+| NPMPublishPlugin | https://github.com/brightdigit/NPMPublishPlugin | `brightdigit-com-260406` | [#9](https://github.com/brightdigit/NPMPublishPlugin/pull/9) | ready | `main` (`c804f13`) |
 
 ### Wave 3 — root cutover
 
@@ -582,17 +575,11 @@ rebases onto `main` and restores subrepos for `v2.0.0-alpha.2`.
 Mark: ☐ todo · ◐ on `main` (release PR merged; untagged) · ✅ tagged `vX.Y.Z`  
 ⏭ = parked · ⚠ = open milestoned issue work
 
-**Wave 0:** ◐ Plot · ◐ Files · ◐ Ink · ◐ SyndiKit · ◐ ButtondownKit · ◐ SwiftTube · ◐ Spinetail · ◐ Contribute — on `main`; **none ✅ tagged**
+**Wave 0:** ◐ Plot · ◐ Files · ◐ Ink · ◐ SyndiKit · ◐ ButtondownKit · ◐ SwiftTube · ◐ Spinetail · ◐ Contribute — on `main`; **none ✅ tagged**; working branches deleted
 
-**Wave 1:** all seven consume Wave 0 from `branch: "main"` with refreshed lockfiles (TailwindKit
-now has no deps at all); each has an open MERGEABLE PR **awaiting Leo's approval** (see the Wave 1
-section). Hygiene pass landed on all seven branches 2026-07-24; Contribute-family logos on four
-branches 2026-07-26; Leo's five review comments resolved 2026-07-26. **CI green on all seven**,
-re-verified head-by-head. Three PRs ready for review, four still drafts. The Contribute #19
-pairing constraint is **discharged** — #19 is merged, so ContributeWordPress #18 lands on its own.
-☐ Publish (CI ✅, draft) · ☐ TailwindKit (CI ✅, draft) · ☐ ContributeButtondown (CI ✅, ready) · ☐ ContributeMailchimp (CI ✅, draft) · ☐ ContributeRSS (CI ✅, ready) · ☐ ContributeWordPress (CI ✅, ready) · ☐ ContributeYouTube (CI ✅, draft)
+**Wave 1:** ◐ Publish · ◐ TailwindKit · ◐ ContributeButtondown · ◐ ContributeMailchimp · ◐ ContributeRSS · ◐ ContributeWordPress · ◐ ContributeYouTube — release PRs **merged** 2026-07-27; root + Wave 2 consumers pin them (Publish) to `branch: "main"`; working branches deleted; **none ✅ tagged**
 
-**Wave 2:** ☐ PublishType ⚠ [#135](https://github.com/brightdigit/brightdigit.com/issues/135) · ☐ YoutubePublishPlugin · ☐ ReadingTimePublishPlugin · ☐ TransistorPublishPlugin · ☐ NPMPublishPlugin
+**Wave 2:** ☐ PublishType ⚠ [#135](https://github.com/brightdigit/brightdigit.com/issues/135) · ☐ YoutubePublishPlugin · ☐ ReadingTimePublishPlugin · ☐ TransistorPublishPlugin · ☐ NPMPublishPlugin — PRs open; Publish→`main` repin landed on each head 2026-07-27
 
 **Wave 3:** ☐ BrightDigit ⚠ [#129](https://github.com/brightdigit/brightdigit.com/issues/129) [#50](https://github.com/brightdigit/brightdigit.com/issues/50) [#70](https://github.com/brightdigit/brightdigit.com/issues/70) [#135](https://github.com/brightdigit/brightdigit.com/issues/135) [#140](https://github.com/brightdigit/brightdigit.com/issues/140) [#92](https://github.com/brightdigit/brightdigit.com/issues/92)
 
