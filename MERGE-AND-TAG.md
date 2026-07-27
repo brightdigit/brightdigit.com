@@ -31,17 +31,42 @@ in-repo dependency it needs is already tagged.
 - **Wave 1:** all seven release PRs **merged** to `main` (2026-07-27). Working branches
   deleted. Root pins every Wave 1 package to `branch: "main"`. Wave 2 consumers all
   pin Publish (and Ink where applicable) to `branch: "main"` — same-step repin done.
-- **Wave 2:** five PRs still open on their working branches. Publish pin already moved
-  to `main` on each PR head. TransistorPublishPlugin still pins `.swift-version` `5.8`
-  (see *Open item*). ReadingTimePublishPlugin's default branch is **`master`**, not `main`.
+- **Wave 2:** all five release PRs **merged** to `main` (2026-07-27) — PublishType `ea7f87f`,
+  YoutubePublishPlugin `20db534`, ReadingTimePublishPlugin `bb37c11`, TransistorPublishPlugin
+  `3aa83e2`, NPMPublishPlugin `a7b4b51`. TransistorPublishPlugin still pins `.swift-version`
+  `5.8` (see *Open item*). Root still pins these five to their old working branches — repin
+  as part of the Wave 2 tag step.
 - **Wave 3:** root PR #161 open; stays open until every dep is a released tag.
 
-**What remains, in order:** (1) review/merge Wave 2 PRs, then repin root Wave 2 packages
-from working branches to each repo's default branch; (2) tag Wave 0 → 1 → 2 bottom-up
-(`1.0.0`/`1.0.0-alpha.1` per the ordering constraints), rewriting each package's in-repo
-deps to `from:` before its tag — Wave 0 has no in-repo deps, so its tags can be cut at
-any point; (3) rewrite root pins to `from:`, verify, merge #161,
-restore subrepos for `v2.0.0-alpha.2`.
+**All 20 packages are now on `main`; none is tagged.** What remains, in order:
+(1) squash each repo's phase-5 history into one release commit and force-push
+(`Scripts/squash-release.sh`); (2) wait for CI green across the fleet; (3) tag
+Wave 0 → 1 → 2 bottom-up per the [version table](#version-table), rewriting each package's
+in-repo deps to `from:` before its tag, and repinning the root at the end of each wave;
+(4) merge #161 and restore subrepos for `v2.0.0-alpha.2`.
+
+### Squash + tag tooling
+
+[`Scripts/release-versions.tsv`](Scripts/release-versions.tsv) is the canonical table: repo,
+wave, boundary commit, version, rewrite mode, and the `main` tip observed 2026-07-27.
+[`Scripts/squash-release.sh`](Scripts/squash-release.sh) performs the rewrite:
+
+```bash
+Scripts/squash-release.sh --dry-run --all     # review; needs no token
+Scripts/squash-release.sh --wave 0            # real run; needs RELEASE_PAT
+```
+
+It pushes `backup/pre-squash-260727` before touching anything, installs the prepared
+`Scripts/release-notes/<Repo>.md` **between** the history reset and the commit so the notes
+land inside the release commit, and **aborts unless the diff against the old tip touches
+`RELEASE_NOTES.md` and nothing else** — a wrong boundary would silently drop upstream history.
+It does not tag; tags are cut per-wave once CI is green.
+
+Recover any repo with:
+
+```bash
+git push --force origin refs/heads/backup/pre-squash-260727:main
+```
 
 ## Current checkpoint
 
@@ -54,8 +79,12 @@ via URL + branch pins in [`Package.swift`](Package.swift) /
 | Branch | Packages |
 | --- | --- |
 | `main` | Wave 0 (Plot, Files, Ink, SyndiKit, ButtondownKit, SwiftTube, Spinetail, Contribute) + Wave 1 (Publish `22229e1`, TailwindKit, ContributeButtondown, ContributeMailchimp, ContributeRSS, ContributeWordPress, ContributeYouTube) |
-| `brightdigit-com-260406` | YoutubePublishPlugin, ReadingTimePublishPlugin, NPMPublishPlugin, TransistorPublishPlugin (Wave 2 PR heads; Publish → `main`) |
-| `brightdigit-com-260717` | PublishType (Wave 2 PR head; Publish → `main`) |
+| `brightdigit-com-260406` | YoutubePublishPlugin, ReadingTimePublishPlugin, NPMPublishPlugin, TransistorPublishPlugin — **stale**: these branches are merged; the root has not been repinned to `main` yet |
+| `brightdigit-com-260717` | PublishType — **stale**, same reason |
+
+The four stale Wave 2 pins are deliberate: repinning them to `main` now would be thrown away
+when they move to `from:` tags at the end of the Wave 2 tag pass, so the root goes straight
+from working branch to released tag.
 
 Wave 0 and Wave 1 working branches are **deleted**. Dual-mode `ensure-remote-deps.sh`
 was removed earlier from packages whose manifests already use `url:` + `branch:`.
@@ -80,6 +109,45 @@ swift-openapi, XMLCoder, swift-markdown, etc.) are already versioned upstream.
 | **1** | Publish, TailwindKit, ContributeButtondown, ContributeMailchimp, ContributeRSS, ContributeWordPress, ContributeYouTube | Depend only on Wave 0 (TailwindKit now has **no** deps at all — it could tag with Wave 0, but stays here since nothing depends on it landing earlier) |
 | **2** | PublishType, YoutubePublishPlugin, ReadingTimePublishPlugin, TransistorPublishPlugin, NPMPublishPlugin | Depend on Publish (Wave 1); Transistor also on Ink |
 | **3** | BrightDigit (root) | Aggregation hub — depends on all 16 first-party packages |
+
+### Version table
+
+Canonical form lives in [`Scripts/release-versions.tsv`](Scripts/release-versions.tsv).
+`1.0.0-alpha.1` is **not** usable everywhere: it is already taken in Contribute, Spinetail and
+ContributeWordPress, and would be a semver *downgrade* in Files and the three packages already
+shipping `1.0.0`. Tags are unprefixed; commit messages carry the `v`.
+
+| Wave | Package | Highest existing tag | New tag |
+| --- | --- | --- | --- |
+| 0 | Plot | `0.14.0` | `1.0.0-alpha.1` |
+| 0 | Files | `4.3.0` | **`5.0.0-alpha.1`** |
+| 0 | Ink | `0.6.0` | `1.0.0-alpha.1` |
+| 0 | SyndiKit | `0.8.1` | `1.0.0-alpha.1` |
+| 0 | ButtondownKit | *(none)* | `1.0.0-alpha.1` |
+| 0 | SwiftTube | `0.2.0-beta.5` | `1.0.0-alpha.1` |
+| 0 | Spinetail | `1.0.0-alpha.2` | **`1.0.0-beta.1`** |
+| 0 | Contribute | `1.0.0-alpha.5` | **`1.0.0-beta.1`** |
+| 1 | Publish | *(none)* | `1.0.0-alpha.1` |
+| 1 | TailwindKit | *(none)* | `1.0.0-alpha.1` |
+| 1 | ContributeButtondown | *(none)* | `1.0.0-alpha.1` |
+| 1 | ContributeMailchimp | *(none)* | `1.0.0-alpha.1` |
+| 1 | ContributeRSS | *(none)* | `1.0.0-alpha.1` |
+| 1 | ContributeWordPress | `1.0.0` | **`2.0.0-alpha.1`** |
+| 1 | ContributeYouTube | *(none)* | `1.0.0-alpha.1` |
+| 2 | PublishType | *(none)* | `1.0.0-alpha.1` |
+| 2 | YoutubePublishPlugin | `0.1.0` | `1.0.0-alpha.1` |
+| 2 | ReadingTimePublishPlugin | `0.3.0` | `1.0.0-alpha.1` |
+| 2 | TransistorPublishPlugin | `1.0.0` | **`2.0.0-alpha.1`** |
+| 2 | NPMPublishPlugin | `1.0.0` | **`2.0.0-alpha.1`** |
+
+Contribute's and Spinetail's old alpha tags sit on **diverged** history (`gh api compare` →
+`"status":"diverged"`), so those lines were abandoned — a further reason not to continue them.
+ContributeWordPress's `1.0.0` *is* a true ancestor of `main`.
+
+> **SwiftPM prerelease caveat.** `from:` does not resolve to a prerelease unless the requirement
+> itself names one, so every root pin must carry the full prerelease string
+> (`from: "1.0.0-alpha.1"`). Fall back to `exact:` if resolution refuses — which is what
+> `ConfigKeyKit` already uses in the root manifest.
 
 ```mermaid
 graph LR
@@ -272,7 +340,10 @@ For each package, in wave order:
 1. Never tag a package before all its in-repo deps are tagged.
 2. Rewrite deps → build standalone → then tag.
 3. Root is always last.
-4. Untagged packages begin at `1.0.0-alpha.1` (or `1.0.0` when that is the release line); existing stable releases receive patch bumps; prerelease lines advance. Confirm with `git ls-remote --tags` before choosing.
+4. Versions follow the [version table](#version-table) — **not** a uniform `1.0.0-alpha.1`.
+   The rule: a stable `1.0.0`+ already exists → next major, alpha line; only a prerelease
+   line exists → advance that line to beta; `0.x` with no stable → `1.0.0-alpha.1`.
+   Confirm with `git ls-remote --tags` before choosing.
 
 ### Dual-mode `ensure-remote-deps.sh` (historical)
 
@@ -377,8 +448,9 @@ tagging is the next gate after Wave 2.
 
 Pre-merge history (review fixes, logos, hygiene, GCD removal) retained below for the record.
 
-**PR review threads — resolved 2026-07-27** before merge. Helper:
-[`Scripts/resolve-pr-threads.sh`](Scripts/resolve-pr-threads.sh).
+**PR review threads — resolved 2026-07-27** before merge. (A `Scripts/resolve-pr-threads.sh`
+helper was referenced here but was never committed to this repo; resolve threads via
+`gh api graphql` with `resolveReviewThread` if the need recurs.)
 
 Leo's review comments (2026-07-26) were **all resolved** before merge — see *Wave 1 review
 fixes*.
@@ -459,8 +531,9 @@ repinned off it after merge.
 #### Open item
 
 - ~~Publish's default branch is `master`~~ — **resolved 2026-07-23:** renamed to `main`.
-- **ReadingTimePublishPlugin's default branch is `master`**, not `main` — when its Wave 2
-  PR merges, repin the root to `branch: "master"`.
+- ~~ReadingTimePublishPlugin's default branch is `master`~~ — **wrong; corrected 2026-07-27.**
+  `gh api repos/brightdigit/ReadingTimePublishPlugin --jq .default_branch` returns **`main`**.
+  All 20 repos use `main`; there is no `master` special case anywhere.
 - **`.swift-version` drift.** ~~TransistorPublishPlugin and ContributeWordPress pin
   toolchain `5.8`~~ — ContributeWordPress fixed to `6.4.x-snapshot` in the 2026-07-24
   hygiene pass. **TransistorPublishPlugin still pins `5.8`**; every other repo and the
@@ -486,18 +559,24 @@ radius.
 
 ### Wave 2 — Publish plugins / type layer
 
-All five PRs open. **Publish → `main` same-step repin done 2026-07-27** on every PR head
-(and root). Ready for Leo's review/merge. After each merge, repin that package in the root
-from its working branch to the repo default (`main`, except ReadingTimePublishPlugin →
-`master`).
+**Merged 2026-07-27.** All five release PRs landed on `main`. Every repo's default branch is
+`main`. The root still pins these five to their old working branches — that repin happens as
+step 5 of the Wave 2 tag pass, not before.
 
-| Package | Repo | Branch | Merge PR | State | Publish pin |
-| --- | --- | --- | --- | --- | --- |
-| PublishType | https://github.com/brightdigit/PublishType | `brightdigit-com-260717` | [#1](https://github.com/brightdigit/PublishType/pull/1) | draft | `main` (`cffea6a`) |
-| YoutubePublishPlugin | https://github.com/brightdigit/YoutubePublishPlugin | `brightdigit-com-260406` | [#1](https://github.com/brightdigit/YoutubePublishPlugin/pull/1) | ready | `main` (`dab8581`) |
-| ReadingTimePublishPlugin | https://github.com/brightdigit/ReadingTimePublishPlugin | `brightdigit-com-260406` | [#1](https://github.com/brightdigit/ReadingTimePublishPlugin/pull/1) | draft | `main` (`27bc0c6`); default branch is `master` |
-| TransistorPublishPlugin | https://github.com/brightdigit/TransistorPublishPlugin | `brightdigit-com-260406` | [#6](https://github.com/brightdigit/TransistorPublishPlugin/pull/6) | ready | `main` (`65ba23e`) |
-| NPMPublishPlugin | https://github.com/brightdigit/NPMPublishPlugin | `brightdigit-com-260406` | [#9](https://github.com/brightdigit/NPMPublishPlugin/pull/9) | ready | `main` (`c804f13`) |
+| Package | Repo | Merged PR | Merge commit on `main` |
+| --- | --- | --- | --- |
+| PublishType | https://github.com/brightdigit/PublishType | [#1](https://github.com/brightdigit/PublishType/pull/1) | `ea7f87f` |
+| YoutubePublishPlugin | https://github.com/brightdigit/YoutubePublishPlugin | [#1](https://github.com/brightdigit/YoutubePublishPlugin/pull/1) | `20db534` |
+| ReadingTimePublishPlugin | https://github.com/brightdigit/ReadingTimePublishPlugin | [#1](https://github.com/brightdigit/ReadingTimePublishPlugin/pull/1) | `bb37c11` |
+| TransistorPublishPlugin | https://github.com/brightdigit/TransistorPublishPlugin | [#6](https://github.com/brightdigit/TransistorPublishPlugin/pull/6) | `3aa83e2` |
+| NPMPublishPlugin | https://github.com/brightdigit/NPMPublishPlugin | [#9](https://github.com/brightdigit/NPMPublishPlugin/pull/9) | `a7b4b51` |
+
+NPMPublishPlugin #9 squash-merged as a single commit already titled `v1.0.0-alpha.1 #9`. Since
+that repo ships `1.0.0`, the message is wrong — the squash pass amends it to `v2.0.0-alpha.1`.
+
+Two repos landed their PR as a **true merge commit** rather than a squash — Contribute
+(`a749708`, p=2) and TransistorPublishPlugin (`3aa83e2`, p=2, with 24 loose commits beneath).
+The squash uses `git reset --soft`, which flattens a merge without replaying it.
 
 ### Wave 3 — root cutover
 
@@ -520,7 +599,7 @@ Mark: ☐ todo · ◐ on `main` (release PR merged; untagged) · ✅ tagged `vX.
 
 **Wave 1:** ◐ Publish · ◐ TailwindKit · ◐ ContributeButtondown · ◐ ContributeMailchimp · ◐ ContributeRSS · ◐ ContributeWordPress · ◐ ContributeYouTube — release PRs **merged** 2026-07-27; root + Wave 2 consumers pin them (Publish) to `branch: "main"`; working branches deleted; **none ✅ tagged**
 
-**Wave 2:** ☐ PublishType ⚠ [#135](https://github.com/brightdigit/brightdigit.com/issues/135) · ☐ YoutubePublishPlugin · ☐ ReadingTimePublishPlugin · ☐ TransistorPublishPlugin · ☐ NPMPublishPlugin — PRs open; Publish→`main` repin landed on each head 2026-07-27
+**Wave 2:** ◐ PublishType ⚠ [#135](https://github.com/brightdigit/brightdigit.com/issues/135) · ◐ YoutubePublishPlugin · ◐ ReadingTimePublishPlugin · ◐ TransistorPublishPlugin · ◐ NPMPublishPlugin — release PRs **merged** 2026-07-27; **none ✅ tagged**; root still pins these five to their old working branches
 
 **Wave 3:** ☐ BrightDigit ⚠ [#129](https://github.com/brightdigit/brightdigit.com/issues/129) [#50](https://github.com/brightdigit/brightdigit.com/issues/50) [#70](https://github.com/brightdigit/brightdigit.com/issues/70) [#135](https://github.com/brightdigit/brightdigit.com/issues/135) [#140](https://github.com/brightdigit/brightdigit.com/issues/140) [#92](https://github.com/brightdigit/brightdigit.com/issues/92)
 
