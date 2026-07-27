@@ -370,15 +370,14 @@ reference `*Logo.svg` (~200px presentation height); png/@2x/webp kept as compani
 only. ContributeMailchimp's Freddie outlines fixed in `fb4a49c` (white evenodd strokes →
 black). ContributeButtondown still has no Contribute-family mark (none provided).
 
-**CI status — re-verified against each PR's current head 2026-07-26 (after the review
-fixes). Zero failures anywhere, all `mergeable_state: clean`. Six of seven fully green;
-ContributeButtondown's front-matter follow-up was still building at last check:**
+**CI status — re-verified against each PR's current head 2026-07-26, after every review
+fix landed. All seven fully green, zero failures, all `mergeable_state: clean`:**
 
 | PR | Head | Draft | CI |
 | --- | --- | --- | --- |
 | Publish #1 | `18dfc84` | draft | ✅ 14/14 (Ubuntu 86/86 tests, nightly-6.4 source-compat, Windows ×2, Android, 4 Apple sims) |
 | TailwindKit #1 | `b7a2dba` | draft | ✅ 14/14 — incl. Ubuntu/Windows/Android, which is what proves the Foundation removal |
-| ContributeButtondown #1 | `65907c6` | ready | ⏳ running — the front-matter follow-up (`65907c6`) is newer than the fully-green `4726346`; re-check before merging |
+| ContributeButtondown #1 | `65907c6` | ready | ✅ 14/14 (incl. the front-matter follow-up) |
 | ContributeMailchimp #1 | `fb4a49c` | draft | ✅ 14/14 (the Freddie-outline run finished clean) |
 | ContributeRSS #1 | `bfd9d83` | ready | ✅ 14/14 (visionOS leg finished) |
 | ContributeWordPress #18 | `f663445` | ready | ✅ 15/15 (Linting finished). Pre-existing `CodeFactor` advisory unchanged. |
