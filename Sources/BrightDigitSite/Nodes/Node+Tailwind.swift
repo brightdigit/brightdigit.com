@@ -34,20 +34,15 @@ import TailwindKit
 // seam instead, and the consumer supplies the binding. These conformances are
 // that binding for Plot — they are what makes `.tailwind(…)` available on
 // `Node`/`Attribute` throughout the site.
+//
+// The bodies are empty by design: the seam's only requirement is
+// `class(_ className: String) -> Self`, which Plot's own factories already
+// declare under `Context: HTMLContext`. Adopting it costs a declaration, not an
+// implementation.
 
-extension Node: TailwindClassAttribute where Context: HTMLContext {
-  /// Creates a `class` attribute node set to `className`.
-  public static func tailwindClass(_ className: String) -> Node {
-    .class(className)
-  }
-}
+extension Node: TailwindClassAttribute where Context: HTMLContext {}
 
-extension Attribute: TailwindClassAttribute where Context: HTMLContext {
-  /// Creates a `class` attribute set to `className`.
-  public static func tailwindClass(_ className: String) -> Attribute {
-    .class(className)
-  }
-}
+extension Attribute: TailwindClassAttribute where Context: HTMLContext {}
 
 extension Component {
   /// Renders a `TailwindStyleBuilder` into this component's `class` attribute.
