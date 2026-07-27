@@ -209,6 +209,30 @@ PR head branches, with a reply on each thread — **no merges, no tags.**
 | TailwindKit #1 | Fix the logo | The committed PNG was the wrong artwork (1200×630 gradient banner + wordmark), not merely stale. Replaced from Leo's SVG: vector source + 600×600 + `@2x`. | `b25bd3d` |
 | TailwindKit #1 | remove Plot dependency? | **Yes — removed.** Plot was reachable from 1 of 56 source files. Added the `TailwindClassAttribute` seam (one static requirement + protocol extension); the consumer supplies the binding. | `b7a2dba` |
 
+**Follow-up: seam shape and no global functions (`4d1465c`, root `b6d47e4b`).** Two
+further corrections from Leo on the work above.
+
+*No global functions.* The Plot removal had introduced a file-scope
+`escapingSpaces(_:)`; it is now `String.escapingSpaces` in
+`Core/String+ArbitraryValue.swift`. The file had to be renamed alongside it —
+SwiftLint's `file_name` rule runs at `severity: error` and expects
+`<Type>+<Suffix>.swift`. This also deleted a `private func escapingSpaces` shim in
+`ArbitraryStyling` that existed only to disambiguate against the global.
+
+*The seam should cost a declaration, not an implementation.* The requirement was
+renamed `tailwindClass(_:)` → `` `class`(_:) `` — the factory Plot's `Node` and
+`Attribute` already declare, matching on argument label, return type **and** the
+`Context: HTMLContext` constraint. So the root's binding is now literally:
+
+```swift
+extension Node: TailwindClassAttribute where Context: HTMLContext {}
+extension Attribute: TailwindClassAttribute where Context: HTMLContext {}
+```
+
+Verified by compiling a probe with a negative control before committing. The accepted
+tradeoff is that every conformer gains a `class` member. `Component` is unaffected by
+this change and still needs its hand-written one-liner, for the language reasons below.
+
 Leo chose *injectable pattern* over relocating the numbering code to the root, and
 specified the TailwindKit shape himself ("protocol and extension in TailwindKit …
 in BrightDigit we just add an extension for the Plot elements").
@@ -237,8 +261,8 @@ Two things worth carrying forward:
 
 - **TailwindKit now has zero dependencies — not even Foundation.** Four files
   called `String.replacingOccurrences` and compiled only because `import Plot`
-  leaked Foundation in transitively; they now use `escapingSpaces(_:)` in
-  `Core/ArbitraryValue.swift`. Removing Plot alone would not have built.
+  leaked Foundation in transitively; they now use `String.escapingSpaces` in
+  `Core/String+ArbitraryValue.swift`. Removing Plot alone would not have built.
 - **Plot's `Component` cannot use the seam.** Swift forbids retroactively
   conforming a protocol to another protocol, and `Component.class` returns an
   existential rather than `Self`. The root keeps a hand-written one-liner in
@@ -370,13 +394,14 @@ reference `*Logo.svg` (~200px presentation height); png/@2x/webp kept as compani
 only. ContributeMailchimp's Freddie outlines fixed in `fb4a49c` (white evenodd strokes →
 black). ContributeButtondown still has no Contribute-family mark (none provided).
 
-**CI status — re-verified against each PR's current head 2026-07-26, after every review
-fix landed. All seven fully green, zero failures, all `mergeable_state: clean`:**
+**CI status — verified against each PR's current head. All seven fully green, zero
+failures, all `mergeable_state: clean`. Six rows verified 2026-07-26; TailwindKit
+re-verified 2026-07-27 on its new head after the seam/`String` follow-up:**
 
 | PR | Head | Draft | CI |
 | --- | --- | --- | --- |
 | Publish #1 | `18dfc84` | draft | ✅ 14/14 (Ubuntu 86/86 tests, nightly-6.4 source-compat, Windows ×2, Android, 4 Apple sims) |
-| TailwindKit #1 | `b7a2dba` | draft | ✅ 14/14 — incl. Ubuntu/Windows/Android, which is what proves the Foundation removal |
+| TailwindKit #1 | `4d1465c` | draft | ✅ 15/15 after the seam/`String` follow-up — incl. Ubuntu/Windows ×2/Android, which is what proves the Foundation removal, plus Linting |
 | ContributeButtondown #1 | `65907c6` | ready | ✅ 14/14 (incl. the front-matter follow-up) |
 | ContributeMailchimp #1 | `fb4a49c` | draft | ✅ 14/14 (the Freddie-outline run finished clean) |
 | ContributeRSS #1 | `bfd9d83` | ready | ✅ 14/14 (visionOS leg finished) |
