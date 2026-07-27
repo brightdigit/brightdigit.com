@@ -1,0 +1,43 @@
+# Release table for the de-vendoring squash + tag pass.
+#
+# Consumed by Scripts/squash-release.sh. See MERGE-AND-TAG.md for the full plan.
+#
+# Columns (tab-separated):
+#   repo      package repo name under github.com/brightdigit
+#   wave      release wave: 0 = leaves, 1 = depends on wave 0, 2 = plugins/type layer
+#   boundary  last commit to KEEP; phase-5 work above it is squashed into one commit.
+#             "-" for orphan mode, where the entire history is replaced.
+#   version   tag to cut, unprefixed (commit messages add the "v" prefix)
+#   mode      soft   = git reset --soft <boundary>, preserves upstream history
+#             orphan = git checkout --orphan, whole history becomes one root commit
+#             amend  = history is already a single commit, just amend its message
+#   expect_tip  main's SHA when this table was built (2026-07-27). The script aborts
+#               if the remote has moved, so a boundary is never applied to newer work.
+#
+# Versions follow: a stable 1.0.0+ exists -> next major, alpha line;
+#                  only a prerelease line exists -> advance that line to beta.
+# 1.0.0-alpha.1 is NOT usable everywhere: it is already taken in Contribute,
+# Spinetail and ContributeWordPress, and would be a semver downgrade in Files (4.3.0),
+# ContributeWordPress / TransistorPublishPlugin / NPMPublishPlugin (1.0.0).
+#
+#repo	wave	boundary	version	mode	expect_tip
+Plot	0	431c27c9a	1.0.0-alpha.1	soft	e966c8779
+Files	0	e85f2b4a8	5.0.0-alpha.1	soft	6638e7c3d
+Ink	0	bcc9f2199	1.0.0-alpha.1	soft	7f5072820
+SyndiKit	0	746262a33	1.0.0-alpha.1	soft	ddec490df
+ButtondownKit	0	-	1.0.0-alpha.1	orphan	55f7723f9
+SwiftTube	0	4b9a3eae8	1.0.0-alpha.1	soft	cde2c7f5d
+Spinetail	0	d7fab1c75	1.0.0-beta.1	soft	baecd74f7
+Contribute	0	d6124d9a2	1.0.0-beta.1	soft	2d346bd9e
+Publish	1	58e943047	1.0.0-alpha.1	soft	22229e1dd
+TailwindKit	1	215054885	1.0.0-alpha.1	soft	20731db6c
+ContributeButtondown	1	-	1.0.0-alpha.1	orphan	62ef181e5
+ContributeMailchimp	1	-	1.0.0-alpha.1	orphan	bbd8d9300
+ContributeRSS	1	-	1.0.0-alpha.1	orphan	814a3f792
+ContributeWordPress	1	6dceda3ea	2.0.0-alpha.1	soft	426247f62
+ContributeYouTube	1	-	1.0.0-alpha.1	orphan	5f4b5375c
+PublishType	2	-	1.0.0-alpha.1	orphan	ea7f87f73
+YoutubePublishPlugin	2	e855383ab	1.0.0-alpha.1	soft	20db53415
+ReadingTimePublishPlugin	2	531dd1447	1.0.0-alpha.1	soft	bb37c115a
+TransistorPublishPlugin	2	c3a04c4d0	2.0.0-alpha.1	soft	3aa83e2bd
+NPMPublishPlugin	2	ee72ed2ed	2.0.0-alpha.1	amend	a7b4b51ce
