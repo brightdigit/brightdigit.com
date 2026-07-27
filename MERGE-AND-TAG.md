@@ -213,6 +213,20 @@ Leo chose *injectable pattern* over relocating the numbering code to the root, a
 specified the TailwindKit shape himself ("protocol and extension in TailwindKit …
 in BrightDigit we just add an extension for the Plot elements").
 
+**Follow-up: ContributeButtondown front matter (`65907c6`).** Raised during the
+numbering review as a related concern — `Newsletter.FrontMatter` was arguably *more*
+BrightDigit-locked than the numbering, with a fixed field set and no memberwise `init`,
+so a consumer could not construct one. Two additive changes: a public memberwise `init`,
+and `write(…translatedBy:)` taking a `FrontMatterTranslator` **instance** so a site can
+emit any `Encodable` schema. Passing an instance is the point — `ContentType`
+default-constructs its translator, so only this path can carry per-site config.
+
+Making the *field set itself* configurable was deliberately **not** attempted: it is
+blocked on `Contribute.FrontMatterTranslator`'s `init()` requirement, and changing that
+protocol means reopening a **Wave 0** package that five Contribute\* packages depend on,
+after its release PRs already merged. Revisit only if a second consumer appears with a
+concrete different schema.
+
 **TailwindKit branch handling.** The Plot work was pushed to a scratch branch first,
 then **fast-forwarded onto `brightdigit-com-260717`** so PR #1 shows it — otherwise the
 PR under review would still display the pre-fix code. The scratch branch is deleted and
@@ -357,13 +371,14 @@ only. ContributeMailchimp's Freddie outlines fixed in `fb4a49c` (white evenodd s
 black). ContributeButtondown still has no Contribute-family mark (none provided).
 
 **CI status — re-verified against each PR's current head 2026-07-26 (after the review
-fixes). All seven green, zero failures, all `mergeable_state: clean`:**
+fixes). Zero failures anywhere, all `mergeable_state: clean`. Six of seven fully green;
+ContributeButtondown's front-matter follow-up was still building at last check:**
 
 | PR | Head | Draft | CI |
 | --- | --- | --- | --- |
 | Publish #1 | `18dfc84` | draft | ✅ 14/14 (Ubuntu 86/86 tests, nightly-6.4 source-compat, Windows ×2, Android, 4 Apple sims) |
 | TailwindKit #1 | `b7a2dba` | draft | ✅ 14/14 — incl. Ubuntu/Windows/Android, which is what proves the Foundation removal |
-| ContributeButtondown #1 | `4726346` | ready | ✅ all green |
+| ContributeButtondown #1 | `65907c6` | ready | ⏳ running — the front-matter follow-up (`65907c6`) is newer than the fully-green `4726346`; re-check before merging |
 | ContributeMailchimp #1 | `fb4a49c` | draft | ✅ 14/14 (the Freddie-outline run finished clean) |
 | ContributeRSS #1 | `bfd9d83` | ready | ✅ 14/14 (visionOS leg finished) |
 | ContributeWordPress #18 | `f663445` | ready | ✅ 15/15 (Linting finished). Pre-existing `CodeFactor` advisory unchanged. |
