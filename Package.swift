@@ -11,7 +11,7 @@ let package = Package(
   platforms: [
     // Raised from .v13 for issue #44: ConfigKeyKit 1.0.0-beta.2 requires macOS 15.
     // Deploy target is Linux (no platform floor), so this only affects local
-    // macOS development/builds. See Documentation/Migration/44-config-migration.md.
+    // macOS development/builds.
     .macOS(.v15)
   ],
   products: [
@@ -22,25 +22,73 @@ let package = Package(
     .library(name: "BrightDigitPodcast", targets: ["BrightDigitPodcast"])
   ],
   dependencies: [
-    .package(path: "Packages/Publish/Publish"),
+    .package(
+      url: "https://github.com/brightdigit/Publish.git",
+      from: "1.0.0-alpha.1"
+    ),
 
-    .package(path: "Packages/BrightDigit/YoutubePublishPlugin"),
-    .package(path: "Packages/Plugins/ReadingTimePublishPlugin"),
+    .package(
+      url: "https://github.com/brightdigit/YoutubePublishPlugin.git",
+      from: "1.0.0-alpha.1"
+    ),
+    .package(
+      url: "https://github.com/brightdigit/ReadingTimePublishPlugin.git",
+      from: "1.0.0-alpha.1"
+    ),
 
-    .package(path: "Packages/BrightDigit/TailwindKit"),
-    .package(path: "Packages/BrightDigit/Spinetail"),
-    .package(path: "Packages/BrightDigit/ButtondownKit"),
-    .package(path: "Packages/BrightDigit/SyndiKit"),
+    .package(
+      url: "https://github.com/brightdigit/TailwindKit.git",
+      from: "1.0.0-alpha.1"
+    ),
+    .package(
+      url: "https://github.com/brightdigit/Spinetail.git",
+      from: "1.0.0-beta.1"
+    ),
+    .package(
+      url: "https://github.com/brightdigit/ButtondownKit.git",
+      from: "1.0.0-alpha.1"
+    ),
+    .package(
+      url: "https://github.com/brightdigit/SyndiKit.git",
+      from: "1.0.0-alpha.1"
+    ),
     // .package(url: "https://github.com/BrightDigit/Options.git", from: "0.2.0"),
-    .package(path: "Packages/BrightDigit/NPMPublishPlugin"),
-    .package(path: "Packages/BrightDigit/Contribute"),
-    .package(path: "Packages/BrightDigit/ContributeButtondown"),
-    .package(path: "Packages/BrightDigit/ContributeMailchimp"),
-    .package(path: "Packages/BrightDigit/ContributeRSS"),
-    .package(path: "Packages/BrightDigit/ContributeYouTube"),
-    .package(path: "Packages/BrightDigit/ContributeWordPress"),
-    .package(path: "Packages/BrightDigit/PublishType"),
-    .package(path: "Packages/BrightDigit/TransistorPublishPlugin"),
+    .package(
+      url: "https://github.com/brightdigit/NPMPublishPlugin.git",
+      from: "2.0.0-alpha.1"
+    ),
+    .package(
+      url: "https://github.com/brightdigit/Contribute.git",
+      from: "1.0.0-beta.1"
+    ),
+    .package(
+      url: "https://github.com/brightdigit/ContributeButtondown.git",
+      from: "1.0.0-alpha.1"
+    ),
+    .package(
+      url: "https://github.com/brightdigit/ContributeMailchimp.git",
+      from: "1.0.0-alpha.1"
+    ),
+    .package(
+      url: "https://github.com/brightdigit/ContributeRSS.git",
+      from: "1.0.0-alpha.1"
+    ),
+    .package(
+      url: "https://github.com/brightdigit/ContributeYouTube.git",
+      from: "1.0.0-alpha.1"
+    ),
+    .package(
+      url: "https://github.com/brightdigit/ContributeWordPress.git",
+      from: "2.0.0-alpha.1"
+    ),
+    .package(
+      url: "https://github.com/brightdigit/PublishType.git",
+      from: "1.0.0-alpha.1"
+    ),
+    .package(
+      url: "https://github.com/brightdigit/TransistorPublishPlugin.git",
+      from: "2.0.0-alpha.1"
+    ),
 
     .package(url: "https://github.com/jpsim/Yams.git", from: "6.0.0"),
     .package(url: "https://github.com/brightdigit/ConfigKeyKit.git", exact: "1.0.0-beta.2"),
@@ -50,11 +98,11 @@ let package = Package(
       traits: [.defaults, "CommandLineArguments"]
     )
     // #40: swift-markdown is the Publish markdown front end — it replaced Ink's
-    // hand-written `Reader` parser inside the vendored `Ink` package, which
-    // declares its own swift-markdown dependency (pinned to `branch: "main"`) and
-    // retains its HTML emitter + public API. That transitive dependency pins the
-    // revision for the whole workspace, so no root-level declaration is needed
-    // here (a redundant one is "not used by any target" and SwiftPM warns on it).
+    // hand-written `Reader` parser inside the `Ink` package, which declares its own
+    // swift-markdown dependency (`from: "0.8.0"`) and retains its HTML emitter +
+    // public API. That transitive dependency pins the version for the whole
+    // workspace, so no root-level declaration is needed here (a redundant one is
+    // "not used by any target" and SwiftPM warns on it).
   ],
   targets: [
     .executableTarget(

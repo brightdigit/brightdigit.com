@@ -35,9 +35,7 @@ import Foundation
 
 /// ConfigKeyKit-based command for previewing a podcast episode's URL.
 ///
-/// This is the first slice of the swift-argument-parser -> swift-configuration
-/// migration (see issue #44 and `Documentation/Migration/44-config-migration.md`).
-/// It registers with ``ConfigKeyKit/CommandRegistry`` under the two-token name
+/// Registers with ``ConfigKeyKit/CommandRegistry`` under the two-token name
 /// `url podcast` and is dispatched by ``CommandDispatcher``. Each option is
 /// described once as a ``ConfigKeyKit/ConfigKey``, which yields both a CLI flag
 /// name (e.g. `--episode-number`) and an uppercased, underscore-separated

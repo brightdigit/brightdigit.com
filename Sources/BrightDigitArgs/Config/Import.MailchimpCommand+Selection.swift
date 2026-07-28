@@ -103,11 +103,11 @@ extension Import.MailchimpCommand {
   /// skipped — those are one-off broadcasts (e.g. a 2020 "Blog Updates" blast),
   /// not numbered newsletters, and guessing a number would mis-file them.
   internal static func selectCampaigns(
-    _ campaigns: [MailchimpCampaign]
+    _ campaigns: [Spinetail.Campaign]
   ) throws -> [Newsletter.Source.Campaign] {
     let newsletters =
       campaigns
-      .compactMap { campaign -> (campaign: MailchimpCampaign, sendTime: Date)? in
+      .compactMap { campaign -> (campaign: Spinetail.Campaign, sendTime: Date)? in
         let subjectLine = campaign.subjectLine ?? ""
         guard
           isBrightDigitNewsletter(campaign: campaign, subjectLine: subjectLine),
@@ -146,7 +146,7 @@ extension Import.MailchimpCommand {
   /// (unless `overwriteExisting`), so an incremental catch-up doesn't refetch —
   /// and get rate-limited on — issues we already have.
   internal static func missingCampaigns(
-    from campaigns: [MailchimpCampaign],
+    from campaigns: [Spinetail.Campaign],
     in directory: URL,
     overwriteExisting: Bool
   ) throws -> [Newsletter.Source.Campaign] {
@@ -165,7 +165,7 @@ extension Import.MailchimpCommand {
   /// The latest explicitly-numbered newsletter's send date and the highest
   /// explicit issue number — the anchor for numbering trailing unnumbered issues.
   private static func numberingAnchor(
-    for newsletters: [(campaign: MailchimpCampaign, sendTime: Date)]
+    for newsletters: [(campaign: Spinetail.Campaign, sendTime: Date)]
   ) -> (lastNumberedDate: Date?, maxExplicit: Int) {
     let numbers = newsletters.compactMap {
       parseIssueNumber(from: $0.campaign.subjectLine ?? "")
@@ -180,7 +180,7 @@ extension Import.MailchimpCommand {
 
   /// Whether a campaign is a BrightDigit newsletter, by segment or subject line.
   private static func isBrightDigitNewsletter(
-    campaign: MailchimpCampaign,
+    campaign: Spinetail.Campaign,
     subjectLine: String
   ) -> Bool {
     let brightdigitSent =
@@ -190,7 +190,7 @@ extension Import.MailchimpCommand {
 
   /// Extracts the required campaign fields into a newsletter source.
   private static func campaignSource(
-    from campaign: MailchimpCampaign,
+    from campaign: Spinetail.Campaign,
     subjectLine: String,
     issueNo: Int
   ) throws -> Newsletter.Source.Campaign {

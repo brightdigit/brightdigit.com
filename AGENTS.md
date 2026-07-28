@@ -21,9 +21,9 @@ sessions), not only into a private auto-memory store. Two mechanisms:
 - Every memory you form is persisted into the repo. Each memory goes into a `MEMORY.md` index
   line **and** a durable location, routed by how urgently the fact must be read at launch:
   - **Urgent / broad facts** → `AGENTS.md` (always loaded into context at launch).
-  - **Lower-urgency facts** → a file under `.Codex/` (loaded on demand). Note: this does **not**
-    mean `agent-notes.md` — that file is only the corrections log; use other `.Codex/` files for
-    reference facts, project notes, etc.
+  - **Lower-urgency facts** → a file under `.claude/memory/` (loaded on demand). Note: this does
+    **not** mean `agent-notes.md` — that file is only the corrections log; use other
+    `.claude/memory/` files for reference facts, project notes, etc.
 - `MEMORY.md` is an **index only**: one line per memory (`- [Title](path) — hook`), never the
   full memory content.
 - Before saving, check for an existing file/line that already covers the fact and update it
@@ -92,8 +92,25 @@ node Scripts/check-content.js
 Always exits 0 by default (never gates a build). Not wired into CI yet.
 ### Subrepos (`Packages/`)
 
-All vendored dependencies under `Packages/` are [git-subrepo](https://github.com/ingydotnet/git-subrepo)
-subrepos (git-subrepo 0.4.9), each marked by a `.gitrepo` file. Pull or push **all** of them at once:
+`Packages/` is intentionally absent during the branch-based release checkpoint. The root package
+temporarily consumes all 20 first-party packages from URL + branch pins (`main` for Wave 0 and
+Wave 1, whose release PRs are merged; `brightdigit-com-*` for Wave 2, which are not yet merged to
+`main`), as recorded in `Package.swift` and `Package.resolved`, so the remaining
+package repositories can be merged and tagged independently. The root checkpoint PR stays unmerged
+until every direct and transitive first-party dependency uses a released tag. Branch table and
+next-gate detail:
+[`.claude/memory/dependency-release-checkpoint.md`](.claude/memory/dependency-release-checkpoint.md).
+Living merge/tag checklist: [`MERGE-AND-TAG.md`](MERGE-AND-TAG.md).
+
+The subrepo model remains canonical. Keep `.github/packages.json`,
+`.github/workflows/packages.yaml`, and `fix-subrepo-parents.sh`; package-side
+`Scripts/ensure-remote-deps.sh` files remain only while a package still has `path:` deps.
+After the release work, subsequent development rebases onto `main` and restores the subrepos for the
+`v2.0.0-alpha.2` cycle.
+
+When `Packages/` is restored, all vendored dependencies are
+[git-subrepo](https://github.com/ingydotnet/git-subrepo) subrepos (git-subrepo 0.4.9), each marked by
+a `.gitrepo` file. Pull or push **all** of them at once:
 
 ```bash
 git subrepo pull --all   # working tree must be clean first
@@ -155,7 +172,7 @@ commits), then re-run the pull/push.
   - `episodes/` - Podcast episodes (auto-generated)
   - `tutorials/` - Tutorial content
 - `Sources/` - Root app and site Swift modules
-- `Packages/BrightDigit/` - Local first-party Swift packages, including content importers and shared site libraries
+- `Packages/BrightDigit/` - Normally contains local first-party subrepos; intentionally absent during the branch-based release checkpoint
 - `Tests/` - Root package tests
 
 ### Key Dependencies
@@ -186,7 +203,7 @@ The self-hosted macOS `build`/`package` jobs are currently commented out in the 
 ### Testing and Build Environment
 - Tests are located in `Tests/BrightDigitSiteTests/`
 - Run tests: `swift test`
-- Project requires Swift 6.4+ and macOS 15+ (the vendored Publish stack uses `Synchronization.Mutex`, which requires macOS 15)
+- Project requires Swift 6.4+ and macOS 15+ (the BrightDigit Publish branch stack uses `Synchronization.Mutex`, which requires macOS 15)
 - Linux builds use Ubuntu Noble (24.04) with custom Docker image
 - Swift Package Manager handles all dependency resolution
 

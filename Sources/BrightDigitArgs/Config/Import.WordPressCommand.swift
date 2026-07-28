@@ -166,7 +166,7 @@ extension Import {
         assetRelativePath: config.assetRelativePath
       )
 
-      try processor.begin(withSettings: settings)
+      try await processor.begin(withSettings: settings)
     }
   }
 }

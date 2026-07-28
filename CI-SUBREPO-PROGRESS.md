@@ -2,7 +2,7 @@
 
 **Branch:** `ci/ensure-remote-deps-path-rewrite` (from `phase-05`; do not commit on `phase-05`)  
 **Last updated:** 2026-07-18  
-**Related:** [MERGE-AND-TAG-PLAN.md](MERGE-AND-TAG-PLAN.md), [PACKAGE-DEPENDENCIES.md](PACKAGE-DEPENDENCIES.md)
+**Related:** [MERGE-AND-TAG.md](MERGE-AND-TAG.md)
 
 Working goal: every vendored subrepo’s **primary** workflow on its `.gitrepo` tip runs and succeeds. Autofix **build / lint / platform compile** (prefer `#if canImport`, else `#if os`; Package.swift floors when SPM product mins require it). Wait for Leo on infra / non-code blockers. Agents may open PRs to `phase-05` but never merge.
 
@@ -96,7 +96,7 @@ these five for green before opening the PR.
 ### Cross-platform workflow normalization
 
 The durable per-repository platform, OS-version, deployment-minimum, and exclusion
-inventory is in [`.Codex/subrepo-platform-support.md`](.Codex/subrepo-platform-support.md).
+inventory is in [`.claude/memory/subrepo-platform-support.md`](.claude/memory/subrepo-platform-support.md).
 
 - All 20 primary workflows use hosted `xcode-27`,
   `/Applications/Xcode_27.0.app`, iOS/tvOS/watchOS 27.0 simulator destinations,
