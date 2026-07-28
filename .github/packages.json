@@ -34,5 +34,49 @@
   {
     "name": "SwiftTube",
     "path": "Packages/BrightDigit/SwiftTube"
+  },
+  {
+    "name": "TailwindKit",
+    "path": "Packages/BrightDigit/TailwindKit"
+  },
+  {
+    "name": "ContributeButtondown",
+    "path": "Packages/BrightDigit/ContributeButtondown"
+  },
+  {
+    "name": "ContributeMailchimp",
+    "path": "Packages/BrightDigit/ContributeMailchimp"
+  },
+  {
+    "name": "ContributeRSS",
+    "path": "Packages/BrightDigit/ContributeRSS"
+  },
+  {
+    "name": "ContributeYouTube",
+    "path": "Packages/BrightDigit/ContributeYouTube"
+  },
+  {
+    "name": "PublishType",
+    "path": "Packages/BrightDigit/PublishType"
+  },
+  {
+    "name": "Files",
+    "path": "Packages/Publish/Files"
+  },
+  {
+    "name": "Ink",
+    "path": "Packages/Publish/Ink"
+  },
+  {
+    "name": "Plot",
+    "path": "Packages/Publish/Plot"
+  },
+  {
+    "name": "Publish",
+    "path": "Packages/Publish/Publish"
+  },
+  {
+    "name": "ReadingTimePublishPlugin",
+    "path": "Packages/Plugins/ReadingTimePublishPlugin"
   }
 ]

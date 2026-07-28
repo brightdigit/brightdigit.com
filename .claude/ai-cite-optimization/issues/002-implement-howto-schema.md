@@ -192,7 +192,7 @@ open https://search.google.com/test/rich-results
 ## Resources
 
 - Schema.org HowTo: https://schema.org/HowTo
-- Technical plan: `docs/ai-cite-optimization/schema-implementation-plan.md`
+- Technical plan: `.claude/ai-cite-optimization/schema-implementation-plan.md`
 
 ---
 

@@ -68,17 +68,17 @@ internal struct PiHTMLFactory: HTMLFactory {
   internal func makeIndexHTML(
     for index: Index,
     context: PublishingContext<BrightDigitSite>
-  ) throws -> HTML {
+  ) throws -> Component {
     let setup = Pages.page(forIndex: index, withContext: context)
     return HTML(
       .lang(.usEnglish),
       .head(forPage: setup),
       .body(
-        .header(),
+        .component(HeaderComponent()),
         setup.mainElement,
-        .footer()
+        .component(FooterComponent())
       )
-    )
+    ).node
   }
 
   // MARK: - makeSectionHTML
@@ -86,7 +86,7 @@ internal struct PiHTMLFactory: HTMLFactory {
   internal func makeSectionHTML(
     for section: Section<BrightDigitSite>,
     context: PublishingContext<BrightDigitSite>
-  ) throws -> HTML {
+  ) throws -> Component {
     let content = try Pages.content(forSection: section, withContext: context)
 
     return HTML(
@@ -95,18 +95,18 @@ internal struct PiHTMLFactory: HTMLFactory {
       .body(
         .unwrap(content.bodyID, Node.id),
         .unwrap(content.bodyClassValue, Node.class),
-        .header(),
+        .component(HeaderComponent()),
         content.mainElement,
-        .footer()
+        .component(FooterComponent())
       )
-    )
+    ).node
   }
 
   // MARK: - makeItemHTML
 
   internal func makeItemHTML(
     for item: Item<BrightDigitSite>, context: PublishingContext<BrightDigitSite>
-  ) throws -> HTML {
+  ) throws -> Component {
     let content = try Pages.content(forItem: item, withContext: context)
     return HTML(
       .lang(.usEnglish),
@@ -114,18 +114,18 @@ internal struct PiHTMLFactory: HTMLFactory {
       .body(
         .unwrap(content.bodyID, Node.id),
         .unwrap(content.bodyClassValue, Node.class),
-        .header(),
+        .component(HeaderComponent()),
         content.mainElement,
-        .footer()
+        .component(FooterComponent())
       )
-    )
+    ).node
   }
 
   // MARK: - makePageHTML
 
   internal func makePageHTML(for page: Page, context: PublishingContext<BrightDigitSite>)
     throws
-    -> HTML
+    -> Component
   {
     let content = try Pages.content(basedOnPage: page, withContext: context)
     return HTML(
@@ -134,11 +134,11 @@ internal struct PiHTMLFactory: HTMLFactory {
       .body(
         .unwrap(content.bodyID, Node.id),
         .unwrap(content.bodyClassValue, Node.class),
-        .header(),
+        .component(HeaderComponent()),
         content.mainElement,
-        .footer()
+        .component(FooterComponent())
       )
-    )
+    ).node
   }
 
   // MARK: - makeTagListHTML
@@ -146,7 +146,7 @@ internal struct PiHTMLFactory: HTMLFactory {
   internal func makeTagListHTML(
     for _: TagListPage, context _: PublishingContext<BrightDigitSite>
   )
-    throws -> HTML?
+    throws -> Component?
   {
     nil
   }
@@ -155,7 +155,7 @@ internal struct PiHTMLFactory: HTMLFactory {
 
   internal func makeTagDetailsHTML(
     for _: TagDetailsPage, context _: PublishingContext<BrightDigitSite>
-  ) throws -> HTML? {
+  ) throws -> Component? {
     nil
   }
 }

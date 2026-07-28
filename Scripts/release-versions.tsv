@@ -1,0 +1,43 @@
+# Release table for the de-vendoring squash + tag pass.
+#
+# Consumed by Scripts/squash-release.sh. See MERGE-AND-TAG.md for the full plan.
+#
+# Columns (tab-separated):
+#   repo      package repo name under github.com/brightdigit
+#   wave      release wave: 0 = leaves, 1 = depends on wave 0, 2 = plugins/type layer
+#   boundary  last commit to KEEP; phase-5 work above it is squashed into one commit.
+#             "-" for orphan mode, where the entire history is replaced.
+#   version   tag to cut, unprefixed (commit messages add the "v" prefix)
+#   mode      soft   = git reset --soft <boundary>, preserves upstream history
+#             orphan = git checkout --orphan, whole history becomes one root commit
+#             amend  = history is already a single commit, just amend its message
+#   expect_tip  main's SHA when this table was built (2026-07-27). The script aborts
+#               if the remote has moved, so a boundary is never applied to newer work.
+#
+# Versions follow: a stable 1.0.0+ exists -> next major, alpha line;
+#                  only a prerelease line exists -> advance that line to beta.
+# 1.0.0-alpha.1 is NOT usable everywhere: it is already taken in Contribute,
+# Spinetail and ContributeWordPress, and would be a semver downgrade in Files (4.3.0),
+# ContributeWordPress / TransistorPublishPlugin / NPMPublishPlugin (1.0.0).
+#
+#repo	wave	boundary	version	mode	expect_tip	done
+Plot	0	431c27c9a	1.0.0-alpha.1	soft	3da284ac3	2026-07-27
+Files	0	e85f2b4a8	5.0.0-alpha.1	soft	73dcb8446	2026-07-27
+Ink	0	bcc9f2199	1.0.0-alpha.1	soft	74d366a1c	2026-07-27
+SyndiKit	0	746262a33	1.0.0-alpha.1	soft	f047249df	2026-07-27
+ButtondownKit	0	-	1.0.0-alpha.1	orphan	083fbdb1b	2026-07-27
+SwiftTube	0	4b9a3eae8	1.0.0-alpha.1	soft	ee3e83383	2026-07-27
+Spinetail	0	d7fab1c75	1.0.0-beta.1	soft	b59a4f701	2026-07-27
+Contribute	0	d6124d9a2	1.0.0-beta.1	soft	8e96022e5	2026-07-27
+Publish	1	58e943047	1.0.0-alpha.1	soft	ca83cdd5b	2026-07-27
+TailwindKit	1	215054885	1.0.0-alpha.1	soft	56f0f7de2	2026-07-27
+ContributeButtondown	1	-	1.0.0-alpha.1	orphan	61f0e5f9a	2026-07-27
+ContributeMailchimp	1	-	1.0.0-alpha.1	orphan	a41aefe5c	2026-07-27
+ContributeRSS	1	-	1.0.0-alpha.1	orphan	f1f92f9cb	2026-07-27
+ContributeWordPress	1	6dceda3ea	2.0.0-alpha.1	soft	d6a16bf8d	2026-07-27
+ContributeYouTube	1	-	1.0.0-alpha.1	orphan	27e431731	2026-07-27
+PublishType	2	-	1.0.0-alpha.1	orphan	17453e5b5	2026-07-28
+YoutubePublishPlugin	2	e855383ab	1.0.0-alpha.1	soft	4f6ff96a1	2026-07-28
+ReadingTimePublishPlugin	2	531dd1447	1.0.0-alpha.1	soft	2c5a88b47	2026-07-28
+TransistorPublishPlugin	2	c3a04c4d0	2.0.0-alpha.1	soft	388c40f13	2026-07-28
+NPMPublishPlugin	2	ee72ed2ed	2.0.0-alpha.1	amend	904d35ef4	2026-07-28

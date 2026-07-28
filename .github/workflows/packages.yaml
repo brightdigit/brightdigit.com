@@ -2,18 +2,25 @@ name: Packages CI
 
 # CI for the vendored BrightDigit packages, following the BrightDigit CI
 # template (MistKit/SundialKit/SyndiKit workflows) with an extra `package`
-# matrix dimension. In the monorepo checkout every sibling already sits at its
-# relative-path location (../../Publish/*, ../Contribute, ...), so each
-# package resolves in-place with no dependency reconstruction.
+# matrix dimension. `Packages/` is temporarily absent during the branch-based
+# release checkpoint; in that state the configure job succeeds and all package
+# matrices are intentionally skipped. The manifest and workflow stay canonical
+# for when the subrepos are restored.
 on:
   push:
     branches: [main]
     paths:
       - 'Packages/BrightDigit/**'
+      - 'Packages/Publish/**'
+      - 'Packages/Plugins/**'
+      - '.github/packages.json'
       - '.github/workflows/packages.yaml'
   pull_request:
     paths:
       - 'Packages/BrightDigit/**'
+      - 'Packages/Publish/**'
+      - 'Packages/Plugins/**'
+      - '.github/packages.json'
       - '.github/workflows/packages.yaml'
   workflow_dispatch:
 
@@ -27,7 +34,12 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       full-matrix: ${{ steps.check.outputs.full }}
+      packages-present: ${{ steps.packages.outputs.present }}
       packages: ${{ steps.matrix.outputs.packages }}
+      # lint-packages — the subset carrying their own lint tooling
+      # (Scripts/lint.sh + mise config). The vendored Publish packages set
+      # "lint": false, so they get build/test coverage but are not linted.
+      lint-packages: ${{ steps.matrix.outputs.lint-packages }}
       # cross-packages disabled on phase-04-openapi (Windows/Android jobs are
       # off — see the NOTE in build-ubuntu). Re-enable with those jobs.
       # cross-packages: ${{ steps.matrix.outputs.cross-packages }}
@@ -37,6 +49,17 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
+
+      - id: packages
+        name: Detect vendored packages
+        run: |
+          if [[ -d Packages ]]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+            echo "Packages directory present; package matrices enabled."
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "Packages directory intentionally absent; package matrices disabled."
+          fi
 
       - id: check
         name: Determine matrix scope
@@ -67,6 +90,7 @@ jobs:
 
       - id: matrix
         name: Build matrix values
+        if: steps.packages.outputs.present == 'true'
         # Single source of truth: .github/packages.json declares each vendored
         # package exactly once (name + path). The matrix inputs are DERIVED from
         # it with jq — adding/renaming a package is a one-line manifest edit
@@ -92,6 +116,10 @@ jobs:
 
           {
             echo "packages=$(jq -c 'map({name, path})' "$MANIFEST")"
+            # lint-packages — packages that ship lint tooling. Entries with
+            # "lint": false (the vendored Publish packages) are excluded, so
+            # they are built/tested but never linted.
+            echo "lint-packages=$(jq -c 'map(select(.lint != false)) | map({name, path})' "$MANIFEST")"
             # cross-packages — the pure-Swift subset that can target
             # Windows/Android/wasm. Disabled with the cross-platform jobs; when
             # restoring, reintroduce a per-package `cross` flag in the manifest:
@@ -113,6 +141,7 @@ jobs:
   build-ubuntu:
     name: Build ${{ matrix.package.name }} on Ubuntu
     needs: configure
+    if: needs.configure.outputs.packages-present == 'true'
     runs-on: ubuntu-latest
     container: swiftlang/swift:nightly-6.4.x-${{ matrix.os }}
     strategy:
@@ -172,7 +201,8 @@ jobs:
   build-macos:
     name: Build ${{ matrix.package.name }} on macOS
     needs: configure
-    runs-on: [self-hosted, macOS]
+    if: needs.configure.outputs.packages-present == 'true'
+    runs-on: xcode-27
     strategy:
       fail-fast: false
       matrix:
@@ -184,7 +214,7 @@ jobs:
         uses: brightdigit/swift-build@v1
         with:
           working-directory: ${{ matrix.package.path }}
-          xcode: "/Applications/Xcode-beta.app"
+          xcode: "/Applications/Xcode_27.0.app"
       - name: Process Coverage
         if: steps.build.outputs.contains-code-coverage == 'true'
         uses: sersoft-gmbh/swift-coverage-action@v5
@@ -202,7 +232,7 @@ jobs:
   build-macos-platforms:
     name: Build SyndiKit on macOS (Platforms)
     needs: configure
-    if: ${{ needs.configure.outputs.full-matrix == 'true' }}
+    if: ${{ needs.configure.outputs.packages-present == 'true' && needs.configure.outputs.full-matrix == 'true' }}
     runs-on: ${{ matrix.runs-on }}
     strategy:
       fail-fast: false
@@ -210,31 +240,31 @@ jobs:
         include:
           # macOS
           - type: macos
-            runs-on: macos-26
-            xcode: "/Applications/Xcode_26.4.app"
+            runs-on: xcode-27
+            xcode: "/Applications/Xcode_27.0.app"
 
           # iOS
           - type: ios
-            runs-on: macos-26
-            xcode: "/Applications/Xcode_26.4.app"
+            runs-on: xcode-27
+            xcode: "/Applications/Xcode_27.0.app"
             deviceName: "iPhone 17 Pro"
-            osVersion: "26.4.1"
+            osVersion: "27.0"
             download-platform: true
 
           # watchOS
           - type: watchos
-            runs-on: macos-26
-            xcode: "/Applications/Xcode_26.4.app"
+            runs-on: xcode-27
+            xcode: "/Applications/Xcode_27.0.app"
             deviceName: "Apple Watch Ultra 3 (49mm)"
-            osVersion: "26.4"
+            osVersion: "27.0"
             download-platform: true
 
           # tvOS
           - type: tvos
-            runs-on: macos-26
-            xcode: "/Applications/Xcode_26.4.app"
-            deviceName: "Apple TV"
-            osVersion: "26.4"
+            runs-on: xcode-27
+            xcode: "/Applications/Xcode_27.0.app"
+            deviceName: "Apple TV 4K (3rd generation)"
+            osVersion: "27.0"
             download-platform: true
     steps:
       - uses: actions/checkout@v6
@@ -267,7 +297,7 @@ jobs:
     # proceed past skipped (not failed) dependencies. lint.sh is non-mutating
     # under CI ($CI is set) and builds tests itself, resolving siblings
     # in-place.
-    if: ${{ !cancelled() && !failure() }}
+    if: ${{ needs.configure.outputs.packages-present == 'true' && !cancelled() && !failure() }}
     needs: [configure, build-ubuntu, build-macos, build-macos-platforms]
     runs-on: ubuntu-latest
     # Lint on the Swift 6.4 nightly (the project's target toolchain) so swift-format
@@ -275,17 +305,25 @@ jobs:
     # crashed in its FileIterator. The bare nightly snapshot lacks curl, which
     # mise-action needs to bootstrap mise, so install it first.
     container: swiftlang/swift:nightly-6.4.x-noble
+    # Periphery is an advisory, local-only tool (lint.sh runs `periphery scan`
+    # only when $CI is unset). Building it from source via the spm backend on the
+    # nightly toolchain is heavy and crash-prone, and with the whole lint matrix
+    # cold-building it in parallel one job nondeterministically SIGSEGVs during
+    # `mise install`. Since CI never runs periphery, disable it so mise skips the
+    # build entirely (the full backend name is required to match).
+    env:
+      MISE_DISABLE_TOOLS: "spm:peripheryapp/periphery"
     strategy:
       fail-fast: false
       matrix:
-        package: ${{ fromJSON(needs.configure.outputs.packages) }}
+        package: ${{ fromJSON(needs.configure.outputs.lint-packages) }}
     steps:
       - name: Install curl (required by mise-action)
         run: |
           apt-get update -q
           apt-get install -y --no-install-recommends curl ca-certificates
       - uses: actions/checkout@v6
-      - uses: jdx/mise-action@v4
+      - uses: ./.github/actions/setup-tools
         env:
           # Raise the default 30s download timeout: GitHub throttles the SwiftLint
           # release zip when many matrix lint jobs fetch it in parallel. Authenticate
@@ -293,8 +331,7 @@ jobs:
           MISE_HTTP_TIMEOUT: 300s
           MISE_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          working_directory: ${{ matrix.package.path }}
-          cache: true
+          working-directory: ${{ matrix.package.path }}
       - name: Lint
         working-directory: ${{ matrix.package.path }}
         run: ./Scripts/lint.sh
