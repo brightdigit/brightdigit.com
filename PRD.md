@@ -29,9 +29,9 @@ those sections.
 
 | Phase | Quadrant | Focus |
 |---|---|---|
-| **Phase 1** | content · this-repo | AI-CITE content optimization |
-| **Phase 2** | code · this-repo | Site SEO code & measurement |
-| **Phase 3** | code · external-repo | Package extraction & repo boundaries |
+| **Phase 1** | code · external-repo | Package extraction & repo boundaries |
+| **Phase 2** | content · this-repo | AI-CITE content optimization |
+| **Phase 3** | code · this-repo | Site SEO code & measurement |
 | **Phase 4** | content · external-repo | Content Ops planning layer |
 | **Phase 5** | code · this-repo | Publishing infrastructure — internal |
 | **Phase 6** | code · external-repo | Publishing infrastructure — external platforms |
@@ -46,17 +46,17 @@ those sections.
 ### Dependency Chain
 
 ```
-Phase 1  (AI-CITE content)        ─── ready now; no code dependency
-Phase 2  (Site SEO code)          ─── independent; #167 follows #129
-Phase 3  (Package extraction)     ─── #168 → #169 → #136; unblocks Phase 4
-Phase 4  (Content Ops planning)   ─── requires Phase 3 (#169 defines the boundaries #139 needs)
+Phase 1  (Package extraction)     ─── #168 → #169 → #136; unblocks Phase 4 + Documentation
+Phase 2  (AI-CITE content)        ─── ready now; no code dependency — runs in parallel
+Phase 3  (Site SEO code)          ─── independent; #167 follows #129
+Phase 4  (Content Ops planning)   ─── requires Phase 1 (#169 defines the boundaries #139 needs)
 Phase 5  (Publishing internal)    ─── #140 requires the Phase 4 planning layer
 Phase 6  (Publishing external)    ─── siblings with Phase 5
 Phase 7  (Platform migration)     ─── requires Phase 5/6
 Phase 8  (Final cleanup)          ─── anytime, low priority
 Phase 9  (Upstream contributions) ─── anytime
 Phase 10 (Content authority)      ─── anytime; long-running
-Documentation                     ─── requires Phase 3 (repo purposes change)
+Documentation                     ─── requires Phase 1 (repo purposes change)
 ```
 
 ---
@@ -72,9 +72,46 @@ Documentation                     ─── requires Phase 3 (repo purposes chan
 
 ---
 
-## Phase 1: AI-CITE Content Optimization
+## Phase 1: Package Extraction & Repo Boundaries
 
-**Quadrant:** content · this-repo · **Milestone:** Phase 1: AI-CITE Content Optimization
+**Quadrant:** code · external-repo · **Milestone:** Phase 1: Package Extraction & Repo Boundaries
+
+**Goal:** Finish the repo split that de-vendoring started — extract the remaining Swift code into its own package repo, and turn the three-repo content/code arrangement from prose into an executable contract.
+
+**Why this is Phase 1:** it is the only phase that *unblocks* others — Phase 4 (Content Ops) and Documentation both wait on it, and #136's spec generator cannot be honest about contract versions until `ItemMetadata` lives in a released package. Phase 2's content work has no dependency on it and **runs in parallel**; sequencing here is about clearing the blocker first, not about pausing the article rewrites.
+
+**Context:** De-vendoring shipped in [#159](https://github.com/brightdigit/brightdigit.com/pull/159)/[#161](https://github.com/brightdigit/brightdigit.com/pull/161) (2026-07-28) — all 20 first-party packages are external released repos and `Packages/` is gone. `Sources/` is the last thing still mixing Swift code with content in this repo.
+
+| # | Title | Priority | Depends on |
+|---|-------|----------|-----------|
+| [#168](https://github.com/brightdigit/brightdigit.com/issues/168) | Extract `Sources/` into a new `brightdigit/BrightDigitSite` package repo | P1-high | — |
+| [#169](https://github.com/brightdigit/brightdigit.com/issues/169) | Define content-repo boundaries (three homes, two seams) | P1-high | #168 |
+| [#135](https://github.com/brightdigit/brightdigit.com/issues/135) | Cross-media link schema on published items (Swift types) | P1-high | — (foundational) |
+| [#136](https://github.com/brightdigit/brightdigit.com/issues/136) | Swift-type → companion-spec generator | P1-high | #135, #168, #169 |
+
+### The three homes
+
+| Repo | Visibility | Owns |
+|---|---|---|
+| `leogdion/year-in-review` | private | Topic/campaign **records**, per-medium drafts, voice + pillar guides, `/content-topic-mining` |
+| `brightdigit/BrightDigitSite` | public *(new — #168)* | Swift code **and the `ItemMetadata` / `PublishType` contract** |
+| `brightdigit/brightdigit.com` | public | Finished `Content/*.md` + site config; consumes the contract as a dependency |
+
+Plus a fourth content destination worth writing down: **new tutorial/template content belongs in `brightdigit/Swift-App-Template`**, not here.
+
+### The two seams
+
+1. **Contract seam** (package repo → everywhere). [#136](https://github.com/brightdigit/brightdigit.com/issues/136) pulls the latest Swift type from the released `BrightDigitSite` package and emits the companion spec, which flows to `brightdigit.com` (publish-time validation) and `year-in-review` (drafts authored against current fields).
+2. **Content seam** (`year-in-review` → `brightdigit.com`). **Only finished items plus their #135 link fields cross.** Topic records, briefs, and voice guides stay private.
+
+**Why the extraction matters to #136:** today the generator would read `ItemMetadata` from a subfolder path. After #168 it resolves a **versioned package dependency** — so the generated spec can be honest about *which version* of the contract it describes. Per `.claude/docs/content-ops-plan.md`: *"Splitting the packages out actually strengthens I2: the source of truth is a released package, not a path."*
+
+**Reconcile with the subrepo restore:** `AGENTS.md` states the subrepo model is canonical and gets restored for the `v2.0.0-alpha.2` cycle. #168 must decide explicitly whether `BrightDigitSite` is restored as a subrepo alongside the other 20 or stays a plain dependency.
+
+---
+## Phase 2: AI-CITE Content Optimization
+
+**Quadrant:** content · this-repo · **Milestone:** Phase 2: AI-CITE Content Optimization
 
 **Goal:** Get BrightDigit content cited by AI systems (ChatGPT, Claude, Perplexity, Google AI Overview) by rewriting the priority "money articles" around the **evidence-backed** citation levers. Pure content work — no code changes. Ready now; nothing gates it.
 
@@ -137,10 +174,9 @@ ranked the work Tier 1/2/3. Priorities below reflect that ranking, not uniform P
 trust is cheaper and more likely to pay off than rescuing one they ignore.
 
 ---
+## Phase 3: Site SEO Code & Measurement
 
-## Phase 2: Site SEO Code & Measurement
-
-**Quadrant:** code · this-repo · **Milestone:** Phase 2: Site SEO Code & Measurement
+**Quadrant:** code · this-repo · **Milestone:** Phase 3: Site SEO Code & Measurement
 
 **Goal:** The site-level code that supports AI citation, plus the measurement loop that tells us whether any of it is working.
 
@@ -176,49 +212,13 @@ trust is cheaper and more likely to pay off than rescuing one they ignore.
 
 ---
 
-## Phase 3: Package Extraction & Repo Boundaries
-
-**Quadrant:** code · external-repo · **Milestone:** Phase 3: Package Extraction & Repo Boundaries
-
-**Goal:** Finish the repo split that de-vendoring started — extract the remaining Swift code into its own package repo, and turn the three-repo content/code arrangement from prose into an executable contract.
-
-**Context:** De-vendoring shipped in [#159](https://github.com/brightdigit/brightdigit.com/pull/159)/[#161](https://github.com/brightdigit/brightdigit.com/pull/161) (2026-07-28) — all 20 first-party packages are external released repos and `Packages/` is gone. `Sources/` is the last thing still mixing Swift code with content in this repo.
-
-| # | Title | Priority | Depends on |
-|---|-------|----------|-----------|
-| [#168](https://github.com/brightdigit/brightdigit.com/issues/168) | Extract `Sources/` into a new `brightdigit/BrightDigitSite` package repo | P1-high | — |
-| [#169](https://github.com/brightdigit/brightdigit.com/issues/169) | Define content-repo boundaries (three homes, two seams) | P1-high | #168 |
-| [#135](https://github.com/brightdigit/brightdigit.com/issues/135) | Cross-media link schema on published items (Swift types) | P1-high | — (foundational) |
-| [#136](https://github.com/brightdigit/brightdigit.com/issues/136) | Swift-type → companion-spec generator | P1-high | #135, #168, #169 |
-
-### The three homes
-
-| Repo | Visibility | Owns |
-|---|---|---|
-| `leogdion/year-in-review` | private | Topic/campaign **records**, per-medium drafts, voice + pillar guides, `/content-topic-mining` |
-| `brightdigit/BrightDigitSite` | public *(new — #168)* | Swift code **and the `ItemMetadata` / `PublishType` contract** |
-| `brightdigit/brightdigit.com` | public | Finished `Content/*.md` + site config; consumes the contract as a dependency |
-
-Plus a fourth content destination worth writing down: **new tutorial/template content belongs in `brightdigit/Swift-App-Template`**, not here.
-
-### The two seams
-
-1. **Contract seam** (package repo → everywhere). [#136](https://github.com/brightdigit/brightdigit.com/issues/136) pulls the latest Swift type from the released `BrightDigitSite` package and emits the companion spec, which flows to `brightdigit.com` (publish-time validation) and `year-in-review` (drafts authored against current fields).
-2. **Content seam** (`year-in-review` → `brightdigit.com`). **Only finished items plus their #135 link fields cross.** Topic records, briefs, and voice guides stay private.
-
-**Why the extraction matters to #136:** today the generator would read `ItemMetadata` from a subfolder path. After #168 it resolves a **versioned package dependency** — so the generated spec can be honest about *which version* of the contract it describes. Per `.claude/docs/content-ops-plan.md`: *"Splitting the packages out actually strengthens I2: the source of truth is a released package, not a path."*
-
-**Reconcile with the subrepo restore:** `AGENTS.md` states the subrepo model is canonical and gets restored for the `v2.0.0-alpha.2` cycle. #168 must decide explicitly whether `BrightDigitSite` is restored as a subrepo alongside the other 20 or stays a plain dependency.
-
----
-
 ## Phase 4: Content Ops Planning Layer
 
 **Quadrant:** content · external-repo · **Milestone:** Phase 4: Content Ops Planning Layer
 
 **Goal:** Build the content-planning / scaffolding infrastructure so Claude Code can *guide* future content across every medium/platform **without writing full drafts**. Full design in [`.claude/docs/content-ops-plan.md`](.claude/docs/content-ops-plan.md).
 
-**Dependency:** Phase 3 — [#169](https://github.com/brightdigit/brightdigit.com/issues/169) defines the boundaries the portable skill needs, and [#136](https://github.com/brightdigit/brightdigit.com/issues/136) supplies the spec the briefs validate against.
+**Dependency:** Phase 1 — [#169](https://github.com/brightdigit/brightdigit.com/issues/169) defines the boundaries the portable skill needs, and [#136](https://github.com/brightdigit/brightdigit.com/issues/136) supplies the spec the briefs validate against.
 
 | # | Title | Priority | Depends on |
 |---|-------|----------|-----------|
@@ -325,7 +325,7 @@ New source modules (local to this repo, not subrepos):
 
 **Quadrant:** content · this-repo · **Milestone:** Post-Migration: Article Edits
 
-**Goal:** Standalone article corrections — no code changes, and not AI-CITE structural work. (The AI-CITE **article optimization** issues formerly listed here — #21/#22/#26/#27/#28 — moved into **Phase 1**.)
+**Goal:** Standalone article corrections — no code changes, and not AI-CITE structural work. (The AI-CITE **article optimization** issues formerly listed here — #21/#22/#26/#27/#28 — moved into **Phase 2**.)
 
 **Note:** Apply the `article-edit` GitHub label to all issues below to distinguish from migration/code issues.
 
@@ -363,7 +363,7 @@ New source modules (local to this repo, not subrepos):
 > **Evidence caveat.** The "YouTube multiplier" rationale behind #24 traces entirely to a Jesse
 > Schoberg conference quote, with no controlled study behind it. It is plausible (Google does
 > transcribe YouTube) but unverified, and the effort estimate is the largest of any open issue.
-> Sequence it behind the ⭐⭐⭐ levers in Phase 1.
+> Sequence it behind the ⭐⭐⭐ levers in Phase 2.
 
 ---
 
@@ -430,9 +430,9 @@ The remaining gaps split along the **fork vs first-party** line:
 
 | Phase | Quadrant | Issues | Contents |
 |-------|----------|--------|----------|
-| Phase 1: AI-CITE Content Optimization | content · this-repo | 6 | Article rewrites — [#21](https://github.com/brightdigit/brightdigit.com/issues/21), [#22](https://github.com/brightdigit/brightdigit.com/issues/22), [#130](https://github.com/brightdigit/brightdigit.com/issues/130) (P0, Tier 1); [#26](https://github.com/brightdigit/brightdigit.com/issues/26), [#27](https://github.com/brightdigit/brightdigit.com/issues/27), [#28](https://github.com/brightdigit/brightdigit.com/issues/28) (P1, Tier 2) |
-| Phase 2: Site SEO Code & Measurement | code · this-repo | 5 | [#129](https://github.com/brightdigit/brightdigit.com/issues/129), [#167](https://github.com/brightdigit/brightdigit.com/issues/167), [#23](https://github.com/brightdigit/brightdigit.com/issues/23), [#131](https://github.com/brightdigit/brightdigit.com/issues/131), [#132](https://github.com/brightdigit/brightdigit.com/issues/132) |
-| Phase 3: Package Extraction & Repo Boundaries | code · external-repo | 4 | [#168](https://github.com/brightdigit/brightdigit.com/issues/168), [#169](https://github.com/brightdigit/brightdigit.com/issues/169), [#135](https://github.com/brightdigit/brightdigit.com/issues/135), [#136](https://github.com/brightdigit/brightdigit.com/issues/136) |
+| Phase 1: Package Extraction & Repo Boundaries | code · external-repo | 4 | [#168](https://github.com/brightdigit/brightdigit.com/issues/168), [#169](https://github.com/brightdigit/brightdigit.com/issues/169), [#135](https://github.com/brightdigit/brightdigit.com/issues/135), [#136](https://github.com/brightdigit/brightdigit.com/issues/136) |
+| Phase 2: AI-CITE Content Optimization | content · this-repo | 6 | Article rewrites — [#21](https://github.com/brightdigit/brightdigit.com/issues/21), [#22](https://github.com/brightdigit/brightdigit.com/issues/22), [#130](https://github.com/brightdigit/brightdigit.com/issues/130) (P0, Tier 1); [#26](https://github.com/brightdigit/brightdigit.com/issues/26), [#27](https://github.com/brightdigit/brightdigit.com/issues/27), [#28](https://github.com/brightdigit/brightdigit.com/issues/28) (P1, Tier 2) |
+| Phase 3: Site SEO Code & Measurement | code · this-repo | 5 | [#129](https://github.com/brightdigit/brightdigit.com/issues/129), [#167](https://github.com/brightdigit/brightdigit.com/issues/167), [#23](https://github.com/brightdigit/brightdigit.com/issues/23), [#131](https://github.com/brightdigit/brightdigit.com/issues/131), [#132](https://github.com/brightdigit/brightdigit.com/issues/132) |
 | Phase 4: Content Ops Planning Layer | content · external-repo | 3 | [#137](https://github.com/brightdigit/brightdigit.com/issues/137), [#138](https://github.com/brightdigit/brightdigit.com/issues/138), [#139](https://github.com/brightdigit/brightdigit.com/issues/139) |
 | Phase 5: Publishing Infra — Internal | code · this-repo | 2 | [#33](https://github.com/brightdigit/brightdigit.com/issues/33), [#140](https://github.com/brightdigit/brightdigit.com/issues/140) |
 | Phase 6: Publishing Infra — External | code · external-repo | 4 | [#30](https://github.com/brightdigit/brightdigit.com/issues/30), [#31](https://github.com/brightdigit/brightdigit.com/issues/31), [#32](https://github.com/brightdigit/brightdigit.com/issues/32), [#49](https://github.com/brightdigit/brightdigit.com/issues/49) |
@@ -454,12 +454,12 @@ The remaining gaps split along the **fork vs first-party** line:
 
 ### What changed in the 2026-07-28 reorganization
 
-- **Milestones now hold exactly one quadrant each.** Five were impure: the old Phase 3 mixed article rewrites with site code (split into Phases 1 and 2); the old Content Ops mixed Swift schema work with planning tooling (split across Phases 3 and 4); the old Phase 6 mixed internal orchestration with external platform integrations (split into Phases 5 and 6).
+- **Milestones now hold exactly one quadrant each.** Five were impure: the old Phase 3 mixed article rewrites with site code (split into the AI-CITE content phase and the site-SEO code phase); the old Content Ops mixed Swift schema work with planning tooling (split across the package-extraction phase and the content-ops phase); the old Phase 6 mixed internal orchestration with external platform integrations (split into Phases 5 and 6).
 - **[#105](https://github.com/brightdigit/brightdigit.com/issues/105) had no milestone at all** → Phase 8.
 - **[#24](https://github.com/brightdigit/brightdigit.com/issues/24)/[#25](https://github.com/brightdigit/brightdigit.com/issues/25)** were content issues stranded in the old Phase 5 *code* milestone → Phase 10.
 - **[#112](https://github.com/brightdigit/brightdigit.com/issues/112)** is an upstream PR to `sersoft-gmbh` sitting in an internal cleanup milestone → Phase 9.
 - **Old Phase 5 closed** (0 open, 10 closed) once #24/#25 moved out.
-- **Phase 1 priorities re-ranked to the June-2026 audit tiers** — the pages that already get cited became P0; [#129](https://github.com/brightdigit/brightdigit.com/issues/129) moved P0 → P1.
+- **Phase 2 priorities re-ranked to the June-2026 audit tiers** — the pages that already get cited became P0; [#129](https://github.com/brightdigit/brightdigit.com/issues/129) moved P0 → P1.
 - **[#23](https://github.com/brightdigit/brightdigit.com/issues/23) reframed** from a one-time pre-work baseline into a recurring re-test, with the existing 2/5 result imported.
 - **5 new issues:** [#167](https://github.com/brightdigit/brightdigit.com/issues/167) (AI/SEO enforcement in Swift — nothing enforced it before), [#168](https://github.com/brightdigit/brightdigit.com/issues/168) (package extraction), [#169](https://github.com/brightdigit/brightdigit.com/issues/169) (repo boundaries), [#170](https://github.com/brightdigit/brightdigit.com/issues/170)/[#171](https://github.com/brightdigit/brightdigit.com/issues/171) (documentation).
 
