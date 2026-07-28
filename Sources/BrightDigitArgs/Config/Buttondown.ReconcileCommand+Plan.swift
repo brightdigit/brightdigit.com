@@ -48,46 +48,6 @@ extension Buttondown.ReconcileCommand {
     }
   }()
 
-  /// Whether a campaign is a BrightDigit newsletter, by segment or subject line.
-  ///
-  /// Mirrors `Import.MailchimpCommand.isBrightDigitNewsletter` (which is private);
-  /// kept identical so reconcile and import agree on which campaigns count.
-  private static func isBrightDigitNewsletter(
-    campaign: Campaign,
-    subjectLine: String
-  ) -> Bool {
-    let brightdigitSent =
-      campaign.segmentText?.contains("brightdigit-business") == true
-    return brightdigitSent || subjectLine.contains("BrightDigit Newsletter")
-  }
-
-  /// Filters and orders sent BrightDigit newsletters by send time.
-  /// - Parameter campaigns: Every sent campaign returned by Mailchimp.
-  /// - Returns: BrightDigit newsletter campaigns with send times, oldest first.
-  private static func sortedNewsletters(
-    from campaigns: [Campaign]
-  ) -> [(campaign: Campaign, sendTime: Date)] {
-    campaigns
-      .compactMap { campaign -> (campaign: Campaign, sendTime: Date)? in
-        let subjectLine = campaign.subjectLine ?? ""
-        guard
-          isBrightDigitNewsletter(campaign: campaign, subjectLine: subjectLine),
-          let sendTime = campaign.sendTime
-        else {
-          return nil
-        }
-        return (campaign, sendTime)
-      }
-      .sorted { $0.sendTime < $1.sendTime }
-  }
-
-  /// Parses an explicit newsletter issue number from a campaign subject.
-  /// - Parameter campaign: The campaign whose subject should be parsed.
-  /// - Returns: The explicit issue number, if the subject contains one.
-  private static func explicitIssueNumber(for campaign: Campaign) -> Int? {
-    Import.MailchimpCommand.parseIssueNumber(from: campaign.subjectLine ?? "")
-  }
-
   /// Assigns each BrightDigit newsletter campaign its canonical issue number.
   ///
   /// Mirrors `Import.MailchimpCommand.selectCampaigns` and reuses its
@@ -102,27 +62,25 @@ extension Buttondown.ReconcileCommand {
     from campaigns: [Campaign]
   ) -> [NumberedCampaign] {
     let newsletters = sortedNewsletters(from: campaigns)
-    let numbered = newsletters.filter { explicitIssueNumber(for: $0.campaign) != nil }
-    let maxExplicit =
-      numbered
-      .compactMap { explicitIssueNumber(for: $0.campaign) }
-      .max() ?? 0
-    let lastNumberedDate = numbered.map(\.sendTime).max()
-
+    let anchor = numberingAnchor(for: newsletters)
     var result: [NumberedCampaign] = []
-    var trailingIssueNo = maxExplicit
+    var trailingIssueNo = anchor.maxExplicit
     for (campaign, sendTime) in newsletters {
       let subjectLine = campaign.subjectLine ?? ""
-      let issueNo: Int
-      if let explicit = explicitIssueNumber(for: campaign) {
-        issueNo = explicit
-      } else if let lastDate = lastNumberedDate, sendTime > lastDate {
-        trailingIssueNo += 1
-        issueNo = trailingIssueNo
-      } else {
+      // Checked before the numbering below so a campaign we cannot address never
+      // consumes a trailing issue number.
+      guard let campaignID = campaign.id else {
+        Self.log("skipping campaign with no id: \(subjectLine)")
         continue
       }
-      guard let campaignID = campaign.id else {
+      guard
+        let issueNo = issueNumber(
+          for: campaign,
+          sendTime: sendTime,
+          lastNumberedDate: anchor.lastNumberedDate,
+          trailingIssueNo: &trailingIssueNo
+        )
+      else {
         continue
       }
       result.append(

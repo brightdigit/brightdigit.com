@@ -4,8 +4,8 @@
 consumed by `.package(url:…, from:…)`. Tag **bottom-up by wave**: a package can
 only be tagged once every in-repo package it depends on already has a release.
 
-**Root checkpoint PR (stays open until every first-party dep is a released tag):**
-[brightdigit.com#161](https://github.com/brightdigit/brightdigit.com/pull/161)
+**Root checkpoint PR — merged 2026-07-28** (it stayed open until every first-party dep
+was a released tag): [brightdigit.com#161](https://github.com/brightdigit/brightdigit.com/pull/161)
 on `release/branch-based-devendoring`.
 
 Within a wave, packages can proceed in parallel. Do not tag a package until every

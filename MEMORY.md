@@ -7,7 +7,7 @@ demand). Never put full memory content here. See the "Memory & Corrections Conve
 section of `AGENTS.md` for the rules.
 
 - [Memory & Corrections Convention](AGENTS.md) — how repo memory and the corrections log work
-- [Branch dependency release checkpoint](.claude/memory/dependency-release-checkpoint.md) — Packages absent; Wave 0 on `main` (all consumers repinned), Wave 1/2 on `brightdigit-com-*` until merged/tagged; see MERGE-AND-TAG.md
+- [Package de-vendoring complete](.claude/memory/dependency-release-checkpoint.md) — all 20 packages tagged and consumed as `from:` version pins; `Packages/` absent until the v2.0.0-alpha.2 subrepo restore; see MERGE-AND-TAG.md
 - [Files canonical path form](.claude/memory/files-windows-path-canonical-form.md) — Files stores paths as forward-slash internally, native only at FileManager boundary (Windows support); helpers in Sources/Path.swift are no-ops off Windows
 - [Subrepo platform and OS support](.claude/memory/subrepo-platform-support.md) — all 20 package repositories' Apple deployment minimums, full CI OS/target versions, and disabled watchOS/Wasm/visionOS legs
 - [README badge audit](.claude/docs/readme-badge-audit.md) — v1.0.0 dep README badges: only 5 repos have v1.0.0 branches; Spinetail codeql badge 404 + codecov "unknown", SyndiKit `v1.0.0` CI badge case-broken (points at `syndikit.yml`, file is `SyndiKit.yml`); unified template from SyndiKit/MistKit/SundialKit

@@ -1,8 +1,8 @@
 # Files package: canonical forward-slash path form (Windows support)
 
-Checkpoint note (2026-07-20): `Packages/Publish/Files` is temporarily absent from the
-root while Files is consumed from `brightdigit-com-260406`; the path below is its
-canonical location when the subrepos are restored.
+Note: `Packages/Publish/Files` is absent from the root since de-vendoring — Files is now
+consumed as a released version pin (`5.0.0-alpha.1`). The path below is its canonical
+location when the subrepos are restored.
 
 The `Packages/Publish/Files` package (fork of John Sundell's Files) stores **every
 path in canonical forward-slash form** on all platforms. All internal path logic

@@ -1,11 +1,11 @@
 # Subrepo platform and OS support
 
-Last verified: 2026-07-18, after the all-subrepo CI repair recorded in
-[`CI-SUBREPO-PROGRESS.md`](../../CI-SUBREPO-PROGRESS.md).
+Last verified: 2026-07-18, after the all-subrepo CI repair (PR
+[#160](https://github.com/brightdigit/brightdigit.com/pull/160)).
 
-Checkpoint note (2026-07-20): `Packages/` is temporarily absent while these 20
-repositories are consumed from their `brightdigit-com-*` branches. This inventory
-continues to describe the standalone repositories and their restored subrepo layout.
+Note: `Packages/` is absent since de-vendoring — these 20 repositories are now consumed as
+released version pins (see [`dependency-release-checkpoint.md`](dependency-release-checkpoint.md)).
+This inventory continues to describe the standalone repositories and their restored subrepo layout.
 
 This inventory separates two different meanings of “support”:
 

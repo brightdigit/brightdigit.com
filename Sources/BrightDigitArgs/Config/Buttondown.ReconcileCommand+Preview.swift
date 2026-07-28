@@ -179,10 +179,9 @@ extension Buttondown.ReconcileCommand {
 
   /// Prints the reconciliation plan without performing Buttondown writes.
   ///
-  /// Shows totals, a per-issue CREATE/UPDATE line, whether issue #114 is in the
-  /// CREATE (backfill) set, and a short cleaned-body preview for the first couple
-  /// of CREATE issues so the HTML→Markdown cleanup can be eyeballed. Only the
-  /// Every converted body is also exported by ``runPreview`` for full review.
+  /// Shows totals, a per-issue UPDATE line, and the issues skipped as absent or
+  /// too thin to write. Every converted body is also exported to the preview
+  /// directory by ``runPreview`` so the HTML→Markdown cleanup can be reviewed.
   internal func printPreviewReport(
     plan: Plan,
     campaignCount: Int,

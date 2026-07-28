@@ -92,15 +92,13 @@ node Scripts/check-content.js
 Always exits 0 by default (never gates a build). Not wired into CI yet.
 ### Subrepos (`Packages/`)
 
-`Packages/` is intentionally absent during the branch-based release checkpoint. The root package
-temporarily consumes all 20 first-party packages from URL + branch pins (`main` for Wave 0 and
-Wave 1, whose release PRs are merged; `brightdigit-com-*` for Wave 2, which are not yet merged to
-`main`), as recorded in `Package.swift` and `Package.resolved`, so the remaining
-package repositories can be merged and tagged independently. The root checkpoint PR stays unmerged
-until every direct and transitive first-party dependency uses a released tag. Branch table and
-next-gate detail:
-[`.claude/memory/dependency-release-checkpoint.md`](.claude/memory/dependency-release-checkpoint.md).
-Living merge/tag checklist: [`MERGE-AND-TAG.md`](MERGE-AND-TAG.md).
+`Packages/` is intentionally absent. De-vendoring is **complete**: all 20 first-party packages
+are released, and the root consumes every one of them as a version pin
+(`.package(url:…, from:…)`) in `Package.swift` / `Package.resolved`. No `branch:` or `revision:`
+pins remain anywhere in the graph. The root checkpoint PR
+([#161](https://github.com/brightdigit/brightdigit.com/pull/161)) merged 2026-07-28.
+Shipped versions and the remaining cleanup items:
+[`MERGE-AND-TAG.md`](MERGE-AND-TAG.md).
 
 The subrepo model remains canonical. Keep `.github/packages.json`,
 `.github/workflows/packages.yaml`, and `fix-subrepo-parents.sh`; package-side
@@ -172,7 +170,7 @@ commits), then re-run the pull/push.
   - `episodes/` - Podcast episodes (auto-generated)
   - `tutorials/` - Tutorial content
 - `Sources/` - Root app and site Swift modules
-- `Packages/BrightDigit/` - Normally contains local first-party subrepos; intentionally absent during the branch-based release checkpoint
+- `Packages/BrightDigit/` - Normally contains local first-party subrepos; absent since de-vendoring (restored for the `v2.0.0-alpha.2` cycle)
 - `Tests/` - Root package tests
 
 ### Key Dependencies
