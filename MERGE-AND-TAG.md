@@ -36,13 +36,16 @@ against released tags — no `branch:` pins remain anywhere in the graph.**
 - **Wave 2:** all five tagged, repinned to Publish `1.0.0-alpha.1` (and Ink for
   TransistorPublishPlugin).
 - **Wave 3:** root repinned to all 20 tags; `swift build`, `swift test`, and
-  `swift run brightdigitwg publish --mode production` all pass locally (451 HTML pages,
-  content check clean). PR #161 ready once root CI is green.
+  `swift run brightdigitwg publish --mode production` all pass in debug **and** release
+  (451 HTML pages, content check clean). Root CI green on `1a3ef033` — `build-linux`,
+  `lint`, `package-linux`, `deploy` all succeeded. PR #161 is `CLEAN` / `MERGEABLE`.
+- **Releases:** all 20 GitHub releases published, each marked prerelease.
 
-What remains: (1) root CI green on the repinned manifest; (2) create the 20 GitHub
-releases from `Scripts/release-notes/<Repo>.md`; (3) merge #161 and restore subrepos for
-`v2.0.0-alpha.2`; (4) cleanup — re-enable branch protection on TransistorPublishPlugin and
-NPMPublishPlugin, revoke `RELEASE_PAT`, delete the `backup/pre-squash-260727` refs.
+What remains: (1) merge #161 — note its base is `phase-05`, **not** `main`; (2) restore
+subrepos for `v2.0.0-alpha.2`; (3) cleanup — re-enable branch protection + signed commits
+on TransistorPublishPlugin and NPMPublishPlugin (disabled for the Wave 2 force-push),
+revoke `RELEASE_PAT`, and delete the 20 `backup/pre-squash-260727` refs once the merge
+lands (they are the rollback path until then).
 
 ### Recut: branch deps inside a release tag
 
@@ -55,8 +58,8 @@ error: … 'contribute' is required using a stable-version but 'contribute' depe
        an unstable-version package 'swiftsoup'
 ```
 
-Both were recut ([`Scripts/recut-release.sh`](Scripts/recut-release.sh)) — amend the
-release commit, force-push, move the tag:
+Both were recut — amend the release commit, force-push, then move the tag with
+`push --force` (never delete-then-create, which leaves a window where the tag is absent):
 
 | Package | Was | Now |
 | --- | --- | --- |
@@ -85,22 +88,41 @@ longer reproduces: `swift build -c release` + `swift test -c release` both pass.
 
 ### Squash + tag tooling
 
-[`Scripts/release-versions.tsv`](Scripts/release-versions.tsv) is the canonical table: repo,
-wave, boundary commit, version, rewrite mode, and the `main` tip observed 2026-07-27.
-[`Scripts/squash-release.sh`](Scripts/squash-release.sh) performs the rewrite:
+Three scripts drive a release pass, all reading
+[`Scripts/release-versions.tsv`](Scripts/release-versions.tsv) — the canonical table of
+repo, wave, boundary commit, version, rewrite mode, resulting tip, and `done` stamp — and
+all supporting `--dry-run` / `--repo` / `--wave` / `--all`:
 
 ```bash
-Scripts/squash-release.sh --dry-run --all     # review; needs no token
-Scripts/squash-release.sh --wave 0            # real run; needs RELEASE_PAT
+NOTES_DIR=path/to/notes Scripts/squash-release.sh --wave 0   # squash + repin  (RELEASE_PAT)
+Scripts/tag-release.sh --wave 0                              # tag             (RELEASE_PAT)
+NOTES_DIR=path/to/notes Scripts/publish-releases.sh --wave 0 # GitHub releases (gh)
 ```
 
-It pushes `backup/pre-squash-260727` before touching anything, installs the prepared
-`Scripts/release-notes/<Repo>.md` **between** the history reset and the commit so the notes
-land inside the release commit, and **aborts unless the diff against the old tip touches
-`RELEASE_NOTES.md` and nothing else** — a wrong boundary would silently drop upstream history.
-It does not tag; tags are cut per-wave once CI is green.
+`squash-release.sh` pushes `backup/pre-squash-260727` before touching anything, then in a
+**single commit** flattens history, installs `$NOTES_DIR/<Repo>.md` as `RELEASE_NOTES.md`,
+and repins the repo's own first-party deps to earlier-wave tags. It aborts if any
+dependency is not yet tagged, if a `branch:`/`revision:` pin survives the rewrite, or if
+the diff against the old tip touches anything beyond `Package.swift`, `Package.resolved`,
+and `RELEASE_NOTES.md` — a wrong boundary would otherwise silently drop upstream history.
 
-Recover any repo with:
+`tag-release.sh` refuses to tag unless the repo carries a `done` stamp, its tip is
+unmoved, and its **own** build workflow is green on that exact SHA.
+
+Both skip repos already marked `done`, so a partial run is safe to re-run. **Update the
+`done` column immediately after each wave** — `expect_tip` is rewritten to the post-squash
+SHA, so the tip check alone will not stop a second squash.
+
+`NOTES_DIR` has no default: the 2026-07 notes shipped into each package's own
+`RELEASE_NOTES.md`, so the staging copies were deleted rather than left to drift. To
+re-create a release from what shipped, fetch them back:
+
+```bash
+curl -sfo notes/<Repo>.md \
+  https://raw.githubusercontent.com/brightdigit/<Repo>/main/RELEASE_NOTES.md
+```
+
+Recover any repo from its backup ref with:
 
 ```bash
 git push --force origin refs/heads/backup/pre-squash-260727:main
@@ -109,29 +131,25 @@ git push --force origin refs/heads/backup/pre-squash-260727:main
 ## Current checkpoint
 
 `Packages/` is intentionally absent. The root consumes every first-party package
-via URL + branch pins in [`Package.swift`](Package.swift) /
-[`Package.resolved`](Package.resolved).
+via URL + **version** pins in [`Package.swift`](Package.swift) /
+[`Package.resolved`](Package.resolved) — see the
+[progress tracker](#progress-tracker) for the released version of each.
 
-### Root pins (2026-07-27)
+All working branches (`brightdigit-com-*`) are **deleted**. Five root pins still referenced
+them until the 2026-07-28 repin, which is why the root could not resolve from a clean
+checkout: the branches had been removed when their PRs merged.
 
-| Branch | Packages |
-| --- | --- |
-| `main` | Wave 0 (Plot, Files, Ink, SyndiKit, ButtondownKit, SwiftTube, Spinetail, Contribute) + Wave 1 (Publish `22229e1`, TailwindKit, ContributeButtondown, ContributeMailchimp, ContributeRSS, ContributeWordPress, ContributeYouTube) |
-| `brightdigit-com-260406` | YoutubePublishPlugin, ReadingTimePublishPlugin, NPMPublishPlugin, TransistorPublishPlugin — **stale**: these branches are merged; the root has not been repinned to `main` yet |
-| `brightdigit-com-260717` | PublishType — **stale**, same reason |
+`from:` resolves these prereleases as long as the requirement itself names one
+(`from: "1.0.0-alpha.1"`); no `exact:` fallback was needed anywhere in the graph.
 
-The four stale Wave 2 pins are deliberate: repinning them to `main` now would be thrown away
-when they move to `from:` tags at the end of the Wave 2 tag pass, so the root goes straight
-from working branch to released tag.
+Two ordering rules that mattered during the cutover, kept because they bite again on any
+future branch-based checkpoint:
 
-Wave 0 and Wave 1 working branches are **deleted**. Dual-mode `ensure-remote-deps.sh`
-was removed earlier from packages whose manifests already use `url:` + `branch:`.
-
-SwiftPM rejects two branch requirements for the same package
-(`error: … required using two different revision-based requirements`), so a Wave 1 dep
-(Publish) must move to `main` in the root **and** every Wave 2 consumer in the same step.
-Follow the manifest edit with `swift package update`, not `swift package resolve` — resolve
-reuses the revisions already in `Package.resolved` and re-reads the old manifests.
+- SwiftPM rejects two branch requirements for the same package
+  (`error: … required using two different revision-based requirements`), so a shared dep
+  must move in the root **and** in every consumer in the same step.
+- Follow a manifest edit with `swift package update`, not `swift package resolve` — resolve
+  reuses the revisions already in `Package.resolved` and re-reads the old manifests.
 
 ---
 
@@ -286,82 +304,10 @@ graph TD
 
 ## Wave 1 review fixes (2026-07-26)
 
-Leo's review left five comments across three of the seven PRs; the other four
-(ContributeMailchimp, ContributeRSS, ContributeWordPress, ContributeYouTube) had
-CodeRabbit/Codecov output only. All five are addressed and pushed to the existing
-PR head branches, with a reply on each thread — **no merges, no tags.**
-
-| PR | Comment | Resolution | Commit |
-| --- | --- | --- | --- |
-| Publish #1 | remove Splash references | Deleted `using-splash.md` (nothing linked to it) and cleaned three other prose sites. **Kept** the `AGENTS.md` bullet — it exists to stop Splash being re-added. Splash was already gone from the code. | `18dfc84` |
-| ContributeButtondown #1 | remove the logo | Deleted the placeholder PNG, its empty `Resources/`, and the README image line. Matches the standing "ContributeButtondown gets no logo" decision. | `19504bf` |
-| ContributeButtondown #1 | too BrightDigit-specific | Added public `IssueNumbering` holding the subject regex; `.default` preserves today's behavior and `init(subjectPattern:)` **throws** (it is consumer input now, so it must not trap). Threaded as a **defaulted** `numbering:` param, so the root call site was untouched. Also fixed the pre-existing dangling ``IssueNumbering`` DocC link in `Source.swift`. | `4726346` |
-| TailwindKit #1 | Fix the logo | The committed PNG was the wrong artwork (1200×630 gradient banner + wordmark), not merely stale. Replaced from Leo's SVG: vector source + 600×600 + `@2x`. | `b25bd3d` |
-| TailwindKit #1 | remove Plot dependency? | **Yes — removed.** Plot was reachable from 1 of 56 source files. Added the `TailwindClassAttribute` seam (one static requirement + protocol extension); the consumer supplies the binding. | `b7a2dba` |
-
-**Follow-up: seam shape and no global functions (`4d1465c`, root `b6d47e4b`).** Two
-further corrections from Leo on the work above.
-
-*No global functions.* The Plot removal had introduced a file-scope
-`escapingSpaces(_:)`; it is now `String.escapingSpaces` in
-`Core/String+ArbitraryValue.swift`. The file had to be renamed alongside it —
-SwiftLint's `file_name` rule runs at `severity: error` and expects
-`<Type>+<Suffix>.swift`. This also deleted a `private func escapingSpaces` shim in
-`ArbitraryStyling` that existed only to disambiguate against the global.
-
-*The seam should cost a declaration, not an implementation.* The requirement was
-renamed `tailwindClass(_:)` → `` `class`(_:) `` — the factory Plot's `Node` and
-`Attribute` already declare, matching on argument label, return type **and** the
-`Context: HTMLContext` constraint. So the root's binding is now literally:
-
-```swift
-extension Node: TailwindClassAttribute where Context: HTMLContext {}
-extension Attribute: TailwindClassAttribute where Context: HTMLContext {}
-```
-
-Verified by compiling a probe with a negative control before committing. The accepted
-tradeoff is that every conformer gains a `class` member. `Component` is unaffected by
-this change and still needs its hand-written one-liner, for the language reasons below.
-
-Leo chose *injectable pattern* over relocating the numbering code to the root, and
-specified the TailwindKit shape himself ("protocol and extension in TailwindKit …
-in BrightDigit we just add an extension for the Plot elements").
-
-**Follow-up: ContributeButtondown front matter (`65907c6`).** Raised during the
-numbering review as a related concern — `Newsletter.FrontMatter` was arguably *more*
-BrightDigit-locked than the numbering, with a fixed field set and no memberwise `init`,
-so a consumer could not construct one. Two additive changes: a public memberwise `init`,
-and `write(…translatedBy:)` taking a `FrontMatterTranslator` **instance** so a site can
-emit any `Encodable` schema. Passing an instance is the point — `ContentType`
-default-constructs its translator, so only this path can carry per-site config.
-
-Making the *field set itself* configurable was deliberately **not** attempted: it is
-blocked on `Contribute.FrontMatterTranslator`'s `init()` requirement, and changing that
-protocol means reopening a **Wave 0** package that five Contribute\* packages depend on,
-after its release PRs already merged. Revisit only if a second consumer appears with a
-concrete different schema.
-
-**TailwindKit branch handling.** The Plot work was pushed to a scratch branch first,
-then **fast-forwarded onto `brightdigit-com-260717`** so PR #1 shows it — otherwise the
-PR under review would still display the pre-fix code. The scratch branch is deleted and
-the root pins the canonical branch. `brightdigit-com-260717` is unchanged for the other
-five packages that share it.
-
-Two things worth carrying forward:
-
-- **TailwindKit now has zero dependencies — not even Foundation.** Four files
-  called `String.replacingOccurrences` and compiled only because `import Plot`
-  leaked Foundation in transitively; they now use `String.escapingSpaces` in
-  `Core/String+ArbitraryValue.swift`. Removing Plot alone would not have built.
-- **Plot's `Component` cannot use the seam.** Swift forbids retroactively
-  conforming a protocol to another protocol, and `Component.class` returns an
-  existential rather than `Self`. The root keeps a hand-written one-liner in
-  `Sources/BrightDigitSite/Nodes/Node+Tailwind.swift`. That asymmetry is a
-  language limitation, not an oversight — don't "fix" it.
-
-The root repin and the Plot conformance landed in **one commit** on
-`release/branch-based-devendoring`, so the branch is never resolvable without the
-binding.
+Five review comments across three of the seven Wave 1 PRs — all addressed before those
+PRs merged. Detail lives in the PR threads; the durable outcomes (Splash removal, the
+GCD → `Synchronization.Mutex` migration) are recorded in `AGENTS.md` and the packages
+themselves.
 
 ## Process: release a package
 
@@ -395,238 +341,13 @@ and workflow steps were removed in the 2026-07-22 `v1.0.0` consumer cutover.
 
 ## Living checklist
 
-### Wave 0 — leaves (on `main`; untagged)
+**Complete.** All 20 packages were squashed, CI-verified, tagged, and released on
+2026-07-27/28; the root now resolves entirely against those tags. The per-package merge
+choreography this section used to track (release-PR links, branch names, per-repo
+checkboxes) is finished and has been removed — see the [progress tracker](#progress-tracker)
+for the shipped versions and `Scripts/release-versions.tsv` for the commit each tag points at.
 
-| Package | Repo | Branch | Release PR (merged) |
-| --- | --- | --- | --- |
-| Plot | https://github.com/brightdigit/Plot | `main` | [#4](https://github.com/brightdigit/Plot/pull/4) |
-| Files | https://github.com/brightdigit/Files | `main` | [#5](https://github.com/brightdigit/Files/pull/5) |
-| Ink | https://github.com/brightdigit/Ink | `main` | [#8](https://github.com/brightdigit/Ink/pull/8) |
-| SyndiKit | https://github.com/brightdigit/SyndiKit | `main` | [#133](https://github.com/brightdigit/SyndiKit/pull/133) |
-| ButtondownKit | https://github.com/brightdigit/ButtondownKit | `main` | [#9](https://github.com/brightdigit/ButtondownKit/pull/9) |
-| SwiftTube | https://github.com/brightdigit/SwiftTube | `main` | [#16](https://github.com/brightdigit/SwiftTube/pull/16) |
-| Spinetail | https://github.com/brightdigit/Spinetail | `main` | [#28](https://github.com/brightdigit/Spinetail/pull/28) |
-| Contribute | https://github.com/brightdigit/Contribute | `main` | [#5](https://github.com/brightdigit/Contribute/pull/5) |
-
-Merge/feedback history (done): Plot #1/#2, Files #3/#2, Ink #1/#3/#5/#6, SyndiKit #129/#130,
-SwiftTube #18/#19, Spinetail #31/#32, Contribute #14/#15/#13. No new `1.0.0` /
-`v1.0.0` **tags** cut yet (ancient Files `1.0.0` from 2017 does not count) —
-re-verified via `git ls-remote --tags` across all eight repos 2026-07-26.
-
-SwiftTube/Spinetail OpenAPI rebuild renamed public types (Spinetail
-`MailchimpCampaign` → `Campaign`; SwiftTube Videos rename); consumers adopted the
-new names when repinning.
-
-**SyndiKit Android CI:** on-device tests for the Swift 6.4 nightly Android SDK fail
-with `not executable: 64-bit ELF file` on the emulator (6.3 passes). Workaround
-merged in [#138](https://github.com/brightdigit/SyndiKit/pull/138)
-(`android-run-tests: false`); re-enable tracked in
-[#137](https://github.com/brightdigit/SyndiKit/issues/137).
-
-**Wave 0 hygiene follow-ups (2026-07-24) — Contribute #19 and #18 MERGED; the rest still open.**
-
-- ✅ **Contribute → Swift 6.4 + async download stack**
-  ([#19](https://github.com/brightdigit/Contribute/pull/19), **merged** `a749708`):
-  Contribute declared `swift-tools-version 5.8` (advertised 5.8+ but CI only ever tested
-  6.4 nightly). Raised to `6.4` to match the stack. The strict-concurrency fixes went
-  **further than originally planned**: rather than hardening completion handlers with
-  `@escaping @Sendable`, the whole download stack
-  (`URLSessionable`/`URLDownloader`/`FileURLDownloader`) became `async throws`, backed by
-  Foundation's native `URLSession.download(from:)`. `#if !os(WASI)` guards were added
-  (`URLSession`/`URLResponse` don't exist there; a remote URL now throws
-  `URLDownloaderError.networkUnavailable`) — Contribute sets `ENABLE_WASM=false` because Yams
-  can't build for wasm, so the guards were verified by cross-compiling the download stack as a
-  standalone wasm target. Also a behavior fix: the old code discarded the session error when a
-  destination URL was returned. Platform floors unchanged
-  (`.macOS(.v12)/.iOS(.v13)/.tvOS(.v13)/.watchOS(.v6)`). 15/15 CI green on `165dfc4`.
-- ✅ **Stale CI-comment cleanup for Contribute**
-  ([#18](https://github.com/brightdigit/Contribute/pull/18), **merged** → `2d346bd`).
-- **Stale CI-comment cleanup, still open** (comment-only; re-verified open 2026-07-26): Plot
-  [#5](https://github.com/brightdigit/Plot/pull/5), Files
-  [#6](https://github.com/brightdigit/Files/pull/6), Ink
-  [#9](https://github.com/brightdigit/Ink/pull/9), SwiftTube
-  [#23](https://github.com/brightdigit/SwiftTube/pull/23), Spinetail
-  [#36](https://github.com/brightdigit/Spinetail/pull/36) — drop a dead
-  "brightdigit fork of swift-coverage-action" comment (Contribute only; the step is
-  `sersoft-gmbh/swift-coverage-action@v5`) and a phantom `ENABLE_WATCHOS` gate comment
-  (no repo references `vars.ENABLE_WATCHOS`). All builds green.
-- ✅ **Plot / Files / Ink `claude-review` secret gap — resolved 2026-07-26.**
-  `CLAUDE_CODE_OAUTH_TOKEN` is now a **brightdigit org secret** (visibility ALL), so the
-  `claude.yml` / `claude-code-review.yml` workflows authenticate on all three forks (and
-  every other org repo) with no repo-level secret. SyndiKit keeps its older repo-level
-  copy by choice — it shadows the org secret there but works.
-
-### `header.sh` — two versions
-
-`Scripts/header.sh` is a local-only lint step. Two versions, same skeleton, different header text:
-
-| Version | Repos | Emits | Invocation |
-| --- | --- | --- | --- |
-| **BrightDigit** | non-fork packages | `//` block: filename + package, Leo Dion / BrightDigit MIT | `header.sh -d Sources -c "Leo Dion" -o "BrightDigit" -p "<Package>"` |
-| **Sundell forks** | Plot, Files, Ink | Compact `/**` John Sundell block | `header.sh -d Sources -c "John Sundell" -o "John Sundell" -p "<Package>" -y <year>` (Plot 2021, Ink 2020, Files 2019) |
-
-Canonical fork script: [`reference/sundell-fork/Scripts/header.sh`](reference/sundell-fork/Scripts/header.sh).
-The Sundell strip must preserve `///` doc comments (do not match `///` when clearing `//` lines).
-
-### Wave 1 — depend only on Wave 0
-
-**Merged 2026-07-27.** All seven release PRs landed on `main`; working branches deleted;
-root + Wave 2 consumers pin Wave 1 packages (Publish) to `branch: "main"`. Untagged —
-tagging is the next gate after Wave 2.
-
-| Package | Repo | Merged PR | Merge commit on `main` |
-| --- | --- | --- | --- |
-| Publish | https://github.com/brightdigit/Publish | [#1](https://github.com/brightdigit/Publish/pull/1) | `22229e1` |
-| TailwindKit | https://github.com/brightdigit/TailwindKit | [#1](https://github.com/brightdigit/TailwindKit/pull/1) | `20731db` |
-| ContributeButtondown | https://github.com/brightdigit/ContributeButtondown | [#1](https://github.com/brightdigit/ContributeButtondown/pull/1) | `62ef181` |
-| ContributeMailchimp | https://github.com/brightdigit/ContributeMailchimp | [#1](https://github.com/brightdigit/ContributeMailchimp/pull/1) | `bbd8d93` |
-| ContributeRSS | https://github.com/brightdigit/ContributeRSS | [#1](https://github.com/brightdigit/ContributeRSS/pull/1) | `814a3f7` |
-| ContributeWordPress | https://github.com/brightdigit/ContributeWordPress | [#18](https://github.com/brightdigit/ContributeWordPress/pull/18) | `426247f` |
-| ContributeYouTube | https://github.com/brightdigit/ContributeYouTube | [#1](https://github.com/brightdigit/ContributeYouTube/pull/1) | `5f4b537` |
-
-Pre-merge history (review fixes, logos, hygiene, GCD removal) retained below for the record.
-
-**PR review threads — resolved 2026-07-27** before merge. (A `Scripts/resolve-pr-threads.sh`
-helper was referenced here but was never committed to this repo; resolve threads via
-`gh api graphql` with `resolveReviewThread` if the need recurs.)
-
-Leo's review comments (2026-07-26) were **all resolved** before merge — see *Wave 1 review
-fixes*.
-
-**Logo / hygiene (pre-merge).** Contribute-family logos landed 2026-07-26; hygiene pass
-2026-07-24. Full hygiene record:
-[`.claude/memory/wave1-hygiene-pass.md`](.claude/memory/wave1-hygiene-pass.md).
-Still-relevant highlights: ContributeYouTube/Mailchimp un-deprecated; ContributeWordPress
-`.swift-version` → `6.4.x-snapshot` + AssetDownloader `withThrowingTaskGroup` fix;
-Publish Sundell-fork header hygiene; TailwindKit dropped Plot (zero deps).
-
-Also: ContributeWordPress [#11](https://github.com/brightdigit/ContributeWordPress/pull/11) docs (draft) — unrelated to the release PR.
-
-#### GCD removal (2026-07-24) — supersedes the `NSLock` plan
-
-`AssetDownloader` fanned downloads over a `DispatchGroup`, every completion writing an
-unsynchronized `[URL: Error]`; with the real `FileURLDownloader` those callbacks arrive
-concurrently on `URLSession`'s delegate queue, so the writes raced (`group.wait()` orders only
-the final read). The originally-planned fix guarded that dictionary with an `NSLock`
-(`AssetDownloadErrors.swift`).
-
-**That file is now deleted.** `withThrowingTaskGroup` removes the shared state instead of
-guarding it: each child returns its own `(URL, any Error)?` and the parent collects at the join
-point, where there is no concurrency to synchronize. `Downloader.download` and
-`MarkdownProcessor.begin` are `async throws`; `Sources/wpublish/main.swift` became a `@main`
-type in `WPublish.swift` (top-level code cannot `await`). Two more `NSLock`s disappeared from the
-test doubles (`FileDownloaderSpy`, `AssetDownloaderSpy` are now actors). A regression test fans
-out 200 failing downloads and asserts every error survives.
-
-Publish lost the last GCD in the graph: the synchronous `publish` overloads, their
-`DispatchSemaphore`, and the `Mutex`-backed `ResultBox` are deleted (the async overloads already
-existed and consumers already used them), and `PublishingContext`'s `TagCache` `Mutex` is gone —
-`allTags` is computed on demand.
-
-**Files keeps its `Mutex`** (`Sources/Storage.swift`) by decision: `File`/`Folder` are structs
-wrapping a `final class Storage` so `move`/`rename` mutate through a `let`. Removing it means
-either an actor (async on every path accessor, `AsyncSequence` children) or value semantics (a
-breaking API change). Deferred to
-[brightdigit.com#162](https://github.com/brightdigit/brightdigit.com/issues/162).
-
-**⚠ Lockfile trap.** ContributeWordPress #18's CI was red on every platform with
-`stored property 'urlDownloader' … has non-Sendable type 'any URLDownloader'` — its committed
-`Package.resolved` still pinned Contribute at `5dc9049` (pre-merge `main`) even though the
-manifest says `branch: "main"`. SwiftPM honours the lockfile revision. Fixed in `b1658cb`.
-Local builds could not see it because Contribute was in `swift package edit` mode, which drops
-the dependency from `Package.resolved` and substitutes a working copy — **passing local tests
-say nothing about what CI resolves.** Check every Wave 1 PR's lockfile pins against what its
-manifest branch actually points to.
-
-**TailwindKit's old park does not block this merge.** That park was scoped to
-`git subrepo pull` / `push --all` snagging: its standalone `main` carried an older,
-superseded implementation with no common ancestor, so pulling would re-import those
-files into the monorepo. Merging pushes the correct content the other way — PR #1
-explicitly **deletes** all five stale files (`Flexbox.swift`, `Layout/AspectRatio.swift`,
-`Layout/Display.swift`, `Shared/Breakpoints.swift`, `TailwindKit.swift`), leaving no
-orphans. Landing it makes `main` authoritative and retires the divergence. Its `.gitrepo`
-commit is still stale at `bcb0a7f7`, which matters only when `Packages/` is restored.
-
-
-#### Merge order
-
-~~Merge **Publish first**, then the other six in any order.~~ **Done 2026-07-27** — all
-seven Wave 1 release PRs merged. Publish is on `main` (`22229e1`); Wave 2 consumers and
-the root pin Publish to `branch: "main"`.
-
-#### Per-repo checklist (Wave 1 — complete)
-
-1. ~~Confirm CI is green~~ ✅
-2. ~~Merge the PR~~ ✅ (all seven, 2026-07-27)
-3. ~~Repin consumers to `main`~~ ✅ — root Wave 1 packages + every Wave 2 Publish pin,
-   then `swift package update` (2026-07-27)
-4. ~~Delete working branches~~ ✅ — Publish / TailwindKit / ContributeButtondown /
-   ContributeYouTube deleted after the repin; Mailchimp / RSS / WordPress were already gone
-
-For **Wave 2**, reuse the same checklist: keep the working branch until the root is
-repinned off it after merge.
-
-#### Open item
-
-- ~~Publish's default branch is `master`~~ — **resolved 2026-07-23:** renamed to `main`.
-- ~~ReadingTimePublishPlugin's default branch is `master`~~ — **wrong; corrected 2026-07-27.**
-  `gh api repos/brightdigit/ReadingTimePublishPlugin --jq .default_branch` returns **`main`**.
-  All 20 repos use `main`; there is no `master` special case anywhere.
-- **`.swift-version` drift.** ~~TransistorPublishPlugin and ContributeWordPress pin
-  toolchain `5.8`~~ — ContributeWordPress fixed to `6.4.x-snapshot` in the 2026-07-24
-  hygiene pass. **TransistorPublishPlugin still pins `5.8`**; every other repo and the
-  root use `6.4.x-snapshot`. CI passes today, but `swift package update` fails locally
-  under swiftly there until the toolchain is overridden
-  (`swiftly run swift package update +6.4.x-snapshot-…`).
-
-#### Repin gotchas (learned in the Wave 0 cutover)
-
-SwiftPM refuses two branch requirements for one package
-(`error: … required using two different revision-based requirements`), so when a Wave 1
-package moves to `main`, **every consumer must move in the same step** — the root and
-each Wave 2 dependent together, not one at a time. **Wave 1 same-step Publish → `main`
-repin completed 2026-07-27.**
-
-After any repin, run **`swift package update`**, not `swift package resolve`: resolve
-reuses the revisions already in `Package.resolved` and keeps reading the old manifests.
-Commit the regenerated lockfile **in the same commit as the manifest edit** — a stale
-lockfile hard-fails any CI leg that runs with automatic resolution disabled
-(`error: an out-of-date resolved file was detected`). Note `swift package update` also
-floats external semver-range deps; use `swift package update <name>` to limit the blast
-radius.
-
-### Wave 2 — Publish plugins / type layer
-
-**Merged 2026-07-27.** All five release PRs landed on `main`. Every repo's default branch is
-`main`. The root still pins these five to their old working branches — that repin happens as
-step 5 of the Wave 2 tag pass, not before.
-
-| Package | Repo | Merged PR | Merge commit on `main` |
-| --- | --- | --- | --- |
-| PublishType | https://github.com/brightdigit/PublishType | [#1](https://github.com/brightdigit/PublishType/pull/1) | `ea7f87f` |
-| YoutubePublishPlugin | https://github.com/brightdigit/YoutubePublishPlugin | [#1](https://github.com/brightdigit/YoutubePublishPlugin/pull/1) | `20db534` |
-| ReadingTimePublishPlugin | https://github.com/brightdigit/ReadingTimePublishPlugin | [#1](https://github.com/brightdigit/ReadingTimePublishPlugin/pull/1) | `bb37c11` |
-| TransistorPublishPlugin | https://github.com/brightdigit/TransistorPublishPlugin | [#6](https://github.com/brightdigit/TransistorPublishPlugin/pull/6) | `3aa83e2` |
-| NPMPublishPlugin | https://github.com/brightdigit/NPMPublishPlugin | [#9](https://github.com/brightdigit/NPMPublishPlugin/pull/9) | `a7b4b51` |
-
-NPMPublishPlugin #9 squash-merged as a single commit already titled `v1.0.0-alpha.1 #9`. Since
-that repo ships `1.0.0`, the message is wrong — the squash pass amends it to `v2.0.0-alpha.1`.
-
-Two repos landed their PR as a **true merge commit** rather than a squash — Contribute
-(`a749708`, p=2) and TransistorPublishPlugin (`3aa83e2`, p=2, with 24 loose commits beneath).
-The squash uses `git reset --soft`, which flattens a merge without replaying it.
-
-### Wave 3 — root cutover
-
-| Package | Repo | Branch / PR |
-| --- | --- | --- |
-| BrightDigit (root) | https://github.com/brightdigit/brightdigit.com | [`release/branch-based-devendoring`](https://github.com/brightdigit/brightdigit.com/tree/release/branch-based-devendoring) · [#161](https://github.com/brightdigit/brightdigit.com/pull/161) |
-
-After every Wave 0–2 package is tagged, rewrite root `Package.swift` branch pins to
-`from:` versions, verify build/test/publish, then merge #161. Subsequent development
-rebases onto `main` and restores subrepos for `v2.0.0-alpha.2`.
-
----
+Anything still outstanding is listed under [Where things stand](#where-things-stand-2026-07-28).
 
 ## Progress tracker
 

@@ -10,7 +10,7 @@
 #   1. skips unless the repo has a 'done' stamp (i.e. was squashed and tagged)
 #   2. skips if the release already exists (idempotent: safe to re-run after a failure)
 #   3. verifies the tag exists on the remote and points at the recorded tip
-#   4. creates the release from Scripts/release-notes/<Repo>.md
+#   4. creates the release from $NOTES_DIR/<Repo>.md
 #
 # Every version in this pass is a prerelease (alpha/beta), so --prerelease is set on all
 # of them. If a future run releases a stable version, gate that flag on the version string.
@@ -19,11 +19,11 @@
 # GitHub release bodies should not repeat the title, so the file's leading heading lines
 # are stripped and only that version's section body is posted.
 #
-# Usage:
-#   Scripts/publish-releases.sh --dry-run          # print what would be created
-#   Scripts/publish-releases.sh --repo Plot
-#   Scripts/publish-releases.sh --wave 0
-#   Scripts/publish-releases.sh --all
+# Usage (NOTES_DIR is required — see the note at the top of the argument checks):
+#   NOTES_DIR=path/to/notes Scripts/publish-releases.sh --dry-run   # print what would be created
+#   NOTES_DIR=path/to/notes Scripts/publish-releases.sh --repo Plot
+#   NOTES_DIR=path/to/notes Scripts/publish-releases.sh --wave 0
+#   NOTES_DIR=path/to/notes Scripts/publish-releases.sh --all
 #
 # Requires: gh authenticated with permission to create releases on brightdigit/*.
 
@@ -31,7 +31,7 @@ set -uo pipefail
 
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 TABLE="${SCRIPT_DIR}/release-versions.tsv"
-NOTES_DIR="${NOTES_DIR:-${SCRIPT_DIR}/release-notes}"
+NOTES_DIR="${NOTES_DIR:-}"
 BODY_DIR="${TMPDIR:-/tmp}/release-bodies-$$"
 
 DRY_RUN=0
@@ -59,6 +59,14 @@ done
 [ -n "$FILTER_REPO" ] || [ -n "$FILTER_WAVE" ] || [ "$SELECT_ALL" -eq 1 ] \
 	|| die "select work with --repo <name>, --wave <n>, or --all"
 command -v gh >/dev/null 2>&1 || die "gh is required"
+
+# The 2026-07 staging copies were deleted once their contents shipped into each package's
+# own RELEASE_NOTES.md; a future release points NOTES_DIR at freshly staged notes. To
+# re-create a release from what actually shipped, fetch the package's RELEASE_NOTES.md:
+#   mkdir -p /tmp/notes && curl -sfo /tmp/notes/<Repo>.md \
+#     https://raw.githubusercontent.com/brightdigit/<Repo>/main/RELEASE_NOTES.md
+[ -n "$NOTES_DIR" ] || die "set NOTES_DIR to the directory of prepared <Repo>.md release notes"
+[ -d "$NOTES_DIR" ] || die "NOTES_DIR is not a directory: $NOTES_DIR"
 
 mkdir -p "$BODY_DIR"
 trap 'rm -rf "$BODY_DIR"' EXIT

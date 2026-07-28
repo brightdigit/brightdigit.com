@@ -13,21 +13,26 @@
 #
 # This script does NOT tag. Tagging happens per-wave after CI is green (MERGE-AND-TAG.md).
 #
-# Usage:
-#   Scripts/squash-release.sh --dry-run              # print planned actions, touch nothing
-#   Scripts/squash-release.sh --repo Plot            # one repo
-#   Scripts/squash-release.sh --wave 0               # every repo in a wave
-#   Scripts/squash-release.sh --all                  # all 20
+# Usage (NOTES_DIR is required — see below):
+#   NOTES_DIR=path/to/notes Scripts/squash-release.sh --dry-run   # planned actions, touch nothing
+#   NOTES_DIR=path/to/notes Scripts/squash-release.sh --repo Plot # one repo
+#   NOTES_DIR=path/to/notes Scripts/squash-release.sh --wave 0    # every repo in a wave
+#   NOTES_DIR=path/to/notes Scripts/squash-release.sh --all       # all 20
 #
 # Requires: RELEASE_PAT (fine-grained PAT, Contents: read+write on the package repos)
-#           NOTES_DIR   (directory of prepared <Repo>.md release notes; default Scripts/release-notes)
+#           NOTES_DIR   (directory of prepared <Repo>.md release notes)
+#
+# NOTES_DIR has no default any more. The 2026-07 pass shipped its notes into each package's
+# own RELEASE_NOTES.md, so the staging copies under Scripts/release-notes/ were deleted
+# rather than left to drift. A future release stages fresh notes and points NOTES_DIR at
+# them; a repo with no notes file is skipped, not failed.
 
 set -uo pipefail
 
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 PACKAGE_DIR="${SCRIPT_DIR}/.."
 TABLE="${SCRIPT_DIR}/release-versions.tsv"
-NOTES_DIR="${NOTES_DIR:-${SCRIPT_DIR}/release-notes}"
+NOTES_DIR="${NOTES_DIR:-}"
 BACKUP_PREFIX="backup/pre-squash-260727"
 WORKDIR="${WORKDIR:-/private/tmp/claude-501/-Users-leo-Documents-Projects-brightdigit-com-tidy-summit/932a31c0-f3ab-4fb0-8151-165ad97615cb/scratchpad/squash}"
 
@@ -60,6 +65,10 @@ done
 if [ -z "$FILTER_REPO" ] && [ -z "$FILTER_WAVE" ] && [ "$SELECT_ALL" -eq 0 ]; then
 	die "select work with --repo <name>, --wave <n>, or --all"
 fi
+
+# Release notes land inside the release commit, so their location is not optional.
+[ -n "$NOTES_DIR" ] || die "set NOTES_DIR to the directory of prepared <Repo>.md release notes"
+[ -d "$NOTES_DIR" ] || die "NOTES_DIR is not a directory: $NOTES_DIR"
 
 # A real run needs a token; --dry-run deliberately does not, so the plan can be
 # reviewed before the credential is ever minted.
