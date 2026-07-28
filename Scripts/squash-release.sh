@@ -73,6 +73,65 @@ FAILED=()
 SUCCEEDED=()
 SKIPPED=()
 
+SWIFT=$(command -v xcrun >/dev/null 2>&1 && echo "xcrun swift" || echo "swift")
+
+# Rewrites this repo's own first-party `branch:`/`revision:` pins to the released tags.
+# Versions come from the table, so an earlier wave's tag is never hard-coded twice.
+# Handles both manifest shapes in this fleet: the multi-line `.package(\n url:...\n branch:...)`
+# form and the single-line form.
+rewrite_deps() {
+	DEP_VERSIONS="$DEP_VERSIONS" python3 - <<'PYEOF'
+import os, re, pathlib, sys
+
+versions = dict(
+    pair.split('=', 1)
+    for pair in os.environ['DEP_VERSIONS'].split(',')
+    if pair
+)
+
+p = pathlib.Path('Package.swift')
+s = orig = p.read_text()
+
+for dep, ver in versions.items():
+    # multi-line: .package(\n  url: ".../Dep.git",\n  branch: "main"\n)
+    s = re.sub(
+        r'(\.package\(\s*\n?\s*url:\s*"https://github\.com/brightdigit/%s\.git",\s*\n?\s*)'
+        r'(?:branch|revision):\s*"[^"]*"' % re.escape(dep),
+        lambda m: m.group(1) + 'from: "%s"' % ver,
+        s,
+    )
+    # single-line: .package(url: ".../Dep.git", branch: "main")
+    s = re.sub(
+        r'(\.package\(url:\s*"https://github\.com/brightdigit/%s\.git",\s*)'
+        r'(?:branch|revision):\s*"[^"]*"' % re.escape(dep),
+        lambda m: m.group(1) + 'from: "%s"' % ver,
+        s,
+    )
+
+if s == orig:
+    sys.exit("no dependency pins were rewritten (manifest shape unexpected?)")
+p.write_text(s)
+PYEOF
+}
+
+# Builds DEP_VERSIONS ("Dep=version,Dep=version") for a repo by looking each of its
+# first-party deps up in the table. Empty when the repo has no first-party deps.
+deps_for_repo() {
+	local repo=$1
+	local manifest="${WORKDIR}/${repo}/Package.swift"
+	local out=""
+	[ -f "$manifest" ] || { echo ""; return 0; }
+	local dep ver
+	while read -r dep; do
+		[ -n "$dep" ] || continue
+		ver=$(awk -F'\t' -v R="$dep" '$1==R{print $4}' "$TABLE")
+		[ -n "$ver" ] || continue
+		out="${out}${dep}=${ver},"
+	done < <(grep -o 'github\.com/brightdigit/[A-Za-z]*\.git' "$manifest" \
+		| sed 's|.*brightdigit/||; s|\.git||' | sort -u)
+	echo "$out"
+}
+
 process_repo() {
 	local repo=$1 wave=$2 boundary=$3 version=$4 mode=$5 expect_tip=$6
 	local notes="${NOTES_DIR}/${repo}.md"
@@ -125,6 +184,29 @@ process_repo() {
 		info "boundary ${boundary:0:9} is an ancestor ($(git rev-list --count "${boundary}..HEAD") commits above)"
 	fi
 
+	# Which first-party deps does this repo pin, and at what released version?
+	DEP_VERSIONS=$(deps_for_repo "$repo")
+	if [ -n "$DEP_VERSIONS" ]; then
+		info "will repin: ${DEP_VERSIONS%,}"
+		# Every dep must already be tagged, or this package's own release would point at
+		# a version that does not exist yet. Wave order exists precisely to prevent this.
+		local dep ver missing=""
+		while IFS='=' read -r dep ver; do
+			[ -n "$dep" ] || continue
+			if ! git ls-remote --tags "https://github.com/brightdigit/${dep}.git" \
+				"refs/tags/${ver}" 2>/dev/null | grep -q .; then
+				missing="${missing}${dep}@${ver} "
+			fi
+		done < <(echo "$DEP_VERSIONS" | tr ',' '\n')
+		if [ -n "$missing" ]; then
+			echo "  FAIL: dependency not tagged yet: ${missing}"
+			echo "        release the earlier wave first"
+			FAILED+=("$repo (untagged dep)")
+			return 1
+		fi
+		info "all dependency tags exist"
+	fi
+
 	if [ "$DRY_RUN" -eq 1 ]; then
 		info "DRY RUN — would:"
 		info "  push ${BACKUP_PREFIX} -> ${tip:0:9}"
@@ -134,8 +216,16 @@ process_repo() {
 			amend)  info "  git commit --amend (single existing commit)" ;;
 		esac
 		info "  install RELEASE_NOTES.md from ${notes}"
+		if [ -n "$DEP_VERSIONS" ]; then
+			info "  repin deps -> ${DEP_VERSIONS%,}"
+			info "  swift package resolve (regenerate lockfile)"
+		fi
 		info "  git commit -m 'v${version}'"
-		info "  verify diff shows only RELEASE_NOTES.md"
+		if [ -n "$DEP_VERSIONS" ]; then
+			info "  verify diff shows Package.swift + Package.resolved + RELEASE_NOTES.md"
+		else
+			info "  verify diff shows only RELEASE_NOTES.md"
+		fi
 		info "  git push --force-with-lease origin main"
 		SUCCEEDED+=("$repo (dry-run)")
 		return 0
@@ -160,6 +250,43 @@ process_repo() {
 
 	# 3. Release notes go INTO the release commit, never a separate one.
 	cp "$notes" RELEASE_NOTES.md
+
+	# 3b. Rewrite this package's own first-party deps from `branch: "main"` to the tags
+	#     cut in earlier waves — in the SAME commit, so the tag never points at a commit
+	#     whose dependencies are about to change. Mandatory, not cosmetic: SwiftPM only
+	#     lets a version-resolved package depend on other version-resolved packages, so a
+	#     surviving branch pin makes THIS package unconsumable via `from:` downstream.
+	if [ -n "${DEP_VERSIONS:-}" ]; then
+		local before_deps after_deps
+		# `grep -c` exits 1 on zero matches, so a `|| echo 0` fallback would APPEND a second
+		# line to a legitimate "0" and produce "0\n0". Count lines instead — always exit 0.
+		before_deps=$(grep -E '^\s*(branch|revision):' Package.swift 2>/dev/null | wc -l | tr -d ' ')
+		if ! rewrite_deps; then
+			echo "  FAIL: dependency rewrite failed"
+			FAILED+=("$repo (dep rewrite)")
+			return 1
+		fi
+		after_deps=$(grep -E '^\s*(branch|revision):' Package.swift 2>/dev/null | wc -l | tr -d ' ')
+		info "deps repinned to tags (${before_deps} branch pins -> ${after_deps})"
+
+		# A leftover branch pin would silently produce an unconsumable release.
+		if [ "$after_deps" != "0" ]; then
+			echo "  FAIL: ${after_deps} branch/revision pin(s) still present after rewrite:"
+			grep -nE '^\s*(branch|revision):' Package.swift | sed 's/^/        /'
+			FAILED+=("$repo (branch pin survived)")
+			return 1
+		fi
+
+		# Regenerate the lockfile so manifest and Package.resolved agree in one commit.
+		if ! $SWIFT package resolve >/dev/null 2>&1; then
+			echo "  FAIL: swift package resolve failed after repinning"
+			$SWIFT package resolve 2>&1 | tail -5 | sed 's/^/        /'
+			FAILED+=("$repo (resolve)")
+			return 1
+		fi
+		info "lockfile regenerated"
+	fi
+
 	git add -A
 
 	if [ "$mode" = "amend" ]; then
@@ -172,18 +299,26 @@ process_repo() {
 		git branch --quiet -M main || { FAILED+=("$repo (branch -M)"); return 1; }
 	fi
 
-	# 4. THE GATE. The rewrite must change history shape and RELEASE_NOTES.md, nothing else.
-	local changed
-	changed=$(git diff --name-only "$tip" HEAD)
-	if [ -n "$changed" ] && [ "$changed" != "RELEASE_NOTES.md" ]; then
-		echo "  FAIL: content changed beyond RELEASE_NOTES.md — boundary is wrong."
-		echo "$changed" | sed 's/^/        /'
+	# 4. THE GATE. The rewrite must change history shape plus RELEASE_NOTES.md — and, when
+	#    repinning, the two manifest files. Nothing else: any other path means the boundary
+	#    SHA was wrong and real source is being dropped.
+	local changed allowed
+	changed=$(git diff --name-only "$tip" HEAD | sort | tr '\n' ' ')
+	if [ -n "${DEP_VERSIONS:-}" ]; then
+		allowed="Package.resolved Package.swift RELEASE_NOTES.md "
+	else
+		allowed="RELEASE_NOTES.md "
+	fi
+	if [ -n "$changed" ] && [ "$changed" != "$allowed" ]; then
+		echo "  FAIL: content changed beyond the expected paths — boundary is wrong."
+		echo "        expected: ${allowed}"
+		echo "        actual:   ${changed}"
 		echo "        NOT pushed. Restore with:"
 		echo "          git push --force origin refs/heads/${BACKUP_PREFIX}:main"
 		FAILED+=("$repo (DIFF GATE)")
 		return 1
 	fi
-	info "diff gate passed (only RELEASE_NOTES.md changed)"
+	info "diff gate passed (${allowed% })"
 
 	local newsha
 	newsha=$(git rev-parse --short HEAD)
@@ -205,10 +340,21 @@ echo "Notes:  $NOTES_DIR"
 echo "Work:   $WORKDIR"
 [ "$DRY_RUN" -eq 1 ] && echo "Mode:   DRY RUN (nothing will be modified)"
 
-while IFS=$'\t' read -r repo wave boundary version mode expect_tip; do
+while IFS=$'\t' read -r repo wave boundary version mode expect_tip done_stamp; do
 	case "$repo" in ''|\#*) continue ;; esac
 	[ -n "$FILTER_REPO" ] && [ "$repo" != "$FILTER_REPO" ] && continue
 	[ -n "$FILTER_WAVE" ] && [ "$wave" != "$FILTER_WAVE" ] && continue
+	# Already squashed. The tip check alone would NOT catch this: `expect_tip` is updated
+	# to the post-squash SHA once a repo is done, so re-running would squash the squash.
+	# An explicit --repo is treated as deliberate (e.g. a recut) and still refuses unless
+	# the operator clears the stamp.
+	if [ -n "$done_stamp" ]; then
+		echo
+		echo "=== ${repo} ==="
+		echo "  SKIP: already squashed on ${done_stamp} — clear the 'done' column to redo"
+		SKIPPED+=("$repo (done ${done_stamp})")
+		continue
+	fi
 	process_repo "$repo" "$wave" "$boundary" "$version" "$mode" "$expect_tip"
 done < "$TABLE"
 

@@ -24,70 +24,70 @@ let package = Package(
   dependencies: [
     .package(
       url: "https://github.com/brightdigit/Publish.git",
-      branch: "main"
+      from: "1.0.0-alpha.1"
     ),
 
     .package(
       url: "https://github.com/brightdigit/YoutubePublishPlugin.git",
-      branch: "brightdigit-com-260406"
+      from: "1.0.0-alpha.1"
     ),
     .package(
       url: "https://github.com/brightdigit/ReadingTimePublishPlugin.git",
-      branch: "brightdigit-com-260406"
+      from: "1.0.0-alpha.1"
     ),
 
     .package(
       url: "https://github.com/brightdigit/TailwindKit.git",
-      branch: "main"
+      from: "1.0.0-alpha.1"
     ),
     .package(
       url: "https://github.com/brightdigit/Spinetail.git",
-      branch: "main"
+      from: "1.0.0-beta.1"
     ),
     .package(
       url: "https://github.com/brightdigit/ButtondownKit.git",
-      branch: "main"
+      from: "1.0.0-alpha.1"
     ),
     .package(
       url: "https://github.com/brightdigit/SyndiKit.git",
-      branch: "main"
+      from: "1.0.0-alpha.1"
     ),
     // .package(url: "https://github.com/BrightDigit/Options.git", from: "0.2.0"),
     .package(
       url: "https://github.com/brightdigit/NPMPublishPlugin.git",
-      branch: "brightdigit-com-260406"
+      from: "2.0.0-alpha.1"
     ),
     .package(
       url: "https://github.com/brightdigit/Contribute.git",
-      branch: "main"
+      from: "1.0.0-beta.1"
     ),
     .package(
       url: "https://github.com/brightdigit/ContributeButtondown.git",
-      branch: "main"
+      from: "1.0.0-alpha.1"
     ),
     .package(
       url: "https://github.com/brightdigit/ContributeMailchimp.git",
-      branch: "main"
+      from: "1.0.0-alpha.1"
     ),
     .package(
       url: "https://github.com/brightdigit/ContributeRSS.git",
-      branch: "main"
+      from: "1.0.0-alpha.1"
     ),
     .package(
       url: "https://github.com/brightdigit/ContributeYouTube.git",
-      branch: "main"
+      from: "1.0.0-alpha.1"
     ),
     .package(
       url: "https://github.com/brightdigit/ContributeWordPress.git",
-      branch: "main"
+      from: "2.0.0-alpha.1"
     ),
     .package(
       url: "https://github.com/brightdigit/PublishType.git",
-      branch: "brightdigit-com-260717"
+      from: "1.0.0-alpha.1"
     ),
     .package(
       url: "https://github.com/brightdigit/TransistorPublishPlugin.git",
-      branch: "brightdigit-com-260406"
+      from: "2.0.0-alpha.1"
     ),
 
     .package(url: "https://github.com/jpsim/Yams.git", from: "6.0.0"),
@@ -98,11 +98,11 @@ let package = Package(
       traits: [.defaults, "CommandLineArguments"]
     )
     // #40: swift-markdown is the Publish markdown front end — it replaced Ink's
-    // hand-written `Reader` parser inside the vendored `Ink` package, which
-    // declares its own swift-markdown dependency (pinned to `branch: "main"`) and
-    // retains its HTML emitter + public API. That transitive dependency pins the
-    // revision for the whole workspace, so no root-level declaration is needed
-    // here (a redundant one is "not used by any target" and SwiftPM warns on it).
+    // hand-written `Reader` parser inside the `Ink` package, which declares its own
+    // swift-markdown dependency (`from: "0.8.0"`) and retains its HTML emitter +
+    // public API. That transitive dependency pins the version for the whole
+    // workspace, so no root-level declaration is needed here (a redundant one is
+    // "not used by any target" and SwiftPM warns on it).
   ],
   targets: [
     .executableTarget(

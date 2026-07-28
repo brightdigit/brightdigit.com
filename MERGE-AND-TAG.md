@@ -24,26 +24,64 @@ in-repo dependency it needs is already tagged.
 
 ---
 
-## Where things stand (2026-07-27)
+## Where things stand (2026-07-28)
 
-- **Wave 0:** all eight on `main` (release PRs merged). **No tags cut anywhere yet**.
-  Working branches deleted; remotes clean of `brightdigit-com-*` / `v1.0.0`.
-- **Wave 1:** all seven release PRs **merged** to `main` (2026-07-27). Working branches
-  deleted. Root pins every Wave 1 package to `branch: "main"`. Wave 2 consumers all
-  pin Publish (and Ink where applicable) to `branch: "main"` — same-step repin done.
-- **Wave 2:** all five release PRs **merged** to `main` (2026-07-27) — PublishType `ea7f87f`,
-  YoutubePublishPlugin `20db534`, ReadingTimePublishPlugin `bb37c11`, TransistorPublishPlugin
-  `3aa83e2`, NPMPublishPlugin `a7b4b51`. TransistorPublishPlugin still pins `.swift-version`
-  `5.8` (see *Open item*). Root still pins these five to their old working branches — repin
-  as part of the Wave 2 tag step.
-- **Wave 3:** root PR #161 open; stays open until every dep is a released tag.
+**All 20 packages are squashed, CI-verified, and tagged. The root resolves entirely
+against released tags — no `branch:` pins remain anywhere in the graph.**
 
-**All 20 packages are now on `main`; none is tagged.** What remains, in order:
-(1) squash each repo's phase-5 history into one release commit and force-push
-(`Scripts/squash-release.sh`); (2) wait for CI green across the fleet; (3) tag
-Wave 0 → 1 → 2 bottom-up per the [version table](#version-table), rewriting each package's
-in-repo deps to `from:` before its tag, and repinning the root at the end of each wave;
-(4) merge #161 and restore subrepos for `v2.0.0-alpha.2`.
+- **Wave 0:** all eight tagged. Ink and Contribute were **recut** after their first tags
+  (see *Recut: branch deps inside a release tag*).
+- **Wave 1:** all seven tagged, each with its own first-party deps repinned to Wave 0 tags
+  in the same release commit.
+- **Wave 2:** all five tagged, repinned to Publish `1.0.0-alpha.1` (and Ink for
+  TransistorPublishPlugin).
+- **Wave 3:** root repinned to all 20 tags; `swift build`, `swift test`, and
+  `swift run brightdigitwg publish --mode production` all pass locally (451 HTML pages,
+  content check clean). PR #161 ready once root CI is green.
+
+What remains: (1) root CI green on the repinned manifest; (2) create the 20 GitHub
+releases from `Scripts/release-notes/<Repo>.md`; (3) merge #161 and restore subrepos for
+`v2.0.0-alpha.2`; (4) cleanup — re-enable branch protection on TransistorPublishPlugin and
+NPMPublishPlugin, revoke `RELEASE_PAT`, delete the `backup/pre-squash-260727` refs.
+
+### Recut: branch deps inside a release tag
+
+Ink `1.0.0-alpha.1` and Contribute `1.0.0-beta.1` were tagged with `branch:` dependency
+pins still in their manifests. **SwiftPM only lets a version-resolved package depend on
+other version-resolved packages**, so those tags were unconsumable via `from:`:
+
+```
+error: … 'contribute' is required using a stable-version but 'contribute' depends on
+       an unstable-version package 'swiftsoup'
+```
+
+Both were recut ([`Scripts/recut-release.sh`](Scripts/recut-release.sh)) — amend the
+release commit, force-push, move the tag:
+
+| Package | Was | Now |
+| --- | --- | --- |
+| Ink | swift-markdown `branch: "main"` | `from: "0.8.0"` |
+| Contribute | `brightdigit/SwiftSoup` @ `fix/swift-6.4-inline-crash` | `scinfu/SwiftSoup` `from: "2.13.7"` |
+| Contribute | swift-markdown `branch: "main"` | `from: "0.8.0"` |
+
+Two things learned the hard way:
+
+- **`revision:` does not help** — it counts as unstable-version too. Only a real version
+  pin satisfies the rule.
+- **`exact:` cannot take a snapshot tag.** `exact: "swift-DEVELOPMENT-SNAPSHOT-…"` fails at
+  manifest *evaluation* with `Invalid semantic version string`. swift-markdown does publish
+  semver tags (through `0.8.0`) — an earlier note claiming otherwise was wrong.
+
+Dropping the SwiftSoup fork means giving up its `@inline(__always)` patch. Upstream 2.13.7
+still declares that attribute, but the surrounding code was rewritten and the crash no
+longer reproduces: `swift build -c release` + `swift test -c release` both pass.
+
+> **Orphan repos silently skip CI.** The shared workflow has
+> `paths-ignore: ['**.md', 'LICENSE']`. An orphan-mode rewrite has no common ancestor, so
+> GitHub sees a markdown-only diff and never runs the build — leaving a *stale green* run
+> on pre-rewrite history that reads as passing. All five orphan repos (ButtondownKit,
+> the four Contribute\*, PublishType) needed `gh workflow run <Repo>.yml --ref main`.
+> `Scripts/tag-release.sh` refuses to tag unless the newest run is on the exact tip.
 
 ### Squash + tag tooling
 
@@ -595,11 +633,11 @@ rebases onto `main` and restores subrepos for `v2.0.0-alpha.2`.
 Mark: ☐ todo · ◐ on `main` (release PR merged; untagged) · ✅ tagged `vX.Y.Z`  
 ⏭ = parked · ⚠ = open milestoned issue work
 
-**Wave 0:** ◐ Plot · ◐ Files · ◐ Ink · ◐ SyndiKit · ◐ ButtondownKit · ◐ SwiftTube · ◐ Spinetail · ◐ Contribute — on `main`; **none ✅ tagged**; working branches deleted
+**Wave 0:** ✅ Plot `1.0.0-alpha.1` · ✅ Files `5.0.0-alpha.1` · ✅ Ink `1.0.0-alpha.1` (recut) · ✅ SyndiKit `1.0.0-alpha.1` · ✅ ButtondownKit `1.0.0-alpha.1` · ✅ SwiftTube `1.0.0-alpha.1` · ✅ Spinetail `1.0.0-beta.1` · ✅ Contribute `1.0.0-beta.1` (recut) — **all tagged 2026-07-27**
 
-**Wave 1:** ◐ Publish · ◐ TailwindKit · ◐ ContributeButtondown · ◐ ContributeMailchimp · ◐ ContributeRSS · ◐ ContributeWordPress · ◐ ContributeYouTube — release PRs **merged** 2026-07-27; root + Wave 2 consumers pin them (Publish) to `branch: "main"`; working branches deleted; **none ✅ tagged**
+**Wave 1:** ✅ Publish `1.0.0-alpha.1` · ✅ TailwindKit `1.0.0-alpha.1` · ✅ ContributeButtondown `1.0.0-alpha.1` · ✅ ContributeMailchimp `1.0.0-alpha.1` · ✅ ContributeRSS `1.0.0-alpha.1` · ✅ ContributeWordPress `2.0.0-alpha.1` · ✅ ContributeYouTube `1.0.0-alpha.1` — **all tagged 2026-07-27**; each repinned to Wave 0 tags in its own release commit
 
-**Wave 2:** ◐ PublishType ⚠ [#135](https://github.com/brightdigit/brightdigit.com/issues/135) · ◐ YoutubePublishPlugin · ◐ ReadingTimePublishPlugin · ◐ TransistorPublishPlugin · ◐ NPMPublishPlugin — release PRs **merged** 2026-07-27; **none ✅ tagged**; root still pins these five to their old working branches
+**Wave 2:** ✅ PublishType `1.0.0-alpha.1` ⚠ [#135](https://github.com/brightdigit/brightdigit.com/issues/135) · ✅ YoutubePublishPlugin `1.0.0-alpha.1` · ✅ ReadingTimePublishPlugin `1.0.0-alpha.1` · ✅ TransistorPublishPlugin `2.0.0-alpha.1` · ✅ NPMPublishPlugin `2.0.0-alpha.1` — **all tagged 2026-07-28**; all repinned to Publish `1.0.0-alpha.1`
 
 **Wave 3:** ☐ BrightDigit ⚠ [#129](https://github.com/brightdigit/brightdigit.com/issues/129) [#50](https://github.com/brightdigit/brightdigit.com/issues/50) [#70](https://github.com/brightdigit/brightdigit.com/issues/70) [#135](https://github.com/brightdigit/brightdigit.com/issues/135) [#140](https://github.com/brightdigit/brightdigit.com/issues/140) [#92](https://github.com/brightdigit/brightdigit.com/issues/92)
 
