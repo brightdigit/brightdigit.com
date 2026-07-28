@@ -23,12 +23,12 @@
 #repo	wave	boundary	version	mode	expect_tip	done
 Plot	0	431c27c9a	1.0.0-alpha.1	soft	3da284ac3	2026-07-27
 Files	0	e85f2b4a8	5.0.0-alpha.1	soft	73dcb8446	2026-07-27
-Ink	0	bcc9f2199	1.0.0-alpha.1	soft	ad5427a3c	2026-07-27
+Ink	0	bcc9f2199	1.0.0-alpha.1	soft	74d366a1c	2026-07-27
 SyndiKit	0	746262a33	1.0.0-alpha.1	soft	f047249df	2026-07-27
 ButtondownKit	0	-	1.0.0-alpha.1	orphan	083fbdb1b	2026-07-27
 SwiftTube	0	4b9a3eae8	1.0.0-alpha.1	soft	ee3e83383	2026-07-27
 Spinetail	0	d7fab1c75	1.0.0-beta.1	soft	b59a4f701	2026-07-27
-Contribute	0	d6124d9a2	1.0.0-beta.1	soft	525844fc8	2026-07-27
+Contribute	0	d6124d9a2	1.0.0-beta.1	soft	8e96022e5	2026-07-27
 Publish	1	58e943047	1.0.0-alpha.1	soft	ca83cdd5b	2026-07-27
 TailwindKit	1	215054885	1.0.0-alpha.1	soft	56f0f7de2	2026-07-27
 ContributeButtondown	1	-	1.0.0-alpha.1	orphan	61f0e5f9a	2026-07-27
