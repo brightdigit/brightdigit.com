@@ -286,9 +286,9 @@ graph TD
 #### Publish Runtime Plugins
 | Package | Role | Description |
 |---|---|---|
-| YoutubePublishPlugin | Plugin | Expands YouTube shortcodes into embedded video players |
-| TransistorPublishPlugin | Plugin | Expands Transistor shortcodes into embedded podcast players |
-| ReadingTimePublishPlugin | Plugin | Calculates article and tutorial reading times |
+| [YoutubePublishPlugin](https://github.com/brightdigit/YoutubePublishPlugin) | Plugin | Expands YouTube shortcodes into embedded video players |
+| [TransistorPublishPlugin](https://github.com/brightdigit/TransistorPublishPlugin) | Plugin | Expands Transistor shortcodes into embedded podcast players |
+| [ReadingTimePublishPlugin](https://github.com/brightdigit/ReadingTimePublishPlugin) | Plugin | Calculates article and tutorial reading times |
 | [NPMPublishPlugin](https://github.com/brightdigit/NPMPublishPlugin) | Plugin | Executes Node Webpack styling build via `swift-subprocess` |
 
 #### CLI & Environment Configuration
@@ -313,7 +313,19 @@ graph TD
 | Docker Hub | `swiftlang/swift:nightly-6.4.x-noble` base image for Linux CI/builds | `Dockerfile` |
 | Codecov | Test coverage monitoring | `codecov.yml` |
 
-Secrets are provided via GitHub Actions secrets in CI (`NETLIFY_AUTH_TOKEN`, `NETLIFY_PRODUCTION_SITE_ID`, `MAILCHIMP_API_KEY`, `MAILCHIMP_LIST_ID`, `YOUTUBE_API_KEY`, `CONTENT_DEPLOY_KEY`) and via environment variables locally (`BUTTONDOWN_API_KEY` etc.).
+### GitHub Actions Secrets
+
+| Secret Name | Service / Purpose | CI Job Where Used |
+|---|---|---|
+| `CONTENT_DEPLOY_KEY` | SSH deploy key (write access) enabling bot pushes to re-trigger CI deploys | `automate-content` |
+| `NETLIFY_AUTH_TOKEN` | Authentication token for deploying static output to Netlify | `deploy` |
+| `NETLIFY_PRODUCTION_SITE_ID` | Production site identifier for Netlify CLI deployment | `deploy` |
+| `MAILCHIMP_API_KEY` | API key for fetching historical newsletter campaign archives | `automate-content` |
+| `MAILCHIMP_LIST_ID` | Audience / List ID for Mailchimp newsletter campaign ingestion | `automate-content` |
+| `BUTTONDOWN_API_KEY` | API key for importing newly published Buttondown emails | `automate-content` |
+| `YOUTUBE_API_KEY` | API key for fetching video metadata via YouTube Data API v3 | `automate-content` |
+
+Secrets are configured under Repository Settings $\rightarrow$ Secrets and variables $\rightarrow$ Actions in GitHub, and read locally via CLI arguments or environment variables (`BUTTONDOWN_API_KEY` etc.).
 
 ---
 
