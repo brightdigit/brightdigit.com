@@ -6,6 +6,8 @@ This is the canonical agent instruction file for this repository.
 
 This is a Swift-based static site generator for the BrightDigit website using the Publish framework. The project includes multiple Swift modules for content management, podcast integration, newsletter automation, and website generation.
 
+See [README.md](README.md) for the full architecture analysis, the Swift package fork/de-vendoring story, external services, and project status.
+
 ## Memory & Corrections Convention
 
 Every memory and correction is persisted **into this repo** (versioned, shared with future
@@ -42,9 +44,9 @@ swift test
 # Build for release
 swift build -c release --product brightdigitwg
 
-# Run the main executable (defaults to publish command)
-swift run brightdigitwg --mode production
-swift run brightdigitwg --mode drafts
+# Run the main executable (there is no default command; `publish` must be named)
+swift run brightdigitwg publish --mode production
+swift run brightdigitwg publish --mode drafts
 ```
 
 ### Content Development
@@ -61,9 +63,11 @@ swift run brightdigitwg publish --mode drafts
 
 ### Code Quality
 ```bash
-# SwiftLint and SwiftFormat configurations exist but are not actively enforced in CI
-# .swiftlint.yml - relaxed limits for content-heavy project (line length: 150, file length: 550)
-# .swiftformat - code formatting rules
+# CI enforces linting via Scripts/lint.sh with LINT_MODE=STRICT (mise-driven
+# swift-format + SwiftLint + periphery). Run locally:
+./Scripts/lint.sh
+# .swiftlint.yml includes a custom no_unchecked_sendable rule at error severity
+# .swift-format - code formatting rules
 ```
 
 ### Content Quality Check
@@ -140,10 +144,13 @@ commits), then re-run the pull/push.
 
 ### Core Components
 - **brightdigitwg** - Main executable entry point (located in executable target)
-- **BrightDigitArgs** - Command-line interface using ArgumentParser with three subcommands:
-  - `publish` (default) - Generates the static site with production/drafts modes
-  - `import` - Imports content from Mailchimp, YouTube, WordPress, or podcast RSS
-  - `url` - URL utilities
+- **BrightDigitArgs** - Command-line interface built on ConfigKeyKit (`CommandDispatcher` +
+  `CommandRegistry`; swift-argument-parser was removed in issue #44). There is no default
+  command; dispatch greedily matches the longest registered name. Registered commands:
+  - `publish --mode <drafts|production>` - Generates the static site
+  - `url podcast` - URL utilities
+  - `import podcast` / `import mailchimp` / `import buttondown` / `import wordpress` - Content importers
+  - `buttondown reconcile` - Cross-checks Mailchimp campaigns against the Buttondown archive (update-only, dry-run by default)
 - **BrightDigitSite** - Main site generation logic with custom publishing pipeline
   - Defines `SectionID` enum for content types (articles, episodes, tutorials, newsletters, products)
   - Configures publishing steps (markdown processing, RSS generation, sitemap, npm build)
@@ -158,10 +165,10 @@ commits), then re-run the pull/push.
 
 ### Content Integration Modules
 - **ContributeMailchimp** - Mailchimp newsletter import and markdown generation
+- **ContributeButtondown** - Buttondown newsletter import via ButtondownKit
 - **ContributeYouTube** - YouTube content integration via SwiftTube
 - **ContributeRSS** - RSS feed processing via SyndiKit
 - **BrightDigitPodcast** - Podcast episode management combining YouTube and RSS
-- **Tagscriber** - Markdown generation from web content using Kanna
 
 ### Content Structure
 - `Content/` - Source markdown files for site content
@@ -174,21 +181,23 @@ commits), then re-run the pull/push.
 - `Tests/` - Root package tests
 
 ### Key Dependencies
-- **Publish** - Static site generation framework by John Sundell
+- **Publish** - Static site generation framework by John Sundell (BrightDigit fork; consumed as a tagged release along with the Plot/Ink/Files forks)
 - **Plot** - Type-safe HTML DSL for Swift
+- **TailwindKit** - Type-safe Tailwind v4 class builder (documented v4 utilities only)
 - **SwiftTube** - YouTube Data API v3 integration
 - **SyndiKit** - RSS/Atom feed parsing (used for podcast import)
-- **Spinetail** - Mailchimp API client (for newsletter import)
-- **Kanna** - HTML/XML parsing (used by Tagscriber for web content extraction)
-- **ArgumentParser** - Apple's Swift Argument Parser for CLI
-- **MarkdownGenerator** - Markdown document generation
+- **Spinetail** - Mailchimp API client (legacy newsletter import path)
+- **ButtondownKit** - Buttondown API client (current newsletter platform)
+- **Contribute** - Shared importer framework behind the Contribute* modules
+- **ConfigKeyKit** + **swift-configuration** - CLI command/config layer (replaced swift-argument-parser)
+- **Yams** - YAML front-matter parsing
 - Publish Plugins: YoutubePublishPlugin, ReadingTimePublishPlugin, TransistorPublishPlugin, NPMPublishPlugin
 - Syntax highlighting: client-side highlight.js (in the `Styling` bundle), plus Mermaid diagrams; the vendored Splash/SplashPublishPlugin were removed (see PR #151). Ink emits `<pre><code class="language-xxx">` which highlight.js targets and the Mermaid transform consumes.
 
 ### Deployment Pipeline
 CI/CD runs on **GitHub Actions** (`.github/workflows/main.yaml`). All Linux jobs run in the `brightdigit/publish-xml:6.4` container (Swift 6.4, Ubuntu Noble — based on the `swiftlang/swift:nightly-6.4.x-noble` snapshot), built from this repo's `Dockerfile`. Jobs:
 
-1. **automate-content** - Manual/dispatch job (self-hosted macOS) that imports content from Mailchimp and YouTube, then commits and pushes any new content. Triggered via the `AUTOMATE_CONTENT` workflow input.
+1. **automate-content** - Runs in the Linux container on a 6-hour cron (`5 */6 * * *`) or via the `automate_content` workflow-dispatch input. Imports content from Mailchimp and the podcast feed, then commits and pushes any new content. Checks out with the `CONTENT_DEPLOY_KEY` SSH deploy key (not `GITHUB_TOKEN`) so the bot push re-triggers CI.
 
 2. **build-linux** - Runs `swift build` and `swift test` in the container. Caches `.build/` with a key that embeds the Swift toolchain version (`swift --version`), so a toolchain change auto-invalidates the cache.
 
@@ -222,7 +231,6 @@ The self-hosted macOS `build`/`package` jobs are currently commented out in the 
   - `Source` - API client/data fetcher
   - `FrontMatterTranslator` - Converts API data to front matter
   - `MarkdownExtractor` - Generates markdown body content
-- Tagscriber module can extract markdown from arbitrary web URLs using Kanna
 
 ### Theme System
 - Custom `PiHTMLFactory` implements all HTML generation using Plot DSL
