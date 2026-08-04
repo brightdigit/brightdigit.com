@@ -315,7 +315,7 @@ New source modules (local to this repo, not subrepos):
 | [#153](https://github.com/brightdigit/brightdigit.com/issues/153) | Reclaim parallel page generation (investigate, measure-first) | P1-high |
 | [#114](https://github.com/brightdigit/brightdigit.com/issues/114) | Root `.periphery.yml` uses invalid key `targets` | |
 | [#77](https://github.com/brightdigit/brightdigit.com/issues/77) | Add macOS build job for the site executable to main CI | |
-| [#34](https://github.com/brightdigit/brightdigit.com/issues/34) | Remove or repurpose Import/Wordpress XML files | Clean up leftover import artifacts |
+| ~~[#34](https://github.com/brightdigit/brightdigit.com/issues/34)~~ | ~~Remove or repurpose Import/Wordpress XML files~~ | **Completed** (2026-08-04): `Import/Wordpress/*.xml` deleted. [#105](https://github.com/brightdigit/brightdigit.com/issues/105) now needs a fresh WordPress export to verify against. |
 | [#105](https://github.com/brightdigit/brightdigit.com/issues/105) | Verify `import wordpress` end-to-end against real WordPress export | Was **unmilestoned** until the 2026-07-28 reorg |
 | [#51](https://github.com/brightdigit/brightdigit.com/issues/51) | Research node-swift | Evaluate [kabiroberai/node-swift](https://github.com/kabiroberai/node-swift) |
 
