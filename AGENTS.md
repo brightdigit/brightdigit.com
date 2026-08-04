@@ -102,7 +102,7 @@ are released, and the root consumes every one of them as a version pin
 pins remain anywhere in the graph. The root checkpoint PR
 ([#161](https://github.com/brightdigit/brightdigit.com/pull/161)) merged 2026-07-28.
 Shipped versions and the remaining cleanup items:
-[`MERGE-AND-TAG.md`](MERGE-AND-TAG.md).
+[`.claude/MERGE-AND-TAG.md`](.claude/MERGE-AND-TAG.md).
 
 The subrepo model remains canonical. Keep `.github/packages.json`,
 `.github/workflows/packages.yaml`, and `fix-subrepo-parents.sh`; package-side
