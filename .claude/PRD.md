@@ -45,7 +45,7 @@ those sections.
 
 ### Dependency Chain
 
-```
+```text
 Phase 1  (Package extraction)     ─── #168 → #169 → #136; unblocks Phase 4 + Documentation
 Phase 2  (AI-CITE content)        ─── ready now; no code dependency — runs in parallel
 Phase 3  (Site SEO code)          ─── independent; #167 follows #129

@@ -256,6 +256,7 @@ graph TD
 ### First-Party Package Fleet (by Usage Category)
 
 #### Publish Ecosystem & Core Layout
+
 | Package | Role | Description |
 |---|---|---|
 | [Publish](https://github.com/brightdigit/Publish) | Static Site Engine | Forked and modernized to Swift 6.4 strict concurrency |
@@ -266,6 +267,7 @@ graph TD
 | [TailwindKit](https://github.com/brightdigit/TailwindKit) | Styling DSL | Type-safe Tailwind v4 class builder |
 
 #### Contribute Framework & Importers
+
 | Package | Role | Description |
 |---|---|---|
 | [Contribute](https://github.com/brightdigit/Contribute) | Importer Core | Core data transformation and markdown generation engine |
@@ -276,6 +278,7 @@ graph TD
 | [ContributeWordPress](https://github.com/brightdigit/ContributeWordPress) | Importer | WordPress export post/page translation |
 
 #### Web Service & API Clients
+
 | Package | Role | Description |
 |---|---|---|
 | [ButtondownKit](https://github.com/brightdigit/ButtondownKit) | API Client | OpenAPI-generated Buttondown API client |
@@ -284,6 +287,7 @@ graph TD
 | [SyndiKit](https://github.com/brightdigit/SyndiKit) | Feed Parser | RSS, Atom, and JSON feed decoding |
 
 #### Publish Runtime Plugins
+
 | Package | Role | Description |
 |---|---|---|
 | [YoutubePublishPlugin](https://github.com/brightdigit/YoutubePublishPlugin) | Plugin | Expands YouTube shortcodes into embedded video players |
@@ -292,6 +296,7 @@ graph TD
 | [NPMPublishPlugin](https://github.com/brightdigit/NPMPublishPlugin) | Plugin | Executes Node Webpack styling build via `swift-subprocess` |
 
 #### CLI & Environment Configuration
+
 | Package | Role | Description |
 |---|---|---|
 | [ConfigKeyKit](https://github.com/brightdigit/ConfigKeyKit) | CLI / Config | Declarative `ConfigKey` CLI and environment configuration layer |
