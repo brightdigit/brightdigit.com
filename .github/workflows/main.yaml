@@ -285,7 +285,7 @@ jobs:
           cp "$BIN_PATH/brightdigitwg" "brightdigitwg-$(uname)-$(arch)"
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         with:
           name: brightdigitwg-binaries
           path: brightdigitwg-*
@@ -370,7 +370,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Download Executable Artifact
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@v4
         with:
           name: brightdigitwg-binaries
 
@@ -379,13 +379,8 @@ jobs:
           chmod +x "brightdigitwg-$(uname)-$(arch)"
           ./brightdigitwg-$(uname)-$(arch) publish --mode $PUBLISHING_MODE
 
-      # The generated site is the only thing `deploy` needs, so hand it over as
-      # an artifact instead of regenerating it on the far side. Hidden files are
-      # included deliberately: the default excludes them, which would silently
-      # drop things like a future .well-known/ and produce a subtly broken
-      # deploy rather than a failed one.
-      - name: Upload Site
-        uses: actions/upload-artifact@v7
+      - name: Upload Site Output Artifact
+        uses: actions/upload-artifact@v4
         with:
           name: site
           path: Output/
