@@ -1,5 +1,9 @@
 <p align="center">
-  <img src="Resources/media/brightdigit-logo.svg" width="160" alt="BrightDigit Logo">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="Resources/media/brightdigit-logo-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="Resources/media/brightdigit-logo.svg">
+    <img alt="BrightDigit Logo" src="Resources/media/brightdigit-logo.svg" width="160">
+  </picture>
 </p>
 
 # brightdigit.com
