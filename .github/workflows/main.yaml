@@ -146,7 +146,19 @@ jobs:
                     --youtube-api-key=$YOUTUBE_API_KEY \
                     --export-markdown-directory Content/episodes
 
-                    echo "Podcast import finished."
+                echo "Podcast import finished."
+
+          - name: Import Buttondown
+            env:
+              BUTTONDOWN_API_KEY: ${{ secrets.BUTTONDOWN_API_KEY }}
+            run: |
+                echo "Importing Buttondown..."
+
+                ./brightdigitwg-Linux-x86_64 \
+                  import buttondown \
+                    --export-markdown-directory=Content/newsletters
+
+                echo "Buttondown import finished."
 
           - name: Configure Git
             run: |
@@ -357,7 +369,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
-      - name: Download Artifact
+      - name: Download Executable Artifact
         uses: actions/download-artifact@v8
         with:
           name: brightdigitwg-binaries

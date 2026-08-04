@@ -1,22 +1,30 @@
+<p align="center">
+  <img src="Resources/media/brightdigit-logo.svg" width="160" alt="BrightDigit Logo">
+</p>
+
 # brightdigit.com
 
-The source for [brightdigit.com](https://brightdigit.com) — a static site built entirely in Swift. It generates roughly 450 HTML pages from Markdown: 54 articles, 45 tutorials, 210 podcast episodes, 118 newsletter issues, and 15 product pages, plus RSS feeds and a sitemap. It is also, deliberately, a working answer to the question *"can you run a real production website on Swift, on Linux, with strict concurrency, today?"*
+The source for [brightdigit.com](https://brightdigit.com) — a static site built entirely in Swift. It generates roughly 450 HTML pages from Markdown: 54 articles, 45 tutorials, 210 podcast episodes, 118 newsletter issues, and 15 product pages, plus RSS feeds and a sitemap.
 
-The short history of this repo is a round trip. It started as a normal Publish site pulling packages from GitHub. Then it swallowed its entire dependency graph — about **750,000 lines of vendored Swift** across 20 packages, tracked as [git-subrepo](https://github.com/ingydotnet/git-subrepo) subrepos ([#42](https://github.com/brightdigit/brightdigit.com/pull/42), [#48](https://github.com/brightdigit/brightdigit.com/pull/48)) — so the whole graph could be modernized to Swift 6.4 strict concurrency in one place. Once every package built clean, each one was squashed, tagged, and released to its own repo in dependency order, and the monorepo deleted **722,657 lines in a single PR** ([#161](https://github.com/brightdigit/brightdigit.com/pull/161)). Today `Package.swift` consumes all 20 first-party packages as ordinary version pins, like any other SwiftPM project.
+The purpose of vendoring the entire dependency graph into this repo as git-subrepos was a temporary strategy enabling simultaneous development, migration, and upgrade of all 20 first-party packages to Swift 6.4 with strict concurrency in a single unified environment. Once fully modernized, each package was squashed, tagged, and released to its own repository in dependency order. Today `Package.swift` consumes all 20 first-party packages as ordinary version pins, like any standard SwiftPM project.
 
-This README serves three purposes: explaining **how the site works** (if you want to build something similar), **how to develop on it**, and **where the project stands**.
+This README explains **how the site works**, **how to develop on it**, and **where the project stands**.
 
 - [How the site works](#how-the-site-works)
-- [The Swift package story](#the-swift-package-story)
+- [Content automation & Contribute framework](#content-automation--contribute-framework)
+- [The Swift package ecosystem](#the-swift-package-ecosystem)
 - [External services](#external-services)
 - [Working on the site](#working-on-the-site)
 - [Project status](#project-status-as-of-2026-08-04)
+- [Historical PRs & Key Issues](#historical-prs--key-issues)
+
+---
 
 ## How the site works
 
 ### One executable, seven commands
 
-Everything is driven by a single executable, `brightdigitwg` (`Sources/brightdigitwg/BrightDigitWG.swift` is a four-line shim). Commands are dispatched by a hand-rolled `CommandDispatcher` built on [ConfigKeyKit](https://github.com/brightdigit/ConfigKeyKit) — swift-argument-parser was removed in [#44](https://github.com/brightdigit/brightdigit.com/issues/44) in favor of declarative `ConfigKey` types layered over [apple/swift-configuration](https://github.com/apple/swift-configuration), so every option can come from CLI arguments *or* the environment with an explicit precedence contract. There is no default command; dispatch greedily matches the longest registered name:
+Everything is driven by a single executable, `brightdigitwg` (`Sources/brightdigitwg/BrightDigitWG.swift` is a four-line shim). Commands are dispatched by a hand-rolled `CommandDispatcher` built on [ConfigKeyKit](https://github.com/brightdigit/ConfigKeyKit), using declarative `ConfigKey` types layered over [apple/swift-configuration](https://github.com/apple/swift-configuration) so options can come from CLI arguments or environment variables with an explicit precedence contract. There is no default command; dispatch greedily matches the longest registered name:
 
 | Command | What it does |
 |---|---|
@@ -45,139 +53,263 @@ The site definition lives in `Sources/BrightDigitSite/BrightDigitSite.swift` as 
 
 ### Rendering: type-safe HTML all the way down
 
-HTML is generated with [Plot](https://github.com/brightdigit/Plot), John Sundell's type-safe HTML DSL, through a custom `HTMLFactory` (`PiHTMLFactory.swift`) and a tree of Swift components under `Sources/BrightDigitSite/Components/` and `Nodes/`. In 2026 the whole theme was migrated from Plot's older `Node`-based API to its `Component` API ([#157](https://github.com/brightdigit/brightdigit.com/pull/157)), with a verification bar worth stealing: every increment was checked for **zero structural diffs across all 449 pages** (whitespace-normalized, since Plot's two APIs indent differently), and the factory seam was then tightened so that *returning a non-component page fails to compile*.
+HTML is generated with [Plot](https://github.com/brightdigit/Plot), John Sundell's type-safe HTML DSL, through a custom `HTMLFactory` (`PiHTMLFactory.swift`) and a tree of Swift components under `Sources/BrightDigitSite/Components/` and `Nodes/`. The theme utilizes Plot's type-safe `Component` API, ensuring compile-time safety across all generated pages.
 
 CSS classes in Swift go through [TailwindKit](https://github.com/brightdigit/TailwindKit), a type-safe Tailwind v4 class builder — `Div().tailwind(.flex, .justify(.center))` instead of stringly-typed class lists. House rule: TailwindKit models **only officially documented Tailwind v4 utilities**, nothing custom.
 
-### Content automation
-
-CI runs `import mailchimp` and `import podcast` on a six-hour cron. New episodes and newsletters are committed as bot commits — the checkout uses a dedicated SSH deploy key rather than `GITHUB_TOKEN`, specifically so the bot's push *does* trigger the CI pipeline and the site redeploys itself. Publishing a podcast episode or newsletter therefore requires zero manual work on the website: it appears on the next cron tick.
-
 ### Styling
 
-Tailwind CSS **v4** in CSS-first mode — there is no `tailwind.config.js`. The migration from v2 ([#150](https://github.com/brightdigit/brightdigit.com/pull/150), and v4 is "a re-architecture, not a bump") moved all configuration into `@theme` blocks in `Styling/styles/styles.css`, which also carries ~390 `@apply` component styles. Only one utility token ever lived in Swift markup, so the entire class-rename migration (`flex-grow`→`grow`, `bg-opacity` syntax, radius renames) touched no Swift code. Syntax highlighting is client-side [highlight.js](https://highlightjs.org) (which replaced the vendored Splash Swift highlighter), plus [Mermaid](https://mermaid.js.org) for diagrams; webpack bundles everything, with CSS injected by `style-loader`.
+Tailwind CSS **v4** in CSS-first mode — there is no `tailwind.config.js`. Configuration lives in `@theme` blocks in `Styling/styles/styles.css`, which also carries `@apply` component styles. Syntax highlighting is client-side [highlight.js](https://highlightjs.org), plus [Mermaid](https://mermaid.js.org) for diagrams; webpack bundles everything, with CSS injected by `style-loader`.
 
-### CI and deployment
+---
 
-`.github/workflows/main.yaml`, with all Linux jobs in a custom Docker image `brightdigit/publish-xml:6.4` (built from this repo's `Dockerfile` on `swiftlang/swift:nightly-6.4.x-noble` — Swift 6.4 is still a pre-release toolchain):
+## Content automation & Contribute framework
 
-- **detect-changes** — path filter so content-only bot commits skip the Swift build and reuse a cached release binary; the cache key embeds the container image *digest* so an ABI-drifted binary is never reused
-- **build-linux** / **lint** — `swift build` + `swift test`, then `Scripts/lint.sh` with `LINT_MODE=STRICT` (swift-format, SwiftLint, periphery via mise)
-- **package-linux** — release build of `brightdigitwg`
-- **deploy** — runs `publish` (`--mode production` only on `main`) and pushes `Output/` to Netlify via the CLI; `--prod` only on `main`, so every PR gets a draft deploy
+### Automated Content Pipeline
 
-## The Swift package story
+CI runs `import mailchimp`, `import podcast`, and `import buttondown` on a six-hour cron (defined in [`.github/workflows/main.yaml`](.github/workflows/main.yaml)). New episodes and newsletters are committed as bot commits — the workflow checkout uses a dedicated SSH deploy key (`CONTENT_DEPLOY_KEY`) rather than `GITHUB_TOKEN`, specifically so the bot's push *does* trigger the CI pipeline and the site redeploys itself. Publishing a podcast episode or newsletter therefore requires zero manual work on the website: it appears on the next cron tick.
 
-The most unusual thing about this project is its dependency graph: **all 20 first-party packages** (of 36 total pins) live under [github.com/brightdigit](https://github.com/brightdigit), and every one of them passed through this repo on the way to release.
+```mermaid
+flowchart LR
+    A[Cron Trigger / Workflow] --> B[brightdigitwg CLI]
+    B --> C[import mailchimp / import podcast / import buttondown]
+    C --> D[Generate Content/*.md]
+    D --> E[Git Commit & Push via SSH Key]
+    E --> F[Trigger CI Deploy Pipeline]
+```
 
-### Why fork a static site generator
+### The Contribute Architecture
 
-The site is built on John Sundell's Publish ecosystem — [Publish](https://github.com/brightdigit/Publish), [Plot](https://github.com/brightdigit/Plot), [Ink](https://github.com/brightdigit/Ink), and [Files](https://github.com/brightdigit/Files) — which is Swift 5-era and effectively unmaintained. Rather than abandon it, all four were forked (they remain GitHub forks of `JohnSundell/*`) and modernized to **Swift 6.4 with complete strict concurrency** ([#151](https://github.com/brightdigit/brightdigit.com/pull/151)):
+Content importation is powered by [Contribute](https://github.com/brightdigit/Contribute), a modular framework designed for ingesting external payloads and producing standard Markdown files with front-matter metadata.
 
-- Every `@unchecked Sendable` was eliminated — and a custom SwiftLint rule (`no_unchecked_sendable`, severity: error) now makes that a permanent invariant
-- **Ink's hand-written Markdown parser was gutted and replaced with [swift-markdown](https://github.com/swiftlang/swift-markdown)** ([#40](https://github.com/brightdigit/brightdigit.com/issues/40)), keeping Ink's HTML emitter and public API. The resulting `Markdown` module-name collision with Ink's own `Markdown` type is resolved at the call site with the Swift 6.4 module selector (`Module::Symbol`)
-- Publish shed its CLI, the deployment API, and its last GCD (the `DispatchSemaphore`-based synchronous overloads), leaving `async` entry points only
-- Files gained Windows support (canonical forward-slash paths internally) and jumped to `5.0.0-alpha.1` — upstream was already at 4.3.0, and semver doesn't allow going backwards
-- One honest trade-off: `PublishingContext` isn't `Sendable`, so HTML generation became sequential. Output is identical; reclaiming the parallelism is tracked as [#153](https://github.com/brightdigit/brightdigit.com/issues/153)
-- Attribution is preserved deliberately: Sundell's MIT headers stay verbatim, fork attribution lives in each repo's `NOTICE`, and the shared `Scripts/header.sh` refuses to rewrite upstream-attributed headers
+```mermaid
+flowchart TD
+    subgraph Data Sources
+        API[External APIs / RSS / Mailchimp / Buttondown / WordPress]
+    end
 
-A fifth fork, [TailwindKit](https://github.com/brightdigit/TailwindKit) (from `heyjaywilson/TailwindKit`), went furthest: it dropped **every** dependency — including Foundation — and replaced its Plot coupling with a one-method protocol seam (`TailwindClassAttribute`), so the *consumer* supplies the HTML binding. Because the requirement is named after a method Plot already has, the site's conformance is a single empty `extension` declaration.
+    subgraph Contribute Core Pipeline
+        S[Source] --> T[FrontMatterTranslator]
+        T --> M[MarkdownExtractor]
+    end
 
-### The first-party fleet
+    subgraph Output
+        MD[Content/*.md Files]
+    end
 
-| Package | Role | Notes |
+    API --> S
+    M --> MD
+```
+
+The architecture consists of three core abstractions:
+- **`Source`**: Fetches raw data from external endpoints (e.g. YouTube Data API, RSS feeds, Mailchimp campaigns, Buttondown emails, or WordPress export files).
+- **`FrontMatterTranslator`**: Maps raw API objects into strongly-typed YAML front-matter metadata (e.g. `ItemMetadata`).
+- **`MarkdownExtractor`**: Generates the Markdown body content and formats the final file written into `Content/`.
+
+The importer suite is broken into dedicated packages built on top of `Contribute`:
+- [Contribute](https://github.com/brightdigit/Contribute): Core abstractions, protocols, and file writing utilities
+- [ContributeMailchimp](https://github.com/brightdigit/ContributeMailchimp): Mailchimp newsletter campaign ingestion
+- [ContributeButtondown](https://github.com/brightdigit/ContributeButtondown): Buttondown newsletter email ingestion
+- [ContributeYouTube](https://github.com/brightdigit/ContributeYouTube): YouTube video metadata processing
+- [ContributeRSS](https://github.com/brightdigit/ContributeRSS): RSS feed item extraction
+- [ContributeWordPress](https://github.com/brightdigit/ContributeWordPress): WordPress export post/page translation
+
+---
+
+## The Swift package ecosystem
+
+The static site generator relies on a ecosystem of 20 first-party packages maintained under [github.com/brightdigit](https://github.com/brightdigit).
+
+### Package Connections & Architecture
+
+```mermaid
+graph TD
+    subgraph App & CLI Layer
+        WG[brightdigitwg Executable]
+        Args[BrightDigitArgs]
+        Site[BrightDigitSite]
+        Pod[BrightDigitPodcast]
+    end
+
+    subgraph Publish Ecosystem Forks
+        Pub[Publish]
+        Plot[Plot]
+        Ink[Ink]
+        Files[Files]
+    end
+
+    subgraph Site Extensions & Utilities
+        PubType[PublishType]
+        TK[TailwindKit]
+        CKK[ConfigKeyKit]
+    end
+
+    subgraph Contribute Suite
+        Contrib[Contribute]
+        C_MC[ContributeMailchimp]
+        C_BD[ContributeButtondown]
+        C_YT[ContributeYouTube]
+        C_RSS[ContributeRSS]
+        C_WP[ContributeWordPress]
+    end
+
+    subgraph API Clients & Parsing
+        ST[Spinetail]
+        BDK[ButtondownKit]
+        YT[SwiftTube]
+        Syn[SyndiKit]
+    end
+
+    subgraph Publish Plugins
+        P_YT[YoutubePublishPlugin]
+        P_TR[TransistorPublishPlugin]
+        P_RT[ReadingTimePublishPlugin]
+        P_NPM[NPMPublishPlugin]
+    end
+
+    WG --> Args
+    Args --> Site
+    Args --> Pod
+    Site --> Pub
+    Site --> PubType
+    Site --> TK
+    Site --> P_YT
+    Site --> P_TR
+    Site --> P_RT
+    Site --> P_NPM
+    Pod --> Contrib
+    Pod --> C_YT
+    Pod --> C_RSS
+    Pod --> Syn
+
+    Pub --> Plot
+    Pub --> Ink
+    Pub --> Files
+    Ink --> |swift-markdown| SM[swift-markdown]
+
+    Contrib --> C_MC
+    Contrib --> C_BD
+    Contrib --> C_YT
+    Contrib --> C_RSS
+    Contrib --> C_WP
+
+    C_MC --> ST
+    C_BD --> BDK
+    C_YT --> YT
+    C_RSS --> Syn
+
+    Args --> CKK
+```
+
+### Key Tool Modernizations & Migrations
+
+- **Ink Migration**: Ink's original hand-written parser was replaced with **[swift-markdown](https://github.com/swiftlang/swift-markdown)** under the hood, while preserving Ink's HTML emitter and public API. Call sites resolve any `Markdown` symbol collision via the Swift 6.4 module selector (`Module::Symbol`).
+- **ShellOut Migration**: `NPMPublishPlugin` was updated to remove `ShellOut` in favor of `swift-subprocess` for executing Node tasks during the styling build.
+- **Strict Concurrency**: All 20 first-party packages run under **Swift 6.4 complete strict concurrency** (`-strict-concurrency=complete`) with zero `@unchecked Sendable` annotations.
+- **Files**: Modernized and jumped to `5.0.0-alpha.1` with native Windows path handling.
+- **TailwindKit**: Fully decoupled from Foundation and Plot using a lightweight `TailwindClassAttribute` protocol seam.
+
+### First-Party Package Fleet
+
+| Package | Role | Description |
 |---|---|---|
-| [SyndiKit](https://github.com/brightdigit/SyndiKit) | RSS/Atom/JSON-feed decoding | The most public package (70★); ships a dual manifest (5.10 fallback + `Package@swift-6.0.swift`) |
-| [Spinetail](https://github.com/brightdigit/Spinetail) | Mailchimp API client | Rewritten from hand-written code to OpenAPI-generated; first release in four years |
-| [ButtondownKit](https://github.com/brightdigit/ButtondownKit) | Buttondown API client | Greenfield, OpenAPI-generated, ~5 weeks old at first release |
-| [SwiftTube](https://github.com/brightdigit/SwiftTube) | YouTube Data API v3 client | Google's Discovery doc → OpenAPI → generated Swift |
-| [Contribute](https://github.com/brightdigit/Contribute) + Contribute{Buttondown, Mailchimp, RSS, WordPress, YouTube} | Shared importer framework + per-source importers | Each importer is a `Source` + `FrontMatterTranslator` + `MarkdownExtractor` |
-| [ConfigKeyKit](https://github.com/brightdigit/ConfigKeyKit) | CLI command/config layer | Replaced swift-argument-parser; kept Foundation-only, swift-configuration glue lives in the consumer |
-| [PublishType](https://github.com/brightdigit/PublishType) | Type-safe section/page builders over Publish | |
-| YoutubePublishPlugin, ReadingTimePublishPlugin, TransistorPublishPlugin, [NPMPublishPlugin](https://github.com/brightdigit/NPMPublishPlugin) | Publish runtime plugins | NPMPublishPlugin shells out to Node via swift-subprocess for the styling step |
+| [Publish](https://github.com/brightdigit/Publish) | Static Site Engine | Forked and modernized to Swift 6.4 strict concurrency |
+| [Plot](https://github.com/brightdigit/Plot) | HTML DSL | Type-safe HTML generation with `Component` API support |
+| [Ink](https://github.com/brightdigit/Ink) | Markdown Parser | Powered by `swift-markdown` under the hood |
+| [Files](https://github.com/brightdigit/Files) | File System | Cross-platform file handling |
+| [SyndiKit](https://github.com/brightdigit/SyndiKit) | Feed Decoding | RSS, Atom, and JSON feed decoding |
+| [Spinetail](https://github.com/brightdigit/Spinetail) | Mailchimp Client | OpenAPI-generated Mailchimp API client |
+| [ButtondownKit](https://github.com/brightdigit/ButtondownKit) | Buttondown Client | OpenAPI-generated Buttondown API client |
+| [SwiftTube](https://github.com/brightdigit/SwiftTube) | YouTube API Client | OpenAPI-generated YouTube Data API v3 client |
+| [Contribute](https://github.com/brightdigit/Contribute) | Importer Framework | Core data transformation and markdown generation engine |
+| Contribute{Buttondown, Mailchimp, RSS, WordPress, YouTube} | Specialized Importers | Importers connecting external APIs to Markdown output |
+| [ConfigKeyKit](https://github.com/brightdigit/ConfigKeyKit) | CLI & Configuration | Declarative `ConfigKey` CLI and environment configuration layer |
+| [PublishType](https://github.com/brightdigit/PublishType) | Publish Abstractions | Type-safe section and page builders for Publish |
+| YoutubePublishPlugin, ReadingTimePublishPlugin, TransistorPublishPlugin, [NPMPublishPlugin](https://github.com/brightdigit/NPMPublishPlugin) | Publish Plugins | Runtime plugins (NPMPublishPlugin shells out to Node via `swift-subprocess`) |
 
-### Vendor everything, modernize, then un-vendor it
-
-The interesting part is the workflow. Modernizing 20 interdependent packages through 20 separate repos would have meant a combinatorial explosion of cross-repo PRs, so the graph was vendored *into* this repo as git-subrepos and modernized as one tree — one toolchain, one lint config, one CI. When the work was done ([#159](https://github.com/brightdigit/brightdigit.com/pull/159) is the 100-commit umbrella; [#160](https://github.com/brightdigit/brightdigit.com/pull/160) got all 20 repos green on hosted multi-platform CI: Ubuntu, macOS/Xcode 27, Windows, Android, Apple simulators), the packages were released back out in **four topological waves** — leaves first (Plot, Files, Ink, SyndiKit, …), then their consumers, then the plugins, then the root repin — nearly all of them published within a 17-minute window on 2026-07-28. The full runbook, dependency graph, and version table live in [`MERGE-AND-TAG.md`](MERGE-AND-TAG.md) and `Scripts/release-versions.tsv`, with the release scripts (`squash-release.sh`, `tag-release.sh`, `publish-releases.sh`) in `Scripts/`.
-
-SwiftPM lessons learned the hard way, recorded here so nobody relearns them:
-
-- **A version-resolved package cannot depend on a `branch:` or `revision:` pin.** Ink and Contribute had to be re-tagged because their first tags carried branch pins, making them unconsumable (`'contribute' is required using a stable-version but … depends on an unstable-version package`)
-- **`from:` never resolves to a prerelease unless the requirement itself names one** — which is why every first-party pin in `Package.swift` spells out the full `1.0.0-alpha.1`-style string, and why ConfigKeyKit uses `exact:`
-- **Version selection isn't uniform when history exists**: a package with a stable 1.0.0+ gets the *next major* on an alpha line (ContributeWordPress → `2.0.0-alpha.1`); a package with only a prerelease line advances it to beta (Spinetail → `1.0.0-beta.1`); Files → `5.0.0-alpha.1` to avoid a semver downgrade
-- After repinning a manifest, `swift package update` — `swift package resolve` happily reuses stale revisions
-
-Some vendored packages didn't survive contact with modernization and were simply deleted: Splash and SplashPublishPlugin (replaced by client-side highlight.js), Codextended, Sweep, and CollectionConcurrencyKit (replaced by a shim, a regex, and plain loops), plus a SwiftSoup fork that became unnecessary when upstream 2.13.7 rewrote the code around the bug.
-
-The subrepo tooling (`.github/packages.json`, `.github/workflows/packages.yaml`, `fix-subrepo-parents.sh`) is intentionally retained: the vendor-modernize-release cycle is expected to repeat, and `Packages/` gets restored for the next one.
-
-### The newsletter migration, as a case study
-
-Moving from Mailchimp to [Buttondown](https://buttondown.com) exercised the whole stack ([#147](https://github.com/brightdigit/brightdigit.com/pull/147), [#148](https://github.com/brightdigit/brightdigit.com/pull/148), [#154](https://github.com/brightdigit/brightdigit.com/pull/154)–[#156](https://github.com/brightdigit/brightdigit.com/pull/156), [#158](https://github.com/brightdigit/brightdigit.com/pull/158)) and produced the kind of bugs migrations are made of:
-
-- The Mailchimp read path had been fetching a single 1000-item page — which would have **silently dropped the oldest issues**. Proper paging surfaced all 248 sent campaigns back to Newsletter #1 (2019)
-- Buttondown's live API mixes fractional-second and whole-second ISO 8601 timestamps *in the same response*; the generated OpenAPI client's date transcoder handles exactly one shape, so every real decode failed until a lenient transcoder was added
-- The `buttondown reconcile` command that repaired the imported archive is **update-only and dry-run by default** — live writes require an explicit `--execute`. It reconciled 102 archived emails; backfilled issues are created with `status: imported` and archival mode so they appear in the public archive but are never delivered
-- A companion content-quality checker (`Scripts/check-content.js`, dependency-free Node) drove rendered-page defects from 112 findings to 0 — most memorably, literal `<<First Name>>` merge fields visible on 101 archived newsletter pages ([#144](https://github.com/brightdigit/brightdigit.com/pull/144))
+---
 
 ## External services
 
-| Service | Used for | Where |
+| Service | Used for | Location in Codebase |
 |---|---|---|
-| [Netlify](https://netlify.com) | Hosting, deploys (CLI from CI), contact form (`data-netlify`), redirect rules (`Resources/_redirects`, `Content/_redirects`) | `netlify.toml`, deploy job |
+| [Netlify](https://netlify.com) | Hosting, deploys (CLI from CI), contact form (`data-netlify`), redirect rules | `netlify.toml`, deploy job |
 | [Buttondown](https://buttondown.com/brightdigit) | Newsletter: subscribe form endpoint, public archive, RSS | `Strings.swift`, subscription components |
-| Mailchimp | Legacy newsletter platform; still the scheduled import source for the archive | `import mailchimp` |
-| [Transistor.fm](https://transistor.fm) | Podcast hosting for [EmpowerApps.Show](https://www.empowerapps.show): RSS feed, embedded player, artwork CDN | `PodcastItem+URLs.swift`, TransistorPublishPlugin |
+| Mailchimp | Legacy newsletter platform; import source for historical archive | `import mailchimp` |
+| [Transistor.fm](https://transistor.fm) | Podcast hosting for [EmpowerApps.Show](https://www.empowerapps.show): RSS feed, embedded player | `PodcastItem+URLs.swift`, TransistorPublishPlugin |
 | YouTube Data API v3 | Video metadata merged into episode pages; thumbnails and embeds | `import podcast`, SwiftTube |
-| Google Analytics 4 + [Plausible](https://plausible.io) | Analytics (both), including a tagged `Newsletter+Signup` event | `Node+Head.swift`, `Styling/scripts/index.ts` |
-| Buffer / Twitter / LinkedIn | Share links on posts | `Nodes/Social/` |
-| Google Fonts | Cardo, Oxygen, Oxygen Mono | `Styling/styles/styles.css` |
-| Docker Hub | `brightdigit/publish-xml:6.4` CI/build image | `Dockerfile` |
-| Codecov, Hound | Coverage and review annotations | `codecov.yml`, `.hound.yml` |
+| [Plausible](https://plausible.io) | Privacy-focused web analytics | `Node+Head.swift`, `Styling/scripts/index.ts` |
+| Buffer / Twitter / LinkedIn | Social sharing links | `Nodes/Social/` |
+| Google Fonts | Cardo, Oxygen, Oxygen Mono font loading | `Styling/styles/styles.css` |
+| Docker Hub | `swiftlang/swift:nightly-6.4.x-noble` base image for Linux CI/builds | `Dockerfile` |
+| Codecov | Test coverage monitoring | `codecov.yml` |
 
-Secrets are provided via GitHub Actions secrets in CI (`NETLIFY_AUTH_TOKEN`, `NETLIFY_PRODUCTION_SITE_ID`, `MAILCHIMP_API_KEY`, `MAILCHIMP_LIST_ID`, `YOUTUBE_API_KEY`, `CONTENT_DEPLOY_KEY`) and via environment variables locally (`BUTTONDOWN_API_KEY` etc. — ConfigKeyKit commands read CLI arguments first, then the environment).
+Secrets are provided via GitHub Actions secrets in CI (`NETLIFY_AUTH_TOKEN`, `NETLIFY_PRODUCTION_SITE_ID`, `MAILCHIMP_API_KEY`, `MAILCHIMP_LIST_ID`, `YOUTUBE_API_KEY`, `CONTENT_DEPLOY_KEY`) and via environment variables locally (`BUTTONDOWN_API_KEY` etc.).
+
+---
 
 ## Working on the site
 
 ### Prerequisites
 
-- **Swift 6.4 snapshot toolchain** — pre-release; `.swift-version` pins `6.4.x-snapshot` (`swiftly install 6.4.x-snapshot`; a matching Xcode toolchain also works). macOS 15+ for local builds (the Publish stack uses `Synchronization.Mutex`); the deploy target is Linux
-- **[mise](https://mise.jdx.dev)** — provides Node 20, swift-format, SwiftLint, and periphery at pinned versions (`.mise.toml`); it also sets `NPM_PATH`, which the publish pipeline's npm step requires
-- Or skip local setup entirely: `.devcontainer/` and the `brightdigit/publish-xml:6.4` image mirror CI
+- **Swift 6.4 snapshot toolchain** — `.swift-version` pins `6.4.x-snapshot` (`swiftly install 6.4.x-snapshot` or matching Xcode toolchain). Requires macOS 15+ for local builds (`Synchronization.Mutex`).
+- **[mise](https://mise.jdx.dev)** — provides Node 20, swift-format, SwiftLint, and periphery at pinned versions (`.mise.toml`), and sets `NPM_PATH` required by NPMPublishPlugin.
+- Docker / Devcontainer: `.devcontainer/` and `Dockerfile` (based on `swiftlang/swift:nightly-6.4.x-noble`) mirror the CI environment.
 
 ### Build, test, run
 
 ```bash
+# Build and run tests
 swift build
 swift test
 
 # Generate the site (drafts mode includes future-dated content)
 swift run brightdigitwg publish --mode drafts
-# Then serve the static output any way you like:
-python3 -m http.server -d Output
 
-# Lint the way CI does
+# Serve the static output locally using Ruby:
+ruby -run -e httpd Output -p 8000
+
+# Lint codebase (swift-format + SwiftLint + periphery)
 ./Scripts/lint.sh
 
-# Content-quality scan (report-only)
+# Scan content quality (report-only)
 node Scripts/check-content.js
 ```
 
-Content edits are plain Markdown under `Content/`; Swift changes to the theme live in `Sources/BrightDigitSite/`. CI builds every PR and pushes a non-production Netlify deploy, so a PR is the easiest way to preview a change end-to-end. Conventions (strict concurrency is non-negotiable, module-collision rules, memory/corrections logging) are in [`AGENTS.md`](AGENTS.md).
+Content edits are plain Markdown under `Content/`; Swift changes to the theme live in `Sources/BrightDigitSite/`. CI builds every PR and pushes a non-production Netlify deploy preview. Development conventions are detailed in [`AGENTS.md`](AGENTS.md).
+
+---
 
 ## Project status (as of 2026-08-04)
 
-The **v2.0.0-alpha.2** checkpoint (2026-07-28) closed out the big modernization arc: Tailwind v4, the Buttondown migration, the Plot component migration, Swift 6.4 strict concurrency across the stack, and the de-vendoring release of all 20 packages.
+The **v2.0.0-alpha.2** checkpoint closed out the major modernization arc: Tailwind v4, the Buttondown migration, the Plot component migration, Swift 6.4 strict concurrency across the stack, and the de-vendoring release of all 20 packages.
 
-Work is organized in [`PRD.md`](PRD.md) and 13 GitHub milestones, each scoped to exactly one quadrant of {content, code} × {this repo, external repo} — currently 44 open issues. The headline phases:
+Work is organized in [`PRD.md`](PRD.md) and 13 GitHub milestones:
 
 | Phase | Focus | State |
 |---|---|---|
-| 1 — Package extraction | Move `Sources/` into a standalone `BrightDigitSite` package repo; formalize repo boundaries ([#168](https://github.com/brightdigit/brightdigit.com/issues/168), [#169](https://github.com/brightdigit/brightdigit.com/issues/169)) | **Next up** |
-| 2 — AI-CITE content optimization | Per-article rewrites following the June 2026 GEO audit (evidence-based: the earlier JSON-LD/schema plan was retired after review) | In progress (6 open / 4 closed) |
-| 3 — Site SEO code | Real `dateModified` sitewide, robots.txt, type-level SEO invariants, citation-rate measurement | Open |
+| 1 — Package extraction | Move `Sources/` into a standalone `BrightDigitSite` package repo; formalize repo boundaries | Next up |
+| 2 — AI-CITE content optimization | Per-article rewrites following the GEO audit | In progress |
+| 3 — Site SEO code | Real `dateModified` sitewide, robots.txt, type-level SEO invariants | Open |
 | 5 — Publishing infrastructure | Wire content planning into the publish + fan-out pipeline | Partially done |
-| 7 — Platform migration | Netlify → GitHub Pages ([#50](https://github.com/brightdigit/brightdigit.com/issues/50)), form-hosting decisions | Open |
-| 8 — Final cleanup | Parallel page generation ([#153](https://github.com/brightdigit/brightdigit.com/issues/153)), periphery config, misc. tech debt | Open |
+| 7 — Platform migration | Netlify → GitHub Pages, form-hosting decisions | Open |
+| 8 — Final cleanup | Parallel page generation, periphery config, tech debt | Open |
 
-Sources of truth: [`PRD.md`](PRD.md) for the roadmap and rationale, the [milestone board](https://github.com/brightdigit/brightdigit.com/milestones) for live counts, and [`MERGE-AND-TAG.md`](MERGE-AND-TAG.md) for the de-vendoring record and its remaining follow-ups (branch-protection re-enable, backup-ref cleanup).
+Sources of truth: [`PRD.md`](PRD.md) for the roadmap and rationale, the [milestone board](https://github.com/brightdigit/brightdigit.com/milestones) for live counts, and [`MERGE-AND-TAG.md`](MERGE-AND-TAG.md) for the de-vendoring record.
+
+---
+
+## Historical PRs & Key Issues
+
+For posterity, major architectural shifts and milestones are recorded below:
+
+- **#40**: Replaced Ink's custom Markdown parser with `swift-markdown`.
+- **#42 & #48**: Vendored initial subrepo dependency graph for strict concurrency modernization.
+- **#44**: Replaced `swift-argument-parser` with declarative `ConfigKeyKit` + `swift-configuration`.
+- **#144**: Resolved rendered content quality defects and merge field encoding.
+- **#147 & #148**: Buttondown migration & API client integration.
+- **#150**: Tailwind CSS v4 migration in CSS-first mode.
+- **#151**: Swift 6.4 strict concurrency enforcement across Plot, Publish, Ink, and Files.
+- **#157**: Migrated Plot theme rendering from `Node` API to `Component` API with zero HTML diffs.
+- **#159 & #160**: Multi-platform CI unification across Ubuntu, macOS, Windows, and Android.
+- **#161**: Un-vendoring release of all 20 first-party Swift packages.
