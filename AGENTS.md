@@ -150,7 +150,7 @@ commits), then re-run the pull/push.
   - `publish --mode <drafts|production>` - Generates the static site
   - `url podcast` - URL utilities
   - `import podcast` / `import mailchimp` / `import buttondown` / `import wordpress` - Content importers
-  - `buttondown reconcile` - Cross-checks Mailchimp campaigns against the Buttondown archive (update-only, dry-run by default)
+  - `buttondown reconcile` - Cross-checks Mailchimp campaigns against the Buttondown archive (update-only; requires `--preview-directory` or `--execute`)
 - **BrightDigitSite** - Main site generation logic with custom publishing pipeline
   - Defines `SectionID` enum for content types (articles, episodes, tutorials, newsletters, products)
   - Configures publishing steps (markdown processing, RSS generation, sitemap, npm build)

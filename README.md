@@ -37,7 +37,7 @@ Everything is driven by a single executable, `brightdigitwg` (`Sources/brightdig
 | `import mailchimp` | Import newsletter campaigns from Mailchimp (legacy platform) |
 | `import buttondown` | Import newsletter emails from Buttondown (current platform) |
 | `import wordpress` | One-time WordPress-export migration (articles/tutorials) |
-| `buttondown reconcile` | Cross-check Mailchimp campaigns against the Buttondown archive; update-only, dry-run by default |
+| `buttondown reconcile` | Cross-check Mailchimp campaigns against the Buttondown archive; update-only; requires `--preview-directory` or `--execute` |
 | `url podcast` | Print episode URLs |
 
 ### The publishing pipeline
@@ -162,7 +162,7 @@ The importer suite pairs `Contribute` with dedicated Swift API client packages:
 
 ## The Swift package ecosystem
 
-The static site generator relies on a ecosystem of 20 first-party packages maintained under [github.com/brightdigit](https://github.com/brightdigit).
+The static site generator relies on an ecosystem of 20 first-party packages maintained under [github.com/brightdigit](https://github.com/brightdigit).
 
 ### Package Connections & Architecture
 
@@ -338,7 +338,7 @@ Secrets are configured under Repository Settings $\rightarrow$ Secrets and varia
 
 ### Prerequisites
 
-- **Swift 6.4 snapshot toolchain** — `.swift-version` pins `6.4.x-snapshot` (`swiftly install 6.4.x-snapshot` or matching Xcode toolchain). Requires macOS 15+ for local builds (`Synchronization.Mutex`).
+- **Swift 6.4 snapshot toolchain** — `.swift-version` pins `6.4.x-snapshot` (`swiftly install 6.4.x-snapshot` or matching Xcode toolchain). Requires macOS 15+ for local builds (`ConfigKeyKit 1.0.0-beta.2`; Publish stack also uses `Synchronization.Mutex`).
 - **[mise](https://mise.jdx.dev)** — provides Node 20, swift-format, SwiftLint, and periphery at pinned versions (`.mise.toml`), and sets `NPM_PATH` required by NPMPublishPlugin.
 - Docker / Devcontainer: `.devcontainer/` and `Dockerfile` (based on `swiftlang/swift:nightly-6.4.x-noble`) mirror the CI environment.
 

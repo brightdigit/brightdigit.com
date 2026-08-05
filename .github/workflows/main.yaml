@@ -184,7 +184,7 @@ jobs:
 
                   # Pushed over SSH with the deploy key (configured by
                   # actions/checkout), so this commit DOES trigger CI -> deploy.
-                  git push origin ${{ github.ref_name }}
+                  git push origin "$GITHUB_REF_NAME"
 
                   echo "Changes pushed successfully."
 
@@ -395,6 +395,8 @@ jobs:
     # No `container:`. This job needs a Netlify CLI and nothing else, so it
     # runs on the bare runner -- no Swift, no libxml2, no publish-xml.
     runs-on: ubuntu-latest
+    container:
+      image: brightdigit/publish-xml:6.4
     concurrency:
         # Scope per-ref so a newer push to the same branch supersedes an
         # in-flight deploy, but deploys on different branches/PRs do NOT cancel
