@@ -285,7 +285,7 @@ jobs:
           cp "$BIN_PATH/brightdigitwg" "brightdigitwg-$(uname)-$(arch)"
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: brightdigitwg-binaries
           path: brightdigitwg-*
@@ -370,7 +370,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Download Executable Artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: brightdigitwg-binaries
 
@@ -380,7 +380,7 @@ jobs:
           ./brightdigitwg-$(uname)-$(arch) publish --mode $PUBLISHING_MODE
 
       - name: Upload Site Output Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: site
           path: Output/
@@ -396,7 +396,7 @@ jobs:
     # runs on the bare runner -- no Swift, no libxml2, no publish-xml.
     runs-on: ubuntu-latest
     container:
-      image: brightdigit/publish-xml:6.4
+      image: node:22-bookworm
     concurrency:
         # Scope per-ref so a newer push to the same branch supersedes an
         # in-flight deploy, but deploys on different branches/PRs do NOT cancel

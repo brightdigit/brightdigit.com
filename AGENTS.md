@@ -195,7 +195,7 @@ commits), then re-run the pull/push.
 - Syntax highlighting: client-side highlight.js (in the `Styling` bundle), plus Mermaid diagrams; the vendored Splash/SplashPublishPlugin were removed (see PR #151). Ink emits `<pre><code class="language-xxx">` which highlight.js targets and the Mermaid transform consumes.
 
 ### Deployment Pipeline
-CI/CD runs on **GitHub Actions** (`.github/workflows/main.yaml`). All Linux jobs run in the `brightdigit/publish-xml:6.4` container (Swift 6.4, Ubuntu Noble — based on the `swiftlang/swift:nightly-6.4.x-noble` snapshot), built from this repo's `Dockerfile`. Jobs:
+CI/CD runs on **GitHub Actions** (`.github/workflows/main.yaml`). Swift Linux jobs (`automate-content`, `build-linux`, `package-linux`, `build-site`) run in the `brightdigit/publish-xml:6.4` container (Swift 6.4, Ubuntu Noble — based on the `swiftlang/swift:nightly-6.4.x-noble` snapshot), built from this repo's `Dockerfile`. The `deploy` job uses a Node container (`node:22-bookworm`) solely for the Netlify CLI. Jobs:
 
 1. **automate-content** - Runs in the Linux container on a 6-hour cron (`5 */6 * * *`) or via the `automate_content` workflow-dispatch input. Imports content from Mailchimp and the podcast feed, then commits and pushes any new content. Checks out with the `CONTENT_DEPLOY_KEY` SSH deploy key (not `GITHUB_TOKEN`) so the bot push re-triggers CI.
 
@@ -203,7 +203,9 @@ CI/CD runs on **GitHub Actions** (`.github/workflows/main.yaml`). All Linux jobs
 
 3. **package-linux** - Builds the release binary (`swift build -c release --product brightdigitwg`) and uploads it as an artifact (`brightdigitwg-Linux-x86_64`).
 
-4. **deploy** - Downloads the artifact, generates the site (`--mode production` on `main`, `--mode drafts` otherwise), and deploys to Netlify (`--prod` on `main`). Requires `NETLIFY_AUTH_TOKEN` and `NETLIFY_PRODUCTION_SITE_ID`.
+4. **build-site** - Downloads the binary artifact and generates the site (`--mode production` on `main`, `--mode drafts` otherwise), then uploads `Output/` as an artifact.
+
+5. **deploy** - Downloads the site-output artifact and deploys to Netlify via `npx netlify-cli` in `node:22-bookworm` (`--prod` on `main`). Requires `NETLIFY_AUTH_TOKEN` and `NETLIFY_PRODUCTION_SITE_ID`.
 
 The self-hosted macOS `build`/`package` jobs are currently commented out in the workflow. The Docker image is bumped by editing `Dockerfile` and pushing `brightdigit/publish-xml:6.4` (+ `:latest`). **Swift 6.4 is currently a pre-release nightly** — the image is based on `swiftlang/swift:nightly-6.4.x-noble`. Since 6.4 is not yet released, `.swift-version` pins the `6.4.x-snapshot` toolchain (install with `swiftly install 6.4.x-snapshot`); the Xcode 6.4 toolchain (`xcrun swift`) also works for local builds.
 
