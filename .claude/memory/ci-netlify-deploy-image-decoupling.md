@@ -31,8 +31,8 @@ Timeline — no repo commit is involved; `main` sat at `32f5ce1` from 2026-07-28
 
 Confirmed by registry layer inspection: `6.3` (working era) has 5 post-base `RUN`
 layers ending in a **212 MB** netlify-cli layer; `6.4` has only **4** and no netlify
-layer at all. The committed `Dockerfile` still has the line — only the pushed image
-lost it.
+layer at all. At the time of diagnosis the committed `Dockerfile` still had the line —
+only the pushed image had lost it.
 
 ## Fix
 
@@ -48,6 +48,16 @@ Install a pinned CLI in the workflow instead, with `~/.npm` cached:
 
 The deploy no longer depends on the image shipping a CLI, so a base-image rebuild
 cannot take the site down this way again.
+
+`RUN npm i -g --unsafe-perm=true netlify-cli` was then **deleted from both
+`Dockerfile` and `Dockerfile.arm64v8`** (replaced by a comment saying why), so the
+images no longer claim to provide a CLI nothing consumes. **Do not add it back** —
+that is what coupled deploys to the image in the first place. Node/npm stay in the
+images: the publish pipeline's final step shells out to npm to build `Styling/`.
+
+`PUBLISHING_MODE`/`PROD_FLAG` were also hoisted from a per-job `$GITHUB_ENV` step to
+workflow-level `env:`, derived from `github.ref_name` with a ternary. `$GITHUB_ENV`
+is job-scoped, so the old step had to be repeated in any job needing the values.
 
 ## Alternatives investigated and rejected
 
@@ -79,8 +89,8 @@ Do not re-litigate these without new information:
 `main.yaml:249`). The job therefore does two unrelated things. Splitting it —
 `generate` in the container uploading `Output/` as an artifact, `deploy` on bare
 `ubuntu-latest` — would remove the container from deploy entirely, at the cost of a
-~110 MB artifact round-trip. Also unaddressed: `PUBLISHING_MODE`/`PROD_FLAG` are set
-via `$GITHUB_ENV` and would need hoisting to workflow-level `env:` to survive a split.
+~110 MB artifact round-trip. The `env:` hoist above already removed the one blocker
+that split would otherwise have hit.
 
 ## Note
 

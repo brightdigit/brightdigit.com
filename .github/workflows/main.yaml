@@ -21,6 +21,15 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# Publishing mode is a pure function of the ref, so derive it once here rather
+# than in a per-job step writing to $GITHUB_ENV -- that is job-scoped, so every
+# job that needed it had to recompute it. Workflow-level env reaches every job
+# and step. `main` publishes for real; every other ref builds drafts (which
+# includes future-dated content) and deploys a Netlify preview.
+env:
+  PUBLISHING_MODE: ${{ github.ref_name == 'main' && 'production' || 'drafts' }}
+  PROD_FLAG: ${{ github.ref_name == 'main' && '--prod' || '' }}
+
 jobs:
   detect-changes:
     runs-on: ubuntu-latest
@@ -348,17 +357,6 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: brightdigitwg-binaries
-
-      - name: Set Publishing Mode and Flags
-        id: set-publishing
-        run: |
-          if [ "${{ github.ref_name }}" = "main" ]; then
-            echo "PUBLISHING_MODE=production" >> $GITHUB_ENV
-            echo "PROD_FLAG=--prod" >> $GITHUB_ENV
-          else
-            echo "PUBLISHING_MODE=drafts" >> $GITHUB_ENV
-            echo "PROD_FLAG=" >> $GITHUB_ENV
-          fi
 
       - name: Run Brightdigitwg
         run: |
