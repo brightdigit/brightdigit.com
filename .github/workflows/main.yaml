@@ -365,9 +365,24 @@ jobs:
           chmod +x "brightdigitwg-$(uname)-$(arch)"
           ./brightdigitwg-$(uname)-$(arch) publish --mode $PUBLISHING_MODE
 
+      # netlify-cli used to come from the Dockerfile's final layer, so the
+      # deploy silently depended on the build image. That image was rebuilt
+      # and pushed on 2026-08-04 without the layer, and every deploy from
+      # 2026-08-05 on died with `netlify: not found` (exit 127) while every
+      # other job stayed green. Installing a pinned CLI here decouples the
+      # deploy from the image, so a base-image rebuild can no longer take
+      # the site down. ~/.npm is cached so the install is near-offline on a
+      # cache hit rather than a fresh download every run.
+      - name: Cache Netlify CLI
+        uses: actions/cache@v5
+        with:
+          path: ~/.npm
+          key: netlify-cli-27-${{ runner.os }}
+
       - name: Deploy to Netlify
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_PRODUCTION_SITE_ID: ${{ secrets.NETLIFY_PRODUCTION_SITE_ID }}
         run: |
+          npm i -g netlify-cli@27
           netlify deploy --site $NETLIFY_PRODUCTION_SITE_ID --auth $NETLIFY_AUTH_TOKEN $PROD_FLAG
