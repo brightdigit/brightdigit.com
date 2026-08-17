@@ -21,6 +21,15 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# Publishing mode is a pure function of the ref, so derive it once here rather
+# than in a per-job step writing to $GITHUB_ENV -- that is job-scoped, so every
+# job that needed it had to recompute it. Workflow-level env reaches every job
+# and step. `main` publishes for real; every other ref builds drafts (which
+# includes future-dated content) and deploys a Netlify preview.
+env:
+  PUBLISHING_MODE: ${{ github.ref_name == 'main' && 'production' || 'drafts' }}
+  PROD_FLAG: ${{ github.ref_name == 'main' && '--prod' || '' }}
+
 jobs:
   detect-changes:
     runs-on: ubuntu-latest
@@ -320,24 +329,28 @@ jobs:
       #     name: brightdigitwg-binaries
       #     path: brightdigitwg-*
 
-  deploy:
+  # `generate` and `deploy` were one job. They needed different things -- the
+  # generator is a dynamically-linked Swift binary that only runs inside
+  # publish-xml (see the issue #65 ABI-drift segfault noted above), while the
+  # upload needs nothing but a Netlify CLI. Fusing them meant the deploy
+  # inherited the Swift container, which is why the CLI had to be baked into
+  # that image at all, and why an unrelated image rebuild took the site down
+  # for 13 days. Split, `deploy` runs on a bare runner and cannot be broken by
+  # the build image again.
+  generate:
     needs: package-linux
     # package-linux survives build-linux being skipped (content-/packages-only
-    # commits) via its own `if`, but `deploy` had only the implicit `if:
-    # success()`, which propagates the skipped build-linux down the needs graph
-    # and skipped deploy too — so bot content pushes built a binary but never
-    # deployed. An explicit status-function `if` breaks that propagation and
-    # deploys whenever package-linux actually succeeded.
+    # commits) via its own `if`, but a plain `needs:` here would carry the
+    # implicit `if: success()`, which propagates the skipped build-linux down
+    # the needs graph and skips this too — so bot content pushes built a binary
+    # but never deployed. An explicit status-function `if` breaks that
+    # propagation and runs whenever package-linux actually succeeded.
     if: ${{ !cancelled() && needs.package-linux.result == 'success' }}
     runs-on: ubuntu-latest
     container:
       image: brightdigit/publish-xml:6.4
     concurrency:
-        # Scope per-ref so a newer push to the same branch supersedes an
-        # in-flight deploy, but deploys on different branches/PRs do NOT cancel
-        # each other (issue #95: a global `deploy` group made passing PRs show a
-        # false red ✗ when a cross-branch deploy cancelled them).
-        group: deploy-${{ github.ref }}
+        group: generate-${{ github.ref }}
         cancel-in-progress: true
 
     steps:
@@ -349,25 +362,67 @@ jobs:
         with:
           name: brightdigitwg-binaries
 
-      - name: Set Publishing Mode and Flags
-        id: set-publishing
-        run: |
-          if [ "${{ github.ref_name }}" = "main" ]; then
-            echo "PUBLISHING_MODE=production" >> $GITHUB_ENV
-            echo "PROD_FLAG=--prod" >> $GITHUB_ENV
-          else
-            echo "PUBLISHING_MODE=drafts" >> $GITHUB_ENV
-            echo "PROD_FLAG=" >> $GITHUB_ENV
-          fi
-
       - name: Run Brightdigitwg
         run: |
           chmod +x "brightdigitwg-$(uname)-$(arch)"
           ./brightdigitwg-$(uname)-$(arch) publish --mode $PUBLISHING_MODE
+
+      # The generated site is the only thing `deploy` needs, so hand it over as
+      # an artifact instead of regenerating it on the far side. Hidden files are
+      # included deliberately: the default excludes them, which would silently
+      # drop things like a future .well-known/ and produce a subtly broken
+      # deploy rather than a failed one.
+      - name: Upload Site
+        uses: actions/upload-artifact@v7
+        with:
+          name: site
+          path: Output/
+          include-hidden-files: true
+          retention-days: 1
+
+  deploy:
+    needs: generate
+    # Same explicit-`if` reasoning as `generate` above: don't let a skip
+    # upstream silently swallow the deploy.
+    if: ${{ !cancelled() && needs.generate.result == 'success' }}
+    # No `container:`. This job needs a Netlify CLI and nothing else, so it
+    # runs on the bare runner -- no Swift, no libxml2, no publish-xml.
+    runs-on: ubuntu-latest
+    concurrency:
+        # Scope per-ref so a newer push to the same branch supersedes an
+        # in-flight deploy, but deploys on different branches/PRs do NOT cancel
+        # each other (issue #95: a global `deploy` group made passing PRs show a
+        # false red ✗ when a cross-branch deploy cancelled them).
+        group: deploy-${{ github.ref }}
+        cancel-in-progress: true
+
+    steps:
+      # No checkout: `--dir` below points the CLI straight at the artifact, so
+      # the built site is the job's only input. netlify.toml's `publish` key is
+      # not consulted and is not needed here.
+      - name: Download Site
+        uses: actions/download-artifact@v8
+        with:
+          name: site
+          path: Output
+
+      # netlify-cli used to come from the Dockerfile's final layer, so the
+      # deploy silently depended on the build image. That image was rebuilt and
+      # pushed on 2026-08-04 without the layer, and every deploy from
+      # 2026-08-05 on died with `netlify: not found` (exit 127) while every
+      # other job stayed green. A pinned CLI installed here keeps the deploy
+      # self-contained. ~/.npm is cached so the install is near-offline on a
+      # cache hit rather than a fresh download every run.
+      - name: Cache Netlify CLI
+        uses: actions/cache@v5
+        with:
+          path: ~/.npm
+          key: netlify-cli-27-${{ runner.os }}
 
       - name: Deploy to Netlify
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_PRODUCTION_SITE_ID: ${{ secrets.NETLIFY_PRODUCTION_SITE_ID }}
         run: |
-          netlify deploy --site $NETLIFY_PRODUCTION_SITE_ID --auth $NETLIFY_AUTH_TOKEN $PROD_FLAG
+          npm i -g netlify-cli@27
+          netlify deploy --dir Output --site $NETLIFY_PRODUCTION_SITE_ID --auth $NETLIFY_AUTH_TOKEN $PROD_FLAG

@@ -4,4 +4,5 @@ RUN apt-get update
 RUN apt-get -y install libxml2-dev curl gnupg ca-certificates
 RUN curl -sL https://deb.nodesource.com/setup_26.x | bash -
 RUN apt-get -y install nodejs
-RUN npm i -g --unsafe-perm=true netlify-cli
+# No netlify-cli here on purpose -- see the note in Dockerfile. CI installs a
+# pinned CLI in the deploy job instead. Node stays for the npm publish step.
