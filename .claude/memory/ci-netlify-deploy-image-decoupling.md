@@ -81,16 +81,36 @@ Do not re-litigate these without new information:
 - **Netlify zip REST API** — no node needed, but uploads all ~110 MB every run,
   losing the CLI's digest-diff. Usually *slower* end-to-end for content-only changes.
 
-## Known remaining structural issue
+## The generate/deploy split
 
-`deploy` still runs in `brightdigit/publish-xml:6.4` because the preceding
-`Run Brightdigitwg` step executes a dynamically-linked Swift binary (no
-`--static-swift-stdlib`; see the issue #65 ABI-drift segfault noted at
-`main.yaml:249`). The job therefore does two unrelated things. Splitting it —
-`generate` in the container uploading `Output/` as an artifact, `deploy` on bare
-`ubuntu-latest` — would remove the container from deploy entirely, at the cost of a
-~110 MB artifact round-trip. The `env:` hoist above already removed the one blocker
-that split would otherwise have hit.
+The old `deploy` job did two unrelated things: run the site generator (a
+dynamically-linked Swift binary that only works inside `publish-xml` — no
+`--static-swift-stdlib`, see the issue #65 ABI-drift segfault noted at `main.yaml`
+`package-linux`), and upload to Netlify (needs a CLI and nothing else). Fusing them
+forced the deploy to inherit the Swift container, which is the *reason* the CLI was
+baked into that image, which is what caused the outage.
+
+Now split:
+
+- **`generate`** — `needs: package-linux`, runs in `publish-xml:6.4`, checks out,
+  downloads the binary artifact, runs `brightdigitwg publish`, uploads `Output/` as
+  the `site` artifact (`include-hidden-files: true`, `retention-days: 1`).
+- **`deploy`** — `needs: generate`, **no `container:`**, downloads `site` into
+  `Output`, installs the cached pinned CLI, `netlify deploy --dir Output`.
+
+Details that matter if this is ever touched again:
+
+- `--dir Output` means `deploy` needs **no checkout** — the artifact is its only
+  input, and `netlify.toml`'s `publish = "Output"` is not consulted.
+- `include-hidden-files: true` is deliberate. The default drops dotfiles, which
+  would silently ship a broken site (e.g. a future `.well-known/`) rather than fail.
+  `_redirects` uses an underscore so it was never at risk.
+- Both jobs need the **explicit `if: !cancelled() && needs.<x>.result == 'success'`**.
+  A bare `needs:` carries an implicit `if: success()` that propagates a *skipped*
+  `build-linux` (content-only commits) down the graph and silently skips the deploy.
+- Separate concurrency groups (`generate-<ref>`, `deploy-<ref>`), both per-ref —
+  a global group made passing PRs show a false red ✗ (issue #95).
+- Cost: a ~110 MB artifact round-trip per run.
 
 ## Note
 
