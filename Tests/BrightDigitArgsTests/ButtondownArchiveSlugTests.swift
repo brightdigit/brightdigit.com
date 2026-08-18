@@ -56,8 +56,10 @@ internal struct ButtondownArchiveSlugTests {
     )
   }
 
-  /// The fallback must never emit a raw subject. `convertedToSlug()` returns
-  /// its input unchanged when the transform fails, which on Linux produced
+  /// The fallback must never emit a raw subject.
+  ///
+  /// `convertedToSlug()` returns its input unchanged when the transform fails,
+  /// which on Linux produced
   /// `120-I'm back — and MistKit is closing in on 1.0.md`. Asserting the same
   /// result on both platforms is the regression guard.
   @Test internal func fallbackNeverEmitsAnUnslugifiedSubject() {

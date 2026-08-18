@@ -45,15 +45,27 @@ extension Import.ButtondownCommand {
     return url
   }()
 
-  /// Logs an `import buttondown:` diagnostic line to stderr.
-  internal static func logImport(_ message: String) {
-    FileHandle.standardError.write(Data("import buttondown: \(message)\n".utf8))
-  }
-
   /// The only characters a newsletter file name may contain after the number.
   private static let slugSafeScalars = CharacterSet(
     charactersIn: "abcdefghijklmnopqrstuvwxyz0123456789-"
   )
+
+  /// Matches an issue-number prefix at the start of a Buttondown archive slug.
+  ///
+  /// Deliberately 1-3 digits: an issue number is stripped, a slug that opens
+  /// with a year (`2026-in-review`) keeps it.
+  private static let issuePrefixRegex: NSRegularExpression = {
+    do {
+      return try NSRegularExpression(pattern: #"^\d{1,3}-"#, options: [])
+    } catch {
+      preconditionFailure("Invalid issuePrefixRegex pattern: \(error)")
+    }
+  }()
+
+  /// Logs an `import buttondown:` diagnostic line to stderr.
+  internal static func logImport(_ message: String) {
+    FileHandle.standardError.write(Data("import buttondown: \(message)\n".utf8))
+  }
 
   /// Reduces a string to slug-safe characters, unconditionally.
   ///
@@ -69,18 +81,6 @@ extension Import.ButtondownCommand {
       .split(separator: "-", omittingEmptySubsequences: true)
       .joined(separator: "-")
   }
-
-  /// Matches an issue-number prefix at the start of a Buttondown archive slug.
-  ///
-  /// Deliberately 1-3 digits: an issue number is stripped, a slug that opens
-  /// with a year (`2026-in-review`) keeps it.
-  private static let issuePrefixRegex: NSRegularExpression = {
-    do {
-      return try NSRegularExpression(pattern: #"^\d{1,3}-"#, options: [])
-    } catch {
-      preconditionFailure("Invalid issuePrefixRegex pattern: \(error)")
-    }
-  }()
 
   /// The slug Buttondown itself publishes an email under, read from the last
   /// path component of its archive URL (`.../archive/<slug>/`).
