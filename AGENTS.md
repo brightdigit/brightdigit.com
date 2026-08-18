@@ -52,6 +52,9 @@ swift run brightdigitwg publish --mode drafts
 ### Content Development
 ```bash
 # Import content from external sources
+# Newsletters live in Buttondown from issue #118 on; `import mailchimp` is a
+# backfill/archive tool only (the MailChimp archive is frozen at #117).
+swift run brightdigitwg import buttondown --export-markdown-directory=Content/newsletters   # BUTTONDOWN_API_KEY
 swift run brightdigitwg import mailchimp --mailchimp-api-key=<key> --mailchimp-list-id=<id> --export-markdown-directory=Content/newsletters
 swift run brightdigitwg import podcast --youtube-api-key=<key> --export-markdown-directory Content/episodes
 swift run brightdigitwg import wordpress --wordpress-url=<url> --export-markdown-directory=Content/articles
@@ -173,7 +176,7 @@ commits), then re-run the pull/push.
 ### Content Structure
 - `Content/` - Source markdown files for site content
   - `articles/` - Blog articles
-  - `newsletters/` - Newsletter content (auto-generated from Mailchimp)
+  - `newsletters/` - Newsletter content (auto-generated; Buttondown from #118 on, MailChimp for #001-#117)
   - `episodes/` - Podcast episodes (auto-generated)
   - `tutorials/` - Tutorial content
 - `Sources/` - Root app and site Swift modules
@@ -197,7 +200,12 @@ commits), then re-run the pull/push.
 ### Deployment Pipeline
 CI/CD runs on **GitHub Actions** (`.github/workflows/main.yaml`). Swift Linux jobs (`automate-content`, `build-linux`, `package-linux`, `build-site`) run in the `brightdigit/publish-xml:6.4` container (Swift 6.4, Ubuntu Noble — based on the `swiftlang/swift:nightly-6.4.x-noble` snapshot), built from this repo's `Dockerfile`. The `deploy` job uses a Node container (`node:22-bookworm`) solely for the Netlify CLI. Jobs:
 
-1. **automate-content** - Runs in the Linux container on a 6-hour cron (`5 */6 * * *`) or via the `automate_content` workflow-dispatch input. Imports content from Mailchimp and the podcast feed, then commits and pushes any new content. Checks out with the `CONTENT_DEPLOY_KEY` SSH deploy key (not `GITHUB_TOKEN`) so the bot push re-triggers CI.
+1. **automate-content** - Runs in the Linux container on a 6-hour cron (`5 */6 * * *`) or via the `automate_content` workflow-dispatch input. Checks out with the `CONTENT_DEPLOY_KEY` SSH deploy key (not `GITHUB_TOKEN`) so the bot push re-triggers CI. Three imports run in sequence, then anything new under `Content/` is committed and pushed:
+   - `import mailchimp` (`MAILCHIMP_API_KEY`, `MAILCHIMP_LIST_ID`) - the frozen #001-#117 archive. It reports "fetching 0 missing" on every run and cannot surface a new issue.
+   - `import podcast` (`YOUTUBE_API_KEY`) - Transistor RSS joined to the YouTube playlist.
+   - `import buttondown` (`BUTTONDOWN_API_KEY`) - **the live newsletter source** (#118 on). Added 2026-08; before that the newsletter poll asked only MailChimp, so no new issue could ever be detected.
+
+   The job is deliberately all-or-nothing: any import failing fails the whole job and nothing is committed, including content an earlier import already wrote. Do not add `continue-on-error` or step-level `if: ${{ !cancelled() }}` guards. `import podcast` is all-or-nothing internally for the same reason - an RSS episode with no matching YouTube video throws `MediaError.missingVideoForEpisode` and no episodes are written at all, so an episode that reaches the feed before its video is up keeps the job red until the video lands. The commit step lists what it found (or "no new content") in `$GITHUB_STEP_SUMMARY`.
 
 2. **build-linux** - Runs `swift build` and `swift test` in the container. Caches `.build/` with a key that embeds the Swift toolchain version (`swift --version`), so a toolchain change auto-invalidates the cache.
 

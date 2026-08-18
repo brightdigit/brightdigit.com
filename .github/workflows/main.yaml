@@ -148,11 +148,23 @@ jobs:
 
                     echo "Podcast import finished."
 
+          # The live newsletter source. The MailChimp archive is frozen at #117
+          # and all 132 of its campaigns are already on disk, so the step above
+          # can only ever report "fetching 0 missing" -- issue #118 on ships from
+          # Buttondown, and without this step a new issue was never picked up.
           - name: Import Buttondown
             env:
+              # Read by `ButtondownClient.fromEnvironment()`.
               BUTTONDOWN_API_KEY: ${{ secrets.BUTTONDOWN_API_KEY }}
             run: |
                 echo "Importing Buttondown..."
+
+                # Fail with a readable message rather than an opaque 401 when
+                # the secret has not been added to the repository yet.
+                if [ -z "$BUTTONDOWN_API_KEY" ]; then
+                  echo "BUTTONDOWN_API_KEY is empty -- add the repository secret." >&2
+                  exit 1
+                fi
 
                 ./brightdigitwg-Linux-x86_64 \
                   import buttondown \
@@ -173,11 +185,18 @@ jobs:
                 # /bin/sh (dash), where `[[` errors with "[[: not found" and the
                 # test silently fails to the else branch — so a real change would
                 # never be committed.
-                if [ -n "$(git status --porcelain Content/)" ]; then
+                CHANGES=$(git status --porcelain Content/)
+
+                # Name the files in the log and the run summary either way. A
+                # bare "No changes detected" is indistinguishable from a poll
+                # asking the wrong service, which is how the newsletter poll
+                # sat silently on the frozen MailChimp archive for weeks.
+                if [ -n "$CHANGES" ]; then
                   echo "Changes detected. Proceeding with commit and push."
+                  echo "$CHANGES"
 
                   TODAY_DATE=$(date '+%y%m%d%H%M')
-                  CHANGES_COUNT=$(git status --porcelain Content/ | wc -l | xargs)
+                  CHANGES_COUNT=$(echo "$CHANGES" | wc -l | xargs)
                   COMMIT_MESSAGE="Bot:- ${TODAY_DATE} - ${CHANGES_COUNT} new changes"
                   git add Content/
                   git commit -m "${COMMIT_MESSAGE}"
@@ -188,8 +207,17 @@ jobs:
 
                   echo "Changes pushed successfully."
 
+                  {
+                    echo "### automate-content: ${CHANGES_COUNT} new file(s)"
+                    echo ""
+                    echo '```'
+                    echo "$CHANGES"
+                    echo '```'
+                  } >> "$GITHUB_STEP_SUMMARY"
                 else
                   echo "No changes detected. Nothing to commit or push."
+                  echo "### automate-content: no new content" \
+                    >> "$GITHUB_STEP_SUMMARY"
                 fi
 
   build-linux:
