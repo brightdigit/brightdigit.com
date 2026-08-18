@@ -146,7 +146,7 @@ jobs:
                     --youtube-api-key=$YOUTUBE_API_KEY \
                     --export-markdown-directory Content/episodes
 
-                echo "Podcast import finished."
+                    echo "Podcast import finished."
 
           - name: Import Buttondown
             env:
@@ -184,7 +184,7 @@ jobs:
 
                   # Pushed over SSH with the deploy key (configured by
                   # actions/checkout), so this commit DOES trigger CI -> deploy.
-                  git push origin "$GITHUB_REF_NAME"
+                  git push origin ${{ github.ref_name }}
 
                   echo "Changes pushed successfully."
 
@@ -369,7 +369,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
-      - name: Download Executable Artifact
+      - name: Download Artifact
         uses: actions/download-artifact@v8
         with:
           name: brightdigitwg-binaries
@@ -379,7 +379,12 @@ jobs:
           chmod +x "brightdigitwg-$(uname)-$(arch)"
           ./brightdigitwg-$(uname)-$(arch) publish --mode $PUBLISHING_MODE
 
-      - name: Upload Site Output Artifact
+      # The generated site is the only thing `deploy` needs, so hand it over as
+      # an artifact instead of regenerating it on the far side. Hidden files are
+      # included deliberately: the default excludes them, which would silently
+      # drop things like a future .well-known/ and produce a subtly broken
+      # deploy rather than a failed one.
+      - name: Upload Site
         uses: actions/upload-artifact@v7
         with:
           name: site
@@ -395,8 +400,6 @@ jobs:
     # No `container:`. This job needs a Netlify CLI and nothing else, so it
     # runs on the bare runner -- no Swift, no libxml2, no publish-xml.
     runs-on: ubuntu-latest
-    container:
-      image: node:22-bookworm
     concurrency:
         # Scope per-ref so a newer push to the same branch supersedes an
         # in-flight deploy, but deploys on different branches/PRs do NOT cancel
