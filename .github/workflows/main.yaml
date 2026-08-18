@@ -34,7 +34,9 @@ jobs:
   detect-changes:
     runs-on: ubuntu-latest
     outputs:
-      code-changed: ${{ steps.filter.outputs.code }}
+      # A skipped filter step has empty outputs, so this is false on the events
+      # where the filter cannot answer the question -- see below.
+      code-changed: ${{ steps.filter.outputs.code == 'true' }}
       image-digest: ${{ steps.image.outputs.digest }}
     steps:
       - name: Checkout code
@@ -42,9 +44,20 @@ jobs:
         with:
           fetch-depth: 0
 
+      # Only push and pull_request carry a base to diff against. On schedule
+      # and workflow_dispatch the payload has no `before` field, so the action
+      # warns "changes will be detected from last commit" and diffs main's tip
+      # against its parent -- the SAME commit every six hours. That made
+      # `code-changed` a property of whatever the last commit on main happened
+      # to touch rather than of anything new, so a tip that touched Sources/ or
+      # this workflow rebuilt and re-linted on every scheduled run for days,
+      # and a content-only tip would have skipped the build forever instead.
+      # A scheduled run is by definition the same commit that was already
+      # built, so skip the filter and let the cached release binary serve it.
       - name: Detect code changes
         uses: dorny/paths-filter@v4
         id: filter
+        if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' }}
         with:
           # Anything that affects the compiled binary or the CI logic itself.
           # Content/ markdown is runtime data and is intentionally excluded.
