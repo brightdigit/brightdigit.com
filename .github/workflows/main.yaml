@@ -34,7 +34,9 @@ jobs:
   detect-changes:
     runs-on: ubuntu-latest
     outputs:
-      code-changed: ${{ steps.filter.outputs.code }}
+      # A skipped filter step has empty outputs, so this is false on the events
+      # where the filter cannot answer the question -- see below.
+      code-changed: ${{ steps.filter.outputs.code == 'true' }}
       image-digest: ${{ steps.image.outputs.digest }}
     steps:
       - name: Checkout code
@@ -42,9 +44,20 @@ jobs:
         with:
           fetch-depth: 0
 
+      # Only push and pull_request carry a base to diff against. On schedule
+      # and workflow_dispatch the payload has no `before` field, so the action
+      # warns "changes will be detected from last commit" and diffs main's tip
+      # against its parent -- the SAME commit every six hours. That made
+      # `code-changed` a property of whatever the last commit on main happened
+      # to touch rather than of anything new, so a tip that touched Sources/ or
+      # this workflow rebuilt and re-linted on every scheduled run for days,
+      # and a content-only tip would have skipped the build forever instead.
+      # A scheduled run is by definition the same commit that was already
+      # built, so skip the filter and let the cached release binary serve it.
       - name: Detect code changes
         uses: dorny/paths-filter@v4
         id: filter
+        if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' }}
         with:
           # Anything that affects the compiled binary or the CI logic itself.
           # Content/ markdown is runtime data and is intentionally excluded.
@@ -148,11 +161,23 @@ jobs:
 
                     echo "Podcast import finished."
 
+          # The live newsletter source. The MailChimp archive is frozen at #117
+          # and all 132 of its campaigns are already on disk, so the step above
+          # can only ever report "fetching 0 missing" -- issue #118 on ships from
+          # Buttondown, and without this step a new issue was never picked up.
           - name: Import Buttondown
             env:
+              # Read by `ButtondownClient.fromEnvironment()`.
               BUTTONDOWN_API_KEY: ${{ secrets.BUTTONDOWN_API_KEY }}
             run: |
                 echo "Importing Buttondown..."
+
+                # Fail with a readable message rather than an opaque 401 when
+                # the secret has not been added to the repository yet.
+                if [ -z "$BUTTONDOWN_API_KEY" ]; then
+                  echo "BUTTONDOWN_API_KEY is empty -- add the repository secret." >&2
+                  exit 1
+                fi
 
                 ./brightdigitwg-Linux-x86_64 \
                   import buttondown \
@@ -173,11 +198,18 @@ jobs:
                 # /bin/sh (dash), where `[[` errors with "[[: not found" and the
                 # test silently fails to the else branch — so a real change would
                 # never be committed.
-                if [ -n "$(git status --porcelain Content/)" ]; then
+                CHANGES=$(git status --porcelain Content/)
+
+                # Name the files in the log and the run summary either way. A
+                # bare "No changes detected" is indistinguishable from a poll
+                # asking the wrong service, which is how the newsletter poll
+                # sat silently on the frozen MailChimp archive for weeks.
+                if [ -n "$CHANGES" ]; then
                   echo "Changes detected. Proceeding with commit and push."
+                  echo "$CHANGES"
 
                   TODAY_DATE=$(date '+%y%m%d%H%M')
-                  CHANGES_COUNT=$(git status --porcelain Content/ | wc -l | xargs)
+                  CHANGES_COUNT=$(echo "$CHANGES" | wc -l | xargs)
                   COMMIT_MESSAGE="Bot:- ${TODAY_DATE} - ${CHANGES_COUNT} new changes"
                   git add Content/
                   git commit -m "${COMMIT_MESSAGE}"
@@ -188,8 +220,17 @@ jobs:
 
                   echo "Changes pushed successfully."
 
+                  {
+                    echo "### automate-content: ${CHANGES_COUNT} new file(s)"
+                    echo ""
+                    echo '```'
+                    echo "$CHANGES"
+                    echo '```'
+                  } >> "$GITHUB_STEP_SUMMARY"
                 else
                   echo "No changes detected. Nothing to commit or push."
+                  echo "### automate-content: no new content" \
+                    >> "$GITHUB_STEP_SUMMARY"
                 fi
 
   build-linux:

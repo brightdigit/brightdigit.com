@@ -108,7 +108,7 @@ extension Import.ButtondownCommand {
       continuingFrom: localMax,
       existingIssueNumbers: skipNumbers,
       existingSlugs: skipSlugs,
-      slug: { $0.subject.convertedToSlug() }
+      slug: Self.archiveSlug(for:)
     )
 
     let alreadyPresent = emails.count - numbered.count

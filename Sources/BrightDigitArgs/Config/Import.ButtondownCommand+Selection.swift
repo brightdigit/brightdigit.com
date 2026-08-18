@@ -45,9 +45,79 @@ extension Import.ButtondownCommand {
     return url
   }()
 
+  /// The only characters a newsletter file name may contain after the number.
+  private static let slugSafeScalars = CharacterSet(
+    charactersIn: "abcdefghijklmnopqrstuvwxyz0123456789-"
+  )
+
+  /// Matches an issue-number prefix at the start of a Buttondown archive slug.
+  ///
+  /// Deliberately 1-3 digits: an issue number is stripped, a slug that opens
+  /// with a year (`2026-in-review`) keeps it.
+  private static let issuePrefixRegex: NSRegularExpression = {
+    do {
+      return try NSRegularExpression(pattern: #"^\d{1,3}-"#, options: [])
+    } catch {
+      preconditionFailure("Invalid issuePrefixRegex pattern: \(error)")
+    }
+  }()
+
   /// Logs an `import buttondown:` diagnostic line to stderr.
   internal static func logImport(_ message: String) {
     FileHandle.standardError.write(Data("import buttondown: \(message)\n".utf8))
+  }
+
+  /// Reduces a string to slug-safe characters, unconditionally.
+  ///
+  /// Deliberately not a bare ``BrightDigitSite`` `convertedToSlug()`: that
+  /// returns its input UNCHANGED when the transform fails, which on Linux is
+  /// how CI wrote `120-I'm back — and MistKit is closing in on 1.0.md` into
+  /// `Content/newsletters`. This can only ever emit `[a-z0-9-]`.
+  private static func slugified(_ value: String) -> String {
+    let mapped = value.lowercased().unicodeScalars.map { scalar -> Character in
+      slugSafeScalars.contains(scalar) ? Character(scalar) : "-"
+    }
+    return String(mapped)
+      .split(separator: "-", omittingEmptySubsequences: true)
+      .joined(separator: "-")
+  }
+
+  /// The slug Buttondown itself publishes an email under, read from the last
+  /// path component of its archive URL (`.../archive/<slug>/`).
+  ///
+  /// Preferred over slugifying the subject locally. `convertedToSlug()` splits
+  /// on apostrophes and periods, so "I'm back — and MistKit is closing in on
+  /// 1.0" became `i-m-back-...-1-0` while Buttondown publishes it as
+  /// `im-back-...-10`; taking Buttondown's own slug keeps the file name, the
+  /// site URL and the archive URL spelled the same way.
+  ///
+  /// Any issue-number prefix is dropped, because
+  /// ``fileNameWithoutExtensionFromSource(_:)`` re-adds the zero-padded number
+  /// and ``existingSlugs(in:)`` reads the slug back as the part *after* that
+  /// prefix -- left in place, issue 118 would round-trip as `118-118-...`.
+  ///
+  /// Falls back to slugifying the subject when the archive URL cannot be parsed
+  /// or carries no usable last path component.
+  internal static func archiveSlug(for email: Email) -> String {
+    let fallback = slugified(email.subject.convertedToSlug())
+    guard let url = URL(string: email.absoluteURL) else {
+      return fallback
+    }
+    // A trailing slash is ignored, so `.../archive/<slug>/` yields `<slug>`.
+    let component = url.lastPathComponent
+    guard !component.isEmpty, component != "/" else {
+      return fallback
+    }
+    let stripped = issuePrefixRegex.stringByReplacingMatches(
+      in: component,
+      options: [],
+      range: NSRange(component.startIndex..., in: component),
+      withTemplate: ""
+    )
+    // Buttondown slugs are already slug-safe; normalize anyway so the file name
+    // cannot inherit anything unexpected from the archive URL.
+    let slug = slugified(stripped)
+    return slug.isEmpty ? fallback : slug
   }
 
   /// Builds a Buttondown client, preferring the explicit key and otherwise
@@ -131,12 +201,11 @@ extension Import.ButtondownCommand {
 
   /// Resolves a numbered email into a writable ``Newsletter/Source``.
   ///
-  /// Derives the slug from the subject via ``BrightDigitSite``'s
-  /// `convertedToSlug()`.
+  /// Uses Buttondown's own archive slug -- see ``archiveSlug(for:)``.
   internal static func source(
     from numbered: ContributeButtondown.Newsletter.NumberedEmail
   ) throws -> ContributeButtondown.Newsletter.Source {
-    let slug = numbered.email.subject.convertedToSlug()
+    let slug = archiveSlug(for: numbered.email)
     logImport("#\(numbered.issueNo) ← \(numbered.email.subject)")
     return try ContributeButtondown.Newsletter.Source(
       email: numbered.email,
