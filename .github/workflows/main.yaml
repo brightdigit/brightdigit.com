@@ -148,6 +148,18 @@ jobs:
 
                     echo "Podcast import finished."
 
+          - name: Import Buttondown
+            env:
+              BUTTONDOWN_API_KEY: ${{ secrets.BUTTONDOWN_API_KEY }}
+            run: |
+                echo "Importing Buttondown..."
+
+                ./brightdigitwg-Linux-x86_64 \
+                  import buttondown \
+                    --export-markdown-directory=Content/newsletters
+
+                echo "Buttondown import finished."
+
           - name: Configure Git
             run: |
               git config user.name "github-actions[bot]"

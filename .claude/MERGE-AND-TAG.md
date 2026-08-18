@@ -41,11 +41,7 @@ against released tags — no `branch:` pins remain anywhere in the graph.**
   `lint`, `package-linux`, `deploy` all succeeded. PR #161 is `CLEAN` / `MERGEABLE`.
 - **Releases:** all 20 GitHub releases published, each marked prerelease.
 
-What remains: (1) merge #161 — note its base is `phase-05`, **not** `main`; (2) restore
-subrepos for `v2.0.0-alpha.2`; (3) cleanup — re-enable branch protection + signed commits
-on TransistorPublishPlugin and NPMPublishPlugin (disabled for the Wave 2 force-push),
-revoke `RELEASE_PAT`, and delete the 20 `backup/pre-squash-260727` refs once the merge
-lands (they are the rollback path until then).
+What remains: (1) PR #161 merged on 2026-07-28; (2) restore subrepos for `v2.0.0-alpha.2`; (3) cleanup — re-enable branch protection + signed commits on TransistorPublishPlugin and NPMPublishPlugin (disabled for the Wave 2 force-push), revoke `RELEASE_PAT`, and delete the 20 `backup/pre-squash-260727` refs.
 
 ### Recut: branch deps inside a release tag
 
@@ -53,7 +49,7 @@ Ink `1.0.0-alpha.1` and Contribute `1.0.0-beta.1` were tagged with `branch:` dep
 pins still in their manifests. **SwiftPM only lets a version-resolved package depend on
 other version-resolved packages**, so those tags were unconsumable via `from:`:
 
-```
+```text
 error: … 'contribute' is required using a stable-version but 'contribute' depends on
        an unstable-version package 'swiftsoup'
 ```
@@ -82,8 +78,8 @@ longer reproduces: `swift build -c release` + `swift test -c release` both pass.
 > **Orphan repos silently skip CI.** The shared workflow has
 > `paths-ignore: ['**.md', 'LICENSE']`. An orphan-mode rewrite has no common ancestor, so
 > GitHub sees a markdown-only diff and never runs the build — leaving a *stale green* run
-> on pre-rewrite history that reads as passing. All five orphan repos (ButtondownKit,
-> the four Contribute\*, PublishType) needed `gh workflow run <Repo>.yml --ref main`.
+> on pre-rewrite history that reads as passing. All seven orphan repos (ButtondownKit,
+> ContributeButtondown, ContributeMailchimp, ContributeRSS, ContributeWordPress, ContributeYouTube, PublishType) needed `gh workflow run <Repo>.yml --ref main`.
 > `Scripts/tag-release.sh` refuses to tag unless the newest run is on the exact tip.
 
 ### Squash + tag tooling

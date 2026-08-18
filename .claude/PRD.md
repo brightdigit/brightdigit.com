@@ -1,7 +1,7 @@
 # BrightDigit.com — Product Requirements Document
 
 **Repository:** brightdigit/brightdigit.com  
-**Last Updated:** 2026-07-28  
+**Last Updated:** 2026-08-04  
 **Status:** Living document — reflects current open issues
 
 ---
@@ -45,7 +45,7 @@ those sections.
 
 ### Dependency Chain
 
-```
+```text
 Phase 1  (Package extraction)     ─── #168 → #169 → #136; unblocks Phase 4 + Documentation
 Phase 2  (AI-CITE content)        ─── ready now; no code dependency — runs in parallel
 Phase 3  (Site SEO code)          ─── independent; #167 follows #129
@@ -315,7 +315,7 @@ New source modules (local to this repo, not subrepos):
 | [#153](https://github.com/brightdigit/brightdigit.com/issues/153) | Reclaim parallel page generation (investigate, measure-first) | P1-high |
 | [#114](https://github.com/brightdigit/brightdigit.com/issues/114) | Root `.periphery.yml` uses invalid key `targets` | |
 | [#77](https://github.com/brightdigit/brightdigit.com/issues/77) | Add macOS build job for the site executable to main CI | |
-| [#34](https://github.com/brightdigit/brightdigit.com/issues/34) | Remove or repurpose Import/Wordpress XML files | Clean up leftover import artifacts |
+| ~~[#34](https://github.com/brightdigit/brightdigit.com/issues/34)~~ | ~~Remove or repurpose Import/Wordpress XML files~~ | **Completed** (2026-08-04): `Import/Wordpress/*.xml` deleted. [#105](https://github.com/brightdigit/brightdigit.com/issues/105) now needs a fresh WordPress export to verify against. |
 | [#105](https://github.com/brightdigit/brightdigit.com/issues/105) | Verify `import wordpress` end-to-end against real WordPress export | Was **unmilestoned** until the 2026-07-28 reorg |
 | [#51](https://github.com/brightdigit/brightdigit.com/issues/51) | Research node-swift | Evaluate [kabiroberai/node-swift](https://github.com/kabiroberai/node-swift) |
 
@@ -426,7 +426,7 @@ The remaining gaps split along the **fork vs first-party** line:
 
 ## Issue Count by Phase
 
-**44 open issues across 13 single-quadrant milestones** (as of 2026-07-28).
+**43 open issues across 13 single-quadrant milestones** (as of 2026-08-04).
 
 | Phase | Quadrant | Issues | Contents |
 |-------|----------|--------|----------|
@@ -437,20 +437,20 @@ The remaining gaps split along the **fork vs first-party** line:
 | Phase 5: Publishing Infra — Internal | code · this-repo | 2 | [#33](https://github.com/brightdigit/brightdigit.com/issues/33), [#140](https://github.com/brightdigit/brightdigit.com/issues/140) |
 | Phase 6: Publishing Infra — External | code · external-repo | 4 | [#30](https://github.com/brightdigit/brightdigit.com/issues/30), [#31](https://github.com/brightdigit/brightdigit.com/issues/31), [#32](https://github.com/brightdigit/brightdigit.com/issues/32), [#49](https://github.com/brightdigit/brightdigit.com/issues/49) |
 | Phase 7: Platform Migration | code · external-repo | 2 | [#50](https://github.com/brightdigit/brightdigit.com/issues/50), [#70](https://github.com/brightdigit/brightdigit.com/issues/70) |
-| Phase 8: Final Cleanup | code · this-repo | 7 | [#162](https://github.com/brightdigit/brightdigit.com/issues/162), [#153](https://github.com/brightdigit/brightdigit.com/issues/153), [#114](https://github.com/brightdigit/brightdigit.com/issues/114), [#77](https://github.com/brightdigit/brightdigit.com/issues/77), [#34](https://github.com/brightdigit/brightdigit.com/issues/34), [#105](https://github.com/brightdigit/brightdigit.com/issues/105), [#51](https://github.com/brightdigit/brightdigit.com/issues/51) |
+| Phase 8: Final Cleanup | code · this-repo | 6 | [#162](https://github.com/brightdigit/brightdigit.com/issues/162), [#153](https://github.com/brightdigit/brightdigit.com/issues/153), [#114](https://github.com/brightdigit/brightdigit.com/issues/114), [#77](https://github.com/brightdigit/brightdigit.com/issues/77), [#105](https://github.com/brightdigit/brightdigit.com/issues/105), [#51](https://github.com/brightdigit/brightdigit.com/issues/51) |
 | Phase 9: Upstream Contributions | code · external-repo | 1 | [#112](https://github.com/brightdigit/brightdigit.com/issues/112) |
 | Phase 10: Content Authority & Off-Site | content · external-repo | 2 | [#24](https://github.com/brightdigit/brightdigit.com/issues/24), [#25](https://github.com/brightdigit/brightdigit.com/issues/25) |
 | Post-Migration: Article Edits | content · this-repo | 3 | [#3](https://github.com/brightdigit/brightdigit.com/issues/3), [#4](https://github.com/brightdigit/brightdigit.com/issues/4), [#13](https://github.com/brightdigit/brightdigit.com/issues/13) |
 | Site Defects | code · this-repo | 3 | [#163](https://github.com/brightdigit/brightdigit.com/issues/163), [#164](https://github.com/brightdigit/brightdigit.com/issues/164), [#166](https://github.com/brightdigit/brightdigit.com/issues/166) |
 | Documentation | code · external-repo | 2 | [#170](https://github.com/brightdigit/brightdigit.com/issues/170), [#171](https://github.com/brightdigit/brightdigit.com/issues/171) |
-| **Total** | | **44** | |
+| **Total** | | **43** | |
 
 ### Quadrant totals
 
 | | this-repo | external-repo |
 |---|---|---|
 | **content** | 9 | 5 |
-| **code** | 17 | 13 |
+| **code** | 16 | 13 |
 
 ### What changed in the 2026-07-28 reorganization
 
