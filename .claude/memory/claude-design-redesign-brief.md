@@ -90,11 +90,25 @@ lands in `brightdigit/BrightDigitSite` if the #168 extraction has happened by th
   file.
 - `Resources/media/leo-pic.jpeg` (About page photo)
 
-**"Before" screenshots** (desktop 1440×900 + mobile 390×844, full-page, of the live site):
-`/`, `/articles/`, `/articles/best-backend-for-your-ios-app/`, `/episodes/`, one episode detail
-(e.g. `/episodes/210-practical-agents-with-donny-wals/` — verify slug), `/newsletters/`, one
-issue, `/products/`, `/about-us/`, `/contact-us/`, and the mobile menu open. Capture with
-Playwright (Chromium is preinstalled in CCR sessions):
+**"Before" screenshots** — yes, attach these: they are the only attachment that *shows* the
+current site (Claude Design cannot render brightdigit.com; everything else in the kit merely
+describes it). Curate instead of dumping the full page × viewport matrix — every extra tall
+full-page capture dilutes attention:
+
+- **Core set (~7):** `/` (desktop full-page + mobile), one article detail full-page
+  (`/articles/best-backend-for-your-ios-app/`), one episode detail (e.g.
+  `/episodes/210-practical-agents-with-donny-wals/` — verify slug), `/articles/` listing (stands
+  in for the tutorials/newsletters listings too), `/contact-us/`, and the mobile menu open.
+- **Optional extras** if attachment budget allows: `/products/`, `/about-us/`, one newsletter issue.
+- **Capture fresh at prompt time**, not in advance — content churns via the 6-hourly
+  automate-content job and defects may be fixed by then; the script below takes about a minute.
+  If the redesign runs as `/design` inside a Claude Code session on this repo, skip manual
+  attaching: have the session capture and read the screenshots itself in the same conversation.
+- **Anchoring trade-off:** screenshots gravity-pull the design toward the current layout. The
+  prompt already frames them as the "before" state, not a template; if round 1 comes back hugging
+  the current site too closely, re-run the ★ artboards withholding them.
+
+Playwright capture (Chromium is preinstalled in CCR sessions):
 
 ```js
 // screenshots.mjs — node screenshots.mjs   (npm i playwright-core)
