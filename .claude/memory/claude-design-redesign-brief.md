@@ -26,6 +26,9 @@ lands in `brightdigit/BrightDigitSite` if the #168 extraction has happened by th
   real bold-italic.)
 - **Hero background video retired** — Leo no longer wants the animated `iPhone.mov`/`iPhone.webm`
   background on the homepage. The redesigned hero is static (photo + type + yellow accents).
+- **No custom player chrome** — the episode page's video and audio players are vendor iframes
+  (YouTube 16:9; Transistor full-width, 180px tall). The canvas reserves labeled slots for them
+  instead of designing play buttons, scrubbers, or timecodes.
 - **Animated logo ("logo-drop")** — canonical source is Claude Design project
   `0341f74c-e242-45f1-b894-e9136a630fb1`, file `BrightDigit Logo Animation v4.dc.html`
   (https://claude.ai/design/p/0341f74c-e242-45f1-b894-e9136a630fb1?file=BrightDigit+Logo+Animation+v4.dc.html&via=share).
