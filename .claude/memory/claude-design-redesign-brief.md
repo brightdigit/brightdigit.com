@@ -26,14 +26,19 @@ lands in `brightdigit/BrightDigitSite` if the #168 extraction has happened by th
   real bold-italic.)
 - **Hero background video retired** — Leo no longer wants the animated `iPhone.mov`/`iPhone.webm`
   background on the homepage. The redesigned hero is static (photo + type + yellow accents).
-- **Animated logo exists** in Claude Design: project `0341f74c-e242-45f1-b894-e9136a630fb1`,
-  file `BrightDigit Logo Animation v4.dc.html`
-  (https://claude.ai/design/p/0341f74c-e242-45f1-b894-e9136a630fb1?file=BrightDigit+Logo+Animation+v4.dc.html&via=share). Not in this repo,
-  and not reachable from a remote session (DesignSync needs a one-time `/design-login` from an
-  interactive session, and the share page 403s through the sandbox proxy). To hand it to a
-  session: use "Send to Claude Code Web" from the Design project, run `/design-login` once on a
-  local interactive session, or export it (SVG/CSS/HTML, Lottie, GIF, or video) into
-  `Resources/media/`. Intended placement: nav mark / hero brand moment.
+- **Animated logo ("logo-drop")** — canonical source is Claude Design project
+  `0341f74c-e242-45f1-b894-e9136a630fb1`, file `BrightDigit Logo Animation v4.dc.html`
+  (https://claude.ai/design/p/0341f74c-e242-45f1-b894-e9136a630fb1?file=BrightDigit+Logo+Animation+v4.dc.html&via=share).
+  The choreography (Leo's bundled export, extracted 2026-08-28) is preserved in this repo at
+  [`.claude/design/logo-drop.jsx`](../design/logo-drop.jsx): two ink drops fall (easeInQuad,
+  1.05s), splash into puddles with yellow ripples, the b and d letterforms swirl in opposite
+  directions (rotate ∓310°→0 + scale 0.1→1, easeOutQuart) under a goo filter
+  (feTurbulence + displacement) that tightens until the mark sets crisp — the final frame is the
+  standard logo (paths = `brightdigit-logo.svg` scaled 1/3.09, glyph centers (33.5,56) and
+  (74.5,106.5), viewBox `-16 -14 140 161`). Scenes: Drop 2s / Swirl 2s / Set 1.8s, plays once.
+  The redesign canvas carries a pure CSS/SVG port (Animated Logo artboard, light + dark, looping
+  preview) and a play-once mini version as the nav mark on both Home artboards — that port is the
+  implementation model for the real site (no React needed).
 
 ## The prompt (paste into Claude Design)
 
