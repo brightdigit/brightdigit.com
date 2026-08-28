@@ -26,8 +26,9 @@ lands in `brightdigit/BrightDigitSite` if the #168 extraction has happened by th
   real bold-italic.)
 - **Hero background video retired** — Leo no longer wants the animated `iPhone.mov`/`iPhone.webm`
   background on the homepage. The redesigned hero is static (photo + type + yellow accents).
-- **Animated logo exists** in Claude Design: project `0341f74c-e242-45f1-b894-e9136a630fb1`
-  (https://claude.ai/design/p/0341f74c-e242-45f1-b894-e9136a630fb1?via=share). Not in this repo,
+- **Animated logo exists** in Claude Design: project `0341f74c-e242-45f1-b894-e9136a630fb1`,
+  file `BrightDigit Logo Animation v4.dc.html`
+  (https://claude.ai/design/p/0341f74c-e242-45f1-b894-e9136a630fb1?file=BrightDigit+Logo+Animation+v4.dc.html&via=share). Not in this repo,
   and not reachable from a remote session (DesignSync needs a one-time `/design-login` from an
   interactive session, and the share page 403s through the sandbox proxy). To hand it to a
   session: use "Send to Claude Code Web" from the Design project, run `/design-login` once on a
