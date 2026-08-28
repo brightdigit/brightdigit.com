@@ -16,6 +16,24 @@ lands in `brightdigit/BrightDigitSite` if the #168 extraction has happened by th
   the redesign is the natural moment to replace it with utility classes via TailwindKit instead
   of extending it.
 
+## Decisions so far (2026-08-28)
+
+- **Round-1 canvas is live:** https://claude.ai/code/artifact/2d5cbf3a-936a-43b7-b93b-a5bcc4778baf —
+  leading direction "Highlighter Editorial" (Home desktop/mobile/dark, Article, Episode, Articles
+  listing) plus low-fi "Terminal Mono" and "Warm Editorial" alternates.
+- **Fonts: keep the existing set** — Oxygen (sans/UI), Cardo (serif prose), Oxygen Mono. No new
+  type pairing. (Weight notes: Oxygen has no 500 → use 400/700; Cardo has no 600 → 700, and no
+  real bold-italic.)
+- **Hero background video retired** — Leo no longer wants the animated `iPhone.mov`/`iPhone.webm`
+  background on the homepage. The redesigned hero is static (photo + type + yellow accents).
+- **Animated logo exists** in Claude Design: project `0341f74c-e242-45f1-b894-e9136a630fb1`
+  (https://claude.ai/design/p/0341f74c-e242-45f1-b894-e9136a630fb1?via=share). Not in this repo,
+  and not reachable from a remote session (DesignSync needs a one-time `/design-login` from an
+  interactive session, and the share page 403s through the sandbox proxy). To hand it to a
+  session: use "Send to Claude Code Web" from the Design project, run `/design-login` once on a
+  local interactive session, or export it (SVG/CSS/HTML, Lottie, GIF, or video) into
+  `Resources/media/`. Intended placement: nav mark / hero brand moment.
+
 ## The prompt (paste into Claude Design)
 
 > Redesign **brightdigit.com** — the static site of BrightDigit, a one-person Swift / Apple-platforms
