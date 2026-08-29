@@ -23,7 +23,20 @@ directly in a browser to view it — `LogoAnimation.dc.html` and the nav marks i
 
 `canvas.json` is the canvas layout (frame positions, sizes, sticky notes).
 `renders/` holds a flat PNG of each artboard for quick reference — the sources are the
-truth; renders were captured offline so they show fallback fonts, not Oxygen/Cardo.
+truth. Renders are captured with the real Google Fonts loading (Oxygen, Cardo,
+Oxygen Mono), at 2x, by screenshotting each artboard's root element.
+
+`before/` holds full-page captures of the **live** brightdigit.com for old-vs-new
+comparison — 7 pages (home, articles listing, one article, one episode, products,
+about-us, contact-us) at desktop 1440 and mobile 390, named `<page>-<viewport>.png`.
+The article and episode captured are the same ones the artboards depict
+(`best-backend-for-your-ios-app`, episode 210), so the pairs compare like for like.
+
+Both sets are regenerated with Playwright (the cached install under
+`~/.npm/_npx`, browsers in `~/Library/Caches/ms-playwright`); the scripts live in
+the session scratchpad. Note the live site has a real mobile overflow bug: the
+article page lays out at 396px and the episode page at 591px inside a 390px
+viewport.
 
 Design decisions (fonts kept, hero video retired, vendor-iframe rule, animated-logo
 provenance) are recorded in [`../../memory/claude-design-redesign-brief.md`](../../memory/claude-design-redesign-brief.md)

@@ -6,7 +6,7 @@
       "y": 0,
       "w": 1440,
       "h": 2950,
-      "title": "Home \u2014 Desktop"
+      "title": "Home — Desktop"
     },
     {
       "file": "HomeMobile.dc.html",
@@ -14,7 +14,7 @@
       "y": 0,
       "w": 390,
       "h": 3800,
-      "title": "Home \u2014 Mobile"
+      "title": "Home — Mobile"
     },
     {
       "file": "HomeDark.dc.html",
@@ -22,7 +22,7 @@
       "y": 0,
       "w": 1440,
       "h": 2950,
-      "title": "Home \u2014 Dark Mode"
+      "title": "Home — Dark Mode"
     },
     {
       "file": "Article.dc.html",
@@ -30,7 +30,7 @@
       "y": 4040,
       "w": 1440,
       "h": 3720,
-      "title": "Article \u2014 Best Backend"
+      "title": "Article — Best Backend"
     },
     {
       "file": "Episode.dc.html",
@@ -54,7 +54,7 @@
       "y": 8080,
       "w": 760,
       "h": 1010,
-      "title": "Direction B \u2014 Terminal Mono"
+      "title": "Direction B — Terminal Mono"
     },
     {
       "file": "DirectionC.dc.html",
@@ -62,7 +62,7 @@
       "y": 8080,
       "w": 760,
       "h": 960,
-      "title": "Direction C \u2014 Warm Editorial"
+      "title": "Direction C — Warm Editorial"
     },
     {
       "file": "LogoAnimation.dc.html",
@@ -79,21 +79,21 @@
       "x": 0,
       "y": -210,
       "w": 560,
-      "text": "ROUND 1 \u2014 Leading direction: 'Highlighter Editorial'\n\nKept: the B mark, bellow yellow #F8ED2F, light/near-black base, and the site's existing fonts \u2014 Oxygen, Cardo, Oxygen Mono (per Leo). Evolved: a real dark mode and template anatomy for AI citation. Spacing, sizes, and radii sit on Tailwind v4 tokens so TailwindKit can express everything.\n\nNav change to sanity-check: Sponsorship moved from the top nav into the footer.\n\nDesigned from repo source (styles.css tokens, Plot components, real Content markdown) \u2014 live-site screenshots were not capturable from this sandbox."
+      "text": "ROUND 1 — Leading direction: 'Highlighter Editorial'\n\nKept: the B mark, bellow yellow #F8ED2F, light/near-black base, and the site's existing fonts — Oxygen, Cardo, Oxygen Mono (per Leo). Evolved: a real dark mode and template anatomy for AI citation. Spacing, sizes, and radii sit on Tailwind v4 tokens so TailwindKit can express everything.\n\nNav change to sanity-check: Sponsorship moved from the top nav into the footer.\n\nDesigned from repo source (styles.css tokens, Plot components, real Content markdown). Before/after: full-page captures of the live site (desktop 1440 + mobile 390, 7 pages) are in the repo at .claude/design/redesign/before/."
     },
     {
       "id": "ai-cite-anatomy",
       "x": 0,
       "y": 3830,
       "w": 560,
-      "text": "Article template = the AI-CITE money page:\n- visible published + updated dates (#129); '[per-page date]' is the placeholder #167 wires up\n- answer-first 'Short Answer' box above the fold\n- question-style H2s, styled comparison table\n- in-article subscribe using the real subscriptionCTA front-matter copy\n\nEpisode page: the YouTube and Transistor players are VENDOR IFRAMES, so they are reserved slots here, not designed chrome \u2014 their UI belongs to YouTube/Transistor. One audio slot only (fixes the #164 double player)."
+      "text": "Article template = the AI-CITE money page:\n- visible published + updated dates (#129); '[per-page date]' is the placeholder #167 wires up\n- answer-first 'Short Answer' box above the fold\n- question-style H2s, styled comparison table\n- in-article subscribe using the real subscriptionCTA front-matter copy\n\nEpisode page: the YouTube and Transistor players are VENDOR IFRAMES, so they are reserved slots here, not designed chrome — their UI belongs to YouTube/Transistor. One audio slot only (fixes the #164 double player)."
     },
     {
       "id": "alternate-directions",
       "x": 0,
       "y": 7880,
       "w": 560,
-      "text": "Alternate directions \u2014 low-fi sketches, same real copy.\nB 'Terminal Mono' and C 'Warm Editorial' state their motivation + tradeoff in their caption bars. A (above) is the balance of the two. Pick one, or mix elements onto A."
+      "text": "Alternate directions — low-fi sketches, same real copy.\nB 'Terminal Mono' and C 'Warm Editorial' state their motivation + tradeoff in their caption bars. A (above) is the balance of the two. Pick one, or mix elements onto A."
     }
   ],
   "launch": {
