@@ -1,0 +1,189 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cardo:ital,wght@0,400;0,700;1,400&family=Oxygen+Mono&family=Oxygen:wght@300;400;700&display=swap">
+  <style>
+    body { margin: 0; background: #161613; }
+    a { color: #1A1A16; text-decoration: none; }
+    a:hover { text-decoration: underline; text-decoration-color: #F8ED2F; text-decoration-thickness: 3px; text-underline-offset: 4px; }
+  </style>
+</helmet>
+<div style="width: 1440px; background: #FCFCFA; color: #1A1A16; font-family: Oxygen, 'Helvetica Neue', Arial, sans-serif;">
+
+  <header style="border-bottom: 1px solid #E7E5E0;">
+    <nav style="max-width: 1240px; margin: 0 auto; padding: 0 40px; height: 76px; display: flex; align-items: center; justify-content: space-between; gap: 32px;">
+      <a href="/" style="display: flex; align-items: center; gap: 12px;">
+        <img src="brightdigit-logo.svg" alt="BrightDigit" style="width: 26px; height: 32px; display: block;">
+        <span style="font-size: 19px; font-weight: 700; letter-spacing: -0.01em;">BrightDigit</span>
+      </a>
+      <div style="display: flex; align-items: center; gap: 28px; font-size: 15px; font-weight: 400;">
+        <a href="/services">Services</a>
+        <a href="/products">Products</a>
+        <a href="/articles">Articles</a>
+        <a href="/tutorials">Tutorials</a>
+        <a href="/episodes">Podcast</a>
+        <a href="/newsletters">Newsletters</a>
+        <a href="/about-us">About</a>
+      </div>
+      <a href="/contact-us" style="background: #F8ED2F; color: #111111; border: 1px solid #111111; border-radius: 8px; padding: 11px 20px; font-size: 15px; font-weight: 700;">Contact Us</a>
+    </nav>
+  </header>
+
+  <article style="max-width: 840px; margin: 0 auto; padding: 64px 40px 0;">
+
+    <div style="display: flex; flex-direction: column; gap: 24px;">
+      <a href="/articles" style="font-family: 'Oxygen Mono', 'Courier New', monospace; font-size: 13px; letter-spacing: 0.1em; color: #57534E;">&larr; ARTICLES</a>
+      <h1 style="margin: 0; font-size: 48px; line-height: 1.1; font-weight: 700; letter-spacing: -0.025em;">Choosing the <span style="background: linear-gradient(transparent 62%, #F7ED31 62%);">Best Backend</span> for your iOS App</h1>
+      <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div style="width: 40px; height: 40px; border-radius: 999px; background: #F8ED2F; border: 1px solid #111111; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #111111;">LD</div>
+          <span style="font-size: 15px; font-weight: 700;">Leo Dion</span>
+        </div>
+        <span style="width: 4px; height: 4px; background: #57534E; border-radius: 999px;"></span>
+        <span style="font-size: 14px; color: #57534E;">Published Sep 1, 2022</span>
+        <span style="width: 4px; height: 4px; background: #57534E; border-radius: 999px;"></span>
+        <span style="font-size: 14px; color: #57534E; border: 1px dashed #57534E; border-radius: 6px; padding: 3px 10px;">Updated [per-page date]</span>
+        <span style="width: 4px; height: 4px; background: #57534E; border-radius: 999px;"></span>
+        <span style="font-size: 14px; color: #57534E;">12 min read</span>
+      </div>
+    </div>
+
+    <div style="margin-top: 40px; background: #F5F5F2; border: 1px solid #E7E5E0; border-radius: 12px; padding: 28px; display: flex; flex-direction: column; gap: 14px;">
+      <span style="font-family: 'Oxygen Mono', 'Courier New', monospace; font-size: 12px; letter-spacing: 0.14em; font-weight: 700; color: #111111; background: #F8ED2F; align-self: flex-start; padding: 4px 10px; border-radius: 6px;">THE SHORT ANSWER</span>
+      <ul style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 10px; font-family: Cardo, Georgia, serif; font-size: 17px; line-height: 1.6;">
+        <li>No backend is a real option &mdash; private, single-device data can stay on the phone with Core Data and a file backup.</li>
+        <li>For an MVP, pick a managed backend: CloudKit for Apple-only apps, Firebase if you need cross-platform.</li>
+        <li>For enterprise apps or complex queries, run your own server &mdash; behind a healthy abstraction so you can pivot later.</li>
+      </ul>
+    </div>
+
+    <div style="margin-top: 48px; display: flex; flex-direction: column; gap: 28px; font-family: Cardo, Georgia, serif; font-size: 18px; line-height: 1.75;">
+      <p style="margin: 0;">Choosing the best backend for your iOS App can be a challenge. There are many options, and which one is best suited for your needs depends on a number of factors, such as:</p>
+      <ul style="margin: 0; padding-left: 24px; display: flex; flex-direction: column; gap: 8px;">
+        <li>Do you need a <strong>cloud service</strong>?</li>
+        <li>Should you <strong>run your own server</strong>?</li>
+        <li>Should you use CloudKit, Firebase, or another option?</li>
+      </ul>
+      <p style="margin: 0;">We are going to dig into these questions and more to <strong>help you choose the best backend and cloud services for your iOS app.</strong></p>
+
+      <h2 style="margin: 24px 0 0; font-family: Oxygen, 'Helvetica Neue', Arial, sans-serif; font-size: 30px; line-height: 1.25; font-weight: 700; letter-spacing: -0.02em;">Is the Best Backend Actually No Backend At All?</h2>
+      <p style="margin: 0;">First, it's important to know that cloud services aren't needed in every case when it comes to an iOS app. A thing to know about iOS apps is, that in a lot of cases, people don't need the cloud to store their data. It can just be stored on their phone.</p>
+      <p style="margin: 0;">When you're building an app, you should consider whether you really need something stored in the cloud. <strong>In the end, you could save a lot of time and money, if everything can be saved as a file, keep the data on the phone, and maybe only back that data up into cloud storage.</strong></p>
+
+      <figure style="margin: 12px 0 0; display: flex; flex-direction: column; gap: 10px;">
+        <div style="width: 100%; height: 320px; background: #F5F5F2; border: 1px solid #E7E5E0; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+          <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="#57534E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><path d="M21 15l-5-5L5 21"></path></svg>
+        </div>
+        <figcaption style="font-family: 'Oxygen Mono', 'Courier New', monospace; font-size: 12px; color: #57534E;">Fig. &mdash; Servers (article photo)</figcaption>
+      </figure>
+
+      <h2 style="margin: 24px 0 0; font-family: Oxygen, 'Helvetica Neue', Arial, sans-serif; font-size: 30px; line-height: 1.25; font-weight: 700; letter-spacing: -0.02em;">The Purpose of Your App: MVP Vs. Enterprise</h2>
+      <p style="margin: 0;">When you are writing your Swift app, <strong>you'll want to make sure you have some healthy abstraction with your backend communication.</strong> That way, you will be able to pivot easily if you decide to use a different service at a later date and your users won't see anything different on the front end.</p>
+
+      <div style="background: #191917; border-radius: 12px; overflow: hidden; margin: 12px 0 0;">
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; border-bottom: 1px solid #2C2C28;">
+          <span style="font-family: 'Oxygen Mono', 'Courier New', monospace; font-size: 12px; color: #8F8B82;">BackendService.swift</span>
+          <span style="font-family: 'Oxygen Mono', 'Courier New', monospace; font-size: 11px; letter-spacing: 0.1em; color: #111111; background: #F8ED2F; padding: 3px 8px; border-radius: 5px; font-weight: 700;">SWIFT</span>
+        </div>
+        <pre style="margin: 0; padding: 20px; font-family: 'Oxygen Mono', 'Courier New', monospace; font-size: 14px; line-height: 1.65; color: #E8E6DF; overflow-x: auto;"><span style="color: #767268;">// Swap CloudKit, Firebase, or your own server</span>
+<span style="color: #767268;">// without touching the UI layer.</span>
+<span style="color: #F8ED2F;">protocol</span> <span style="color: #8FBFF2;">BackendService</span>: <span style="color: #8FBFF2;">Sendable</span> {
+  <span style="color: #F8ED2F;">func</span> <span style="color: #9CDCA9;">fetchNotes</span>() <span style="color: #F8ED2F;">async throws</span> -&gt; [<span style="color: #8FBFF2;">Note</span>]
+  <span style="color: #F8ED2F;">func</span> <span style="color: #9CDCA9;">save</span>(<span style="color: #F8ED2F;">_</span> note: <span style="color: #8FBFF2;">Note</span>) <span style="color: #F8ED2F;">async throws</span>
+}</pre>
+      </div>
+
+      <h2 style="margin: 24px 0 0; font-family: Oxygen, 'Helvetica Neue', Arial, sans-serif; font-size: 30px; line-height: 1.25; font-weight: 700; letter-spacing: -0.02em;">So, what are your options?</h2>
+      <div style="border: 1px solid #E7E5E0; border-radius: 12px; overflow: hidden; margin: 12px 0 0;">
+        <div style="display: grid; grid-template-columns: 1fr 1.2fr 1.2fr 1.2fr; background: #F5F5F2; border-bottom: 1px solid #E7E5E0; font-family: Oxygen, 'Helvetica Neue', Arial, sans-serif; font-size: 14px; font-weight: 700;">
+          <div style="padding: 14px 18px;"></div>
+          <div style="padding: 14px 18px;">Your own server</div>
+          <div style="padding: 14px 18px;">CloudKit</div>
+          <div style="padding: 14px 18px;">Firebase</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1.2fr 1.2fr 1.2fr; border-bottom: 1px solid #E7E5E0; font-size: 15px; font-family: Oxygen, 'Helvetica Neue', Arial, sans-serif;">
+          <div style="padding: 14px 18px; font-weight: 700; background: #F5F5F2;">Best for</div>
+          <div style="padding: 14px 18px;">Enterprise apps, complex queries</div>
+          <div style="padding: 14px 18px;">Apple-only apps, MVPs</div>
+          <div style="padding: 14px 18px;">Cross-platform MVPs</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1.2fr 1.2fr 1.2fr; border-bottom: 1px solid #E7E5E0; font-size: 15px; font-family: Oxygen, 'Helvetica Neue', Arial, sans-serif;">
+          <div style="padding: 14px 18px; font-weight: 700; background: #F5F5F2;">Cost</div>
+          <div style="padding: 14px 18px;">Hosting + maintenance time</div>
+          <div style="padding: 14px 18px;">Generous free tier</div>
+          <div style="padding: 14px 18px;">Free tier, pay as you grow</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1.2fr 1.2fr 1.2fr; font-size: 15px; font-family: Oxygen, 'Helvetica Neue', Arial, sans-serif;">
+          <div style="padding: 14px 18px; font-weight: 700; background: #F5F5F2;">Watch out</div>
+          <div style="padding: 14px 18px;">Needs backend expertise</div>
+          <div style="padding: 14px 18px;">No Android or web access</div>
+          <div style="padding: 14px 18px;">Vendor lock-in</div>
+        </div>
+      </div>
+      <p style="margin: 0;">In cases where you are dealing with private or sensitive data, it's a good idea to stick with keeping it on the phone. You can read more about local options in <a href="/articles" style="text-decoration: underline; text-decoration-color: #F8ED2F; text-decoration-thickness: 2px; text-underline-offset: 3px; font-weight: 700;">Should You SwiftData?</a></p>
+    </div>
+
+    <div style="margin-top: 56px; background: #FDFBD6; border: 1px solid #E7E5E0; border-radius: 12px; padding: 32px; display: flex; flex-direction: column; gap: 16px;">
+      <span style="font-size: 22px; font-weight: 700; letter-spacing: -0.01em;">iOS development is constantly changing. Keep up.</span>
+      <p style="margin: 0; font-family: Cardo, Georgia, serif; font-size: 16px; line-height: 1.65; color: #57534E;">While we've included a lot above, iOS development is constantly changing, and there will always be something new. The good news is this often means more choices that can fit your needs perfectly. The bad news is it's tough to keep up with everything.</p>
+      <div style="display: flex; gap: 12px;">
+        <input type="email" placeholder="you@company.com" style="width: 300px; height: 48px; border: 1px solid #1A1A16; border-radius: 8px; background: #FFFFFF; padding: 0 16px; font-size: 15px; font-family: Oxygen, 'Helvetica Neue', Arial, sans-serif; color: #1A1A16;">
+        <a href="/newsletters" style="background: #F8ED2F; color: #111111; border: 1px solid #111111; border-radius: 8px; padding: 0 20px; height: 48px; display: flex; align-items: center; font-size: 15px; font-weight: 700;">Subscribe Now</a>
+      </div>
+    </div>
+
+    <div style="margin-top: 40px; display: flex; align-items: center; gap: 14px; border-top: 1px solid #E7E5E0; padding-top: 24px;">
+      <span style="font-family: 'Oxygen Mono', 'Courier New', monospace; font-size: 12px; letter-spacing: 0.12em; color: #57534E;">SHARE</span>
+      <a href="https://c.im/@leogdion" style="border: 1px solid #E7E5E0; border-radius: 999px; padding: 8px 16px; font-size: 13px; font-weight: 400; background: #FFFFFF;">Mastodon</a>
+      <a href="https://www.linkedin.com/in/leogdion/" style="border: 1px solid #E7E5E0; border-radius: 999px; padding: 8px 16px; font-size: 13px; font-weight: 400; background: #FFFFFF;">LinkedIn</a>
+      <a href="http://twitter.com/brightdigit" style="border: 1px solid #E7E5E0; border-radius: 999px; padding: 8px 16px; font-size: 13px; font-weight: 400; background: #FFFFFF;">X</a>
+      <a href="/articles/best-backend-for-your-ios-app/" style="border: 1px solid #E7E5E0; border-radius: 999px; padding: 8px 16px; font-size: 13px; font-weight: 400; background: #FFFFFF;">Copy link</a>
+    </div>
+  </article>
+
+  <section style="max-width: 1240px; margin: 0 auto; padding: 72px 40px 0;">
+    <div style="display: flex; flex-direction: column; gap: 32px;">
+      <h2 style="margin: 0; font-size: 26px; font-weight: 700; letter-spacing: -0.02em;">Keep Reading</h2>
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px;">
+        <a href="/articles" style="border: 1px solid #E7E5E0; border-radius: 12px; padding: 24px; background: #FFFFFF; display: flex; flex-direction: column; gap: 14px;">
+          <span style="font-family: 'Oxygen Mono', 'Courier New', monospace; font-size: 12px; letter-spacing: 0.1em; color: #57534E;">APR 8, 2025</span>
+          <span style="font-size: 19px; line-height: 1.3; font-weight: 700;">Should You SwiftData?</span>
+        </a>
+        <a href="/articles" style="border: 1px solid #E7E5E0; border-radius: 12px; padding: 24px; background: #FFFFFF; display: flex; flex-direction: column; gap: 14px;">
+          <span style="font-family: 'Oxygen Mono', 'Courier New', monospace; font-size: 12px; letter-spacing: 0.1em; color: #57534E;">MAR 4, 2025</span>
+          <span style="font-size: 19px; line-height: 1.3; font-weight: 700;">How Does Server Side Swift Workout in the Real World?</span>
+        </a>
+        <a href="/articles" style="border: 1px solid #E7E5E0; border-radius: 12px; padding: 24px; background: #FFFFFF; display: flex; flex-direction: column; gap: 14px;">
+          <span style="font-family: 'Oxygen Mono', 'Courier New', monospace; font-size: 12px; letter-spacing: 0.1em; color: #57534E;">FEB 27, 2024</span>
+          <span style="font-size: 19px; line-height: 1.3; font-weight: 700;">Control Your Swift Dependencies Before They Control You</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <footer style="background: #161613; color: #B9B5AC; margin-top: 88px;">
+    <div style="max-width: 1240px; margin: 0 auto; padding: 24px 40px; display: flex; align-items: center; justify-content: space-between; font-size: 13px;">
+      <a href="/" style="display: flex; align-items: center; gap: 10px; color: #F1EFE8;">
+        <img src="brightdigit-logo-dark.svg" alt="BrightDigit" style="width: 18px; height: 22px; display: block;">
+        <span style="font-weight: 700; font-size: 15px;">BrightDigit</span>
+      </a>
+      <div style="display: flex; gap: 24px;">
+        <a href="/articles" style="color: #B9B5AC;">Articles</a>
+        <a href="/episodes" style="color: #B9B5AC;">Podcast</a>
+        <a href="/newsletters" style="color: #B9B5AC;">Newsletters</a>
+        <a href="/contact-us" style="color: #B9B5AC;">Contact</a>
+      </div>
+      <span>&copy; BrightDigit, LLC</span>
+    </div>
+  </footer>
+
+</div>
+</x-dc>
+</body>
+</html>

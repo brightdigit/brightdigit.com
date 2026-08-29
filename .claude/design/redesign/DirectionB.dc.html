@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cardo:ital,wght@0,400;0,700;1,400&family=Oxygen+Mono&family=Oxygen:wght@300;400;700&display=swap">
+  <style>
+    body { margin: 0; background: #0E0E0C; }
+    a { color: #E8E6DF; text-decoration: none; }
+    a:hover { text-decoration: underline; text-decoration-color: #F8ED2F; text-decoration-thickness: 2px; }
+  </style>
+</helmet>
+<div style="width: 760px; background: #0E0E0C; color: #E8E6DF; font-family: 'Oxygen Mono', 'Courier New', monospace;">
+
+  <div style="padding: 20px 28px; border-bottom: 1px solid #26261F; display: flex; justify-content: space-between; align-items: center; font-size: 13px;">
+    <span style="font-weight: 700;">brightdigit<span style="color: #F8ED2F;">_</span></span>
+    <div style="display: flex; gap: 20px; color: #8F8B82;">
+      <span>/services</span><span>/articles</span><span>/podcast</span><span style="color: #F8ED2F;">/contact</span>
+    </div>
+  </div>
+
+  <div style="padding: 64px 28px 48px; display: flex; flex-direction: column; gap: 20px;">
+    <div style="font-size: 12px; color: #8F8B82;">$ swift run brightdigit</div>
+    <div style="font-size: 40px; line-height: 1.2; font-weight: 700;">Your Experts in<br>Swift App Development<span style="display: inline-block; width: 18px; height: 34px; background: #F8ED2F; vertical-align: -4px; margin-left: 6px;"></span></div>
+    <div style="font-size: 14px; line-height: 1.7; color: #8F8B82; max-width: 520px;">// Founded 2012. Apps, consulting, and open source<br>// for the Apple ecosystem.</div>
+    <div style="display: flex; gap: 12px; margin-top: 8px;">
+      <span style="background: #F8ED2F; color: #111111; padding: 12px 20px; font-size: 14px; font-weight: 700;">[ start a project ]</span>
+      <span style="border: 1px solid #3A3A32; padding: 12px 20px; font-size: 14px; color: #E8E6DF;">[ read the articles ]</span>
+    </div>
+  </div>
+
+  <div style="padding: 0 28px 48px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px;">
+    <div style="border: 1px solid #26261F; padding: 18px; display: flex; flex-direction: column; gap: 10px;">
+      <span style="color: #F8ED2F; font-size: 12px;">01</span>
+      <div style="height: 8px; width: 80%; background: #3A3A32;"></div>
+      <div style="height: 8px; width: 60%; background: #26261F;"></div>
+      <div style="height: 8px; width: 70%; background: #26261F;"></div>
+    </div>
+    <div style="border: 1px solid #26261F; padding: 18px; display: flex; flex-direction: column; gap: 10px;">
+      <span style="color: #F8ED2F; font-size: 12px;">02</span>
+      <div style="height: 8px; width: 75%; background: #3A3A32;"></div>
+      <div style="height: 8px; width: 65%; background: #26261F;"></div>
+      <div style="height: 8px; width: 55%; background: #26261F;"></div>
+    </div>
+    <div style="border: 1px solid #26261F; padding: 18px; display: flex; flex-direction: column; gap: 10px;">
+      <span style="color: #F8ED2F; font-size: 12px;">03</span>
+      <div style="height: 8px; width: 70%; background: #3A3A32;"></div>
+      <div style="height: 8px; width: 80%; background: #26261F;"></div>
+      <div style="height: 8px; width: 50%; background: #26261F;"></div>
+    </div>
+  </div>
+
+  <div style="padding: 0 28px 56px; display: flex; flex-direction: column; gap: 12px;">
+    <div style="font-size: 12px; color: #8F8B82;">$ ls articles/ --sort date</div>
+    <div style="border: 1px solid #26261F;">
+      <div style="display: flex; gap: 20px; padding: 14px 18px; border-bottom: 1px solid #26261F; font-size: 13px;"><span style="color: #8F8B82;">2025-04-08</span><span style="font-weight: 700;">should-you-swiftdata.md</span></div>
+      <div style="display: flex; gap: 20px; padding: 14px 18px; border-bottom: 1px solid #26261F; font-size: 13px;"><span style="color: #8F8B82;">2025-03-04</span><span style="font-weight: 700;">server-side-swift-workout.md</span></div>
+      <div style="display: flex; gap: 20px; padding: 14px 18px; font-size: 13px;"><span style="color: #8F8B82;">2025-01-29</span><span style="font-weight: 700;">2024-in-review.md</span></div>
+    </div>
+  </div>
+
+  <div style="background: #14140F; border-top: 1px solid #26261F; padding: 24px 28px; display: flex; flex-direction: column; gap: 8px;">
+    <span style="font-size: 13px; font-weight: 700; color: #F8ED2F;">DIRECTION B &mdash; &ldquo;Terminal Mono&rdquo;</span>
+    <span style="font-size: 12px; line-height: 1.7; color: #8F8B82;">Dark-first, all-mono, code-native. Motivation: maximum engineering credibility for the developer audience; the site reads like the tooling it writes about. Tradeoff: colder and less approachable for client decision-makers evaluating a consultancy.</span>
+  </div>
+
+</div>
+</x-dc>
+</body>
+</html>
