@@ -1,0 +1,27 @@
+---
+title: We Don’t Have Any Futures or Promises Anymore with Tim Condon
+date: 2026-10-16 18:49
+description: <strong>Guest</strong>
+featuredImage: https://img.transistorcdn.com/bnqghwOt7M7m-aV2r15P9nfX-wUXVVo43F3WVv9YsiA/rs:fill:0:0:1/w:1400/h:1400/q:60/mb:500000/aHR0cHM6Ly9pbWct/dXBsb2FkLXByb2R1/Y3Rpb24udHJhbnNp/c3Rvci5mbS9lNjY1/MGFmZGM5MGM4OTRm/MjY0ZWUwNjY4ZGIy/ZDYyYS5qcGc.jpg
+youtubeID: fYLvWMjgN14
+audioDuration: 2812
+videoDuration: 2812
+podcastID: 3d199f1f
+---
+<p><strong><strong>Creators &amp; Guests</strong>
+<ul>
+  <li><a href="https://www.empowerapps.show/people/leo-dion">Leo Dion</a> - Host</li>
+  <li><a href="https://www.empowerapps.show/people/tim-condon">Tim Condon</a> - Guest</li>
+</ul> </strong>stops by to chat about Vapor 5, the biggest Vapor release in six and a half years. We get into dropping futures and promises for Swift concurrency all the way down the stack, Span and strict memory safety, and the new shared Swift HTTP server.</p><p><strong>Guest</strong></p><ul><li><a href="https://www.timc.dev/">Tim Condon</a><ul><li><a href="https://hachyderm.io/@0xTim">Tim Condon (@0xTim@hachyderm.io) - Mastodon</a></li><li><a href="https://bsky.app/profile/0xtim.bsky.social">Tim Condon (@0xtim.bsky.social) - Bluesky</a></li><li><a href="https://github.com/0xTim">0xTim (Tim Condon)</a></li></ul></li><li><a href="https://vapor.codes/">Vapor</a></li></ul><p><strong>Related Links</strong></p><ul><li><a href="https://blog.vapor.codes/posts/vapor-5-beta/">Vapor 5 Beta - Vapor Blog</a></li><li><a href="https://blog.vapor.codes/posts/whats-new-in-vapor-5-beta/">What's New in Vapor 5 Beta - Vapor Blog</a></li><li><a href="https://swift.org/blog/announcing-networking-workgroup/">Announcing the Networking Workgroup - Swift.org</a></li><li><a href="https://github.com/swift-server/swift-http-server">swift-http-server - GitHub</a></li><li><a href="https://github.com/apple/swift-openapi-generator">Swift OpenAPI Generator - GitHub</a></li></ul><p><strong>Related Episodes</strong></p><ul><li><a href="https://brightdigit.com/episodes/074-year-of-the-server-with-tim-condon-part-1/">Year of the Server with Tim Condon - Part 1</a></li><li><a href="https://brightdigit.com/episodes/075-year-of-the-server-with-tim-condon-part-2/">Year of the Server with Tim Condon - Part 2</a></li><li><a href="https://brightdigit.com/episodes/034-server-side-swift-with-tim-condon/">Server-Side Swift with Tim Condon</a></li><li><a href="https://brightdigit.com/episodes/205-who-s-wendy-with-joannis-orlandos/">Who's Wendy with Joannis Orlandos</a></li><li><a href="https://brightdigit.com/episodes/157-swift-server-workgroup-with-joannis-orlandos/">Swift Server Workgroup with Joannis Orlandos</a></li></ul><p><strong>Chapters</strong><br></p><ul><li>(00:00) - Server-Side Swift Today</li>
+<li>(02:29) - Vapor 5, Span &amp; Memory Safety</li>
+<li>(13:38) - Package Flags &amp; Dropping EventLoopFutures</li>
+<li>(18:36) - Streaming &amp; the Swift HTTP Server</li>
+<li>(24:21) - VaporTesting &amp; Macros</li>
+<li>(33:18) - OpenAPI &amp; the Future of Fluent</li>
+<li>(38:48) - AI, Open Source &amp; the New Networking APIs</li>
+</ul><p><br><strong>Watch</strong><br><a href="https://www.youtube.com/watch?v=fYLvWMjgN14" title="Click here to watch a video of this episode.">Click here to watch a video of this episode.</a><br>
+</p><p><br><strong>Transcript</strong><br><a href="https://share.transistor.fm/s/3d199f1f/transcript" title="Click here to view the episode transcript.">Click here to view the episode transcript.</a><br>
+</p><p><br><strong>Support the Show</strong></p><p><strong>
+  <a href="https://www.patreon.com/brightdigit" rel="payment" title="★ Support this podcast on Patreon ★">★ Support this podcast on Patreon ★</a>
+</strong> </p><p>Thanks to our supporters:  <br>Welcome new supporters: </p><p><br><strong>Social Media</strong></p><ul><li><a href="https://www.linkedin.com/in/leogdion/">LinkedIn - @leogdion</a></li><li><a href="https://github.com/brightdigit">GitHub - @brightdigit</a></li><li><a href="https://github.com/leogdion/">GitHub - @leogdion</a></li><li><a href="https://c.im/@leogdion">Mastodon - @leogdion@c.im</a></li><li><a href="http://youtube.com/@brightdigit">YouTube - @brightdigit</a></li><li><a href="https://x.com/leogdion">X - @leogdion</a></li><li><a href="https://x.com/brightdigit">X - @brightdigit</a></li></ul><p><strong>Credits</strong></p><p>Music from <a href="https://filmmusic.io/">https://filmmusic.io</a> "Blippy Trance" by Kevin MacLeod (<a href="https://incompetech.com/">https://incompetech.com</a>) License: CC BY (<a href="http://creativecommons.org/licenses/by/4.0/">http://creativecommons.org/licenses/by/4.0/</a>)</p>
+      
