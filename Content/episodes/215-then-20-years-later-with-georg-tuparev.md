@@ -3,7 +3,7 @@ title: Then 20 Years Later with Georg Tuparev
 date: 2026-10-26 04:00
 description: '<a href="https://www.tuparev.com/">Georg Tuparev</a> stops by to chat about software that outlives its plans: projects scoped for a few months that are still in development 20 years later. We get into running a small team of physicists and astronomers, why WebObjects and EOF are still in production, where AI helps and where it falls short, server-side Swift with SwiftNIO, and storing exabytes of telescope data from observatories no cable can keep up with.'
 featuredImage: https://img.transistorcdn.com/UAtaMOdnJGYkGySj72bhcOzx01woIJ8R7fu4SXrwoVk/rs:fill:0:0:1/w:1400/h:1400/q:60/mb:500000/aHR0cHM6Ly9pbWct/dXBsb2FkLXByb2R1/Y3Rpb24udHJhbnNp/c3Rvci5mbS81NTYw/OGU5ODdiMDcwMmNj/ZTNmYTRhODc1Mjhi/YzYzZC5qcGc.jpg
-youtubeID: kfatR0XKv28
+youtubeID: EgyFKgwblhg
 audioDuration: 2573
 videoDuration: 2573
 podcastID: 78e46ac9
