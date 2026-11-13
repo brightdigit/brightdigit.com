@@ -4,7 +4,7 @@
 
 ## Context
 
-`leogdion/year-in-review` (private) is the planning/draft hub for all BrightDigit/EmpowerApps
+`brightdigit/content` (private) is the planning/draft hub for all BrightDigit/EmpowerApps
 content — articles, podcast episodes, newsletters, multi-platform social posts, and talks. It
 already has a mature-but-ad-hoc system: content organized by medium, YAML front matter with a
 hand-authored `related:` graph, a `/content-topic-mining` skill, per-platform voice guides, and
@@ -48,7 +48,7 @@ motion before the issue catalog.
 5. **Skill is portable:** a self-contained `/content-plan` skill package (+ voice/pillar/platform
    guides) usable from **both** repos.
 6. **Topic entity is private-only for now:** the topic/campaign record is a first-class entity, but
-   its records live **only in year-in-review**. brightdigit.com published items carry only the
+   its records live **only in brightdigit/content**. brightdigit.com published items carry only the
    cross-media **link fields**; the public site never hosts topic records.
 
 ## How it works end-to-end
@@ -60,15 +60,17 @@ fan-out are planned, not yet shipped; the language below flags what is future wo
 
 ### The repo arrangement
 
+> **Naming (2026-11-13):** the private planning hub moved from `leogdion/year-in-review` to `brightdigit/content`. In this doc, "the content repo" or "content + site repo" still means `brightdigit.com`. The short contract is [`docs/content-repos.md`](../../docs/content-repos.md).
+
 The plan splits along **two axes at once**: private-vs-public *and* content-vs-Swift-code. Today
 `brightdigit.com` is a single repo mixing `Content/*.md` with `Sources/*.swift`. The target pulls the
 Swift packages out into their own repo(s), leaving the content + site repo depending on them — three
 homes joined by two seams.
 
-- **`leogdion/year-in-review` (private) — the planning hub.** Holds the topic/campaign **records** (I3
+- **`brightdigit/content` (private) — the planning hub.** Holds the topic/campaign **records** (I3
   shape), the `/content-topic-mining` skill, the three pillars (AI+Swift, Opinion/Reflection, OSS
-  Releases), the per-platform voice guides (`social-posts/README.md`, `newsletters/README.md`,
-  `planning/content-strategy-2026.md`), and per-medium **draft** copy. This is where a human plus
+  Releases), the per-platform voice guides (`professional/social-posts/README.md`, `professional/newsletters/README.md`,
+  `professional/planning/content-strategy-2026.md`), and per-medium **draft** copy. This is where a human plus
   Claude Code plan and write.
 
 - **`brightdigit.com` (public) — the content + site repo.** After the split it keeps `Content/*.md`
@@ -88,9 +90,9 @@ homes joined by two seams.
 - **The contract seam (package repo → everywhere).** I2's "pull latest Swift type → emit current spec"
   now means *pull from the package repo* — a clean versioned dependency boundary, not reaching into a
   subfolder. The generated spec flows into both the content repo (validation at publish time) and
-  `year-in-review` (so drafts are authored against the current fields). Splitting the packages out
+  `brightdigit/content` (so drafts are authored against the current fields). Splitting the packages out
   actually *strengthens* I2: the source of truth is a released package, not a path.
-- **The content seam (year-in-review → brightdigit.com).** Only **finished items plus their I1 link
+- **The content seam (brightdigit/content → brightdigit.com).** Only **finished items plus their I1 link
   fields** land in `Content/`. Topic records, briefs, and voice guides stay private.
 
 The **`/content-plan` skill (I5) is portable** — the *same* skill package runs in both the private and
@@ -106,20 +108,20 @@ One topic, eight beats. **Beats 1–4 are private planning, beat 5 is the bounda
 are the public pipeline.** Throughout, the system **guides and scaffolds — it never ghost-writes the
 long-form copy**; that stays a human/`prose-editor` step (beat 4).
 
-1. **Mining hit** *(year-in-review · Claude Code · existing `/content-topic-mining`)*. Mining surfaces
+1. **Mining hit** *(brightdigit/content · Claude Code · existing `/content-topic-mining`)*. Mining surfaces
    a candidate: *"developers keep asking how to wire up mise for a Swift CI toolchain."*
 
-2. **Topic record created** *(year-in-review · `/content-plan`, I5 → I3)*. The skill turns the hit into
+2. **Topic record created** *(brightdigit/content · `/content-plan`, I5 → I3)*. The skill turns the hit into
    a canonical **topic entity**: slug `mise-swift-ci`, source (the mining hit / a related PR), pillar
    `AI+Swift`, status, and a **fan-out map** — the media/platforms this topic will spawn (article →
    newsletter → X/LinkedIn/Mastodon). No drafts yet. The record lives only here.
 
-3. **Briefs generated** *(year-in-review · `/content-plan`, I4 + I2 spec)*. The skill emits per-medium
+3. **Briefs generated** *(brightdigit/content · `/content-plan`, I4 + I2 spec)*. The skill emits per-medium
    **briefs** — the article brief (hook, angle, AI-CITE key points, CTA, links), the newsletter brief,
    the social variants. **Scaffolds, not copy.** Their link fields are validated against the
    **I2-derived spec** so they will conform to what the Swift renderer expects.
 
-4. **Article drafted + AI-CITE optimized** *(year-in-review · human/Claude Code + `prose-editor`)*. The
+4. **Article drafted + AI-CITE optimized** *(brightdigit/content · human/Claude Code + `prose-editor`)*. The
    "money article" is written from the brief, applying the Phase-3 AI-CITE levers — **A**nswer-first,
    **I**ntent-matched (question) headings, **C**lear structure, **T**rusted sources (citations),
    **E**xclusive POV. The `prose-editor` agent reviews. The long-form copy lives privately until ready.
@@ -144,7 +146,7 @@ long-form copy**; that stays a human/`prose-editor` step (beat 4).
    description: …
    featuredImage: /media/…/mise-swift-ci.jpg
    topicSlug: mise-swift-ci                              # I1 (proposed)
-   sourceRef: year-in-review#mise-swift-ci              # I1 (proposed)
+   sourceRef: content#mise-swift-ci              # I1 (proposed)
    related:                                              # I1 (proposed)
      newsletter: /newsletters/2026-08-mise-swift-ci/
      social: https://bsky.app/profile/…/post/…
@@ -172,11 +174,11 @@ long-form copy**; that stays a human/`prose-editor` step (beat 4).
 
 | Beat | Issue | Repo | New capability |
 |---|---|---|---|
-| 2 topic record | I3 | year-in-review | canonical topic entity (records private) |
-| 3 briefs | I4 (+ I2 spec) | year-in-review | per-medium scaffolds, spec-validated |
+| 2 topic record | I3 | brightdigit/content | canonical topic entity (records private) |
+| 3 briefs | I4 (+ I2 spec) | brightdigit/content | per-medium scaffolds, spec-validated |
 | 2–5 orchestration | I5 | both (portable) | `/content-plan` skill |
 | 5 link fields | I1 | package repo (fields) → brightdigit.com (values) | additive `ItemMetadata` fields |
-| 3 / 5 spec | I2 | package repo → content repo + year-in-review | Swift-type → spec generator (pull latest package) |
+| 3 / 5 spec | I2 | package repo → brightdigit.com + brightdigit/content | Swift-type → spec generator (pull latest package) |
 | 8 fan-out | I6 | brightdigit.com + package repo | publish + Buttondown/Buffer/AT wiring |
 
 ### Why this arrangement
@@ -219,7 +221,7 @@ Labels: `enhancement`, `documentation`.
 #### I3 — Canonical topic-entity definition (private-only records) · P2-medium · relates to I1
 Define the topic/campaign entity: id/slug, source (repo/PR/episode/release), status, and the fan-out
 map (which media + platforms it spawns). Specify it as a **type/shape** so records are consistent,
-but its **records live only in year-in-review** — brightdigit.com hosts the *definition* + the link
+but its **records live only in brightdigit/content** — brightdigit.com hosts the *definition* + the link
 fields (I1), not topic records. Documents how a topic threads mining → briefs → per-platform drafts
 → published items.
 Labels: `documentation`, `enhancement`.
@@ -228,8 +230,8 @@ Labels: `documentation`, `enhancement`.
 Templates/scaffolds per medium+platform (article, tutorial, episode clip, newsletter, and
 Twitter/LinkedIn/Mastodon/YouTube/Patreon variants): hook, angle, key points, CTA, length, voice,
 links — **structured guidance, not full copy**. Encodes the voice/pillar/platform guides distilled
-from year-in-review (`social-posts/README.md`, `newsletters/README.md`,
-`planning/content-strategy-2026.md`). Conforms to the I1 fields / I2 spec.
+from brightdigit/content (`professional/social-posts/README.md`, `professional/newsletters/README.md`,
+`professional/planning/content-strategy-2026.md`). Conforms to the I1 fields / I2 spec.
 Labels: `documentation`.
 
 #### I5 — Portable `/content-plan` skill · P1-high · depends on I1, I2, I4
