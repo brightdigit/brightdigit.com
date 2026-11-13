@@ -93,7 +93,7 @@ Documentation                     ─── requires Phase 1 (repo purposes chan
 
 | Repo | Visibility | Owns |
 |---|---|---|
-| `leogdion/year-in-review` | private | Topic/campaign **records**, per-medium drafts, voice + pillar guides, `/content-topic-mining` |
+| `brightdigit/content` | private | Topic/campaign **records**, per-medium drafts, voice + pillar guides, `/content-topic-mining` |
 | `brightdigit/BrightDigitSite` | public *(new — #168)* | Swift code **and the `ItemMetadata` / `PublishType` contract** |
 | `brightdigit/brightdigit.com` | public | Finished `Content/*.md` + site config; consumes the contract as a dependency |
 
@@ -101,8 +101,8 @@ Plus a fourth content destination worth writing down: **new tutorial/template co
 
 ### The two seams
 
-1. **Contract seam** (package repo → everywhere). [#136](https://github.com/brightdigit/brightdigit.com/issues/136) pulls the latest Swift type from the released `BrightDigitSite` package and emits the companion spec, which flows to `brightdigit.com` (publish-time validation) and `year-in-review` (drafts authored against current fields).
-2. **Content seam** (`year-in-review` → `brightdigit.com`). **Only finished items plus their #135 link fields cross.** Topic records, briefs, and voice guides stay private.
+1. **Contract seam** (package repo → everywhere). [#136](https://github.com/brightdigit/brightdigit.com/issues/136) pulls the latest Swift type from the released `BrightDigitSite` package and emits the companion spec, which flows to `brightdigit.com` (publish-time validation) and `brightdigit/content` (drafts authored against current fields).
+2. **Content seam** (`brightdigit/content` → `brightdigit.com`). **Only finished items plus their #135 link fields cross.** Topic records, briefs, and voice guides stay private.
 
 **Why the extraction matters to #136:** today the generator would read `ItemMetadata` from a subfolder path. After #168 it resolves a **versioned package dependency** — so the generated spec can be honest about *which version* of the contract it describes. Per `.claude/docs/content-ops-plan.md`: *"Splitting the packages out actually strengthens I2: the source of truth is a released package, not a path."*
 
@@ -226,7 +226,7 @@ trust is cheaper and more likely to pay off than rescuing one they ignore.
 | [#139](https://github.com/brightdigit/brightdigit.com/issues/139) | Portable `/content-plan` skill | P1-high | #135, #136, #138, #169 |
 | [#137](https://github.com/brightdigit/brightdigit.com/issues/137) | Canonical topic-entity definition (private-only records) | P2-medium | relates #135 |
 
-**Why this is the external-repo content quadrant:** the topic **records** (#137), the briefs (#138), and the drafts all live in the private `year-in-review` repo. Only finished items cross into `brightdigit.com`. The skill (#139) is explicitly **portable** — the *same* package runs in both repos, which is what keeps the two seams honest.
+**Why this is the external-repo content quadrant:** the topic **records** (#137), the briefs (#138), and the drafts all live in the private `brightdigit/content` repo. Only finished items cross into `brightdigit.com`. The skill (#139) is explicitly **portable** — the *same* package runs in both repos, which is what keeps the two seams honest.
 
 **The fan-out leg lives in Phase 5:** [#140](https://github.com/brightdigit/brightdigit.com/issues/140) consumes this planning layer plus the Buttondown/Buffer/AT modules.
 
