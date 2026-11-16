@@ -1,7 +1,7 @@
 ---
 title: Not Accessible by Default with Rob Whitaker
 date: 2026-11-16 05:00
-description: 'Rob Whitaker joins Leo to talk about why accessibility doesn't come for free, not even with SwiftUI. Rob, an iOS engineer specializing in accessibility, author of Developing Inclusive Mobile Apps, and a member of the W3C Mobile Accessibility Task Force, explains how to get leadership to invest in accessibility, why good UI tests double as accessibility tests, which tools are worth your time, what to know about Dynamic Type and custom fonts, where AI helps and hurts, and how WCAG applies to native mobile apps. His homework for every developer: turn on VoiceOver this week.'
+description: 'Rob Whitaker joins Leo to talk about why accessibility doesn''t come for free, not even with SwiftUI. Rob, an iOS engineer specializing in accessibility, author of Developing Inclusive Mobile Apps, and a member of the W3C Mobile Accessibility Task Force, explains how to get leadership to invest in accessibility, why good UI tests double as accessibility tests, which tools are worth your time, what to know about Dynamic Type and custom fonts, where AI helps and hurts, and how WCAG applies to native mobile apps. His homework for every developer: turn on VoiceOver this week.'
 featuredImage: https://img.transistorcdn.com/nxfuwqj4JJAPtLciv3T1UWWAh4CurqaPfc20T1As_SY/rs:fill:0:0:1/w:1400/h:1400/q:60/mb:500000/aHR0cHM6Ly9pbWct/dXBsb2FkLXByb2R1/Y3Rpb24udHJhbnNp/c3Rvci5mbS9jY2I2/YTAxNmUyY2UwNjBi/M2Q3ODMyOTYyOTk5/MmY2Ni5wbmc.jpg
 youtubeID: h3d0VQyBbTI
 audioDuration: 4178
