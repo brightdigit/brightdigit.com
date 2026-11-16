@@ -50,8 +50,35 @@ extension String {
     }
     let startIndex = trimmedString.index(after: trimmedString.startIndex)
     let endIndex = trimmedString.index(before: trimmedString.endIndex)
+    let inner = String(trimmedString[startIndex..<endIndex])
 
-    return String(trimmedString[startIndex..<endIndex])
+    // Publish's front-matter parser is not a YAML parser: it keeps the raw
+    // scalar text, so YAML quote escapes must be undone here.
+    if first == "'" {
+      // Single-quoted YAML scalar: an apostrophe is written as `''`.
+      return inner.replacingOccurrences(of: "''", with: "'")
+    }
+    return inner.unescapingDoubleQuotedYAML()
+  }
+
+  /// Undoes the `\"` and `\\` escapes of a double-quoted YAML scalar.
+  private func unescapingDoubleQuotedYAML() -> String {
+    var result = ""
+    var iterator = makeIterator()
+    while let character = iterator.next() {
+      guard character == "\\", let escaped = iterator.next() else {
+        result.append(character)
+        continue
+      }
+      switch escaped {
+      case "\"", "\\":
+        result.append(escaped)
+      default:
+        result.append(character)
+        result.append(escaped)
+      }
+    }
+    return result
   }
 
   private func convertedToSlugBackCompat() -> String? {
