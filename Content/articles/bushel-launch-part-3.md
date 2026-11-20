@@ -251,7 +251,7 @@ So while I can’t test `Observation` or `Virtualization`, I can test the base O
 <a id="fastlane"></a>
 ## Fastlane
 
-Most importantly [Fastlane](GitLab) was easily configured with the CI setup. At no point did I manually archive and upload to the App Store any builds. This meant all builds and metadata were deployed via Fastlane and Gitlab CI. Additionally `match` was used for storing and setting up certificates and provisioning profile making sharing the project much easier and worked really well with the XcodeGen setup. Lastly after every build was uploaded I used [`yq`](https://github.com/mikefarah/yq) to increment the build number in the XcodeGen project file ensuring I’ll never upload the same build number again.
+Most importantly [Fastlane](https://fastlane.tools) was easily configured with the CI setup. At no point did I manually archive and upload to the App Store any builds. This meant all builds and metadata were deployed via Fastlane and Gitlab CI. Additionally `match` was used for storing and setting up certificates and provisioning profile making sharing the project much easier and worked really well with the XcodeGen setup. Lastly after every build was uploaded I used [`yq`](https://github.com/mikefarah/yq) to increment the build number in the XcodeGen project file ensuring I’ll never upload the same build number again.
 
 <a id="if-a-tree-falls-in-the-forest"></a>
 ## If a tree falls in the forest...

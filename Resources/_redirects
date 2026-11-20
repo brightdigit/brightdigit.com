@@ -1,7 +1,16 @@
+# learningswift.brightdigit.com is the retired WordPress blog host. It now serves
+# this site too, which creates duplicate URLs, so send everything to brightdigit.com.
+https://learningswift.brightdigit.com/2018/05/25/healthkit-getting-started https://brightdigit.com/tutorials/healthkit-getting-started 301!
+https://learningswift.brightdigit.com/wwdc-2018-healthkit-workout-hkliveworkoutbuilder https://brightdigit.com/tutorials/hkliveworkoutbuilder-healthkit-workout-session 301!
+https://learningswift.brightdigit.com/category/* https://brightdigit.com/tutorials 301!
+https://learningswift.brightdigit.com/feed https://brightdigit.com/feed.rss 301!
+https://learningswift.brightdigit.com/speaker https://brightdigit.com/about-us 301!
+https://learningswift.brightdigit.com/* https://brightdigit.com/:splat 301!
+http://learningswift.brightdigit.com/* https://brightdigit.com/:splat 301!
 /blog/2017/06/09/scriptingbridge-with-swift-communicating-with-apps-using-applescript-and-swift	/articles/scriptingbridge-with-swift-communicating-with-apps-using-applescript-and-swift
 /blog/2014/04/01/hello-emscripten	/articles/hello-emscripten
 /blog/2016/10/12/building-icons-xcode-introducing-speculid	/articles/building-icons-xcode-introducing-speculid
-/blog/2018/01/04/understanding-optionals-in-swift	/articles/understanding-optionals-in-swift
+/blog/2018/01/04/understanding-optionals-in-swift	/tutorials/understanding-optionals-in-swift
 /blog/2018/02/16/macos-development-ios-developers	/articles/macos-development-ios-developers
 /blog/2018/05/24/do-i-need-a-website	/articles/do-i-need-a-website
 /blog/2018/06/21/iphreaks-podcast-guest	/articles/iphreaks-podcast-guest
@@ -80,3 +89,26 @@
 /tutorials/swift-package-continuous-integration-guide /tutorials/swift-build
 /episodes/210-practical-agents-with-donny-wall/ /episodes/210-practical-agents-with-donny-wals/
 /newsletters/118-i-m-back-and-mistkit-is-closing-in-on-1-0/	/newsletters/118-im-back-and-mistkit-is-closing-in-on-10/
+
+# Old blog URLs and typos reported as 404 by Search Console (2026-11-20 export)
+/blog /articles 301
+/blog/feed /feed.rss 301
+/podcast /episodes 301
+/contact /contact-us 301
+/GitLab /articles/bushel-launch-part-3 301
+/articles/GitLab /articles/bushel-launch-part-3 301
+/articles/bushel-launch-part-3/GitLab /articles/bushel-launch-part-3 301
+/blog/2020/08/17/chips-clips-widgets-apple-wwdc-2020 /articles/chips-clips-widgets-apple-wwdc-2020 301
+/blog/17/06/09/scriptingbridge-with-swift-communicating-with-apps-using-applescript-and-swift /articles/scriptingbridge-with-swift-communicating-with-apps-using-applescript-and-swift 301
+/blog/2019/01/08/empowerapps-show-project-estimation /episodes/006-project-estimation 301
+/blog/2019/05/20/empowerapps-show-external-developers-with-jaim-zuber /episodes/011-external-developers-with-jaim-zuber 301
+/blog/2019/06/03/empowerapps-show-apple-and-video-with-paul-j-schmidt /episodes/013-apple-and-video-with-paul-j-schmidt 301
+/blog/2019/09/11/empowerapps-show-developing-for-multiple-platforms-with-manton-reece /episodes/021-developing-for-multiple-platforms-with-manton-reece 301
+/blog/2019/12/05/empowerapps-show-apple-hardware-2019-with-paul-j-schmidt /episodes/028-apple-hardware-2019-with-paul-j-schmidt 301
+/blog/2020/01/08/empowerapps-show-2020-developer-wish-list-with-alex-bush /episodes/033-2020-developer-wish-list-with-alex-bush 301
+/blog/2020/02/07/empowerapps-show-upgrading-your-skills-in-2020-with-paul-hudson /episodes/036-upgrading-your-skills-in-2020-with-paul-hudson 301
+/blog/2020/02/18/empowerapps-show-machine-learning-with-kevin-scott /episodes/037-machine-learning-with-kevin-scott 301
+/episodes/137-humane-developer-with-jill-scott /episodes/137-humane-development-with-jill-scott 301
+/episodes/196-swift-on-android-with-marc-prudhommeaux /episodes/196-swift-on-android-with-marc-prud-hommeaux 301
+/episodes/204-actually-really-useful/atleast.app https://atleast.app 301
+/episodes/204-actually-really-useful/getbushel.app https://getbushel.app 301
