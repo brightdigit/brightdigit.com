@@ -1,12 +1,4 @@
-# learningswift.brightdigit.com is the retired WordPress blog host. It now serves
 # this site too, which creates duplicate URLs, so send everything to brightdigit.com.
-https://learningswift.brightdigit.com/2018/05/25/healthkit-getting-started https://brightdigit.com/tutorials/healthkit-getting-started 301!
-https://learningswift.brightdigit.com/wwdc-2018-healthkit-workout-hkliveworkoutbuilder https://brightdigit.com/tutorials/hkliveworkoutbuilder-healthkit-workout-session 301!
-https://learningswift.brightdigit.com/category/* https://brightdigit.com/tutorials 301!
-https://learningswift.brightdigit.com/feed https://brightdigit.com/feed.rss 301!
-https://learningswift.brightdigit.com/speaker https://brightdigit.com/about-us 301!
-https://learningswift.brightdigit.com/* https://brightdigit.com/:splat 301!
-http://learningswift.brightdigit.com/* https://brightdigit.com/:splat 301!
 /blog/2017/06/09/scriptingbridge-with-swift-communicating-with-apps-using-applescript-and-swift	/articles/scriptingbridge-with-swift-communicating-with-apps-using-applescript-and-swift
 /blog/2014/04/01/hello-emscripten	/articles/hello-emscripten
 /blog/2016/10/12/building-icons-xcode-introducing-speculid	/articles/building-icons-xcode-introducing-speculid
