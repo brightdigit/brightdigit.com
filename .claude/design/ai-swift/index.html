@@ -1,0 +1,757 @@
+<title>AI + Swift Page Mockups</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cardo:ital,wght@0,400;0,700;1,400&family=Oxygen+Mono&family=Oxygen:wght@300;400;700&display=swap">
+<style>
+/* Layout: a review board. Each direction sits in a browser frame (desktop + 390px phone),
+   followed by pickable copy options that build a Markdown summary for the issue. */
+:root {
+  --bg: #FAFAF7;
+  --surface: #FFFFFF;
+  --fg: #1A1A16;
+  --muted: #5E5A53;
+  --line: #E4E1DA;
+  --accent: #F8ED2F;
+  --accent-ink: #1A1A16;
+  --mark: #FDF8AD;
+  --pick: #6B6418;
+  --sans: Oxygen, "Helvetica Neue", Arial, sans-serif;
+  --serif: Cardo, Georgia, "Times New Roman", serif;
+  --mono: "Oxygen Mono", "Courier New", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131311; --surface: #1C1C19; --fg: #ECEAE2; --muted: #A6A199; --line: #2D2D29;
+    --accent: #F8ED2F; --accent-ink: #1A1A16; --mark: #4A4416; --pick: #F8ED2F; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #131311; --surface: #1C1C19; --fg: #ECEAE2; --muted: #A6A199; --line: #2D2D29;
+  --accent: #F8ED2F; --accent-ink: #1A1A16; --mark: #4A4416; --pick: #F8ED2F; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 16px; line-height: 1.55; }
+.wrap { max-width: 1480px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 40px 80px; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.15; margin: 0; }
+.board-head { display: grid; gap: 16px; max-width: 72ch; }
+.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.board-head h1 { font-size: clamp(32px, 5vw, 52px); letter-spacing: -.02em; }
+.hl { background: linear-gradient(transparent 62%, var(--mark) 62%); }
+.board-head p { margin: 0; color: var(--muted); }
+.toc { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.toc a { font-family: var(--mono); font-size: 13px; color: var(--fg); text-decoration: none; border: 1px solid var(--line); background: var(--surface); padding: 6px 10px; border-radius: 999px; }
+.toc a:hover, .toc a:focus-visible { border-color: var(--fg); outline: none; }
+.rules { margin-top: 8px; border-left: 3px solid var(--accent); padding: 4px 0 4px 14px; font-size: 14px; color: var(--muted); }
+.rules strong { color: var(--fg); }
+
+section.part { margin-top: 72px; display: grid; gap: 20px; scroll-margin-top: 16px; }
+.part-head { display: grid; gap: 8px; max-width: 80ch; }
+.part-head h2 { font-size: clamp(24px, 3vw, 34px); letter-spacing: -.01em; }
+.part-head p { margin: 0; color: var(--muted); }
+.tag { display: inline-block; font-family: var(--mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; background: var(--accent); color: var(--accent-ink); padding: 2px 8px; border-radius: 4px; vertical-align: middle; }
+.notes { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.note { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; font-size: 14px; min-width: 0; }
+.note b { display: block; font-family: var(--mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 400; margin-bottom: 4px; }
+.note p { margin: 0; }
+
+/* Frames */
+.pair { display: grid; gap: 24px; align-items: start; }
+@media (min-width: 1240px) { .pair { grid-template-columns: minmax(0, 1fr) 390px; } }
+.frame { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--surface); box-shadow: 0 1px 0 var(--line); min-width: 0; }
+.frame.phone { width: 100%; max-width: 390px; justify-self: center; border-radius: 22px; }
+.chrome { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-bottom: 1px solid var(--line); font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.chrome i { width: 9px; height: 9px; border-radius: 50%; background: var(--line); display: inline-block; }
+.chrome span { margin-left: 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.screen { container-type: inline-size; container-name: site; }
+.phone .screen { max-height: 1500px; overflow-y: auto; }
+
+/* ============ Current-site look (fixed light; the live site has no dark mode) ============ */
+.cs { background: #FFFFFF; color: #000; font-family: var(--sans); font-size: 15px; line-height: 1.5; }
+.cs a { color: inherit; }
+.cs .nav { display: flex; align-items: center; gap: 8px; padding: 10px 16px; }
+.cs .nav img { height: 36px; margin-right: 24px; }
+.cs .nav ol { list-style: none; margin: 0; padding: 0; display: none; }
+.cs .nav ol li a { display: block; padding: 6px 8px; font-weight: 700; text-decoration: none; font-size: 14px; }
+.cs .nav .grow { flex: 1; }
+.cs .nav .burger { margin-left: auto; width: 22px; display: grid; gap: 4px; }
+.cs .nav .burger i { height: 3px; background: #000; display: block; border-radius: 2px; }
+.cs .new { outline: 2px dashed #958e1e; outline-offset: 1px; border-radius: 4px; background: #fdfbd6; }
+@container site (min-width: 760px) {
+  .cs .nav ol { display: flex; }
+  .cs .nav .burger { display: none; }
+  .cs .nav ol.end { margin-left: auto; }
+}
+.cs main { padding: 0 20px 24px; }
+.cs .btn { display: inline-block; background: #f9ed32; color: #1f2937; font-weight: 700; padding: 8px 16px; border-radius: 8px; text-decoration: none; }
+.cs .btn:hover { box-shadow: 0 0 0 4px rgba(59,130,246,.5); }
+.cs .btn.wide { display: block; text-align: center; }
+.cs .meta { font-size: 13px; color: #4b5563; }
+.cs .price { font-weight: 700; color: #000; background: #fdfbd6; padding: 0 4px; border-radius: 3px; white-space: nowrap; }
+.cs .slot { background: repeating-linear-gradient(45deg, #f3f4f6, #f3f4f6 10px, #e5e7eb 10px, #e5e7eb 20px); color: #4b5563; font-family: var(--mono); font-size: 12px; display: grid; place-items: center; text-align: center; padding: 8px; border-radius: 8px; }
+.cs .band { background: #000; color: #fff; border-radius: 8px; padding: 20px; display: grid; gap: 14px; margin-top: 28px; }
+.cs .band h2 { font-weight: 300; font-size: 24px; letter-spacing: -.02em; }
+@container site (min-width: 760px) { .cs .band { grid-template-columns: 1fr auto; align-items: center; padding: 24px 28px; } .cs .band h2 { font-size: 28px; } }
+.cs figure { margin: 0; }
+.cs blockquote { margin: 0; font-family: var(--serif); font-size: 17px; }
+.cs blockquote p { margin: 0; }
+.cs figcaption { font-size: 13px; margin-top: 8px; }
+.cs figcaption cite { font-style: normal; color: #4b5563; }
+.cs footer.site { background: #000; color: #fff; padding: 20px; display: grid; gap: 12px; font-size: 12px; }
+.cs footer.site img { height: 32px; filter: invert(1) hue-rotate(180deg); }
+.cs footer.site .social { display: flex; gap: 10px; }
+.cs footer.site .social i { width: 18px; height: 18px; border-radius: 50%; border: 1px solid #fff; display: block; }
+.cs footer.site .row { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+
+/* A: services-native */
+.cs.a header.page { padding: 12px 0 20px; font-weight: 300; font-size: 17px; }
+.cs.a header.page p { margin: 0; }
+.cs.a header.page h1 { font-size: 46px; font-weight: 700; letter-spacing: -.04em; line-height: 1.02; margin: 12px 0; }
+@container site (min-width: 760px) { .cs.a header.page h1 { font-size: 88px; } }
+.cs.a .service { border-bottom: 2px solid #f9fafb; padding: 16px 0; display: grid; gap: 16px; }
+@container site (min-width: 760px) {
+  .cs.a .service { grid-template-columns: 5fr 7fr; align-items: center; border: 2px solid #f9fafb; border-radius: 8px; box-shadow: 0 20px 25px -5px rgba(0,0,0,.1), 0 8px 10px -6px rgba(0,0,0,.1); padding: 36px; margin-bottom: 24px; }
+}
+.cs.a .service .slot { aspect-ratio: 4 / 3; }
+.cs.a .service h2 { font-size: 18px; font-weight: 400; display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+.cs.a .service h2 i { width: 28px; height: 28px; border-radius: 6px; background: #f9ed32; display: inline-block; flex: none; }
+.cs.a .service p { margin: 0 0 8px; font-size: 14px; font-weight: 300; }
+.cs.a .service footer { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 12px; }
+
+/* B: pricing table */
+.cs.b .hero { background: #f3f4f6; border-radius: 8px; padding: 22px; margin-top: 8px; display: grid; gap: 14px; }
+.cs.b .hero h1 { font-size: 34px; font-weight: 700; letter-spacing: -.03em; line-height: 1.08; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px; }
+@container site (min-width: 760px) { .cs.b .hero { padding: 40px; grid-template-columns: 3fr 2fr; align-items: end; gap: 32px; } .cs.b .hero h1 { font-size: 56px; } }
+.cs.b .hero p { margin: 0; }
+.cs.b h2.sec { font-size: 20px; font-weight: 400; margin: 32px 0 14px; }
+.cs.b .tiers { display: grid; gap: 16px; }
+@container site (min-width: 760px) { .cs.b .tiers { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.cs.b .tier { border: 2px solid #f3f4f6; border-radius: 8px; padding: 18px; display: grid; gap: 10px; align-content: start; }
+.cs.b .tier.lead { border-color: #f9ed32; background: #fdfbd6; }
+.cs.b .tier .k { font-family: var(--mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: #958e1e; }
+.cs.b .tier h3 { font-size: 20px; }
+.cs.b .tier p { margin: 0; font-size: 14px; }
+.cs.b .tier ul { margin: 0; padding-left: 18px; font-size: 13px; font-weight: 300; }
+.cs.b .tier .facts { display: flex; justify-content: space-between; border-top: 1px solid #e5e7eb; padding-top: 8px; font-size: 13px; }
+.cs.b .who { display: grid; gap: 12px; }
+@container site (min-width: 760px) { .cs.b .who { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.cs.b .who div { border-left: 3px solid #f9ed32; padding-left: 12px; font-size: 14px; }
+.cs.b .proof { display: grid; gap: 18px; }
+@container site (min-width: 760px) { .cs.b .proof { grid-template-columns: 1fr 1fr; } }
+.cs.b .eps { display: grid; gap: 10px; }
+.cs.b .ep { background: #f3f4f6; border-radius: 8px; padding: 12px 14px; font-size: 14px; }
+.cs.b .ep b { display: block; }
+.cs.b details { border-bottom: 1px solid #e5e7eb; padding: 10px 0; font-size: 14px; }
+.cs.b summary { font-weight: 700; cursor: pointer; }
+.cs.b details p { margin: 8px 0 0; font-weight: 300; }
+
+/* C: narrative */
+.cs.c article { max-width: 680px; margin: 0 auto; padding-top: 16px; }
+.cs.c h1 { font-size: 34px; font-weight: 700; letter-spacing: -.03em; line-height: 1.1; }
+@container site (min-width: 760px) { .cs.c h1 { font-size: 50px; } }
+.cs.c .dek { font-size: 18px; font-weight: 300; margin: 14px 0 0; }
+.cs.c h2 { font-size: 22px; margin: 32px 0 10px; border-bottom: 2px solid #f9ed32; padding-bottom: 6px; }
+.cs.c p { font-size: 15px; }
+.cs.c ol.steps { padding: 0; list-style: none; counter-reset: s; display: grid; gap: 12px; }
+.cs.c ol.steps li { counter-increment: s; display: grid; grid-template-columns: 32px 1fr; gap: 10px; font-size: 14px; }
+.cs.c ol.steps li::before { content: counter(s); font-weight: 700; background: #f9ed32; border-radius: 50%; width: 28px; height: 28px; display: grid; place-items: center; }
+.cs.c ol.steps b { display: block; font-size: 15px; }
+.cs.c .epcard { display: grid; gap: 8px; margin-bottom: 18px; }
+.cs.c .epcard .slot { aspect-ratio: 16 / 9; }
+.cs.c .epcard h3 { font-size: 16px; }
+.cs.c .epcard p { margin: 0; font-size: 14px; }
+.cs.c figure { border-left: 3px solid #f9ed32; padding-left: 14px; margin: 16px 0; }
+.cs.c .ask { background: #f3f4f6; border-radius: 8px; padding: 20px; margin-top: 28px; display: grid; gap: 12px; }
+
+/* ============ Redesign: Highlighter Editorial (low-fi) ============ */
+.hx { --b: #FCFCFA; --f: #1A1A16; --m: #57534E; --l: #E7E5E0; --c: #FFFFFF; --h: #F7ED31; --y: #F8ED2F; background: var(--b); color: var(--f); font-family: var(--sans); font-size: 15px; line-height: 1.55; }
+.hx.dark { --b: #131311; --f: #ECEAE2; --m: #A6A199; --l: #2D2D29; --c: #1C1C19; --h: #4A4416; --y: #F8ED2F; }
+.hx .hl { background: linear-gradient(transparent 62%, var(--h) 62%); }
+.hx .nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 20px; border-bottom: 1px solid var(--l); font-size: 14px; }
+.hx .nav img { height: 28px; }
+.hx.dark .nav img { filter: invert(1) hue-rotate(180deg); }
+.hx .nav span { display: none; gap: 18px; }
+.hx .nav span b { font-weight: 700; background: linear-gradient(transparent 62%, var(--h) 62%); }
+@container site (min-width: 760px) { .hx .nav span { display: flex; } }
+.hx main { padding: 28px 20px 32px; display: grid; gap: 28px; }
+.hx .mono { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--m); }
+.hx h1 { font-size: 34px; letter-spacing: -.025em; line-height: 1.06; margin-top: 8px; }
+@container site (min-width: 760px) { .hx h1 { font-size: 54px; max-width: 18ch; } }
+.hx .lede { color: var(--m); max-width: 56ch; margin: 12px 0 0; }
+.hx .ybtn { display: inline-block; margin-top: 16px; background: var(--y); color: #1A1A16; font-weight: 700; padding: 10px 18px; border-radius: 8px; text-decoration: none; }
+.hx .cards { display: grid; gap: 14px; }
+@container site (min-width: 760px) { .hx .cards { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.hx .card { background: var(--c); border: 1px solid var(--l); border-radius: 12px; padding: 18px; display: grid; gap: 8px; align-content: start; }
+.hx .card h3 { font-size: 19px; }
+.hx .card p { margin: 0; font-size: 14px; color: var(--m); }
+.hx .card .f { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 12px; border-top: 1px solid var(--l); padding-top: 8px; margin-top: 4px; }
+.hx blockquote { margin: 0; font-family: var(--serif); font-size: 21px; line-height: 1.4; }
+.hx blockquote p { margin: 0; }
+.hx figcaption { font-size: 13px; color: var(--m); margin-top: 8px; }
+.hx figure { margin: 0; border-top: 1px solid var(--l); padding-top: 20px; }
+
+/* Entry points */
+.entries { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+.entries .frame .cs main { padding: 12px 16px 16px; }
+.banner { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; justify-content: space-between; background: #fdfbd6; border: 2px dashed #958e1e; border-radius: 8px; padding: 12px 14px; font-size: 14px; }
+.mmenu { display: grid; gap: 2px; padding: 8px 16px 16px; }
+.mmenu a { font-size: 20px; font-weight: 700; padding: 6px 0; text-decoration: none; }
+
+/* Copy options */
+.copygrid { display: grid; gap: 28px; }
+.group { display: grid; gap: 10px; }
+.group h3 { font-size: 20px; }
+.group > p { margin: 0; color: var(--muted); font-size: 14px; max-width: 80ch; }
+.opts { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+.opt { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px 14px 44px; font-size: 15px; cursor: pointer; min-width: 0; display: block; }
+.opt input { position: absolute; left: 16px; top: 17px; accent-color: var(--pick); width: 16px; height: 16px; margin: 0; }
+.opt:has(input:checked) { border-color: var(--pick); box-shadow: inset 0 0 0 1px var(--pick); }
+.opt:focus-within { outline: 2px solid var(--pick); outline-offset: 2px; }
+.opt .lbl { font-family: var(--mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 4px; }
+.opt p, .opt ul { margin: 6px 0 0; }
+.opt ul { padding-left: 18px; font-size: 14px; }
+.opt .rec { margin-left: 6px; }
+.lineup { display: grid; gap: 10px; margin-top: 8px; }
+.pkg { border-top: 1px solid var(--line); padding-top: 8px; }
+.pkg b { display: block; }
+.pkg small { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.ph { background: var(--mark); padding: 0 3px; border-radius: 3px; font-family: var(--mono); font-size: .9em; white-space: nowrap; }
+.confirm { font-family: var(--mono); font-size: 11px; color: var(--muted); border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; white-space: nowrap; }
+.q { font-family: var(--serif); font-size: 17px; }
+.src { font-family: var(--mono); font-size: 12px; color: var(--muted); display: block; margin-top: 6px; overflow-wrap: anywhere; }
+
+.summary { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: grid; gap: 10px; }
+.summary textarea { width: 100%; min-height: 220px; font-family: var(--mono); font-size: 13px; background: var(--bg); color: var(--fg); border: 1px solid var(--line); border-radius: 6px; padding: 12px; resize: vertical; }
+.summary .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.btn-ui { font: inherit; font-weight: 700; background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 8px; padding: 8px 16px; cursor: pointer; }
+.btn-ui.ghost { background: transparent; color: var(--fg); border: 1px solid var(--line); font-weight: 400; }
+.btn-ui:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+.status { font-size: 13px; color: var(--muted); }
+
+.build { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.build code, .note code { font-family: var(--mono); font-size: 13px; overflow-wrap: anywhere; }
+.rec-box { background: var(--surface); border: 2px solid var(--accent); border-radius: 10px; padding: 18px 20px; display: grid; gap: 8px; }
+.rec-box ul { margin: 0; padding-left: 20px; }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+html { scroll-behavior: smooth; }
+</style>
+
+<div class="wrap">
+  <header class="board-head">
+    <span class="eyebrow">brightdigit.com · issue #184 · design review</span>
+    <h1>AI + Swift <span class="hl">landing page</span></h1>
+    <p>Three ways to build the page on the current site, the recommended one re-skinned in the upcoming redesign, and copy options you can pick one at a time. Picks build a Markdown summary at the bottom that you can paste into the issue.</p>
+    <nav class="toc" aria-label="Sections">
+      <a href="#direction-a">A · Services-native</a>
+      <a href="#direction-b">B · Pricing table</a>
+      <a href="#direction-c">C · Narrative</a>
+      <a href="#redesign">Redesign carry-over</a>
+      <a href="#entry-points">Entry points</a>
+      <a href="#copy">Copy options</a>
+      <a href="#build">Build note</a>
+      <a href="#recommendation">Recommendation</a>
+    </nav>
+    <p class="rules"><strong>Ground rules applied:</strong> existing fonts only (Oxygen, Cardo, Oxygen Mono). No hero video. Episode players are labeled slots, never drawn. Testimonials are verbatim from <code>Testimonial+*.swift</code>, with cuts marked by an ellipsis. No invented numbers. Every price is a <span class="ph">$[placeholder]</span>.</p>
+  </header>
+
+  <!-- ===================== A ===================== -->
+  <section class="part" id="direction-a">
+    <div class="part-head">
+      <span class="eyebrow">Direction A</span>
+      <h2>Services-native</h2>
+      <p>Reuses the Services page wholesale: the big three-line headline, one <code>section.service</code> card per package, and the black CTA band. It looks like it has always been part of the site, and needs the least new CSS. Package cards don't compare side by side, so the prices are easy to miss.</p>
+    </div>
+    <div class="pair">
+      <div class="frame"><div class="chrome"><i></i><i></i><i></i><span>brightdigit.com/ai-swift · desktop</span></div><div class="screen" data-mock="a"></div></div>
+      <div class="frame phone"><div class="chrome"><span>390px</span></div><div class="screen" data-mock="a"></div></div>
+    </div>
+  </section>
+
+  <!-- ===================== B ===================== -->
+  <section class="part" id="direction-b">
+    <div class="part-head">
+      <span class="eyebrow">Direction B <span class="tag">Recommended</span></span>
+      <h2>Pricing table</h2>
+      <p>Hero, then three packages side by side, then who it's for, proof, FAQ, and the CTA again. It's built for a buyer comparing options. The section order maps one-to-one onto Markdown front matter (a <code>packages:</code> list, a <code>faq:</code> list), so the redesign only has to re-skin it.</p>
+    </div>
+    <div class="pair">
+      <div class="frame"><div class="chrome"><i></i><i></i><i></i><span>brightdigit.com/ai-swift · desktop</span></div><div class="screen" data-mock="b"></div></div>
+      <div class="frame phone"><div class="chrome"><span>390px</span></div><div class="screen" data-mock="b"></div></div>
+    </div>
+  </section>
+
+  <!-- ===================== C ===================== -->
+  <section class="part" id="direction-c">
+    <div class="part-head">
+      <span class="eyebrow">Direction C</span>
+      <h2>Narrative / long-form</h2>
+      <p>Reads like an article: the problem, how the work runs, the packages, then the podcast as evidence of how Leo thinks. It suits the content-led brand and readers arriving from search. Buyers who only want prices have to scroll for them.</p>
+    </div>
+    <div class="pair">
+      <div class="frame"><div class="chrome"><i></i><i></i><i></i><span>brightdigit.com/ai-swift · desktop</span></div><div class="screen" data-mock="c"></div></div>
+      <div class="frame phone"><div class="chrome"><span>390px</span></div><div class="screen" data-mock="c"></div></div>
+    </div>
+  </section>
+
+  <!-- ===================== Redesign ===================== -->
+  <section class="part" id="redesign">
+    <div class="part-head">
+      <span class="eyebrow">Panel 4 · low-fi</span>
+      <h2>Direction B in Highlighter Editorial</h2>
+      <p>The same sections, order, and copy as Direction B, shown in the redesign's look: near-black on off-white, the bellow-yellow highlighter on key words, 12px cards, and the same three fonts. Only the skin changes. Dark mode exists only in the redesign, so this is the one panel shown in both themes.</p>
+    </div>
+    <div class="pair" style="grid-template-columns: repeat(auto-fit, minmax(min(100%, 520px), 1fr));">
+      <div class="frame"><div class="chrome"><i></i><i></i><i></i><span>redesign · light</span></div><div class="screen" data-mock="hx"></div></div>
+      <div class="frame"><div class="chrome"><i></i><i></i><i></i><span>redesign · dark</span></div><div class="screen" data-mock="hx-dark"></div></div>
+    </div>
+  </section>
+
+  <!-- ===================== Entry points ===================== -->
+  <section class="part" id="entry-points">
+    <div class="part-head">
+      <span class="eyebrow">Same for every direction</span>
+      <h2>Entry points</h2>
+      <p>The issue asks for links from the nav, the Services page, and the next newsletter. The new nav item is outlined in every frame above. It has to be a plain <code>Link("AI + Swift", url: "/ai-swift")</code>, because <code>NavMenuLink</code> capitalizes its label and would render "Ai + Swift".</p>
+    </div>
+    <div class="entries">
+      <div class="frame"><div class="chrome"><span>/services · banner under the headline</span></div>
+        <div class="screen"><div class="cs"><main>
+          <p class="meta" style="margin:8px 0 0">Swift Development Services</p>
+          <h1 style="font-size:34px;letter-spacing:-.04em;line-height:1.02;margin:6px 0 14px">Intuitive.<br>Effective.<br>Well-Designed.</h1>
+          <div class="banner"><span><b>New:</b> fixed-scope AI + Swift packages</span><a class="btn" href="#direction-b">See packages</a></div>
+          <div class="slot" style="height:80px;margin-top:14px">existing service cards continue</div>
+        </main></div></div>
+      </div>
+      <div class="frame"><div class="chrome"><span>mobile menu (open)</span></div>
+        <div class="screen"><div class="cs">
+          <div class="nav"><img data-logo alt="BrightDigit"><div class="burger" aria-hidden="true"><i></i><i></i><i></i></div></div>
+          <div class="mmenu"><a>Services</a><a class="new">AI + Swift</a><a>Products</a><a>Articles</a><a>Tutorials</a><a>Podcast</a><a>Newsletters</a><a>About</a><a>Contact Us</a></div>
+        </div></div>
+      </div>
+      <div class="note" style="align-self:start"><b>Newsletter</b><p>Two short announcement blurbs are in the copy options under "Newsletter blurb". Put them as the first item in the next Buttondown issue, linking to <code>/ai-swift</code>.</p></div>
+    </div>
+  </section>
+
+  <!-- ===================== Copy options ===================== -->
+  <section class="part" id="copy">
+    <div class="part-head">
+      <span class="eyebrow">Copy options</span>
+      <h2>Pick one per group</h2>
+      <p>Each group answers one of the issue's open questions or fills one section of the page. Picks stay in this browser only and build the summary at the bottom. Lines marked <span class="confirm">confirm</span> are claims Leo needs to confirm before they go live.</p>
+    </div>
+    <div class="copygrid" id="copygrid"></div>
+
+    <div class="summary" id="summary">
+      <h3>Your picks</h3>
+      <p class="status" style="margin:0">Copy this into issue #184 as a comment.</p>
+      <label for="picks-out" class="eyebrow">Markdown</label>
+      <textarea id="picks-out" readonly></textarea>
+      <div class="row">
+        <button type="button" class="btn-ui" id="copy-picks">Copy picks</button>
+        <button type="button" class="btn-ui ghost" id="use-recs">Use recommended picks</button>
+        <button type="button" class="btn-ui ghost" id="clear-picks">Clear</button>
+        <span class="status" id="copy-status" role="status"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== Build note ===================== -->
+  <section class="part" id="build">
+    <div class="part-head">
+      <span class="eyebrow">How this maps to the build</span>
+      <h2>Content in Markdown, skin in code</h2>
+      <p>Nothing here is built yet. Once a direction and the copy are picked, this is the smallest implementation.</p>
+    </div>
+    <div class="build">
+      <div class="note"><b>Content</b><p><code>Content/ai-swift.md</code> holds the offer, packages, FAQ and CTA as front matter plus a Markdown body. The redesign re-skins it and leaves the content alone.</p></div>
+      <div class="note"><b>Routing</b><p>Add <code>case "ai-swift"</code> to <code>Pages.content(basedOnPage:)</code>. Unknown page paths throw <code>missingContentFor</code> today, so the Markdown file alone won't render.</p></div>
+      <div class="note"><b>Components</b><p>An <code>AISwiftBuilder</code> page builder, plus a package-card component (Direction B). Testimonials reuse the <code>Testimonial</code> data the home page already uses.</p></div>
+      <div class="note"><b>Styling</b><p>One <code>body#ai-swift</code> block in <code>styles.css</code>, built from the existing <code>.button</code>/<code>btn</code> and <code>bellow-*</code> tokens.</p></div>
+      <div class="note"><b>Links</b><p>Nav: an explicit <code>Link</code> in <code>HeaderComponent</code>. Services: a banner component above <code>Services.Boxes</code>.</p></div>
+    </div>
+  </section>
+
+  <!-- ===================== Recommendation ===================== -->
+  <section class="part" id="recommendation">
+    <div class="part-head">
+      <span class="eyebrow">Recommendation</span>
+      <h2>Ship Direction B with these picks</h2>
+    </div>
+    <div class="rec-box">
+      <ul>
+        <li><b>Layout:</b> Direction B, the pricing table. Productized packages need to be compared, and B's sections map straight onto front matter, which keeps the redesign rework near zero.</li>
+        <li><b>Offer:</b> the outcome-led sentence (O1).</li>
+        <li><b>Packages:</b> Audit → Pilot → Team enablement (L1). Each package is a natural upsell into the next, and the audit is a low-risk first purchase.</li>
+        <li><b>CTA:</b> the existing contact form with "Tell me about your app" (C1). Add a booking link only after the page shows demand.</li>
+        <li><b>Slug and nav:</b> <code>/ai-swift</code>, with the nav label "AI + Swift".</li>
+        <li><b>Proof:</b> the three testimonials below, labeled as general client work, since none of them is about AI. Pair them with episodes 208 and 210, which are about AI directly.</li>
+      </ul>
+    </div>
+  </section>
+</div>
+
+<!-- ===================== Templates ===================== -->
+<template id="tpl-nav">
+  <div class="nav">
+    <img data-logo alt="BrightDigit">
+    <ol><li><a>Services</a></li><li><a class="new">AI + Swift</a></li><li><a>Products</a></li><li><a>Articles</a></li><li><a>Tutorials</a></li></ol>
+    <ol class="end"><li><a>Podcast</a></li><li><a>Newsletters</a></li><li><a>Sponsorship</a></li><li><a>About</a></li></ol>
+    <ol><li><a>Contact Us</a></li></ol>
+    <div class="burger" aria-hidden="true"><i></i><i></i><i></i></div>
+  </div>
+</template>
+<template id="tpl-footer">
+  <footer class="site">
+    <img data-logo alt="BrightDigit">
+    <div class="social" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="row"><span>503 Mall Court #150 Lansing MI 48912</span><span>© Bright Digit, LLC 2026</span></div>
+  </footer>
+</template>
+
+<template id="tpl-a">
+  <div class="cs a">
+    <slot-nav></slot-nav>
+    <main>
+      <header class="page">
+        <p>AI + Swift consulting</p>
+        <h1>Practical.<br>Fixed-scope.<br>Swift-first.</h1>
+        <p>I help Swift teams ship AI features and adopt coding agents without breaking the app they already have.</p>
+      </header>
+      <section class="service">
+        <div class="slot">image slot</div>
+        <div>
+          <h2><i></i>AI Readiness Audit</h2>
+          <p>A written plan for where AI belongs in your app and in your team's workflow, with the risks ranked before you spend on a build.</p>
+          <p class="meta">1–2 weeks · from <span class="price">$[X,XXX]</span></p>
+          <footer><span></span><a class="btn">Tell me about your app</a></footer>
+        </div>
+      </section>
+      <section class="service">
+        <div class="slot">image slot</div>
+        <div>
+          <h2><i></i>AI Feature Pilot</h2>
+          <p>One AI feature built in Swift and shipped behind a flag in your app, with tests and a way to measure whether it works.</p>
+          <p class="meta">3–4 weeks · from <span class="price">$[XX,XXX]</span></p>
+          <footer><span></span><a class="btn">Tell me about your app</a></footer>
+        </div>
+      </section>
+      <section class="service">
+        <div class="slot">image slot</div>
+        <div>
+          <h2><i></i>Team Agent Enablement</h2>
+          <p>Your iOS team set up to get consistent, reviewable Swift from coding agents: instruction files, CI guardrails, and hands-on sessions.</p>
+          <p class="meta">2–3 weeks · from <span class="price">$[X,XXX]</span></p>
+          <footer><span></span><a class="btn">Tell me about your app</a></footer>
+        </div>
+      </section>
+      <figure style="margin-top:12px">
+        <blockquote><p>“Our ask was for something outside the realm of typical Swift development - serverless functions with AWS Lambda. Leo was able to gain traction and deliver a vital part of our project.”</p></blockquote>
+        <figcaption>-Derek DeJonghe, <cite>Vice President Of Engineering at RightBrain Networks</cite></figcaption>
+      </figure>
+      <div class="band"><h2>Not sure which package fits? Start with a conversation.</h2><a class="btn">Tell me about your app</a></div>
+    </main>
+    <slot-footer></slot-footer>
+  </div>
+</template>
+
+<template id="tpl-b">
+  <div class="cs b">
+    <slot-nav></slot-nav>
+    <main>
+      <section class="hero">
+        <h1>AI features and coding agents, for Swift teams.</h1>
+        <div style="display:grid;gap:12px">
+          <p>I help Swift teams ship AI features and adopt coding agents without breaking the app they already have. Fixed scope, fixed price, agreed up front.</p>
+          <div><a class="btn">Tell me about your app</a></div>
+        </div>
+      </section>
+      <h2 class="sec">Packages</h2>
+      <div class="tiers">
+        <div class="tier lead">
+          <span class="k">Start here</span>
+          <h3>AI Readiness Audit</h3>
+          <p>A written plan for where AI belongs in your app and your team's workflow.</p>
+          <ul><li>Codebase and workflow review</li><li>On-device vs. server model recommendation</li><li>Privacy and App Review risks, ranked</li></ul>
+          <div class="facts"><span>1–2 weeks</span><span>from <span class="price">$[X,XXX]</span></span></div>
+          <a class="btn wide">Start with an audit</a>
+        </div>
+        <div class="tier">
+          <span class="k">Build</span>
+          <h3>AI Feature Pilot</h3>
+          <p>One AI feature built in Swift and shipped behind a flag.</p>
+          <ul><li>Implementation in your app</li><li>Tests and an evaluation harness</li><li>Handoff notes for your team</li></ul>
+          <div class="facts"><span>3–4 weeks</span><span>from <span class="price">$[XX,XXX]</span></span></div>
+          <a class="btn wide">Tell me about your app</a>
+        </div>
+        <div class="tier">
+          <span class="k">Team</span>
+          <h3>Team Agent Enablement</h3>
+          <p>Consistent, reviewable Swift from your team's coding agents.</p>
+          <ul><li>Agent instruction files and rules</li><li>CI guardrails: tests, lint, strict concurrency</li><li>Hands-on sessions and PR review</li></ul>
+          <div class="facts"><span>2–3 weeks</span><span>from <span class="price">$[X,XXX]</span></span></div>
+          <a class="btn wide">Tell me about your app</a>
+        </div>
+      </div>
+      <h2 class="sec">Who it's for</h2>
+      <div class="who">
+        <div>Product teams with a shipping Apple-platform app who want an AI feature without a rewrite.</div>
+        <div>Engineering leads whose developers already use coding agents and want consistent results.</div>
+        <div>Founders who want AI scoped by a Swift developer before they commit a budget.</div>
+      </div>
+      <h2 class="sec">What clients say, and how I think about AI</h2>
+      <div class="proof">
+        <div style="display:grid;gap:18px">
+          <figure>
+            <blockquote><p>“I have particularly been impressed by Leo's communication — he keeps a regular flow of updates coming, and anytime I have had a deep, wandering technical question, Leo has provided a clear and direct answer.”</p></blockquote>
+            <figcaption>-Dave Mulder, <cite>Product Manager at Conferences i/o</cite></figcaption>
+          </figure>
+          <figure>
+            <blockquote><p>“The thing that impressed me the most about Leo was his flexibility and understanding of the complexities of a large project, especially when requirements are not always well defined or when changing requirements causes rework.”</p></blockquote>
+            <figcaption>-Tom Grube, <cite>Senior Software Engineer at Asset Health</cite></figcaption>
+          </figure>
+        </div>
+        <div class="eps">
+          <div class="ep"><b>Practical Agents with Donny Wals</b>A year of agentic coding: architecture, reviewing PRs you didn't write, and where the agent still isn't trusted. <span class="meta">EmpowerApps.Show · episode 210</span></div>
+          <div class="ep"><b>Everyone Thinks They're Good at Prompting</b>Joe Fabisevich on avoiding work slop and why prompting is a communication skill. <span class="meta">EmpowerApps.Show · episode 208</span></div>
+        </div>
+      </div>
+      <h2 class="sec">Questions</h2>
+      <details open><summary>What if the audit says AI isn't a good fit?</summary><p>Then the report says so. You've spent the audit price, not the pilot price.</p></details>
+      <details><summary>On-device or cloud models?</summary><p>Whichever fits the feature, your privacy policy, and your budget. The audit makes that call.</p></details>
+      <details><summary>Are prices fixed?</summary><p>Yes. Scope and price are agreed before work starts.</p></details>
+      <div class="band"><h2>Tell me what you're building. I'll tell you which package fits.</h2><a class="btn">Tell me about your app</a></div>
+    </main>
+    <slot-footer></slot-footer>
+  </div>
+</template>
+
+<template id="tpl-c">
+  <div class="cs c">
+    <slot-nav></slot-nav>
+    <main>
+      <article>
+        <p class="meta" style="margin:0">AI + Swift consulting</p>
+        <h1>Your team is already using AI. Is it writing Swift you'd merge?</h1>
+        <p class="dek">I help Swift teams ship AI features and adopt coding agents without breaking the app they already have.</p>
+        <h2>Where teams get stuck</h2>
+        <p>Agents write plausible Swift fast. Strict concurrency, module boundaries, and an app's history are where that code gets expensive. AI features have the opposite problem: picking a model, keeping data private, and getting through App Review take longer than the demo did.</p>
+        <h2>How the work runs</h2>
+        <ol class="steps">
+          <li><div><b>Audit, 1–2 weeks</b>A written plan for where AI belongs, with the risks ranked. From <span class="price">$[X,XXX]</span>.</div></li>
+          <li><div><b>Pilot, 3–4 weeks</b>One feature shipped behind a flag, with tests. From <span class="price">$[XX,XXX]</span>.</div></li>
+          <li><div><b>Enablement, 2–3 weeks</b>Your team's agents producing reviewable Swift. From <span class="price">$[X,XXX]</span>.</div></li>
+        </ol>
+        <h2>Hear how I think about it</h2>
+        <div class="epcard"><div class="slot">YouTube player slot · 16:9 · vendor iframe</div><h3>Practical Agents with Donny Wals · episode 210</h3><p>A year of agentic coding, and why SwiftData migrations still get a human.</p></div>
+        <div class="epcard"><div class="slot">YouTube player slot · 16:9 · vendor iframe</div><h3>Everyone Thinks They're Good at Prompting · episode 208</h3><p>Joe Fabisevich on work slop and prompting as a communication skill.</p></div>
+        <h2>From past clients</h2>
+        <figure>
+          <blockquote><p>“Leo was an asset to our small team, he made a big impact, and was very professional.”</p></blockquote>
+          <figcaption>-Derek DeJonghe, <cite>Vice President Of Engineering at RightBrain Networks</cite></figcaption>
+        </figure>
+        <div class="ask"><b>Tell me about your app.</b><span>One short form. I'll reply with the package I'd start with, or tell you AI isn't the answer.</span><a class="btn wide">Tell me about your app</a></div>
+      </article>
+    </main>
+    <slot-footer></slot-footer>
+  </div>
+</template>
+
+<template id="tpl-hx">
+  <div class="hx">
+    <div class="nav"><img data-logo alt="BrightDigit"><span>Articles · Podcast · Newsletter · Products · <b>AI + Swift</b> · Services</span></div>
+    <main>
+      <div>
+        <div class="mono">AI + Swift consulting</div>
+        <h1><span class="hl">AI features</span> and <span class="hl">coding agents</span>, for Swift teams.</h1>
+        <p class="lede">I help Swift teams ship AI features and adopt coding agents without breaking the app they already have. Fixed scope, fixed price, agreed up front.</p>
+        <a class="ybtn">Tell me about your app</a>
+      </div>
+      <div class="cards">
+        <div class="card"><div class="mono">Start here</div><h3>AI Readiness Audit</h3><p>A written plan for where AI belongs in your app and your team's workflow.</p><div class="f"><span>1–2 wks</span><span>from $[X,XXX]</span></div></div>
+        <div class="card"><div class="mono">Build</div><h3>AI Feature Pilot</h3><p>One AI feature built in Swift and shipped behind a flag.</p><div class="f"><span>3–4 wks</span><span>from $[XX,XXX]</span></div></div>
+        <div class="card"><div class="mono">Team</div><h3>Team Agent Enablement</h3><p>Consistent, reviewable Swift from your team's coding agents.</p><div class="f"><span>2–3 wks</span><span>from $[X,XXX]</span></div></div>
+      </div>
+      <figure>
+        <blockquote><p>“I have particularly been impressed by Leo's communication — he keeps a regular flow of updates coming, and anytime I have had a deep, wandering technical question, Leo has provided a clear and direct answer.”</p></blockquote>
+        <figcaption>Dave Mulder · Product Manager at Conferences i/o</figcaption>
+      </figure>
+    </main>
+  </div>
+</template>
+
+<script>
+const LOGO = "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+Cjxzdmcgd2lkdGg9IjMzNHB4IiBoZWlnaHQ9IjQxM3B4IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHhtbDpzcGFjZT0icHJlc2VydmUiIHhtbG5zOnNlcmlmPSJodHRwOi8vd3d3LnNlcmlmLmNvbS8iIHN0eWxlPSJmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtzdHJva2UtbGluZWpvaW46cm91bmQ7c3Ryb2tlLW1pdGVybGltaXQ6MjsiPgogICAgPHBhdGggZD0iTTY2LjYxLDIwNi40MzJDODAuMTYsMjE5Ljk4MiA5NC41NzYsMjI5LjMwNyAxMDkuODU1LDIzNC4zOTlDMTI4LjQxLDI0MC41MjQgMTQzLjcxLDIzNy41NyAxNTUuNzUxLDIyNS41MjhDMTY3Ljc5MywyMTMuNDg2IDE3MS4zOTMsMTk4LjkyNCAxNjYuNTY0LDE4MS44MzJDMTYyLjU4OSwxNjcuNDk5IDE1NC4wODksMTUzLjgyIDE0MS4wNTUsMTQwLjc4NkMxMTUuNTkzLDExNS4zMjQgOTEuNzY4LDEwNS4xMzYgNjkuNTg1LDExMC4yMzJDNjEuNDcyLDExMi4xMzIgNTQuMDQ3LDExNi40NDUgNDcuMzE0LDEyMy4xNzhDMzUuNDA1LDEzNS4wOSAzMS43NzYsMTQ4LjM4MiAzNi40MzksMTYzLjA1N0M0MC40MSwxNzUuNDg2IDQ5Ljk5MywxODkuNDcgNjUuMTg1LDIwNS4wMDdMNjYuNjEsMjA2LjQzMlpNMzAuNDE4LDEuMDJDMzEuNzYsLTAuMzE4IDMzLjA3MiwtMC4zMzkgMzQuMzY4LDAuOTUzQzM1LjY2NCwyLjI0OSAzNC42OTMsOC4zNTcgMzEuNDUxLDE5LjI3NEMyOC4yMTgsMzAuMTk1IDI2LjMzOSwzNy4xMiAyNS44MjIsNDAuMDUzQzI0LjAwNSw0OS40NjUgMjIuNTQzLDU5LjIxNSAyMS40MTgsNjkuMzE1QzE3Ljc5MywxMDIuNjMyIDIwLjU1NSwxMjQuMTI4IDI5LjcxLDEzMy43OTVDMzAuMzk3LDEzMy4xMDMgMzAuOTgsMTMyLjA5IDMxLjQ1MSwxMzAuNzUzQzMxLjkzLDEyOS40MTUgMzIuODc2LDEyNy4wODYgMzQuMzAxLDEyMy43NjFDMzUuNzI2LDEyMC40MzYgMzkuNTIyLDExNS42OSA0NS42OTMsMTA5LjUxNUM1MS44NjgsMTAzLjM0OSA2MC4wOTMsOTguMjc0IDcwLjM2NCw5NC4zMDdDODAuNjM1LDkwLjMzNiA5MS4wMzUsODguNDM2IDEwMS41NjgsODguNjA3QzEyNC4xOCw4OS4xMjggMTQzLjg2LDk3Ljc1NyAxNjAuNjEsMTE0LjUwM0MxNzcuMzUxLDEzMS4yNDkgMTg1Ljg5NywxNTEuMDYxIDE4Ni4yMzUsMTczLjkyOEMxODYuNTg1LDE5Ni44MDcgMTc4LjQwNSwyMTYuNTkgMTYxLjcwNSwyMzMuMjk1QzE0NS4wMDEsMjQ5Ljk5OSAxMjQuNjgsMjU2LjYwMyAxMDAuNzI2LDI1My4xMDdDNzYuNzY4LDI0OS42MTEgNTUuNjg5LDIzOC43NTcgMzcuNDc2LDIyMC41NDVDMTQuNzc2LDE5Ny44NCAyLjM4OSwxNzAuNjk1IDAuMzE0LDEzOS4xMDNDLTEuNDk5LDExMS43NCA0LjU0Myw3NC4yODIgMTguNDM5LDI2LjcyQzE5Ljk5MywyMS4zNjUgMjIuMDQ3LDE2LjA3OCAyNC41ODksMTAuODU3QzI3LjEzOSw1LjYzNiAyOS4wOCwyLjM1NyAzMC40MTgsMS4wMiIgc3R5bGU9ImZpbGw6IzAwMDAwMDtmaWxsLXJ1bGU6bm9uemVybzsiLz4KICAgIDxwYXRoIGQ9Ik0yNjguNjM0LDM2My4yMzFDMjgzLjgyNSwzNDcuNjk0IDI5My40MDUsMzMzLjcwNiAyOTcuMzc1LDMyMS4yODFDMzAyLjAzOCwzMDYuNjAyIDI5OC40MDksMjkzLjMxIDI4Ni41LDI4MS4zOThDMjc5Ljc2NywyNzQuNjY1IDI3Mi4zNDYsMjcwLjM0OCAyNjQuMjM0LDI2OC40NTJDMjQyLjA1LDI2My4zNiAyMTguMjIxLDI3My41NDggMTkyLjc2MywyOTkuMDA2QzE3OS43MjUsMzEyLjA0NCAxNzEuMjIxLDMyNS43MjMgMTY3LjI1NSwzNDAuMDUyQzE2Mi40MjEsMzU3LjE0IDE2Ni4wMjUsMzcxLjcwNiAxNzguMDY3LDM4My43NDhDMTkwLjEwOSwzOTUuNzkgMjA1LjQwNSwzOTguNzQ4IDIyMy45NjMsMzkyLjYxOUMyMzkuMjQyLDM4Ny41MjcgMjUzLjY1OSwzNzguMjA2IDI2Ny4yMDksMzY0LjY1NkwyNjguNjM0LDM2My4yMzFaTTMwOS4yMjEsMTY5LjA3N0MzMTEuNzcxLDE3NC4zMDIgMzEzLjgyMSwxNzkuNTkgMzE1LjM3NSwxODQuOTRDMzI5LjI3MSwyMzIuNTAyIDMzNS4zMTMsMjY5Ljk2NSAzMzMuNSwyOTcuMzIzQzMzMS40MywzMjguOTE5IDMxOS4wNDYsMzU2LjA2NSAyOTYuMzQyLDM3OC43NjlDMjc4LjEzLDM5Ni45ODEgMjU3LjA0Niw0MDcuODI3IDIzMy4wOTYsNDExLjMyN0MyMDkuMTQyLDQxNC44MjMgMTg4LjgwOSw0MDguMjE5IDE3Mi4xMDksMzkxLjUxOUMxNTUuNDA1LDM3NC44MTUgMTQ3LjIyNSwzNTUuMDIzIDE0Ny41NzUsMzMyLjE1NkMxNDcuOTE3LDMwOS4yODEgMTU2LjQ2MywyODkuNDczIDE3My4yMTMsMjcyLjcyM0MxODkuOTU1LDI1NS45ODEgMjA5LjYzOCwyNDcuMzQ4IDIzMi4yNTUsMjQ2LjgyN0MyNDIuNzg0LDI0Ni42NTYgMjUzLjE4LDI0OC41NTYgMjYzLjQ1OSwyNTIuNTMxQzI3My43MjUsMjU2LjQ5OCAyODEuOTUsMjYxLjU2OSAyODguMTI1LDI2Ny43NDRDMjk0LjI5NiwyNzMuOTE1IDI5OC4wOTIsMjc4LjY2NSAyOTkuNTEzLDI4MS45ODFDMzAwLjkzOCwyODUuMzA2IDMwMS44ODQsMjg3LjYzMSAzMDIuMzU5LDI4OC45NjlDMzAyLjgzOCwyOTAuMzE1IDMwMy40MjEsMjkxLjMyMyAzMDQuMTA5LDI5Mi4wMUMzMTMuMjU5LDI4Mi4zNTIgMzE2LjAyMSwyNjAuODU2IDMxMi4zOTYsMjI3LjUzNUMzMTEuMjcxLDIxNy40NCAzMDkuODA5LDIwNy42ODUgMzA3Ljk5MiwxOTguMjc3QzMwNy40NzUsMTk1LjM0NCAzMDUuNiwxODguNDE1IDMwMi4zNjMsMTc3LjQ5NEMyOTkuMTI1LDE2Ni41NzcgMjk4LjE1NSwxNjAuNDY5IDI5OS40NSwxNTkuMTczQzMwMC43NDIsMTU3Ljg3NyAzMDIuMDU5LDE1Ny45MDIgMzAzLjQsMTU5LjI0QzMwNC43MzQsMTYwLjU3NyAzMDYuNjgsMTYzLjg1NiAzMDkuMjIxLDE2OS4wNzciIHN0eWxlPSJmaWxsOiMwMDAwMDA7ZmlsbC1ydWxlOm5vbnplcm87Ii8+CiAgICA8cGF0aCBkPSJNNjYuNDQ3LDIwNi4yNzNDODAuMDAxLDIxOS44MjMgOTQuNDEzLDIyOS4xNDggMTA5LjY5MiwyMzQuMjRDMTI4LjI1MSwyNDAuMzY5IDE0My41NTEsMjM3LjQxMSAxNTUuNTkyLDIyNS4zNjlDMTY3LjYzLDIxMy4zMjcgMTcxLjIzNCwxOTguNzY1IDE2Ni40MDEsMTgxLjY3M0MxNjIuNDMsMTY3LjM0NCAxNTMuOTMsMTUzLjY2MSAxNDAuODk3LDE0MC42MzJDMTE1LjQzNCwxMTUuMTY1IDkxLjYwOSwxMDQuOTgyIDY5LjQyNiwxMTAuMDczQzYxLjMxMywxMTEuOTczIDUzLjg4OCwxMTYuMjkgNDcuMTU1LDEyMy4wMjNDMzUuMjQ3LDEzNC45MzIgMzEuNjE3LDE0OC4yMjMgMzYuMjgsMTYyLjg5OEM0MC4yNTEsMTc1LjMzMiA0OS44MzQsMTg5LjMxNSA2NS4wMjIsMjA0Ljg0OEw2Ni40NDcsMjA2LjI3M1oiIHN0eWxlPSJmaWxsOiNmOGVkMmY7ZmlsbC1ydWxlOm5vbnplcm87Ii8+CiAgICA8cGF0aCBkPSJNMjY4LjQ3MSwzNjMuMDY4QzI4My42NjMsMzQ3LjUzMSAyOTMuMjQ2LDMzMy41NDcgMjk3LjIxNywzMjEuMTIyQzMwMS44OCwzMDYuNDQzIDI5OC4yNSwyOTMuMTUyIDI4Ni4zNDIsMjgxLjIzOUMyNzkuNjA5LDI3NC41MDYgMjcyLjE4OCwyNzAuMTkzIDI2NC4wNjcsMjY4LjI4OUMyNDEuODg4LDI2My4yMDIgMjE4LjA2MywyNzMuMzg5IDE5Mi42LDI5OC44NDdDMTc5LjU2NywzMTEuODg1IDE3MS4wNjMsMzI1LjU2NCAxNjcuMDk2LDMzOS44OTNDMTYyLjI1OSwzNTYuOTg1IDE2NS44NjcsMzcxLjU0NyAxNzcuOTA5LDM4My41ODlDMTg5Ljk1LDM5NS42MzEgMjA1LjI0NiwzOTguNTg5IDIyMy44MDUsMzkyLjQ2QzIzOS4wODQsMzg3LjM2OCAyNTMuNDk2LDM3OC4wNDMgMjY3LjA0NiwzNjQuNDkzTDI2OC40NzEsMzYzLjA2OFoiIHN0eWxlPSJmaWxsOiNmOGVkMmY7ZmlsbC1ydWxlOm5vbnplcm87Ii8+Cjwvc3ZnPgo=";
+
+function fill(root) {
+  root.querySelectorAll("slot-nav").forEach(s => s.replaceWith(document.getElementById("tpl-nav").content.cloneNode(true)));
+  root.querySelectorAll("slot-footer").forEach(s => s.replaceWith(document.getElementById("tpl-footer").content.cloneNode(true)));
+  root.querySelectorAll("img[data-logo]").forEach(i => { i.src = LOGO; });
+}
+document.querySelectorAll("[data-mock]").forEach(el => {
+  const key = el.dataset.mock;
+  const tpl = document.getElementById("tpl-" + (key === "hx-dark" ? "hx" : key));
+  el.appendChild(tpl.content.cloneNode(true));
+  if (key === "hx-dark") el.querySelector(".hx").classList.add("dark");
+  fill(el);
+});
+document.querySelectorAll("img[data-logo]").forEach(i => { i.src = LOGO; });
+
+/* ---------- Copy options ---------- */
+const PH = s => `<span class="ph">${s}</span>`;
+const CF = '<span class="confirm">confirm</span>';
+const GROUPS = [
+  { id: "offer", title: "One-sentence offer", note: "The hero line. Pick the voice first; the rest of the page follows it.", options: [
+    { id: "O1", label: "Outcome-led", rec: true, text: "I help Swift teams ship AI features and adopt coding agents without breaking the app they already have." },
+    { id: "O2", label: "Pain-led", text: "Your team is already using AI. I'll make sure it's writing Swift you'd actually merge." },
+    { id: "O3", label: "Credibility-led", text: "Fixed-scope AI consulting from a Swift developer who interviews the people building with agents on EmpowerApps.Show." },
+    { id: "O4", label: "Plain", text: "Fixed-scope AI consulting for iOS, macOS, and Swift teams." },
+    { id: "O5", label: "Product-led", text: "Add AI to your Apple-platform app in weeks, with a fixed scope and a fixed price." },
+  ]},
+  { id: "lineup", title: "Package lineup", note: "Timelines are suggestions. Every price is a placeholder for Leo to set.", options: [
+    { id: "L1", label: "Audit → Pilot → Team", rec: true, html: `<div class="lineup">
+      <div class="pkg"><b>AI Readiness Audit</b>A written plan for where AI belongs in your app and your team's workflow: codebase and workflow review, on-device vs. server model recommendation, privacy and App Review risks ranked.<br><small>1–2 weeks · from ${PH("$[X,XXX]")}</small></div>
+      <div class="pkg"><b>AI Feature Pilot</b>One AI feature built in Swift and shipped behind a flag, with tests, an evaluation harness, and handoff notes.<br><small>3–4 weeks · from ${PH("$[XX,XXX]")}</small></div>
+      <div class="pkg"><b>Team Agent Enablement</b>Consistent, reviewable Swift from your team's coding agents: instruction files, CI guardrails (tests, lint, strict concurrency), hands-on sessions.<br><small>2–3 weeks · from ${PH("$[X,XXX]")}</small></div></div>`,
+      md: "AI Readiness Audit (1–2 wks, from $[X,XXX]) → AI Feature Pilot (3–4 wks, from $[XX,XXX]) → Team Agent Enablement (2–3 wks, from $[X,XXX])" },
+    { id: "L2", label: "Agent-ready codebase", html: `<div class="lineup">
+      <div class="pkg"><b>Agent-Readiness Review</b>Where agents will struggle in your codebase: build times, module boundaries, test gaps, missing docs.<br><small>1 week · from ${PH("$[X,XXX]")}</small></div>
+      <div class="pkg"><b>Codebase-for-Agents Refactor</b>Swift packages with clear boundaries, strict concurrency, tests and lint as guardrails, agent instruction files.<br><small>2–4 weeks · from ${PH("$[XX,XXX]")}</small></div>
+      <div class="pkg"><b>AI Feature Build</b>An AI-powered feature designed, built, and shipped in your app.<br><small>4–6 weeks · from ${PH("$[XX,XXX]")}</small></div></div>`,
+      md: "Agent-Readiness Review (1 wk, from $[X,XXX]) → Codebase-for-Agents Refactor (2–4 wks, from $[XX,XXX]) → AI Feature Build (4–6 wks, from $[XX,XXX])" },
+    { id: "L3", label: "Sprint + advisor", html: `<div class="lineup">
+      <div class="pkg"><b>AI + Swift Workshop</b>One day with your team on coding agents in a real Swift codebase: yours.<br><small>1 day · ${PH("$[X,XXX]")}</small></div>
+      <div class="pkg"><b>Two-Week AI Sprint</b>A fixed two-week sprint on one AI goal: a prototype, a migration, or an agent setup.<br><small>2 weeks · ${PH("$[XX,XXX]")}</small></div>
+      <div class="pkg"><b>Monthly Advisor</b>Architecture and PR review as your team adopts AI, on a monthly retainer.<br><small>monthly · ${PH("$[X,XXX]/mo")}</small></div></div>`,
+      md: "AI + Swift Workshop (1 day, $[X,XXX]) / Two-Week AI Sprint (2 wks, $[XX,XXX]) / Monthly Advisor ($[X,XXX]/mo)" },
+  ]},
+  { id: "who", title: "Who it's for", options: [
+    { id: "W1", label: "Three short audiences", rec: true, html: `<ul><li>Product teams with a shipping Apple-platform app who want an AI feature without a rewrite.</li><li>Engineering leads whose developers already use coding agents and want consistent results.</li><li>Founders who want AI scoped by a Swift developer before they commit a budget.</li></ul>`,
+      md: "Product teams with a shipping app / eng leads whose devs already use agents / founders scoping AI before budgeting" },
+    { id: "W2", label: "Single paragraph", text: "This is for teams that already have a Swift app in the App Store and want AI to make it better, not for teams starting from scratch. If you need a whole app built, see Services." },
+    { id: "W3", label: "Fit / not a fit", html: `<p><b>A fit:</b> you have a Swift codebase, a team or a founder who owns it, and a specific AI idea or an agent workflow that isn't working.</p><p><b>Not a fit:</b> you want a full app from zero, or an AI strategy deck with no code.</p>`,
+      md: "Fit: existing Swift codebase + a specific AI idea or broken agent workflow. Not a fit: full app from zero, or strategy deck with no code." },
+  ]},
+  { id: "proof", title: "Proof", note: "Quotes are verbatim from the source files. None of the testimonials is about AI work, so label the block as general client work and let the episodes carry the AI angle.", multi: true, options: [
+    { id: "P1", label: "Testimonial · Dave Mulder", rec: true, html: `<p class="q">“I have particularly been impressed by Leo's communication — he keeps a regular flow of updates coming, and anytime I have had a deep, wandering technical question, Leo has provided a clear and direct answer.”</p><span class="src">One full sentence · Testimonial+ConferencesIODave.swift · the source title reads "Product ManagerProduct Manager"; display "Product Manager at Conferences i/o" and fix the typo in the source</span>`, md: "Dave Mulder quote (communication sentence, verbatim)" },
+    { id: "P2", label: "Testimonial · Tom Grube", rec: true, html: `<p class="q">“The thing that impressed me the most about Leo was his flexibility and understanding of the complexities of a large project, especially when requirements are not always well defined or when changing requirements causes rework.”</p><span class="src">One full sentence · Testimonial+AssetHealthTG.swift</span>`, md: "Tom Grube quote (flexibility sentence, verbatim)" },
+    { id: "P3", label: "Testimonial · Derek DeJonghe", rec: true, html: `<p class="q">“Leo was an asset to our small team, he made a big impact, and was very professional. Our ask was for something outside the realm of typical Swift development - serverless functions with AWS Lambda. Leo was able to gain traction and deliver a vital part of our project.”</p><span class="src">Full quote · Testimonial+DerekDeJonghe.swift · "outside the realm of typical Swift development" fits an AI offer</span>`, md: "Derek DeJonghe quote (full, verbatim)" },
+    { id: "P4", label: "Testimonial · Jody Burgess", html: `<p class="q">“Working with BrightDigit was a breeze. … If you are looking for a vendor with a nice blend of technical, social and project management skills, I highly recommend Leo at BrightDigit.”</p><span class="src">Shortened with an ellipsis · Testimonial+Jody.swift</span>`, md: "Jody Burgess quote (shortened with ellipsis)" },
+    { id: "P5", label: "Episode 210", rec: true, html: `<p><b>Practical Agents with Donny Wals.</b> Donny Wals on a year of agentic coding: how it changed his architecture decisions, reviewing PRs he didn't write, managing parallel agents, and why he still doesn't trust the agent with SwiftData migrations.</p><span class="src">/episodes/210-practical-agents-with-donny-wals/</span>`, md: "Episode 210 · Practical Agents with Donny Wals" },
+    { id: "P6", label: "Episode 208", rec: true, html: `<p><b>Everyone Thinks They're Good at Prompting.</b> Joe Fabisevich on building with AI without falling into work slop, why prompting is a communication skill, and Broadcast, his Swift logging library for developers and AI agents.</p><span class="src">/episodes/208-everyone-thinks-they-re-good-at-prompting-with-joe-fabisevich/</span>`, md: "Episode 208 · Everyone Thinks They're Good at Prompting with Joe Fabisevich" },
+  ]},
+  { id: "cta", title: "CTA destination and label", note: "Today the site has only the contact form. A booking link means choosing a booking tool first.", options: [
+    { id: "C1", label: "Contact form · /contact-us", rec: true, text: "“Tell me about your app”, linking to the existing Netlify contact form. Works today, with nothing new to set up." },
+    { id: "C2", label: "Contact form · /contact-us", text: "“Get a fixed quote”: sets the expectation that the reply includes a price." },
+    { id: "C3", label: "Booking link", html: `<p>“Book a 30-minute fit call” linking to ${PH("[booking tool URL]")}. Needs a booking tool chosen and set up first.</p>`, md: "Book a 30-minute fit call → [booking tool URL]" },
+    { id: "C4", label: "Package-specific", text: "“Start with an audit” on the first package card, with “Tell me about your app” everywhere else." },
+  ]},
+  { id: "faq", title: "FAQ starters", note: "Pick the ones to keep.", multi: true, options: [
+    { id: "F1", label: "Fit", rec: true, html: `<p><b>What if the audit says AI isn't a good fit?</b> Then the report says so. You've spent the audit price, not the pilot price.</p>`, md: "What if the audit says AI isn't a good fit?" },
+    { id: "F2", label: "Models", rec: true, html: `<p><b>Do you use on-device models or cloud APIs?</b> Whichever fits the feature, your privacy policy, and your budget. Apple's on-device Foundation Models where they're enough, and a server-side model behind your own API where they aren't.</p>`, md: "On-device or cloud models?" },
+    { id: "F3", label: "Data", rec: true, html: `<p><b>Will our code or data be sent to an AI provider?</b> Only through tools and accounts your company approves. ${CF}</p>`, md: "Will our code or data be sent to an AI provider? (confirm)" },
+    { id: "F4", label: "Pricing", rec: true, html: `<p><b>Are prices fixed?</b> Yes. Scope and price are agreed before work starts. A change in scope becomes a new package.</p>`, md: "Are prices fixed?" },
+    { id: "F5", label: "Team", html: `<p><b>Can you work alongside our developers or agency?</b> Yes. Handoff notes are part of every package. ${CF}</p>`, md: "Can you work alongside our team or agency? (confirm)" },
+    { id: "F6", label: "Legal", html: `<p><b>Do you sign NDAs?</b> Yes. ${CF}</p>`, md: "Do you sign NDAs? (confirm)" },
+  ]},
+  { id: "slug", title: "URL slug", options: [
+    { id: "S1", label: "/ai-swift", rec: true, text: "Matches the issue and the nav label, reads clearly, and fits Pages.swift's flat page paths." },
+    { id: "S2", label: "/ai", text: "Shortest, but too broad for a Swift consultancy and hard to rank for." },
+    { id: "S3", label: "/ai-consulting", text: "Good for search intent, but drops the Swift positioning." },
+    { id: "S4", label: "/services/ai-swift", text: "Nests the offer under Services. Needs a nested Content path and a new router case; more work for little gain." },
+  ]},
+  { id: "nav", title: "Nav label", options: [
+    { id: "N1", label: "AI + Swift", rec: true, text: "Matches the page name. Must be an explicit Link to avoid “Ai + Swift”." },
+    { id: "N2", label: "AI Consulting", text: "Clearer about what it sells; longer in the header." },
+    { id: "N3", label: "AI", text: "Shortest; vague next to “Services”." },
+  ]},
+  { id: "news", title: "Newsletter blurb", options: [
+    { id: "B1", label: "Direct", rec: true, text: "New this month: fixed-scope AI + Swift packages. If your team wants an AI feature in your app, or wants coding agents to write Swift you'd actually merge, there's now a clear way to start, with a price agreed up front. Details at brightdigit.com/ai-swift." },
+    { id: "B2", label: "Story-led", text: "On the podcast this year, Donny Wals and Joe Fabisevich talked about what working with agents is really like. I've been doing the same work with Swift teams, and it's now a set of fixed-scope packages: an audit, a pilot, and team enablement. See brightdigit.com/ai-swift." },
+  ]},
+];
+
+const STORE = "ai-swift-picks";
+let picks = {};
+try { picks = JSON.parse(localStorage.getItem(STORE) || "{}") || {}; } catch (e) { picks = {}; }
+
+const grid = document.getElementById("copygrid");
+GROUPS.forEach(g => {
+  const sec = document.createElement("div");
+  sec.className = "group";
+  sec.innerHTML = `<h3>${g.title}</h3>${g.note ? `<p>${g.note}</p>` : ""}<div class="opts" role="${g.multi ? "group" : "radiogroup"}" aria-label="${g.title}"></div>`;
+  const box = sec.querySelector(".opts");
+  g.options.forEach(o => {
+    const id = `pick-${g.id}-${o.id}`;
+    const lab = document.createElement("label");
+    lab.className = "opt";
+    lab.htmlFor = id;
+    lab.innerHTML = `<input type="${g.multi ? "checkbox" : "radio"}" name="pick-${g.id}" id="${id}" value="${o.id}"><span class="lbl">${o.id} · ${o.label}${o.rec ? ' <span class="tag rec">rec</span>' : ""}</span>${o.html || `<p>${o.text}</p>`}`;
+    box.appendChild(lab);
+  });
+  grid.appendChild(sec);
+});
+
+function applyPicks() {
+  GROUPS.forEach(g => g.options.forEach(o => {
+    const el = document.getElementById(`pick-${g.id}-${o.id}`);
+    const v = picks[g.id];
+    el.checked = Array.isArray(v) ? v.includes(o.id) : v === o.id;
+  }));
+  render();
+}
+function read() {
+  GROUPS.forEach(g => {
+    const checked = g.options.filter(o => document.getElementById(`pick-${g.id}-${o.id}`).checked).map(o => o.id);
+    picks[g.id] = g.multi ? checked : (checked[0] || null);
+  });
+  try { localStorage.setItem(STORE, JSON.stringify(picks)); } catch (e) {}
+  render();
+}
+function plain(o) {
+  if (o.md) return o.md;
+  return (o.text || "").replace(/<[^>]+>/g, "");
+}
+function render() {
+  const lines = ["**#184 copy picks** (from the AI + Swift mockup board)", ""];
+  GROUPS.forEach(g => {
+    const v = picks[g.id];
+    const ids = Array.isArray(v) ? v : (v ? [v] : []);
+    if (!ids.length) { lines.push(`- **${g.title}:** _not picked_`); return; }
+    if (g.multi) {
+      lines.push(`- **${g.title}:**`);
+      ids.forEach(id => { const o = g.options.find(x => x.id === id); lines.push(`  - ${id}: ${plain(o)}`); });
+    } else {
+      const o = g.options.find(x => x.id === ids[0]);
+      lines.push(`- **${g.title}:** ${o.id} (${o.label}): ${plain(o)}`);
+    }
+  });
+  lines.push("", "Prices are placeholders. Testimonials are quoted verbatim from Testimonial+*.swift.");
+  document.getElementById("picks-out").value = lines.join("\n");
+}
+grid.addEventListener("change", read);
+document.getElementById("use-recs").addEventListener("click", () => {
+  GROUPS.forEach(g => {
+    const recs = g.options.filter(o => o.rec).map(o => o.id);
+    picks[g.id] = g.multi ? recs : (recs[0] || null);
+  });
+  try { localStorage.setItem(STORE, JSON.stringify(picks)); } catch (e) {}
+  applyPicks();
+  document.getElementById("copy-status").textContent = "Recommended picks applied.";
+});
+document.getElementById("clear-picks").addEventListener("click", () => {
+  picks = {};
+  try { localStorage.removeItem(STORE); } catch (e) {}
+  applyPicks();
+  document.getElementById("copy-status").textContent = "Cleared.";
+});
+document.getElementById("copy-picks").addEventListener("click", () => {
+  const ta = document.getElementById("picks-out");
+  const status = document.getElementById("copy-status");
+  const fallback = () => { ta.focus(); ta.select(); status.textContent = "Selected. Press Cmd+C to copy."; };
+  try {
+    navigator.clipboard.writeText(ta.value).then(() => { status.textContent = "Copied."; }, fallback);
+  } catch (e) { fallback(); }
+});
+if (!Object.keys(picks).length) {
+  GROUPS.forEach(g => { const recs = g.options.filter(o => o.rec).map(o => o.id); picks[g.id] = g.multi ? recs : (recs[0] || null); });
+}
+applyPicks();
+</script>
