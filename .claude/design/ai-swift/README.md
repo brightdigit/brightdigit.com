@@ -1,6 +1,10 @@
-# AI + Swift landing page — mockups and copy options (issue #184)
+# AI Consulting landing page — mockups and copy options (issue #184)
 
-`index.html` is the review board for issue #184: no Swift and no CSS has been changed yet. It contains:
+`index.html` is the review board for issue #184: no Swift and no CSS has been changed yet.
+
+The offer is **AI consulting for any business** (Leo, 2026-11-23). It covers AI workflows and tools plus strategy and readiness, and Apple-platform app teams get one optional Swift track. The issue's original "AI + Swift" title was narrower. The folder keeps its `ai-swift` name so the published artifact link stays stable.
+
+The board contains:
 
 - **Direction A**, Services-native, at desktop and 390px.
 - **Direction B**, Pricing table, at desktop and 390px. This is the recommended direction.

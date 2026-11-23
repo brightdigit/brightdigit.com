@@ -88,3 +88,4 @@ rather than leaving both.
 - Proof copy must be honest (Leo, 2026-11-23): quote testimonials verbatim from `Testimonial+*.swift`, mark any cut with an ellipsis, never splice sentences into one quote; never invent stats (count from `Content/` or omit); prices stay as clearly marked placeholders.
 - Current-site mockups are LIGHT ONLY — the live site has no dark mode; dark mode exists only in the redesign (Highlighter Editorial: #1A1A16 on #FCFCFA, #F8ED2F highlighter, 12px cards, fonts unchanged).
 - #184 pricing (Leo, 2026-11-23): publish a price for the entry/audit package only; other packages say "quoted after the audit". Never show "from" prices on all packages.
+- #184 audience (Leo, 2026-11-23): the AI offer is for ANY business (AI workflows/tools + strategy/readiness), with Swift/Apple app teams as one optional track — don't infer a Swift-only audience from the 'AI + Swift' issue title.
