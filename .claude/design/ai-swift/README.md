@@ -18,7 +18,7 @@ The board is an Artifact page body: the publish step wraps it in a document skel
   - Re-check with the script below, run from this directory. It should print `0 mismatches`.
   - Dave Mulder's source title reads "Product ManagerProduct Manager at Conferences i/o". The board displays it de-duplicated; fix the source string when building.
 - No numbers are claimed other than episode numbers 208 and 210. Their slugs come from `Content/episodes/`.
-- Every price is a `$[X,XXX]` placeholder. Timelines are suggestions. FAQ answers marked "confirm" need Leo's sign-off.
+- Only the audit (entry package) shows a price, as a fixed `$[X,XXX]` placeholder. Other packages say "quoted after the audit" (Leo's decision, 2026-11-23). Timelines are suggestions. FAQ answers marked "confirm" need Leo's sign-off.
 
 ```bash
 node -e 'const fs=require("fs"),p="../../../Sources/BrightDigitSite/Testimonials/";const s=fs.readdirSync(p).map(f=>fs.readFileSync(p+f,"utf8")).join("\n");const h=fs.readFileSync("index.html","utf8");let b=0,n=0;for(const m of h.matchAll(/“([^”]+)”/g)){if(m[1].length<60)continue;n++;for(const x of m[1].split(" … "))if(!s.includes(x.trim()))b++}console.log(n,"quotes,",b,"mismatches")'

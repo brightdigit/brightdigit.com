@@ -249,7 +249,7 @@ html { scroll-behavior: smooth; }
       <a href="#build">Build note</a>
       <a href="#recommendation">Recommendation</a>
     </nav>
-    <p class="rules"><strong>Ground rules applied:</strong> existing fonts only (Oxygen, Cardo, Oxygen Mono). No hero video. Episode players are labeled slots, never drawn. Testimonials are verbatim from <code>Testimonial+*.swift</code>, with cuts marked by an ellipsis. No invented numbers. Every price is a <span class="ph">$[placeholder]</span>.</p>
+    <p class="rules"><strong>Ground rules applied:</strong> existing fonts only (Oxygen, Cardo, Oxygen Mono). No hero video. Episode players are labeled slots, never drawn. Testimonials are verbatim from <code>Testimonial+*.swift</code>, with cuts marked by an ellipsis. No invented numbers. Only the audit shows a price, as a <span class="ph">$[placeholder]</span>. Other packages are quoted after the audit.</p>
   </header>
 
   <!-- ===================== A ===================== -->
@@ -379,7 +379,8 @@ html { scroll-behavior: smooth; }
       <ul>
         <li><b>Layout:</b> Direction B, the pricing table. Productized packages need to be compared, and B's sections map straight onto front matter, which keeps the redesign rework near zero.</li>
         <li><b>Offer:</b> the outcome-led sentence (O1).</li>
-        <li><b>Packages:</b> Audit → Pilot → Team enablement (L1). Each package is a natural upsell into the next, and the audit is a low-risk first purchase.</li>
+        <li><b>Packages:</b> Audit → Pilot → Team enablement (L1). Each package leads naturally into the next.</li>
+        <li><b>Pricing:</b> publish a price for the audit only (R1). It is bounded by Leo's time, so it can be priced confidently, and it turns "validate demand" into a real purchase. The pilot and enablement scope depends on what the audit finds, so they are quoted after it.</li>
         <li><b>CTA:</b> the existing contact form with "Tell me about your app" (C1). Add a booking link only after the page shows demand.</li>
         <li><b>Slug and nav:</b> <code>/ai-swift</code>, with the nav label "AI + Swift".</li>
         <li><b>Proof:</b> the three testimonials below, labeled as general client work, since none of them is about AI. Pair them with episodes 208 and 210, which are about AI directly.</li>
@@ -420,7 +421,7 @@ html { scroll-behavior: smooth; }
         <div>
           <h2><i></i>AI Readiness Audit</h2>
           <p>A written plan for where AI belongs in your app and in your team's workflow, with the risks ranked before you spend on a build.</p>
-          <p class="meta">1–2 weeks · from <span class="price">$[X,XXX]</span></p>
+          <p class="meta">1–2 weeks · <span class="price">$[X,XXX]</span> fixed</p>
           <footer><span></span><a class="btn">Tell me about your app</a></footer>
         </div>
       </section>
@@ -429,7 +430,7 @@ html { scroll-behavior: smooth; }
         <div>
           <h2><i></i>AI Feature Pilot</h2>
           <p>One AI feature built in Swift and shipped behind a flag in your app, with tests and a way to measure whether it works.</p>
-          <p class="meta">3–4 weeks · from <span class="price">$[XX,XXX]</span></p>
+          <p class="meta">3–4 weeks · Quoted after the audit</p>
           <footer><span></span><a class="btn">Tell me about your app</a></footer>
         </div>
       </section>
@@ -438,7 +439,7 @@ html { scroll-behavior: smooth; }
         <div>
           <h2><i></i>Team Agent Enablement</h2>
           <p>Your iOS team set up to get consistent, reviewable Swift from coding agents: instruction files, CI guardrails, and hands-on sessions.</p>
-          <p class="meta">2–3 weeks · from <span class="price">$[X,XXX]</span></p>
+          <p class="meta">2–3 weeks · Quoted after the audit</p>
           <footer><span></span><a class="btn">Tell me about your app</a></footer>
         </div>
       </section>
@@ -459,7 +460,7 @@ html { scroll-behavior: smooth; }
       <section class="hero">
         <h1>AI features and coding agents, for Swift teams.</h1>
         <div style="display:grid;gap:12px">
-          <p>I help Swift teams ship AI features and adopt coding agents without breaking the app they already have. Fixed scope, fixed price, agreed up front.</p>
+          <p>I help Swift teams ship AI features and adopt coding agents without breaking the app they already have. Fixed scope and price, agreed before work starts.</p>
           <div><a class="btn">Tell me about your app</a></div>
         </div>
       </section>
@@ -470,7 +471,7 @@ html { scroll-behavior: smooth; }
           <h3>AI Readiness Audit</h3>
           <p>A written plan for where AI belongs in your app and your team's workflow.</p>
           <ul><li>Codebase and workflow review</li><li>On-device vs. server model recommendation</li><li>Privacy and App Review risks, ranked</li></ul>
-          <div class="facts"><span>1–2 weeks</span><span>from <span class="price">$[X,XXX]</span></span></div>
+          <div class="facts"><span>1–2 weeks</span><span><span class="price">$[X,XXX]</span> fixed</span></div>
           <a class="btn wide">Start with an audit</a>
         </div>
         <div class="tier">
@@ -478,7 +479,7 @@ html { scroll-behavior: smooth; }
           <h3>AI Feature Pilot</h3>
           <p>One AI feature built in Swift and shipped behind a flag.</p>
           <ul><li>Implementation in your app</li><li>Tests and an evaluation harness</li><li>Handoff notes for your team</li></ul>
-          <div class="facts"><span>3–4 weeks</span><span>from <span class="price">$[XX,XXX]</span></span></div>
+          <div class="facts"><span>3–4 weeks</span><span>Quoted after the audit</span></div>
           <a class="btn wide">Tell me about your app</a>
         </div>
         <div class="tier">
@@ -486,7 +487,7 @@ html { scroll-behavior: smooth; }
           <h3>Team Agent Enablement</h3>
           <p>Consistent, reviewable Swift from your team's coding agents.</p>
           <ul><li>Agent instruction files and rules</li><li>CI guardrails: tests, lint, strict concurrency</li><li>Hands-on sessions and PR review</li></ul>
-          <div class="facts"><span>2–3 weeks</span><span>from <span class="price">$[X,XXX]</span></span></div>
+          <div class="facts"><span>2–3 weeks</span><span>Quoted after the audit</span></div>
           <a class="btn wide">Tell me about your app</a>
         </div>
       </div>
@@ -516,7 +517,7 @@ html { scroll-behavior: smooth; }
       <h2 class="sec">Questions</h2>
       <details open><summary>What if the audit says AI isn't a good fit?</summary><p>Then the report says so. You've spent the audit price, not the pilot price.</p></details>
       <details><summary>On-device or cloud models?</summary><p>Whichever fits the feature, your privacy policy, and your budget. The audit makes that call.</p></details>
-      <details><summary>Are prices fixed?</summary><p>Yes. Scope and price are agreed before work starts.</p></details>
+      <details><summary>How is pricing set?</summary><p>The audit has a fixed, published price. The pilot and enablement get a fixed quote based on what the audit finds, agreed before work starts.</p></details>
       <div class="band"><h2>Tell me what you're building. I'll tell you which package fits.</h2><a class="btn">Tell me about your app</a></div>
     </main>
     <slot-footer></slot-footer>
@@ -535,9 +536,9 @@ html { scroll-behavior: smooth; }
         <p>Agents write plausible Swift fast. Strict concurrency, module boundaries, and an app's history are where that code gets expensive. AI features have the opposite problem: picking a model, keeping data private, and getting through App Review take longer than the demo did.</p>
         <h2>How the work runs</h2>
         <ol class="steps">
-          <li><div><b>Audit, 1–2 weeks</b>A written plan for where AI belongs, with the risks ranked. From <span class="price">$[X,XXX]</span>.</div></li>
-          <li><div><b>Pilot, 3–4 weeks</b>One feature shipped behind a flag, with tests. From <span class="price">$[XX,XXX]</span>.</div></li>
-          <li><div><b>Enablement, 2–3 weeks</b>Your team's agents producing reviewable Swift. From <span class="price">$[X,XXX]</span>.</div></li>
+          <li><div><b>Audit, 1–2 weeks</b>A written plan for where AI belongs, with the risks ranked. <span class="price">$[X,XXX]</span>, fixed.</div></li>
+          <li><div><b>Pilot, 3–4 weeks</b>One feature shipped behind a flag, with tests. Fixed price, quoted after the audit.</div></li>
+          <li><div><b>Enablement, 2–3 weeks</b>Your team's agents producing reviewable Swift. Fixed price, quoted after the audit.</div></li>
         </ol>
         <h2>Hear how I think about it</h2>
         <div class="epcard"><div class="slot">YouTube player slot · 16:9 · vendor iframe</div><h3>Practical Agents with Donny Wals · episode 210</h3><p>A year of agentic coding, and why SwiftData migrations still get a human.</p></div>
@@ -561,13 +562,13 @@ html { scroll-behavior: smooth; }
       <div>
         <div class="mono">AI + Swift consulting</div>
         <h1><span class="hl">AI features</span> and <span class="hl">coding agents</span>, for Swift teams.</h1>
-        <p class="lede">I help Swift teams ship AI features and adopt coding agents without breaking the app they already have. Fixed scope, fixed price, agreed up front.</p>
+        <p class="lede">I help Swift teams ship AI features and adopt coding agents without breaking the app they already have. Fixed scope and price, agreed before work starts.</p>
         <a class="ybtn">Tell me about your app</a>
       </div>
       <div class="cards">
-        <div class="card"><div class="mono">Start here</div><h3>AI Readiness Audit</h3><p>A written plan for where AI belongs in your app and your team's workflow.</p><div class="f"><span>1–2 wks</span><span>from $[X,XXX]</span></div></div>
-        <div class="card"><div class="mono">Build</div><h3>AI Feature Pilot</h3><p>One AI feature built in Swift and shipped behind a flag.</p><div class="f"><span>3–4 wks</span><span>from $[XX,XXX]</span></div></div>
-        <div class="card"><div class="mono">Team</div><h3>Team Agent Enablement</h3><p>Consistent, reviewable Swift from your team's coding agents.</p><div class="f"><span>2–3 wks</span><span>from $[X,XXX]</span></div></div>
+        <div class="card"><div class="mono">Start here</div><h3>AI Readiness Audit</h3><p>A written plan for where AI belongs in your app and your team's workflow.</p><div class="f"><span>1–2 wks</span><span>$[X,XXX] fixed</span></div></div>
+        <div class="card"><div class="mono">Build</div><h3>AI Feature Pilot</h3><p>One AI feature built in Swift and shipped behind a flag.</p><div class="f"><span>3–4 wks</span><span>quoted after audit</span></div></div>
+        <div class="card"><div class="mono">Team</div><h3>Team Agent Enablement</h3><p>Consistent, reviewable Swift from your team's coding agents.</p><div class="f"><span>2–3 wks</span><span>quoted after audit</span></div></div>
       </div>
       <figure>
         <blockquote><p>“I have particularly been impressed by Leo's communication — he keeps a regular flow of updates coming, and anytime I have had a deep, wandering technical question, Leo has provided a clear and direct answer.”</p></blockquote>
@@ -607,20 +608,23 @@ const GROUPS = [
   ]},
   { id: "lineup", title: "Package lineup", note: "Timelines are suggestions. Every price is a placeholder for Leo to set.", options: [
     { id: "L1", label: "Audit → Pilot → Team", rec: true, html: `<div class="lineup">
-      <div class="pkg"><b>AI Readiness Audit</b>A written plan for where AI belongs in your app and your team's workflow: codebase and workflow review, on-device vs. server model recommendation, privacy and App Review risks ranked.<br><small>1–2 weeks · from ${PH("$[X,XXX]")}</small></div>
-      <div class="pkg"><b>AI Feature Pilot</b>One AI feature built in Swift and shipped behind a flag, with tests, an evaluation harness, and handoff notes.<br><small>3–4 weeks · from ${PH("$[XX,XXX]")}</small></div>
-      <div class="pkg"><b>Team Agent Enablement</b>Consistent, reviewable Swift from your team's coding agents: instruction files, CI guardrails (tests, lint, strict concurrency), hands-on sessions.<br><small>2–3 weeks · from ${PH("$[X,XXX]")}</small></div></div>`,
-      md: "AI Readiness Audit (1–2 wks, from $[X,XXX]) → AI Feature Pilot (3–4 wks, from $[XX,XXX]) → Team Agent Enablement (2–3 wks, from $[X,XXX])" },
+      <div class="pkg"><b>AI Readiness Audit</b>A written plan for where AI belongs in your app and your team's workflow: codebase and workflow review, on-device vs. server model recommendation, privacy and App Review risks ranked.<br><small>1–2 weeks · ${PH("$[X,XXX]")} fixed</small></div>
+      <div class="pkg"><b>AI Feature Pilot</b>One AI feature built in Swift and shipped behind a flag, with tests, an evaluation harness, and handoff notes.<br><small>3–4 weeks · quoted after the audit</small></div>
+      <div class="pkg"><b>Team Agent Enablement</b>Consistent, reviewable Swift from your team's coding agents: instruction files, CI guardrails (tests, lint, strict concurrency), hands-on sessions.<br><small>2–3 weeks · quoted after the audit</small></div></div>`,
+      md: "AI Readiness Audit (1–2 wks, $[X,XXX] fixed) → AI Feature Pilot (3–4 wks, quoted after the audit) → Team Agent Enablement (2–3 wks, quoted after the audit)" },
     { id: "L2", label: "Agent-ready codebase", html: `<div class="lineup">
-      <div class="pkg"><b>Agent-Readiness Review</b>Where agents will struggle in your codebase: build times, module boundaries, test gaps, missing docs.<br><small>1 week · from ${PH("$[X,XXX]")}</small></div>
-      <div class="pkg"><b>Codebase-for-Agents Refactor</b>Swift packages with clear boundaries, strict concurrency, tests and lint as guardrails, agent instruction files.<br><small>2–4 weeks · from ${PH("$[XX,XXX]")}</small></div>
-      <div class="pkg"><b>AI Feature Build</b>An AI-powered feature designed, built, and shipped in your app.<br><small>4–6 weeks · from ${PH("$[XX,XXX]")}</small></div></div>`,
-      md: "Agent-Readiness Review (1 wk, from $[X,XXX]) → Codebase-for-Agents Refactor (2–4 wks, from $[XX,XXX]) → AI Feature Build (4–6 wks, from $[XX,XXX])" },
+      <div class="pkg"><b>Agent-Readiness Review</b>Where agents will struggle in your codebase: build times, module boundaries, test gaps, missing docs.<br><small>1 week · ${PH("$[X,XXX]")} fixed</small></div>
+      <div class="pkg"><b>Codebase-for-Agents Refactor</b>Swift packages with clear boundaries, strict concurrency, tests and lint as guardrails, agent instruction files.<br><small>2–4 weeks · quoted after the review</small></div>
+      <div class="pkg"><b>AI Feature Build</b>An AI-powered feature designed, built, and shipped in your app.<br><small>4–6 weeks · quoted after the review</small></div></div>`,
+      md: "Agent-Readiness Review (1 wk, $[X,XXX] fixed) → Codebase-for-Agents Refactor (2–4 wks, quoted after the review) → AI Feature Build (4–6 wks, quoted after the review)" },
     { id: "L3", label: "Sprint + advisor", html: `<div class="lineup">
       <div class="pkg"><b>AI + Swift Workshop</b>One day with your team on coding agents in a real Swift codebase: yours.<br><small>1 day · ${PH("$[X,XXX]")}</small></div>
-      <div class="pkg"><b>Two-Week AI Sprint</b>A fixed two-week sprint on one AI goal: a prototype, a migration, or an agent setup.<br><small>2 weeks · ${PH("$[XX,XXX]")}</small></div>
-      <div class="pkg"><b>Monthly Advisor</b>Architecture and PR review as your team adopts AI, on a monthly retainer.<br><small>monthly · ${PH("$[X,XXX]/mo")}</small></div></div>`,
-      md: "AI + Swift Workshop (1 day, $[X,XXX]) / Two-Week AI Sprint (2 wks, $[XX,XXX]) / Monthly Advisor ($[X,XXX]/mo)" },
+      <div class="pkg"><b>Two-Week AI Sprint</b>A fixed two-week sprint on one AI goal: a prototype, a migration, or an agent setup.<br><small>2 weeks · quoted after the workshop</small></div>
+      <div class="pkg"><b>Monthly Advisor</b>Architecture and PR review as your team adopts AI, on a monthly retainer.<br><small>monthly · quoted after the workshop</small></div></div>`,
+      md: "AI + Swift Workshop (1 day, $[X,XXX]) / Two-Week AI Sprint (2 wks, quoted after the workshop) / Monthly Advisor (quoted after the workshop)" },
+  ]},
+  { id: "pricing", title: "Pricing approach", note: "Decided 2026-11-23: publish the audit price only.", options: [
+    { id: "R1", label: "Audit price only", rec: true, text: "The audit shows one published price. The pilot and enablement say “quoted after the audit”. The audit is bounded by Leo's time, so it can be priced confidently; it turns interest into a real purchase; and the later scope depends on what the audit finds." },
   ]},
   { id: "who", title: "Who it's for", options: [
     { id: "W1", label: "Three short audiences", rec: true, html: `<ul><li>Product teams with a shipping Apple-platform app who want an AI feature without a rewrite.</li><li>Engineering leads whose developers already use coding agents and want consistent results.</li><li>Founders who want AI scoped by a Swift developer before they commit a budget.</li></ul>`,
@@ -647,7 +651,7 @@ const GROUPS = [
     { id: "F1", label: "Fit", rec: true, html: `<p><b>What if the audit says AI isn't a good fit?</b> Then the report says so. You've spent the audit price, not the pilot price.</p>`, md: "What if the audit says AI isn't a good fit?" },
     { id: "F2", label: "Models", rec: true, html: `<p><b>Do you use on-device models or cloud APIs?</b> Whichever fits the feature, your privacy policy, and your budget. Apple's on-device Foundation Models where they're enough, and a server-side model behind your own API where they aren't.</p>`, md: "On-device or cloud models?" },
     { id: "F3", label: "Data", rec: true, html: `<p><b>Will our code or data be sent to an AI provider?</b> Only through tools and accounts your company approves. ${CF}</p>`, md: "Will our code or data be sent to an AI provider? (confirm)" },
-    { id: "F4", label: "Pricing", rec: true, html: `<p><b>Are prices fixed?</b> Yes. Scope and price are agreed before work starts. A change in scope becomes a new package.</p>`, md: "Are prices fixed?" },
+    { id: "F4", label: "Pricing", rec: true, html: `<p><b>How is pricing set?</b> The audit has a fixed, published price. The pilot and enablement get a fixed quote based on what the audit finds, agreed before work starts.</p>`, md: "How is pricing set? (audit published; rest quoted after the audit)" },
     { id: "F5", label: "Team", html: `<p><b>Can you work alongside our developers or agency?</b> Yes. Handoff notes are part of every package. ${CF}</p>`, md: "Can you work alongside our team or agency? (confirm)" },
     { id: "F6", label: "Legal", html: `<p><b>Do you sign NDAs?</b> Yes. ${CF}</p>`, md: "Do you sign NDAs? (confirm)" },
   ]},
@@ -723,7 +727,7 @@ function render() {
       lines.push(`- **${g.title}:** ${o.id} (${o.label}): ${plain(o)}`);
     }
   });
-  lines.push("", "Prices are placeholders. Testimonials are quoted verbatim from Testimonial+*.swift.");
+  lines.push("", "Only the audit shows a price, and it is a placeholder. Testimonials are quoted verbatim from Testimonial+*.swift.");
   document.getElementById("picks-out").value = lines.join("\n");
 }
 grid.addEventListener("change", read);
